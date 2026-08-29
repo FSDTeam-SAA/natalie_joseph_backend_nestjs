@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateUserDto {
   @ApiPropertyOptional({ example: '' })
@@ -16,4 +16,14 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty({ message: 'Password is requried' })
   password: string;
+
+  @ApiPropertyOptional({ example: '' })
+  @IsString()
+  @IsNotEmpty({ message: 'Phone number is requried' })
+  phoneNumber: string;
+
+  @ApiPropertyOptional({ type: 'string', format: 'binary' })
+  @IsString()
+  @IsOptional()
+  profileImage: string;
 }

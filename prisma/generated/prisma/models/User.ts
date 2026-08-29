@@ -30,6 +30,13 @@ export type UserMinAggregateOutputType = {
   name: string | null
   password: string | null
   role: $Enums.UserRole | null
+  phoneNumber: string | null
+  profileImage: string | null
+  otp: string | null
+  otpExpiry: Date | null
+  status: $Enums.Status | null
+  verifiedForgot: boolean | null
+  stripeAccountId: string | null
   createAt: Date | null
   updateAt: Date | null
 }
@@ -40,6 +47,13 @@ export type UserMaxAggregateOutputType = {
   name: string | null
   password: string | null
   role: $Enums.UserRole | null
+  phoneNumber: string | null
+  profileImage: string | null
+  otp: string | null
+  otpExpiry: Date | null
+  status: $Enums.Status | null
+  verifiedForgot: boolean | null
+  stripeAccountId: string | null
   createAt: Date | null
   updateAt: Date | null
 }
@@ -50,6 +64,13 @@ export type UserCountAggregateOutputType = {
   name: number
   password: number
   role: number
+  phoneNumber: number
+  profileImage: number
+  otp: number
+  otpExpiry: number
+  status: number
+  verifiedForgot: number
+  stripeAccountId: number
   createAt: number
   updateAt: number
   _all: number
@@ -62,6 +83,13 @@ export type UserMinAggregateInputType = {
   name?: true
   password?: true
   role?: true
+  phoneNumber?: true
+  profileImage?: true
+  otp?: true
+  otpExpiry?: true
+  status?: true
+  verifiedForgot?: true
+  stripeAccountId?: true
   createAt?: true
   updateAt?: true
 }
@@ -72,6 +100,13 @@ export type UserMaxAggregateInputType = {
   name?: true
   password?: true
   role?: true
+  phoneNumber?: true
+  profileImage?: true
+  otp?: true
+  otpExpiry?: true
+  status?: true
+  verifiedForgot?: true
+  stripeAccountId?: true
   createAt?: true
   updateAt?: true
 }
@@ -82,6 +117,13 @@ export type UserCountAggregateInputType = {
   name?: true
   password?: true
   role?: true
+  phoneNumber?: true
+  profileImage?: true
+  otp?: true
+  otpExpiry?: true
+  status?: true
+  verifiedForgot?: true
+  stripeAccountId?: true
   createAt?: true
   updateAt?: true
   _all?: true
@@ -165,6 +207,13 @@ export type UserGroupByOutputType = {
   name: string | null
   password: string
   role: $Enums.UserRole
+  phoneNumber: string | null
+  profileImage: string | null
+  otp: string | null
+  otpExpiry: Date | null
+  status: $Enums.Status
+  verifiedForgot: boolean
+  stripeAccountId: string | null
   createAt: Date
   updateAt: Date
   _count: UserCountAggregateOutputType | null
@@ -196,6 +245,13 @@ export type UserWhereInput = {
   name?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.StringFilter<"User"> | string
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
+  phoneNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  profileImage?: Prisma.StringNullableFilter<"User"> | string | null
+  otp?: Prisma.StringNullableFilter<"User"> | string | null
+  otpExpiry?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  status?: Prisma.EnumStatusFilter<"User"> | $Enums.Status
+  verifiedForgot?: Prisma.BoolFilter<"User"> | boolean
+  stripeAccountId?: Prisma.StringNullableFilter<"User"> | string | null
   createAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updateAt?: Prisma.DateTimeFilter<"User"> | Date | string
 }
@@ -206,6 +262,13 @@ export type UserOrderByWithRelationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  otp?: Prisma.SortOrderInput | Prisma.SortOrder
+  otpExpiry?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verifiedForgot?: Prisma.SortOrder
+  stripeAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
 }
@@ -219,6 +282,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.StringFilter<"User"> | string
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
+  phoneNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  profileImage?: Prisma.StringNullableFilter<"User"> | string | null
+  otp?: Prisma.StringNullableFilter<"User"> | string | null
+  otpExpiry?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  status?: Prisma.EnumStatusFilter<"User"> | $Enums.Status
+  verifiedForgot?: Prisma.BoolFilter<"User"> | boolean
+  stripeAccountId?: Prisma.StringNullableFilter<"User"> | string | null
   createAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updateAt?: Prisma.DateTimeFilter<"User"> | Date | string
 }, "id" | "email">
@@ -229,6 +299,13 @@ export type UserOrderByWithAggregationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  otp?: Prisma.SortOrderInput | Prisma.SortOrder
+  otpExpiry?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verifiedForgot?: Prisma.SortOrder
+  stripeAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -245,6 +322,13 @@ export type UserScalarWhereWithAggregatesInput = {
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
   role?: Prisma.EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
+  phoneNumber?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  profileImage?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  otp?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  otpExpiry?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  status?: Prisma.EnumStatusWithAggregatesFilter<"User"> | $Enums.Status
+  verifiedForgot?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  stripeAccountId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updateAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -255,6 +339,13 @@ export type UserCreateInput = {
   name?: string | null
   password: string
   role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
   createAt?: Date | string
   updateAt?: Date | string
 }
@@ -265,6 +356,13 @@ export type UserUncheckedCreateInput = {
   name?: string | null
   password: string
   role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
   createAt?: Date | string
   updateAt?: Date | string
 }
@@ -275,6 +373,13 @@ export type UserUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -285,6 +390,13 @@ export type UserUncheckedUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -295,6 +407,13 @@ export type UserCreateManyInput = {
   name?: string | null
   password: string
   role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
   createAt?: Date | string
   updateAt?: Date | string
 }
@@ -305,6 +424,13 @@ export type UserUpdateManyMutationInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -315,6 +441,13 @@ export type UserUncheckedUpdateManyInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -325,6 +458,13 @@ export type UserCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   password?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrder
+  profileImage?: Prisma.SortOrder
+  otp?: Prisma.SortOrder
+  otpExpiry?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verifiedForgot?: Prisma.SortOrder
+  stripeAccountId?: Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
 }
@@ -335,6 +475,13 @@ export type UserMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   password?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrder
+  profileImage?: Prisma.SortOrder
+  otp?: Prisma.SortOrder
+  otpExpiry?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verifiedForgot?: Prisma.SortOrder
+  stripeAccountId?: Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
 }
@@ -345,6 +492,13 @@ export type UserMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   password?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrder
+  profileImage?: Prisma.SortOrder
+  otp?: Prisma.SortOrder
+  otpExpiry?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verifiedForgot?: Prisma.SortOrder
+  stripeAccountId?: Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
 }
@@ -357,6 +511,18 @@ export type EnumUserRoleFieldUpdateOperationsInput = {
   set?: $Enums.UserRole
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
+export type EnumStatusFieldUpdateOperationsInput = {
+  set?: $Enums.Status
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -365,6 +531,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   name?: boolean
   password?: boolean
   role?: boolean
+  phoneNumber?: boolean
+  profileImage?: boolean
+  otp?: boolean
+  otpExpiry?: boolean
+  status?: boolean
+  verifiedForgot?: boolean
+  stripeAccountId?: boolean
   createAt?: boolean
   updateAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -375,6 +548,13 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   password?: boolean
   role?: boolean
+  phoneNumber?: boolean
+  profileImage?: boolean
+  otp?: boolean
+  otpExpiry?: boolean
+  status?: boolean
+  verifiedForgot?: boolean
+  stripeAccountId?: boolean
   createAt?: boolean
   updateAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -385,6 +565,13 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   password?: boolean
   role?: boolean
+  phoneNumber?: boolean
+  profileImage?: boolean
+  otp?: boolean
+  otpExpiry?: boolean
+  status?: boolean
+  verifiedForgot?: boolean
+  stripeAccountId?: boolean
   createAt?: boolean
   updateAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -395,11 +582,18 @@ export type UserSelectScalar = {
   name?: boolean
   password?: boolean
   role?: boolean
+  phoneNumber?: boolean
+  profileImage?: boolean
+  otp?: boolean
+  otpExpiry?: boolean
+  status?: boolean
+  verifiedForgot?: boolean
+  stripeAccountId?: boolean
   createAt?: boolean
   updateAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "createAt" | "updateAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "phoneNumber" | "profileImage" | "otp" | "otpExpiry" | "status" | "verifiedForgot" | "stripeAccountId" | "createAt" | "updateAt", ExtArgs["result"]["user"]>
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
@@ -410,6 +604,13 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     name: string | null
     password: string
     role: $Enums.UserRole
+    phoneNumber: string | null
+    profileImage: string | null
+    otp: string | null
+    otpExpiry: Date | null
+    status: $Enums.Status
+    verifiedForgot: boolean
+    stripeAccountId: string | null
     createAt: Date
     updateAt: Date
   }, ExtArgs["result"]["user"]>
@@ -840,6 +1041,13 @@ export interface UserFieldRefs {
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'UserRole'>
+  readonly phoneNumber: Prisma.FieldRef<"User", 'String'>
+  readonly profileImage: Prisma.FieldRef<"User", 'String'>
+  readonly otp: Prisma.FieldRef<"User", 'String'>
+  readonly otpExpiry: Prisma.FieldRef<"User", 'DateTime'>
+  readonly status: Prisma.FieldRef<"User", 'Status'>
+  readonly verifiedForgot: Prisma.FieldRef<"User", 'Boolean'>
+  readonly stripeAccountId: Prisma.FieldRef<"User", 'String'>
   readonly createAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updateAt: Prisma.FieldRef<"User", 'DateTime'>
 }

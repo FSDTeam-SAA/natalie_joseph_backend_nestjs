@@ -87,6 +87,13 @@ export const UserScalarFieldEnum = {
   name: 'name',
   password: 'password',
   role: 'role',
+  phoneNumber: 'phoneNumber',
+  profileImage: 'profileImage',
+  otp: 'otp',
+  otpExpiry: 'otpExpiry',
+  status: 'status',
+  verifiedForgot: 'verifiedForgot',
+  stripeAccountId: 'stripeAccountId',
   createAt: 'createAt',
   updateAt: 'updateAt'
 } as const

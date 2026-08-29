@@ -2,3 +2,9 @@ enum UserRole {
     admin
     user
 }
+
+enum Status {
+    pending
+    approved
+    rejected
+}
