@@ -45,6 +45,11 @@ export { Prisma }
  */
 export type Newsletter = Prisma.NewsletterModel
 /**
+ * Model Subscription
+ * 
+ */
+export type Subscription = Prisma.SubscriptionModel
+/**
  * Model User
  * 
  */

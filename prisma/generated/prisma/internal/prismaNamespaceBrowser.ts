@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Newsletter: 'Newsletter',
+  Subscription: 'Subscription',
   User: 'User'
 } as const
 
@@ -79,6 +80,22 @@ export const NewsletterScalarFieldEnum = {
 } as const
 
 export type NewsletterScalarFieldEnum = (typeof NewsletterScalarFieldEnum)[keyof typeof NewsletterScalarFieldEnum]
+
+
+export const SubscriptionScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  price: 'price',
+  messageLimit: 'messageLimit',
+  features: 'features',
+  userId: 'userId',
+  isPopular: 'isPopular',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

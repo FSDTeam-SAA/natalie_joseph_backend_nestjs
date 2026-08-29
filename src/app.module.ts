@@ -7,6 +7,7 @@ import { UserModule } from './app/module/user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { MailQueueModule } from './app/module/queue/mail-queue.module';
 import { AuthModule } from './app/module/auth/auth.module';
+import { SubscriptionModule } from './app/module/subscription/subscription.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AuthModule } from './app/module/auth/auth.module';
     MailQueueModule,
     NewsletterModule,
     AuthModule,
+    SubscriptionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

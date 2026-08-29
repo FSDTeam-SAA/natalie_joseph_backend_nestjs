@@ -11,6 +11,7 @@ model User {
     status          Status    @default(approved)
     verifiedForgot  Boolean   @default(false)
     stripeAccountId String?
+    subscriptions   Subscription[]
     createAt        DateTime  @default(now())
     updateAt        DateTime  @updatedAt
 

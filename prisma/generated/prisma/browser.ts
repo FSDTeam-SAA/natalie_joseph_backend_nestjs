@@ -23,6 +23,11 @@ export * from './enums.js';
  */
 export type Newsletter = Prisma.NewsletterModel
 /**
+ * Model Subscription
+ * 
+ */
+export type Subscription = Prisma.SubscriptionModel
+/**
  * Model User
  * 
  */
