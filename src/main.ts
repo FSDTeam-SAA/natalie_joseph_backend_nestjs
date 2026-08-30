@@ -11,9 +11,8 @@ dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn'],
+    rawBody: true,
   });
-
-  // app.use('/api/v1/webhook', express.raw({ type: 'application/json' }));
 
   app.use(cookieParser());
   app.enableCors({

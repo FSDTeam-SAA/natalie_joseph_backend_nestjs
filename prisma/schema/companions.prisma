@@ -1,0 +1,20 @@
+model Companions {
+  id                 String   @id @default(uuid())
+  name               String
+  age                Int
+  profession         String
+  location           String
+  bio                String
+  personalityTraits  String[]
+  interests          String[]
+  communicationStyle String
+  lifestyle          String
+  backstory          String?
+  voiceDescription   String[]
+  profileImage       String?
+  coverImage         String?
+  galleryImages      String[]
+  status             Boolean  @default(true)
+
+  @@map("companions")
+}

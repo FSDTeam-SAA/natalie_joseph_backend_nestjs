@@ -8,6 +8,9 @@ import { PrismaModule } from './prisma/prisma.module';
 import { MailQueueModule } from './app/module/queue/mail-queue.module';
 import { AuthModule } from './app/module/auth/auth.module';
 import { SubscriptionModule } from './app/module/subscription/subscription.module';
+import { PaymentModule } from './app/module/payment/payment.module';
+import { WebhookModule } from './app/module/webhook/webhook.module';
+import { CompanionsModule } from './app/module/companions/companions.module';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { SubscriptionModule } from './app/module/subscription/subscription.modul
     NewsletterModule,
     AuthModule,
     SubscriptionModule,
+    PaymentModule,
+    WebhookModule,
+    CompanionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

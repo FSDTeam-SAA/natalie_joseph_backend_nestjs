@@ -24,3 +24,13 @@ export const Status = {
 } as const
 
 export type Status = (typeof Status)[keyof typeof Status]
+
+
+export const PaymentStatus = {
+  pending: 'pending',
+  completed: 'completed',
+  failed: 'failed',
+  refunded: 'refunded'
+} as const
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]

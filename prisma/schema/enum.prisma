@@ -1,10 +1,17 @@
 enum UserRole {
-    admin
-    user
+  admin
+  user
 }
 
 enum Status {
-    pending
-    approved
-    rejected
+  pending
+  approved
+  rejected
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  failed
+  refunded
 }

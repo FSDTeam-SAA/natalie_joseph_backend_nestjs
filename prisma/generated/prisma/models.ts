@@ -8,7 +8,9 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/Companions.js'
 export type * from './models/Newsletter.js'
+export type * from './models/Payment.js'
 export type * from './models/Subscription.js'
 export type * from './models/User.js'
 export type * from './commonInputTypes.js'

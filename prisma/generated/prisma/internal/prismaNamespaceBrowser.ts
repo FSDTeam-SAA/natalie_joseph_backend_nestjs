@@ -51,7 +51,9 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Companions: 'Companions',
   Newsletter: 'Newsletter',
+  Payment: 'Payment',
   Subscription: 'Subscription',
   User: 'User'
 } as const
@@ -72,6 +74,28 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const CompanionsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  age: 'age',
+  profession: 'profession',
+  location: 'location',
+  bio: 'bio',
+  personalityTraits: 'personalityTraits',
+  interests: 'interests',
+  communicationStyle: 'communicationStyle',
+  lifestyle: 'lifestyle',
+  backstory: 'backstory',
+  voiceDescription: 'voiceDescription',
+  profileImage: 'profileImage',
+  coverImage: 'coverImage',
+  galleryImages: 'galleryImages',
+  status: 'status'
+} as const
+
+export type CompanionsScalarFieldEnum = (typeof CompanionsScalarFieldEnum)[keyof typeof CompanionsScalarFieldEnum]
+
+
 export const NewsletterScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -80,6 +104,21 @@ export const NewsletterScalarFieldEnum = {
 } as const
 
 export type NewsletterScalarFieldEnum = (typeof NewsletterScalarFieldEnum)[keyof typeof NewsletterScalarFieldEnum]
+
+
+export const PaymentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  subscriptionId: 'subscriptionId',
+  amount: 'amount',
+  status: 'status',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  paymentType: 'paymentType',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
 
 
 export const SubscriptionScalarFieldEnum = {

@@ -1,19 +1,20 @@
 model User {
-    id              String    @id @default(uuid())
-    email           String    @unique
-    name            String?
-    password        String
-    role            UserRole  @default(user)
-    phoneNumber     String?
-    profileImage    String?
-    otp             String?
-    otpExpiry       DateTime?
-    status          Status    @default(approved)
-    verifiedForgot  Boolean   @default(false)
-    stripeAccountId String?
-    subscriptions   Subscription[]
-    createAt        DateTime  @default(now())
-    updateAt        DateTime  @updatedAt
+  id              String         @id @default(uuid())
+  email           String         @unique
+  name            String?
+  password        String
+  role            UserRole       @default(user)
+  phoneNumber     String?
+  profileImage    String?
+  otp             String?
+  otpExpiry       DateTime?
+  status          Status         @default(approved)
+  verifiedForgot  Boolean        @default(false)
+  stripeAccountId String?
+  subscriptions   Subscription[]
+  payments        Payment[]
+  createAt        DateTime       @default(now())
+  updateAt        DateTime       @updatedAt
 
-    @@map("users")
+  @@map("users")
 }
