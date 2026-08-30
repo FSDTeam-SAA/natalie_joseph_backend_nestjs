@@ -28,10 +28,11 @@ export class SubscriptionService {
 
   async getAllSubscription(params: IFilterParams, options: IOptions) {
     const { page, skip, limit, sortBy, sortOrder } = paginationHelper(options);
+    const { features, ...filterParams } = params;
     const whereConditions = buildWhereConditions(
-      params,
-      ['name', 'features'],
-      {},
+      filterParams,
+      ['name'],
+      features ? { features: { has: features } } : {},
     );
 
     const [total, result] = await Promise.all([
