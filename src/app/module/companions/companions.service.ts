@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import buildWhereConditions from 'src/app/helper/buildWhereConditions';
 import { fileUpload } from 'src/app/helper/fileUploder';
 import paginationHelper, { IOptions } from 'src/app/helper/pagenation';
 import { IFilterParams } from 'src/app/helper/pick';
@@ -31,50 +32,27 @@ export class CompanionsService {
   }
 
   async getAllCompanions(params: IFilterParams, options: IOptions) {
-    const { page, limit, skip, sortOrder } = paginationHelper(options);
-    const allowedSortFields = [
+    const { page, limit, skip, sortBy, sortOrder } = paginationHelper(options);
+    const whereConditions = buildWhereConditions(params, [
       'name',
-      'age',
       'profession',
       'location',
-      'status',
-    ];
-    const sortBy = allowedSortFields.includes(String(options.sortBy))
-      ? String(options.sortBy)
-      : 'name';
-
-    const where = {
-      AND: [
-        params.searchTerm
-          ? {
-              OR: ['name', 'profession', 'location', 'bio'].map((field) => ({
-                [field]: {
-                  contains: String(params.searchTerm),
-                  mode: 'insensitive' as const,
-                },
-              })),
-            }
-          : {},
-        params.profession ? { profession: String(params.profession) } : {},
-        params.location ? { location: String(params.location) } : {},
-        params.status !== undefined
-          ? { status: String(params.status) === 'true' }
-          : {},
-        params.interest ? { interests: { has: String(params.interest) } } : {},
-        params.personalityTrait
-          ? { personalityTraits: { has: String(params.personalityTrait) } }
-          : {},
-      ],
-    };
+      'bio',
+      'communicationStyle',
+      'lifestyle',
+      'backstory',
+    ]);
 
     const [data, total] = await Promise.all([
       this.prisma.companions.findMany({
-        where,
+        where: whereConditions,
         skip,
         take: limit,
-        orderBy: { [sortBy]: sortOrder === 'asc' ? 'asc' : 'desc' },
+        orderBy: {
+          [sortBy]: sortOrder,
+        },
       }),
-      this.prisma.companions.count({ where }),
+      this.prisma.companions.count({ where: whereConditions }),
     ]);
 
     return { data, meta: { total, page, limit } };

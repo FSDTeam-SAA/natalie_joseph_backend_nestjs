@@ -37,6 +37,8 @@ export type UserMinAggregateOutputType = {
   status: $Enums.Status | null
   verifiedForgot: boolean | null
   stripeAccountId: string | null
+  adultEligible: boolean | null
+  isSubscribed: boolean | null
   createAt: Date | null
   updateAt: Date | null
 }
@@ -54,6 +56,8 @@ export type UserMaxAggregateOutputType = {
   status: $Enums.Status | null
   verifiedForgot: boolean | null
   stripeAccountId: string | null
+  adultEligible: boolean | null
+  isSubscribed: boolean | null
   createAt: Date | null
   updateAt: Date | null
 }
@@ -71,6 +75,8 @@ export type UserCountAggregateOutputType = {
   status: number
   verifiedForgot: number
   stripeAccountId: number
+  adultEligible: number
+  isSubscribed: number
   createAt: number
   updateAt: number
   _all: number
@@ -90,6 +96,8 @@ export type UserMinAggregateInputType = {
   status?: true
   verifiedForgot?: true
   stripeAccountId?: true
+  adultEligible?: true
+  isSubscribed?: true
   createAt?: true
   updateAt?: true
 }
@@ -107,6 +115,8 @@ export type UserMaxAggregateInputType = {
   status?: true
   verifiedForgot?: true
   stripeAccountId?: true
+  adultEligible?: true
+  isSubscribed?: true
   createAt?: true
   updateAt?: true
 }
@@ -124,6 +134,8 @@ export type UserCountAggregateInputType = {
   status?: true
   verifiedForgot?: true
   stripeAccountId?: true
+  adultEligible?: true
+  isSubscribed?: true
   createAt?: true
   updateAt?: true
   _all?: true
@@ -214,6 +226,8 @@ export type UserGroupByOutputType = {
   status: $Enums.Status
   verifiedForgot: boolean
   stripeAccountId: string | null
+  adultEligible: boolean | null
+  isSubscribed: boolean
   createAt: Date
   updateAt: Date
   _count: UserCountAggregateOutputType | null
@@ -252,6 +266,8 @@ export type UserWhereInput = {
   status?: Prisma.EnumStatusFilter<"User"> | $Enums.Status
   verifiedForgot?: Prisma.BoolFilter<"User"> | boolean
   stripeAccountId?: Prisma.StringNullableFilter<"User"> | string | null
+  adultEligible?: Prisma.BoolNullableFilter<"User"> | boolean | null
+  isSubscribed?: Prisma.BoolFilter<"User"> | boolean
   createAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updateAt?: Prisma.DateTimeFilter<"User"> | Date | string
   subscriptions?: Prisma.SubscriptionListRelationFilter
@@ -271,6 +287,8 @@ export type UserOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   verifiedForgot?: Prisma.SortOrder
   stripeAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
+  adultEligible?: Prisma.SortOrderInput | Prisma.SortOrder
+  isSubscribed?: Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
   subscriptions?: Prisma.SubscriptionOrderByRelationAggregateInput
@@ -293,6 +311,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumStatusFilter<"User"> | $Enums.Status
   verifiedForgot?: Prisma.BoolFilter<"User"> | boolean
   stripeAccountId?: Prisma.StringNullableFilter<"User"> | string | null
+  adultEligible?: Prisma.BoolNullableFilter<"User"> | boolean | null
+  isSubscribed?: Prisma.BoolFilter<"User"> | boolean
   createAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updateAt?: Prisma.DateTimeFilter<"User"> | Date | string
   subscriptions?: Prisma.SubscriptionListRelationFilter
@@ -312,6 +332,8 @@ export type UserOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   verifiedForgot?: Prisma.SortOrder
   stripeAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
+  adultEligible?: Prisma.SortOrderInput | Prisma.SortOrder
+  isSubscribed?: Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -335,6 +357,8 @@ export type UserScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumStatusWithAggregatesFilter<"User"> | $Enums.Status
   verifiedForgot?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   stripeAccountId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  adultEligible?: Prisma.BoolNullableWithAggregatesFilter<"User"> | boolean | null
+  isSubscribed?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updateAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -352,6 +376,8 @@ export type UserCreateInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
   createAt?: Date | string
   updateAt?: Date | string
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
@@ -371,6 +397,8 @@ export type UserUncheckedCreateInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
   createAt?: Date | string
   updateAt?: Date | string
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -390,6 +418,8 @@ export type UserUpdateInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
@@ -409,6 +439,8 @@ export type UserUncheckedUpdateInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -428,6 +460,8 @@ export type UserCreateManyInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
   createAt?: Date | string
   updateAt?: Date | string
 }
@@ -445,6 +479,8 @@ export type UserUpdateManyMutationInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -462,6 +498,8 @@ export type UserUncheckedUpdateManyInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -489,6 +527,8 @@ export type UserCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   verifiedForgot?: Prisma.SortOrder
   stripeAccountId?: Prisma.SortOrder
+  adultEligible?: Prisma.SortOrder
+  isSubscribed?: Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
 }
@@ -506,6 +546,8 @@ export type UserMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   verifiedForgot?: Prisma.SortOrder
   stripeAccountId?: Prisma.SortOrder
+  adultEligible?: Prisma.SortOrder
+  isSubscribed?: Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
 }
@@ -523,6 +565,8 @@ export type UserMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   verifiedForgot?: Prisma.SortOrder
   stripeAccountId?: Prisma.SortOrder
+  adultEligible?: Prisma.SortOrder
+  isSubscribed?: Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
 }
@@ -569,6 +613,10 @@ export type EnumStatusFieldUpdateOperationsInput = {
   set?: $Enums.Status
 }
 
+export type NullableBoolFieldUpdateOperationsInput = {
+  set?: boolean | null
+}
+
 export type UserCreateWithoutPaymentsInput = {
   id?: string
   email: string
@@ -582,6 +630,8 @@ export type UserCreateWithoutPaymentsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
   createAt?: Date | string
   updateAt?: Date | string
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
@@ -600,6 +650,8 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
   createAt?: Date | string
   updateAt?: Date | string
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -634,6 +686,8 @@ export type UserUpdateWithoutPaymentsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
@@ -652,6 +706,8 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -670,6 +726,8 @@ export type UserCreateWithoutSubscriptionsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
   createAt?: Date | string
   updateAt?: Date | string
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
@@ -688,6 +746,8 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
   createAt?: Date | string
   updateAt?: Date | string
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
@@ -722,6 +782,8 @@ export type UserUpdateWithoutSubscriptionsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
@@ -740,6 +802,8 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
@@ -798,6 +862,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   status?: boolean
   verifiedForgot?: boolean
   stripeAccountId?: boolean
+  adultEligible?: boolean
+  isSubscribed?: boolean
   createAt?: boolean
   updateAt?: boolean
   subscriptions?: boolean | Prisma.User$subscriptionsArgs<ExtArgs>
@@ -818,6 +884,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   status?: boolean
   verifiedForgot?: boolean
   stripeAccountId?: boolean
+  adultEligible?: boolean
+  isSubscribed?: boolean
   createAt?: boolean
   updateAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -835,6 +903,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   status?: boolean
   verifiedForgot?: boolean
   stripeAccountId?: boolean
+  adultEligible?: boolean
+  isSubscribed?: boolean
   createAt?: boolean
   updateAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -852,11 +922,13 @@ export type UserSelectScalar = {
   status?: boolean
   verifiedForgot?: boolean
   stripeAccountId?: boolean
+  adultEligible?: boolean
+  isSubscribed?: boolean
   createAt?: boolean
   updateAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "phoneNumber" | "profileImage" | "otp" | "otpExpiry" | "status" | "verifiedForgot" | "stripeAccountId" | "createAt" | "updateAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "phoneNumber" | "profileImage" | "otp" | "otpExpiry" | "status" | "verifiedForgot" | "stripeAccountId" | "adultEligible" | "isSubscribed" | "createAt" | "updateAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   subscriptions?: boolean | Prisma.User$subscriptionsArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
@@ -884,6 +956,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     status: $Enums.Status
     verifiedForgot: boolean
     stripeAccountId: string | null
+    adultEligible: boolean | null
+    isSubscribed: boolean
     createAt: Date
     updateAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1323,6 +1397,8 @@ export interface UserFieldRefs {
   readonly status: Prisma.FieldRef<"User", 'Status'>
   readonly verifiedForgot: Prisma.FieldRef<"User", 'Boolean'>
   readonly stripeAccountId: Prisma.FieldRef<"User", 'String'>
+  readonly adultEligible: Prisma.FieldRef<"User", 'Boolean'>
+  readonly isSubscribed: Prisma.FieldRef<"User", 'Boolean'>
   readonly createAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updateAt: Prisma.FieldRef<"User", 'DateTime'>
 }

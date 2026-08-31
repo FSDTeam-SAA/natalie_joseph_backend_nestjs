@@ -80,6 +80,13 @@ export class CompanionsController {
       'status',
       'interest',
       'personalityTrait',
+      'name',
+      'profession',
+      'location',
+      'bio',
+      'communicationStyle',
+      'lifestyle',
+      'backstory',
     ]);
     const options = pick(request.query, [
       'page',

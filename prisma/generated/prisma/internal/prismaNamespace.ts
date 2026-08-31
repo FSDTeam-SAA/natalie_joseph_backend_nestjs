@@ -906,6 +906,8 @@ export const UserScalarFieldEnum = {
   status: 'status',
   verifiedForgot: 'verifiedForgot',
   stripeAccountId: 'stripeAccountId',
+  adultEligible: 'adultEligible',
+  isSubscribed: 'isSubscribed',
   createAt: 'createAt',
   updateAt: 'updateAt'
 } as const

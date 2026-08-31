@@ -30,6 +30,7 @@ export class AuthService {
         email: createAuthDto.email,
         password: hashedPassword,
         phoneNumber: createAuthDto.phoneNumber,
+        adultEligible: createAuthDto.adultEligible,
       },
     });
 
@@ -57,7 +58,13 @@ export class AuthService {
     }
 
     const accessToken = this.jwtService.sign(
-      { id: user.id, role: user.role, email: user.email },
+      {
+        id: user.id,
+        role: user.role,
+        email: user.email,
+        adultEligible: user.adultEligible,
+        isSubscribed: user.isSubscribed,
+      },
       {
         secret: config.jwt.accessTokenSecret,
         expiresIn: config.jwt.accessTokenExpires as any,
@@ -65,7 +72,13 @@ export class AuthService {
     );
 
     const refreshToken = this.jwtService.sign(
-      { id: user.id, role: user.role, email: user.email },
+      {
+        id: user.id,
+        role: user.role,
+        email: user.email,
+        adultEligible: user.adultEligible,
+        isSubscribed: user.isSubscribed,
+      },
       {
         secret: config.jwt.refreshTokenSecret,
         expiresIn: config.jwt.refreshTokenExpires as any,

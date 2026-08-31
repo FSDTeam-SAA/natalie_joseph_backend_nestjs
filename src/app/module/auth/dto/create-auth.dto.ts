@@ -1,7 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Matches,
   MinLength,
@@ -14,7 +17,7 @@ export class CreateAuthDto {
   })
   @IsString()
   @IsNotEmpty({ message: 'Name is required' })
-  name: string;
+  name!: string;
 
   @ApiProperty({
     example: 'john@example.com',
@@ -22,7 +25,7 @@ export class CreateAuthDto {
   })
   @IsEmail({}, { message: 'Please provide a valid email' })
   @IsNotEmpty({ message: 'Email is required' })
-  email: string;
+  email!: string;
 
   @ApiProperty({
     example: '01712345678',
@@ -30,7 +33,7 @@ export class CreateAuthDto {
   })
   @IsString()
   @IsNotEmpty({ message: 'Phone number is required' })
-  phoneNumber: string;
+  phoneNumber!: string;
 
   @ApiProperty({
     example: 'Password123',
@@ -42,7 +45,19 @@ export class CreateAuthDto {
   @MinLength(6, {
     message: 'Password must be at least 6 characters',
   })
-  password: string;
+  password!: string;
+
+  @ApiPropertyOptional({
+    example: true,
+    default: false,
+    description: 'Whether the companion is adult eligible',
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) =>
+    value === 'true' ? true : value === 'false' ? false : value,
+  )
+  adultEligible?: boolean;
 }
 
 export class LoginAuthDto {
@@ -51,14 +66,14 @@ export class LoginAuthDto {
   })
   @IsEmail({}, { message: 'Please provide a valid email' })
   @IsNotEmpty({ message: 'Email is required' })
-  email: string;
+  email!: string;
 
   @ApiProperty({
     example: 'Password123',
   })
   @IsString()
   @IsNotEmpty({ message: 'Password is required' })
-  password: string;
+  password!: string;
 }
 
 export class ForgotPasswordAuthDto {
@@ -67,7 +82,7 @@ export class ForgotPasswordAuthDto {
   })
   @IsEmail({}, { message: 'Please provide a valid email' })
   @IsNotEmpty({ message: 'Email is required' })
-  email: string;
+  email!: string;
 }
 
 export class VerifyOtpAuthDto {
@@ -76,7 +91,7 @@ export class VerifyOtpAuthDto {
   })
   @IsEmail({}, { message: 'Please provide a valid email' })
   @IsNotEmpty({ message: 'Email is required' })
-  email: string;
+  email!: string;
 
   @ApiProperty({
     example: '123456',
@@ -87,7 +102,7 @@ export class VerifyOtpAuthDto {
   @Matches(/^\d{6}$/, {
     message: 'OTP must be exactly 6 digits',
   })
-  otp: string;
+  otp!: string;
 }
 
 export class ResetPasswordAuthDto {
@@ -96,7 +111,7 @@ export class ResetPasswordAuthDto {
   })
   @IsEmail({}, { message: 'Please provide a valid email' })
   @IsNotEmpty({ message: 'Email is required' })
-  email: string;
+  email!: string;
 
   @ApiProperty({
     example: 'NewPassword123',
@@ -107,7 +122,7 @@ export class ResetPasswordAuthDto {
   @MinLength(6, {
     message: 'Password must be at least 6 characters',
   })
-  password: string;
+  password!: string;
 }
 
 export class ChangePasswordAuthDto {
@@ -116,14 +131,14 @@ export class ChangePasswordAuthDto {
   })
   @IsEmail({}, { message: 'Please provide a valid email' })
   @IsNotEmpty({ message: 'Email is required' })
-  email: string;
+  email!: string;
 
   @ApiProperty({
     example: 'OldPassword123',
   })
   @IsString()
   @IsNotEmpty({ message: 'Old password is required' })
-  oldPassword: string;
+  oldPassword!: string;
 
   @ApiProperty({
     example: 'NewPassword123',
@@ -134,5 +149,5 @@ export class ChangePasswordAuthDto {
   @MinLength(6, {
     message: 'New password must be at least 6 characters',
   })
-  newPassword: string;
+  newPassword!: string;
 }

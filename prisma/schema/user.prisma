@@ -11,7 +11,9 @@ model User {
   status          Status         @default(approved)
   verifiedForgot  Boolean        @default(false)
   stripeAccountId String?
+  adultEligible   Boolean?
   subscriptions   Subscription[]
+  isSubscribed    Boolean        @default(false)
   payments        Payment[]
   createAt        DateTime       @default(now())
   updateAt        DateTime       @updatedAt
