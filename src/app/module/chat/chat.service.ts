@@ -113,6 +113,21 @@ export class ChatService {
         }),
       ]);
 
+      if (usedCredit && user) {
+        await tx.creditTransaction.create({
+          data: {
+            userId,
+            companionId,
+            direction: 'debit',
+            reason: 'extra_message',
+            amount: 1,
+            balanceBefore: user.creditBalance + 1,
+            balanceAfter: user.creditBalance,
+            referenceId: savedMessage.id,
+          },
+        });
+      }
+
       return {
         message: savedMessage,
         usage: {

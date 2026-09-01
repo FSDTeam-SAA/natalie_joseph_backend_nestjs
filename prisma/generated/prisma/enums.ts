@@ -34,3 +34,36 @@ export const PaymentStatus = {
 } as const
 
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const CreditDirection = {
+  credit: 'credit',
+  debit: 'debit'
+} as const
+
+export type CreditDirection = (typeof CreditDirection)[keyof typeof CreditDirection]
+
+
+export const CreditReason = {
+  purchase: 'purchase',
+  extra_message: 'extra_message',
+  gift: 'gift'
+} as const
+
+export type CreditReason = (typeof CreditReason)[keyof typeof CreditReason]
+
+
+export const ChatMessageType = {
+  text: 'text',
+  gift: 'gift'
+} as const
+
+export type ChatMessageType = (typeof ChatMessageType)[keyof typeof ChatMessageType]
+
+
+export const GiftTransactionStatus = {
+  completed: 'completed',
+  refunded: 'refunded'
+} as const
+
+export type GiftTransactionStatus = (typeof GiftTransactionStatus)[keyof typeof GiftTransactionStatus]

@@ -1,13 +1,18 @@
 model ChatMessage {
-  id          String   @id @default(uuid())
+  id          String          @id @default(uuid())
   userId      String
   companionId String
   message     String
-  usedCredit  Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  usedCredit  Boolean         @default(false)
+  type        ChatMessageType @default(text)
+  giftId      String?
+  creditCost  Int             @default(0)
+  createdAt   DateTime        @default(now())
 
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+  gift      Gift?      @relation(fields: [giftId], references: [id], onDelete: SetNull)
 
+  @@index([userId, companionId, createdAt])
   @@map("chat_messages")
 }

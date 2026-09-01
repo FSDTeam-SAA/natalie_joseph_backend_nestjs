@@ -15,3 +15,24 @@ enum PaymentStatus {
   failed
   refunded
 }
+
+enum CreditDirection {
+  credit
+  debit
+}
+
+enum CreditReason {
+  purchase
+  extra_message
+  gift
+}
+
+enum ChatMessageType {
+  text
+  gift
+}
+
+enum GiftTransactionStatus {
+  completed
+  refunded
+}

@@ -399,6 +399,10 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   ChatMessage: 'ChatMessage',
   Companions: 'Companions',
+  CreditPackage: 'CreditPackage',
+  CreditTransaction: 'CreditTransaction',
+  Gift: 'Gift',
+  GiftTransaction: 'GiftTransaction',
   Newsletter: 'Newsletter',
   Payment: 'Payment',
   Subscription: 'Subscription',
@@ -419,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "chatMessage" | "companions" | "newsletter" | "payment" | "subscription" | "user" | "userSubscription"
+    modelProps: "chatMessage" | "companions" | "creditPackage" | "creditTransaction" | "gift" | "giftTransaction" | "newsletter" | "payment" | "subscription" | "user" | "userSubscription"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -568,6 +572,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CompanionsCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CompanionsCountAggregateOutputType> | number
+        }
+      }
+    }
+    CreditPackage: {
+      payload: Prisma.$CreditPackagePayload<ExtArgs>
+      fields: Prisma.CreditPackageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CreditPackageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditPackagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CreditPackageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditPackagePayload>
+        }
+        findFirst: {
+          args: Prisma.CreditPackageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditPackagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CreditPackageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditPackagePayload>
+        }
+        findMany: {
+          args: Prisma.CreditPackageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditPackagePayload>[]
+        }
+        create: {
+          args: Prisma.CreditPackageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditPackagePayload>
+        }
+        createMany: {
+          args: Prisma.CreditPackageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CreditPackageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditPackagePayload>[]
+        }
+        delete: {
+          args: Prisma.CreditPackageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditPackagePayload>
+        }
+        update: {
+          args: Prisma.CreditPackageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditPackagePayload>
+        }
+        deleteMany: {
+          args: Prisma.CreditPackageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CreditPackageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CreditPackageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditPackagePayload>[]
+        }
+        upsert: {
+          args: Prisma.CreditPackageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditPackagePayload>
+        }
+        aggregate: {
+          args: Prisma.CreditPackageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCreditPackage>
+        }
+        groupBy: {
+          args: Prisma.CreditPackageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CreditPackageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CreditPackageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CreditPackageCountAggregateOutputType> | number
+        }
+      }
+    }
+    CreditTransaction: {
+      payload: Prisma.$CreditTransactionPayload<ExtArgs>
+      fields: Prisma.CreditTransactionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CreditTransactionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditTransactionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CreditTransactionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditTransactionPayload>
+        }
+        findFirst: {
+          args: Prisma.CreditTransactionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditTransactionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CreditTransactionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditTransactionPayload>
+        }
+        findMany: {
+          args: Prisma.CreditTransactionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditTransactionPayload>[]
+        }
+        create: {
+          args: Prisma.CreditTransactionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditTransactionPayload>
+        }
+        createMany: {
+          args: Prisma.CreditTransactionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CreditTransactionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditTransactionPayload>[]
+        }
+        delete: {
+          args: Prisma.CreditTransactionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditTransactionPayload>
+        }
+        update: {
+          args: Prisma.CreditTransactionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditTransactionPayload>
+        }
+        deleteMany: {
+          args: Prisma.CreditTransactionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CreditTransactionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CreditTransactionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditTransactionPayload>[]
+        }
+        upsert: {
+          args: Prisma.CreditTransactionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditTransactionPayload>
+        }
+        aggregate: {
+          args: Prisma.CreditTransactionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCreditTransaction>
+        }
+        groupBy: {
+          args: Prisma.CreditTransactionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CreditTransactionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CreditTransactionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CreditTransactionCountAggregateOutputType> | number
+        }
+      }
+    }
+    Gift: {
+      payload: Prisma.$GiftPayload<ExtArgs>
+      fields: Prisma.GiftFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GiftFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GiftFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftPayload>
+        }
+        findFirst: {
+          args: Prisma.GiftFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GiftFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftPayload>
+        }
+        findMany: {
+          args: Prisma.GiftFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftPayload>[]
+        }
+        create: {
+          args: Prisma.GiftCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftPayload>
+        }
+        createMany: {
+          args: Prisma.GiftCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GiftCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftPayload>[]
+        }
+        delete: {
+          args: Prisma.GiftDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftPayload>
+        }
+        update: {
+          args: Prisma.GiftUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftPayload>
+        }
+        deleteMany: {
+          args: Prisma.GiftDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GiftUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GiftUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftPayload>[]
+        }
+        upsert: {
+          args: Prisma.GiftUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftPayload>
+        }
+        aggregate: {
+          args: Prisma.GiftAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGift>
+        }
+        groupBy: {
+          args: Prisma.GiftGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GiftGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GiftCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GiftCountAggregateOutputType> | number
+        }
+      }
+    }
+    GiftTransaction: {
+      payload: Prisma.$GiftTransactionPayload<ExtArgs>
+      fields: Prisma.GiftTransactionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GiftTransactionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftTransactionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GiftTransactionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftTransactionPayload>
+        }
+        findFirst: {
+          args: Prisma.GiftTransactionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftTransactionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GiftTransactionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftTransactionPayload>
+        }
+        findMany: {
+          args: Prisma.GiftTransactionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftTransactionPayload>[]
+        }
+        create: {
+          args: Prisma.GiftTransactionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftTransactionPayload>
+        }
+        createMany: {
+          args: Prisma.GiftTransactionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GiftTransactionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftTransactionPayload>[]
+        }
+        delete: {
+          args: Prisma.GiftTransactionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftTransactionPayload>
+        }
+        update: {
+          args: Prisma.GiftTransactionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftTransactionPayload>
+        }
+        deleteMany: {
+          args: Prisma.GiftTransactionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GiftTransactionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GiftTransactionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftTransactionPayload>[]
+        }
+        upsert: {
+          args: Prisma.GiftTransactionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GiftTransactionPayload>
+        }
+        aggregate: {
+          args: Prisma.GiftTransactionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGiftTransaction>
+        }
+        groupBy: {
+          args: Prisma.GiftTransactionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GiftTransactionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GiftTransactionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GiftTransactionCountAggregateOutputType> | number
         }
       }
     }
@@ -986,6 +1286,9 @@ export const ChatMessageScalarFieldEnum = {
   companionId: 'companionId',
   message: 'message',
   usedCredit: 'usedCredit',
+  type: 'type',
+  giftId: 'giftId',
+  creditCost: 'creditCost',
   createdAt: 'createdAt'
 } as const
 
@@ -1014,6 +1317,62 @@ export const CompanionsScalarFieldEnum = {
 export type CompanionsScalarFieldEnum = (typeof CompanionsScalarFieldEnum)[keyof typeof CompanionsScalarFieldEnum]
 
 
+export const CreditPackageScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  credits: 'credits',
+  price: 'price',
+  currency: 'currency',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CreditPackageScalarFieldEnum = (typeof CreditPackageScalarFieldEnum)[keyof typeof CreditPackageScalarFieldEnum]
+
+
+export const CreditTransactionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companionId: 'companionId',
+  direction: 'direction',
+  reason: 'reason',
+  amount: 'amount',
+  balanceBefore: 'balanceBefore',
+  balanceAfter: 'balanceAfter',
+  referenceId: 'referenceId',
+  createdAt: 'createdAt'
+} as const
+
+export type CreditTransactionScalarFieldEnum = (typeof CreditTransactionScalarFieldEnum)[keyof typeof CreditTransactionScalarFieldEnum]
+
+
+export const GiftScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  image: 'image',
+  creditCost: 'creditCost',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GiftScalarFieldEnum = (typeof GiftScalarFieldEnum)[keyof typeof GiftScalarFieldEnum]
+
+
+export const GiftTransactionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companionId: 'companionId',
+  giftId: 'giftId',
+  creditCost: 'creditCost',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type GiftTransactionScalarFieldEnum = (typeof GiftTransactionScalarFieldEnum)[keyof typeof GiftTransactionScalarFieldEnum]
+
+
 export const NewsletterScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -1028,6 +1387,7 @@ export const PaymentScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   subscriptionId: 'subscriptionId',
+  creditPackageId: 'creditPackageId',
   creditAmount: 'creditAmount',
   amount: 'amount',
   status: 'status',
@@ -1147,16 +1507,16 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'DateTime'
+ * Reference to a field of type 'ChatMessageType'
  */
-export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+export type EnumChatMessageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatMessageType'>
     
 
 
 /**
- * Reference to a field of type 'DateTime[]'
+ * Reference to a field of type 'ChatMessageType[]'
  */
-export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+export type ListEnumChatMessageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatMessageType[]'>
     
 
 
@@ -1171,6 +1531,62 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime'
+ */
+export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime[]'
+ */
+export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CreditDirection'
+ */
+export type EnumCreditDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CreditDirection'>
+    
+
+
+/**
+ * Reference to a field of type 'CreditDirection[]'
+ */
+export type ListEnumCreditDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CreditDirection[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CreditReason'
+ */
+export type EnumCreditReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CreditReason'>
+    
+
+
+/**
+ * Reference to a field of type 'CreditReason[]'
+ */
+export type ListEnumCreditReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CreditReason[]'>
+    
+
+
+/**
+ * Reference to a field of type 'GiftTransactionStatus'
+ */
+export type EnumGiftTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GiftTransactionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'GiftTransactionStatus[]'
+ */
+export type ListEnumGiftTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GiftTransactionStatus[]'>
     
 
 
@@ -1382,6 +1798,10 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
   chatMessage?: Prisma.ChatMessageOmit
   companions?: Prisma.CompanionsOmit
+  creditPackage?: Prisma.CreditPackageOmit
+  creditTransaction?: Prisma.CreditTransactionOmit
+  gift?: Prisma.GiftOmit
+  giftTransaction?: Prisma.GiftTransactionOmit
   newsletter?: Prisma.NewsletterOmit
   payment?: Prisma.PaymentOmit
   subscription?: Prisma.SubscriptionOmit

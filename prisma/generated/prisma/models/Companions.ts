@@ -289,6 +289,8 @@ export type CompanionsWhereInput = {
   galleryImages?: Prisma.StringNullableListFilter<"Companions">
   status?: Prisma.BoolFilter<"Companions"> | boolean
   chatMessages?: Prisma.ChatMessageListRelationFilter
+  creditTransactions?: Prisma.CreditTransactionListRelationFilter
+  giftTransactions?: Prisma.GiftTransactionListRelationFilter
 }
 
 export type CompanionsOrderByWithRelationInput = {
@@ -309,6 +311,8 @@ export type CompanionsOrderByWithRelationInput = {
   galleryImages?: Prisma.SortOrder
   status?: Prisma.SortOrder
   chatMessages?: Prisma.ChatMessageOrderByRelationAggregateInput
+  creditTransactions?: Prisma.CreditTransactionOrderByRelationAggregateInput
+  giftTransactions?: Prisma.GiftTransactionOrderByRelationAggregateInput
 }
 
 export type CompanionsWhereUniqueInput = Prisma.AtLeast<{
@@ -332,6 +336,8 @@ export type CompanionsWhereUniqueInput = Prisma.AtLeast<{
   galleryImages?: Prisma.StringNullableListFilter<"Companions">
   status?: Prisma.BoolFilter<"Companions"> | boolean
   chatMessages?: Prisma.ChatMessageListRelationFilter
+  creditTransactions?: Prisma.CreditTransactionListRelationFilter
+  giftTransactions?: Prisma.GiftTransactionListRelationFilter
 }, "id">
 
 export type CompanionsOrderByWithAggregationInput = {
@@ -398,6 +404,8 @@ export type CompanionsCreateInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutCompanionInput
 }
 
 export type CompanionsUncheckedCreateInput = {
@@ -418,6 +426,8 @@ export type CompanionsUncheckedCreateInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutCompanionInput
 }
 
 export type CompanionsUpdateInput = {
@@ -438,6 +448,8 @@ export type CompanionsUpdateInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutCompanionNestedInput
 }
 
 export type CompanionsUncheckedUpdateInput = {
@@ -458,6 +470,8 @@ export type CompanionsUncheckedUpdateInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
 }
 
 export type CompanionsCreateManyInput = {
@@ -587,6 +601,11 @@ export type CompanionsSumOrderByAggregateInput = {
   age?: Prisma.SortOrder
 }
 
+export type CompanionsNullableScalarRelationFilter = {
+  is?: Prisma.CompanionsWhereInput | null
+  isNot?: Prisma.CompanionsWhereInput | null
+}
+
 export type CompanionsCreateNestedOneWithoutChatMessagesInput = {
   create?: Prisma.XOR<Prisma.CompanionsCreateWithoutChatMessagesInput, Prisma.CompanionsUncheckedCreateWithoutChatMessagesInput>
   connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutChatMessagesInput
@@ -617,14 +636,6 @@ export type CompanionsCreategalleryImagesInput = {
   set: string[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type CompanionsUpdatepersonalityTraitsInput = {
   set?: string[]
   push?: string | string[]
@@ -635,10 +646,6 @@ export type CompanionsUpdateinterestsInput = {
   push?: string | string[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type CompanionsUpdatevoiceDescriptionInput = {
   set?: string[]
   push?: string | string[]
@@ -647,6 +654,36 @@ export type CompanionsUpdatevoiceDescriptionInput = {
 export type CompanionsUpdategalleryImagesInput = {
   set?: string[]
   push?: string | string[]
+}
+
+export type CompanionsCreateNestedOneWithoutCreditTransactionsInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutCreditTransactionsInput, Prisma.CompanionsUncheckedCreateWithoutCreditTransactionsInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutCreditTransactionsInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+}
+
+export type CompanionsUpdateOneWithoutCreditTransactionsNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutCreditTransactionsInput, Prisma.CompanionsUncheckedCreateWithoutCreditTransactionsInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutCreditTransactionsInput
+  upsert?: Prisma.CompanionsUpsertWithoutCreditTransactionsInput
+  disconnect?: Prisma.CompanionsWhereInput | boolean
+  delete?: Prisma.CompanionsWhereInput | boolean
+  connect?: Prisma.CompanionsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutCreditTransactionsInput, Prisma.CompanionsUpdateWithoutCreditTransactionsInput>, Prisma.CompanionsUncheckedUpdateWithoutCreditTransactionsInput>
+}
+
+export type CompanionsCreateNestedOneWithoutGiftTransactionsInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutGiftTransactionsInput, Prisma.CompanionsUncheckedCreateWithoutGiftTransactionsInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutGiftTransactionsInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+}
+
+export type CompanionsUpdateOneRequiredWithoutGiftTransactionsNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutGiftTransactionsInput, Prisma.CompanionsUncheckedCreateWithoutGiftTransactionsInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutGiftTransactionsInput
+  upsert?: Prisma.CompanionsUpsertWithoutGiftTransactionsInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutGiftTransactionsInput, Prisma.CompanionsUpdateWithoutGiftTransactionsInput>, Prisma.CompanionsUncheckedUpdateWithoutGiftTransactionsInput>
 }
 
 export type CompanionsCreateWithoutChatMessagesInput = {
@@ -666,6 +703,8 @@ export type CompanionsCreateWithoutChatMessagesInput = {
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutCompanionInput
 }
 
 export type CompanionsUncheckedCreateWithoutChatMessagesInput = {
@@ -685,6 +724,8 @@ export type CompanionsUncheckedCreateWithoutChatMessagesInput = {
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutCompanionInput
 }
 
 export type CompanionsCreateOrConnectWithoutChatMessagesInput = {
@@ -720,6 +761,8 @@ export type CompanionsUpdateWithoutChatMessagesInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutCompanionNestedInput
 }
 
 export type CompanionsUncheckedUpdateWithoutChatMessagesInput = {
@@ -739,6 +782,208 @@ export type CompanionsUncheckedUpdateWithoutChatMessagesInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsCreateWithoutCreditTransactionsInput = {
+  id?: string
+  name: string
+  age: number
+  profession: string
+  location: string
+  bio: string
+  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  communicationStyle: string
+  lifestyle: string
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsUncheckedCreateWithoutCreditTransactionsInput = {
+  id?: string
+  name: string
+  age: number
+  profession: string
+  location: string
+  bio: string
+  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  communicationStyle: string
+  lifestyle: string
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsCreateOrConnectWithoutCreditTransactionsInput = {
+  where: Prisma.CompanionsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutCreditTransactionsInput, Prisma.CompanionsUncheckedCreateWithoutCreditTransactionsInput>
+}
+
+export type CompanionsUpsertWithoutCreditTransactionsInput = {
+  update: Prisma.XOR<Prisma.CompanionsUpdateWithoutCreditTransactionsInput, Prisma.CompanionsUncheckedUpdateWithoutCreditTransactionsInput>
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutCreditTransactionsInput, Prisma.CompanionsUncheckedCreateWithoutCreditTransactionsInput>
+  where?: Prisma.CompanionsWhereInput
+}
+
+export type CompanionsUpdateToOneWithWhereWithoutCreditTransactionsInput = {
+  where?: Prisma.CompanionsWhereInput
+  data: Prisma.XOR<Prisma.CompanionsUpdateWithoutCreditTransactionsInput, Prisma.CompanionsUncheckedUpdateWithoutCreditTransactionsInput>
+}
+
+export type CompanionsUpdateWithoutCreditTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.IntFieldUpdateOperationsInput | number
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsUncheckedUpdateWithoutCreditTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.IntFieldUpdateOperationsInput | number
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsCreateWithoutGiftTransactionsInput = {
+  id?: string
+  name: string
+  age: number
+  profession: string
+  location: string
+  bio: string
+  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  communicationStyle: string
+  lifestyle: string
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsUncheckedCreateWithoutGiftTransactionsInput = {
+  id?: string
+  name: string
+  age: number
+  profession: string
+  location: string
+  bio: string
+  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  communicationStyle: string
+  lifestyle: string
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsCreateOrConnectWithoutGiftTransactionsInput = {
+  where: Prisma.CompanionsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutGiftTransactionsInput, Prisma.CompanionsUncheckedCreateWithoutGiftTransactionsInput>
+}
+
+export type CompanionsUpsertWithoutGiftTransactionsInput = {
+  update: Prisma.XOR<Prisma.CompanionsUpdateWithoutGiftTransactionsInput, Prisma.CompanionsUncheckedUpdateWithoutGiftTransactionsInput>
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutGiftTransactionsInput, Prisma.CompanionsUncheckedCreateWithoutGiftTransactionsInput>
+  where?: Prisma.CompanionsWhereInput
+}
+
+export type CompanionsUpdateToOneWithWhereWithoutGiftTransactionsInput = {
+  where?: Prisma.CompanionsWhereInput
+  data: Prisma.XOR<Prisma.CompanionsUpdateWithoutGiftTransactionsInput, Prisma.CompanionsUncheckedUpdateWithoutGiftTransactionsInput>
+}
+
+export type CompanionsUpdateWithoutGiftTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.IntFieldUpdateOperationsInput | number
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsUncheckedUpdateWithoutGiftTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.IntFieldUpdateOperationsInput | number
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
 }
 
 
@@ -748,10 +993,14 @@ export type CompanionsUncheckedUpdateWithoutChatMessagesInput = {
 
 export type CompanionsCountOutputType = {
   chatMessages: number
+  creditTransactions: number
+  giftTransactions: number
 }
 
 export type CompanionsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   chatMessages?: boolean | CompanionsCountOutputTypeCountChatMessagesArgs
+  creditTransactions?: boolean | CompanionsCountOutputTypeCountCreditTransactionsArgs
+  giftTransactions?: boolean | CompanionsCountOutputTypeCountGiftTransactionsArgs
 }
 
 /**
@@ -769,6 +1018,20 @@ export type CompanionsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.E
  */
 export type CompanionsCountOutputTypeCountChatMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ChatMessageWhereInput
+}
+
+/**
+ * CompanionsCountOutputType without action
+ */
+export type CompanionsCountOutputTypeCountCreditTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CreditTransactionWhereInput
+}
+
+/**
+ * CompanionsCountOutputType without action
+ */
+export type CompanionsCountOutputTypeCountGiftTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GiftTransactionWhereInput
 }
 
 
@@ -790,6 +1053,8 @@ export type CompanionsSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   galleryImages?: boolean
   status?: boolean
   chatMessages?: boolean | Prisma.Companions$chatMessagesArgs<ExtArgs>
+  creditTransactions?: boolean | Prisma.Companions$creditTransactionsArgs<ExtArgs>
+  giftTransactions?: boolean | Prisma.Companions$giftTransactionsArgs<ExtArgs>
   _count?: boolean | Prisma.CompanionsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["companions"]>
 
@@ -853,6 +1118,8 @@ export type CompanionsSelectScalar = {
 export type CompanionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "age" | "profession" | "location" | "bio" | "personalityTraits" | "interests" | "communicationStyle" | "lifestyle" | "backstory" | "voiceDescription" | "profileImage" | "coverImage" | "galleryImages" | "status", ExtArgs["result"]["companions"]>
 export type CompanionsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   chatMessages?: boolean | Prisma.Companions$chatMessagesArgs<ExtArgs>
+  creditTransactions?: boolean | Prisma.Companions$creditTransactionsArgs<ExtArgs>
+  giftTransactions?: boolean | Prisma.Companions$giftTransactionsArgs<ExtArgs>
   _count?: boolean | Prisma.CompanionsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CompanionsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -862,6 +1129,8 @@ export type $CompanionsPayload<ExtArgs extends runtime.Types.Extensions.Internal
   name: "Companions"
   objects: {
     chatMessages: Prisma.$ChatMessagePayload<ExtArgs>[]
+    creditTransactions: Prisma.$CreditTransactionPayload<ExtArgs>[]
+    giftTransactions: Prisma.$GiftTransactionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1275,6 +1544,8 @@ readonly fields: CompanionsFieldRefs;
 export interface Prisma__CompanionsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   chatMessages<T extends Prisma.Companions$chatMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$chatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  creditTransactions<T extends Prisma.Companions$creditTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$creditTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CreditTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  giftTransactions<T extends Prisma.Companions$giftTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$giftTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GiftTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1734,6 +2005,54 @@ export type Companions$chatMessagesArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.ChatMessageScalarFieldEnum | Prisma.ChatMessageScalarFieldEnum[]
+}
+
+/**
+ * Companions.creditTransactions
+ */
+export type Companions$creditTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CreditTransaction
+   */
+  select?: Prisma.CreditTransactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CreditTransaction
+   */
+  omit?: Prisma.CreditTransactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CreditTransactionInclude<ExtArgs> | null
+  where?: Prisma.CreditTransactionWhereInput
+  orderBy?: Prisma.CreditTransactionOrderByWithRelationInput | Prisma.CreditTransactionOrderByWithRelationInput[]
+  cursor?: Prisma.CreditTransactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CreditTransactionScalarFieldEnum | Prisma.CreditTransactionScalarFieldEnum[]
+}
+
+/**
+ * Companions.giftTransactions
+ */
+export type Companions$giftTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GiftTransaction
+   */
+  select?: Prisma.GiftTransactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GiftTransaction
+   */
+  omit?: Prisma.GiftTransactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GiftTransactionInclude<ExtArgs> | null
+  where?: Prisma.GiftTransactionWhereInput
+  orderBy?: Prisma.GiftTransactionOrderByWithRelationInput | Prisma.GiftTransactionOrderByWithRelationInput[]
+  cursor?: Prisma.GiftTransactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GiftTransactionScalarFieldEnum | Prisma.GiftTransactionScalarFieldEnum[]
 }
 
 /**

@@ -1,0 +1,30 @@
+model Gift {
+  id           String            @id @default(uuid())
+  name         String
+  image        String?
+  creditCost   Int
+  isActive     Boolean           @default(true)
+  transactions GiftTransaction[]
+  chatMessages ChatMessage[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@map("gifts")
+}
+
+model GiftTransaction {
+  id          String                @id @default(uuid())
+  userId      String
+  companionId String
+  giftId      String
+  creditCost  Int
+  status      GiftTransactionStatus @default(completed)
+  createdAt   DateTime              @default(now())
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+  gift      Gift       @relation(fields: [giftId], references: [id], onDelete: Restrict)
+
+  @@index([userId, companionId, createdAt])
+  @@map("gift_transactions")
+}

@@ -14,6 +14,8 @@ import { WebhookModule } from './app/module/webhook/webhook.module';
 import { CompanionsModule } from './app/module/companions/companions.module';
 import { ChatModule } from './app/module/chat/chat.module';
 import { SubscribePaymentCronService } from './app/helper/subscribePayment.cron';
+import { CreditModule } from './app/module/credit/credit.module';
+import { GiftModule } from './app/module/gift/gift.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { SubscribePaymentCronService } from './app/helper/subscribePayment.cron'
     WebhookModule,
     CompanionsModule,
     ChatModule,
+    CreditModule,
+    GiftModule,
   ],
   controllers: [AppController],
   providers: [AppService, SubscribePaymentCronService],

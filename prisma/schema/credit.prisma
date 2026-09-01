@@ -1,0 +1,32 @@
+model CreditPackage {
+  id        String    @id @default(uuid())
+  name      String
+  credits   Int
+  price     String
+  currency  String    @default("usd")
+  isActive  Boolean   @default(true)
+  payments  Payment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("credit_packages")
+}
+
+model CreditTransaction {
+  id            String          @id @default(uuid())
+  userId        String
+  companionId   String?
+  direction     CreditDirection
+  reason        CreditReason
+  amount        Int
+  balanceBefore Int
+  balanceAfter  Int
+  referenceId   String?
+  createdAt     DateTime        @default(now())
+
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companion Companions? @relation(fields: [companionId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@map("credit_transactions")
+}

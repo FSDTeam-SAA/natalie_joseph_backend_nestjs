@@ -28,6 +28,26 @@ export type ChatMessage = Prisma.ChatMessageModel
  */
 export type Companions = Prisma.CompanionsModel
 /**
+ * Model CreditPackage
+ * 
+ */
+export type CreditPackage = Prisma.CreditPackageModel
+/**
+ * Model CreditTransaction
+ * 
+ */
+export type CreditTransaction = Prisma.CreditTransactionModel
+/**
+ * Model Gift
+ * 
+ */
+export type Gift = Prisma.GiftModel
+/**
+ * Model GiftTransaction
+ * 
+ */
+export type GiftTransaction = Prisma.GiftTransactionModel
+/**
  * Model Newsletter
  * 
  */

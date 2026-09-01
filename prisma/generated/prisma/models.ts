@@ -10,6 +10,10 @@
  */
 export type * from './models/ChatMessage.js'
 export type * from './models/Companions.js'
+export type * from './models/CreditPackage.js'
+export type * from './models/CreditTransaction.js'
+export type * from './models/Gift.js'
+export type * from './models/GiftTransaction.js'
 export type * from './models/Newsletter.js'
 export type * from './models/Payment.js'
 export type * from './models/Subscription.js'

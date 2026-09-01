@@ -13,5 +13,6 @@ model UserSubscription {
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   subscription Subscription @relation(fields: [subscriptionId], references: [id])
 
+  @@index([userId, isActive, endsAt])
   @@map("user_subscriptions")
 }

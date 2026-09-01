@@ -107,9 +107,21 @@ export class WebhookService {
           data: { isSubscribed: true },
         });
       } else if (paymentType === 'credits' && payment.creditAmount) {
-        await transaction.user.update({
+        const user = await transaction.user.update({
           where: { id: payment.userId },
           data: { creditBalance: { increment: payment.creditAmount } },
+          select: { creditBalance: true },
+        });
+        await transaction.creditTransaction.create({
+          data: {
+            userId: payment.userId,
+            direction: 'credit',
+            reason: 'purchase',
+            amount: payment.creditAmount,
+            balanceBefore: user.creditBalance - payment.creditAmount,
+            balanceAfter: user.creditBalance,
+            referenceId: payment.id,
+          },
         });
       }
     });

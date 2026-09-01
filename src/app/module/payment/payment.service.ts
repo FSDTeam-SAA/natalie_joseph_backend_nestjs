@@ -13,15 +13,6 @@ import Stripe from 'stripe';
 
 @Injectable()
 export class PaymentService {
-  private static readonly CREDIT_PACKAGES: Record<
-    number,
-    { amountInCents: number; price: string }
-  > = {
-    100: { amountInCents: 499, price: '4.99' },
-    250: { amountInCents: 999, price: '9.99' },
-    700: { amountInCents: 2499, price: '24.99' },
-  };
-
   private readonly stripe?: Stripe;
   private readonly logger = new Logger(PaymentService.name);
 
@@ -139,27 +130,35 @@ export class PaymentService {
     }
   }
 
-  async buyCredits(userId: string, credits: number) {
+  async buyCredits(userId: string, packageId: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     if (!this.stripe) {
       throw new ServiceUnavailableException('Stripe is not configured');
     }
 
-    const creditPackage = PaymentService.CREDIT_PACKAGES[credits];
-    if (!creditPackage) {
-      throw new BadRequestException(
-        'Invalid credit package. Choose 100, 250, or 700 credits',
-      );
+    const creditPackage = await this.prisma.creditPackage.findFirst({
+      where: { id: packageId, isActive: true },
+    });
+    if (!creditPackage) throw new BadRequestException('Invalid credit package');
+
+    const amountInCents = Math.round(Number(creditPackage.price) * 100);
+    if (!Number.isSafeInteger(amountInCents) || amountInCents < 50) {
+      throw new BadRequestException('Credit package price is invalid');
     }
 
     let paymentIntent: Stripe.PaymentIntent;
     try {
       paymentIntent = await this.stripe.paymentIntents.create({
-        amount: creditPackage.amountInCents,
-        currency: 'usd',
+        amount: amountInCents,
+        currency: creditPackage.currency.toLowerCase(),
         automatic_payment_methods: { enabled: true },
-        metadata: { paymentType: 'credits', userId, credits: String(credits) },
+        metadata: {
+          paymentType: 'credits',
+          userId,
+          credits: String(creditPackage.credits),
+          creditPackageId: creditPackage.id,
+        },
       });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -171,7 +170,8 @@ export class PaymentService {
       const payment = await this.prisma.payment.create({
         data: {
           userId,
-          creditAmount: credits,
+          creditPackageId: creditPackage.id,
+          creditAmount: creditPackage.credits,
           amount: creditPackage.price,
           paymentType: 'credits',
           stripePaymentIntentId: paymentIntent.id,

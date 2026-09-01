@@ -53,6 +53,10 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   ChatMessage: 'ChatMessage',
   Companions: 'Companions',
+  CreditPackage: 'CreditPackage',
+  CreditTransaction: 'CreditTransaction',
+  Gift: 'Gift',
+  GiftTransaction: 'GiftTransaction',
   Newsletter: 'Newsletter',
   Payment: 'Payment',
   Subscription: 'Subscription',
@@ -82,6 +86,9 @@ export const ChatMessageScalarFieldEnum = {
   companionId: 'companionId',
   message: 'message',
   usedCredit: 'usedCredit',
+  type: 'type',
+  giftId: 'giftId',
+  creditCost: 'creditCost',
   createdAt: 'createdAt'
 } as const
 
@@ -110,6 +117,62 @@ export const CompanionsScalarFieldEnum = {
 export type CompanionsScalarFieldEnum = (typeof CompanionsScalarFieldEnum)[keyof typeof CompanionsScalarFieldEnum]
 
 
+export const CreditPackageScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  credits: 'credits',
+  price: 'price',
+  currency: 'currency',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CreditPackageScalarFieldEnum = (typeof CreditPackageScalarFieldEnum)[keyof typeof CreditPackageScalarFieldEnum]
+
+
+export const CreditTransactionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companionId: 'companionId',
+  direction: 'direction',
+  reason: 'reason',
+  amount: 'amount',
+  balanceBefore: 'balanceBefore',
+  balanceAfter: 'balanceAfter',
+  referenceId: 'referenceId',
+  createdAt: 'createdAt'
+} as const
+
+export type CreditTransactionScalarFieldEnum = (typeof CreditTransactionScalarFieldEnum)[keyof typeof CreditTransactionScalarFieldEnum]
+
+
+export const GiftScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  image: 'image',
+  creditCost: 'creditCost',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GiftScalarFieldEnum = (typeof GiftScalarFieldEnum)[keyof typeof GiftScalarFieldEnum]
+
+
+export const GiftTransactionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companionId: 'companionId',
+  giftId: 'giftId',
+  creditCost: 'creditCost',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type GiftTransactionScalarFieldEnum = (typeof GiftTransactionScalarFieldEnum)[keyof typeof GiftTransactionScalarFieldEnum]
+
+
 export const NewsletterScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -124,6 +187,7 @@ export const PaymentScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   subscriptionId: 'subscriptionId',
+  creditPackageId: 'creditPackageId',
   creditAmount: 'creditAmount',
   amount: 'amount',
   status: 'status',
