@@ -28,10 +28,12 @@ export type AggregateSubscription = {
 
 export type SubscriptionAvgAggregateOutputType = {
   messageLimit: number | null
+  durationDays: number | null
 }
 
 export type SubscriptionSumAggregateOutputType = {
   messageLimit: number | null
+  durationDays: number | null
 }
 
 export type SubscriptionMinAggregateOutputType = {
@@ -39,7 +41,7 @@ export type SubscriptionMinAggregateOutputType = {
   name: string | null
   price: string | null
   messageLimit: number | null
-  userId: string | null
+  durationDays: number | null
   isPopular: boolean | null
   isActive: boolean | null
   createdAt: Date | null
@@ -51,7 +53,7 @@ export type SubscriptionMaxAggregateOutputType = {
   name: string | null
   price: string | null
   messageLimit: number | null
-  userId: string | null
+  durationDays: number | null
   isPopular: boolean | null
   isActive: boolean | null
   createdAt: Date | null
@@ -63,8 +65,8 @@ export type SubscriptionCountAggregateOutputType = {
   name: number
   price: number
   messageLimit: number
+  durationDays: number
   features: number
-  userId: number
   isPopular: number
   isActive: number
   createdAt: number
@@ -75,10 +77,12 @@ export type SubscriptionCountAggregateOutputType = {
 
 export type SubscriptionAvgAggregateInputType = {
   messageLimit?: true
+  durationDays?: true
 }
 
 export type SubscriptionSumAggregateInputType = {
   messageLimit?: true
+  durationDays?: true
 }
 
 export type SubscriptionMinAggregateInputType = {
@@ -86,7 +90,7 @@ export type SubscriptionMinAggregateInputType = {
   name?: true
   price?: true
   messageLimit?: true
-  userId?: true
+  durationDays?: true
   isPopular?: true
   isActive?: true
   createdAt?: true
@@ -98,7 +102,7 @@ export type SubscriptionMaxAggregateInputType = {
   name?: true
   price?: true
   messageLimit?: true
-  userId?: true
+  durationDays?: true
   isPopular?: true
   isActive?: true
   createdAt?: true
@@ -110,8 +114,8 @@ export type SubscriptionCountAggregateInputType = {
   name?: true
   price?: true
   messageLimit?: true
+  durationDays?: true
   features?: true
-  userId?: true
   isPopular?: true
   isActive?: true
   createdAt?: true
@@ -210,8 +214,8 @@ export type SubscriptionGroupByOutputType = {
   name: string
   price: string
   messageLimit: number
+  durationDays: number
   features: string[]
-  userId: string | null
   isPopular: boolean
   isActive: boolean
   createdAt: Date
@@ -246,14 +250,14 @@ export type SubscriptionWhereInput = {
   name?: Prisma.StringFilter<"Subscription"> | string
   price?: Prisma.StringFilter<"Subscription"> | string
   messageLimit?: Prisma.IntFilter<"Subscription"> | number
+  durationDays?: Prisma.IntFilter<"Subscription"> | number
   features?: Prisma.StringNullableListFilter<"Subscription">
-  userId?: Prisma.StringNullableFilter<"Subscription"> | string | null
   isPopular?: Prisma.BoolFilter<"Subscription"> | boolean
   isActive?: Prisma.BoolFilter<"Subscription"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
-  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   payments?: Prisma.PaymentListRelationFilter
+  userSubscriptions?: Prisma.UserSubscriptionListRelationFilter
 }
 
 export type SubscriptionOrderByWithRelationInput = {
@@ -261,14 +265,14 @@ export type SubscriptionOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
+  durationDays?: Prisma.SortOrder
   features?: Prisma.SortOrder
-  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   isPopular?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
   payments?: Prisma.PaymentOrderByRelationAggregateInput
+  userSubscriptions?: Prisma.UserSubscriptionOrderByRelationAggregateInput
 }
 
 export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
@@ -279,14 +283,14 @@ export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Subscription"> | string
   price?: Prisma.StringFilter<"Subscription"> | string
   messageLimit?: Prisma.IntFilter<"Subscription"> | number
+  durationDays?: Prisma.IntFilter<"Subscription"> | number
   features?: Prisma.StringNullableListFilter<"Subscription">
-  userId?: Prisma.StringNullableFilter<"Subscription"> | string | null
   isPopular?: Prisma.BoolFilter<"Subscription"> | boolean
   isActive?: Prisma.BoolFilter<"Subscription"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
-  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   payments?: Prisma.PaymentListRelationFilter
+  userSubscriptions?: Prisma.UserSubscriptionListRelationFilter
 }, "id">
 
 export type SubscriptionOrderByWithAggregationInput = {
@@ -294,8 +298,8 @@ export type SubscriptionOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
+  durationDays?: Prisma.SortOrder
   features?: Prisma.SortOrder
-  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   isPopular?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -315,8 +319,8 @@ export type SubscriptionScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Subscription"> | string
   price?: Prisma.StringWithAggregatesFilter<"Subscription"> | string
   messageLimit?: Prisma.IntWithAggregatesFilter<"Subscription"> | number
+  durationDays?: Prisma.IntWithAggregatesFilter<"Subscription"> | number
   features?: Prisma.StringNullableListFilter<"Subscription">
-  userId?: Prisma.StringNullableWithAggregatesFilter<"Subscription"> | string | null
   isPopular?: Prisma.BoolWithAggregatesFilter<"Subscription"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"Subscription"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Subscription"> | Date | string
@@ -328,13 +332,14 @@ export type SubscriptionCreateInput = {
   name: string
   price: string
   messageLimit: number
+  durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
   isPopular?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserCreateNestedOneWithoutSubscriptionsInput
   payments?: Prisma.PaymentCreateNestedManyWithoutSubscriptionInput
+  userSubscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutSubscriptionInput
 }
 
 export type SubscriptionUncheckedCreateInput = {
@@ -342,13 +347,14 @@ export type SubscriptionUncheckedCreateInput = {
   name: string
   price: string
   messageLimit: number
+  durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
-  userId?: string | null
   isPopular?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutSubscriptionInput
+  userSubscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutSubscriptionInput
 }
 
 export type SubscriptionUpdateInput = {
@@ -356,13 +362,14 @@ export type SubscriptionUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneWithoutSubscriptionsNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutSubscriptionNestedInput
+  userSubscriptions?: Prisma.UserSubscriptionUpdateManyWithoutSubscriptionNestedInput
 }
 
 export type SubscriptionUncheckedUpdateInput = {
@@ -370,13 +377,14 @@ export type SubscriptionUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
-  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutSubscriptionNestedInput
+  userSubscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutSubscriptionNestedInput
 }
 
 export type SubscriptionCreateManyInput = {
@@ -384,8 +392,8 @@ export type SubscriptionCreateManyInput = {
   name: string
   price: string
   messageLimit: number
+  durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
-  userId?: string | null
   isPopular?: boolean
   isActive?: boolean
   createdAt?: Date | string
@@ -397,6 +405,7 @@ export type SubscriptionUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -409,17 +418,17 @@ export type SubscriptionUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
-  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type SubscriptionScalarRelationFilter = {
-  is?: Prisma.SubscriptionWhereInput
-  isNot?: Prisma.SubscriptionWhereInput
+export type SubscriptionNullableScalarRelationFilter = {
+  is?: Prisma.SubscriptionWhereInput | null
+  isNot?: Prisma.SubscriptionWhereInput | null
 }
 
 export type SubscriptionCountOrderByAggregateInput = {
@@ -427,8 +436,8 @@ export type SubscriptionCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
+  durationDays?: Prisma.SortOrder
   features?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
   isPopular?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -437,6 +446,7 @@ export type SubscriptionCountOrderByAggregateInput = {
 
 export type SubscriptionAvgOrderByAggregateInput = {
   messageLimit?: Prisma.SortOrder
+  durationDays?: Prisma.SortOrder
 }
 
 export type SubscriptionMaxOrderByAggregateInput = {
@@ -444,7 +454,7 @@ export type SubscriptionMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  durationDays?: Prisma.SortOrder
   isPopular?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -456,7 +466,7 @@ export type SubscriptionMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  durationDays?: Prisma.SortOrder
   isPopular?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -465,16 +475,12 @@ export type SubscriptionMinOrderByAggregateInput = {
 
 export type SubscriptionSumOrderByAggregateInput = {
   messageLimit?: Prisma.SortOrder
+  durationDays?: Prisma.SortOrder
 }
 
-export type SubscriptionListRelationFilter = {
-  every?: Prisma.SubscriptionWhereInput
-  some?: Prisma.SubscriptionWhereInput
-  none?: Prisma.SubscriptionWhereInput
-}
-
-export type SubscriptionOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
+export type SubscriptionScalarRelationFilter = {
+  is?: Prisma.SubscriptionWhereInput
+  isNot?: Prisma.SubscriptionWhereInput
 }
 
 export type SubscriptionCreateNestedOneWithoutPaymentsInput = {
@@ -483,10 +489,12 @@ export type SubscriptionCreateNestedOneWithoutPaymentsInput = {
   connect?: Prisma.SubscriptionWhereUniqueInput
 }
 
-export type SubscriptionUpdateOneRequiredWithoutPaymentsNestedInput = {
+export type SubscriptionUpdateOneWithoutPaymentsNestedInput = {
   create?: Prisma.XOR<Prisma.SubscriptionCreateWithoutPaymentsInput, Prisma.SubscriptionUncheckedCreateWithoutPaymentsInput>
   connectOrCreate?: Prisma.SubscriptionCreateOrConnectWithoutPaymentsInput
   upsert?: Prisma.SubscriptionUpsertWithoutPaymentsInput
+  disconnect?: Prisma.SubscriptionWhereInput | boolean
+  delete?: Prisma.SubscriptionWhereInput | boolean
   connect?: Prisma.SubscriptionWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.SubscriptionUpdateToOneWithWhereWithoutPaymentsInput, Prisma.SubscriptionUpdateWithoutPaymentsInput>, Prisma.SubscriptionUncheckedUpdateWithoutPaymentsInput>
 }
@@ -500,46 +508,18 @@ export type SubscriptionUpdatefeaturesInput = {
   push?: string | string[]
 }
 
-export type SubscriptionCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.SubscriptionCreateWithoutUserInput, Prisma.SubscriptionUncheckedCreateWithoutUserInput> | Prisma.SubscriptionCreateWithoutUserInput[] | Prisma.SubscriptionUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.SubscriptionCreateOrConnectWithoutUserInput | Prisma.SubscriptionCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.SubscriptionCreateManyUserInputEnvelope
-  connect?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
+export type SubscriptionCreateNestedOneWithoutUserSubscriptionsInput = {
+  create?: Prisma.XOR<Prisma.SubscriptionCreateWithoutUserSubscriptionsInput, Prisma.SubscriptionUncheckedCreateWithoutUserSubscriptionsInput>
+  connectOrCreate?: Prisma.SubscriptionCreateOrConnectWithoutUserSubscriptionsInput
+  connect?: Prisma.SubscriptionWhereUniqueInput
 }
 
-export type SubscriptionUncheckedCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.SubscriptionCreateWithoutUserInput, Prisma.SubscriptionUncheckedCreateWithoutUserInput> | Prisma.SubscriptionCreateWithoutUserInput[] | Prisma.SubscriptionUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.SubscriptionCreateOrConnectWithoutUserInput | Prisma.SubscriptionCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.SubscriptionCreateManyUserInputEnvelope
-  connect?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
-}
-
-export type SubscriptionUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.SubscriptionCreateWithoutUserInput, Prisma.SubscriptionUncheckedCreateWithoutUserInput> | Prisma.SubscriptionCreateWithoutUserInput[] | Prisma.SubscriptionUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.SubscriptionCreateOrConnectWithoutUserInput | Prisma.SubscriptionCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.SubscriptionUpsertWithWhereUniqueWithoutUserInput | Prisma.SubscriptionUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.SubscriptionCreateManyUserInputEnvelope
-  set?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
-  disconnect?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
-  delete?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
-  connect?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
-  update?: Prisma.SubscriptionUpdateWithWhereUniqueWithoutUserInput | Prisma.SubscriptionUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.SubscriptionUpdateManyWithWhereWithoutUserInput | Prisma.SubscriptionUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.SubscriptionScalarWhereInput | Prisma.SubscriptionScalarWhereInput[]
-}
-
-export type SubscriptionUncheckedUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.SubscriptionCreateWithoutUserInput, Prisma.SubscriptionUncheckedCreateWithoutUserInput> | Prisma.SubscriptionCreateWithoutUserInput[] | Prisma.SubscriptionUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.SubscriptionCreateOrConnectWithoutUserInput | Prisma.SubscriptionCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.SubscriptionUpsertWithWhereUniqueWithoutUserInput | Prisma.SubscriptionUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.SubscriptionCreateManyUserInputEnvelope
-  set?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
-  disconnect?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
-  delete?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
-  connect?: Prisma.SubscriptionWhereUniqueInput | Prisma.SubscriptionWhereUniqueInput[]
-  update?: Prisma.SubscriptionUpdateWithWhereUniqueWithoutUserInput | Prisma.SubscriptionUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.SubscriptionUpdateManyWithWhereWithoutUserInput | Prisma.SubscriptionUpdateManyWithWhereWithoutUserInput[]
-  deleteMany?: Prisma.SubscriptionScalarWhereInput | Prisma.SubscriptionScalarWhereInput[]
+export type SubscriptionUpdateOneRequiredWithoutUserSubscriptionsNestedInput = {
+  create?: Prisma.XOR<Prisma.SubscriptionCreateWithoutUserSubscriptionsInput, Prisma.SubscriptionUncheckedCreateWithoutUserSubscriptionsInput>
+  connectOrCreate?: Prisma.SubscriptionCreateOrConnectWithoutUserSubscriptionsInput
+  upsert?: Prisma.SubscriptionUpsertWithoutUserSubscriptionsInput
+  connect?: Prisma.SubscriptionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SubscriptionUpdateToOneWithWhereWithoutUserSubscriptionsInput, Prisma.SubscriptionUpdateWithoutUserSubscriptionsInput>, Prisma.SubscriptionUncheckedUpdateWithoutUserSubscriptionsInput>
 }
 
 export type SubscriptionCreateWithoutPaymentsInput = {
@@ -547,12 +527,13 @@ export type SubscriptionCreateWithoutPaymentsInput = {
   name: string
   price: string
   messageLimit: number
+  durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
   isPopular?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  user?: Prisma.UserCreateNestedOneWithoutSubscriptionsInput
+  userSubscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutSubscriptionInput
 }
 
 export type SubscriptionUncheckedCreateWithoutPaymentsInput = {
@@ -560,12 +541,13 @@ export type SubscriptionUncheckedCreateWithoutPaymentsInput = {
   name: string
   price: string
   messageLimit: number
+  durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
-  userId?: string | null
   isPopular?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  userSubscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutSubscriptionInput
 }
 
 export type SubscriptionCreateOrConnectWithoutPaymentsInput = {
@@ -589,12 +571,13 @@ export type SubscriptionUpdateWithoutPaymentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneWithoutSubscriptionsNestedInput
+  userSubscriptions?: Prisma.UserSubscriptionUpdateManyWithoutSubscriptionNestedInput
 }
 
 export type SubscriptionUncheckedUpdateWithoutPaymentsInput = {
@@ -602,19 +585,21 @@ export type SubscriptionUncheckedUpdateWithoutPaymentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
-  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userSubscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutSubscriptionNestedInput
 }
 
-export type SubscriptionCreateWithoutUserInput = {
+export type SubscriptionCreateWithoutUserSubscriptionsInput = {
   id?: string
   name: string
   price: string
   messageLimit: number
+  durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
   isPopular?: boolean
   isActive?: boolean
@@ -623,11 +608,12 @@ export type SubscriptionCreateWithoutUserInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutSubscriptionInput
 }
 
-export type SubscriptionUncheckedCreateWithoutUserInput = {
+export type SubscriptionUncheckedCreateWithoutUserSubscriptionsInput = {
   id?: string
   name: string
   price: string
   messageLimit: number
+  durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
   isPopular?: boolean
   isActive?: boolean
@@ -636,65 +622,28 @@ export type SubscriptionUncheckedCreateWithoutUserInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutSubscriptionInput
 }
 
-export type SubscriptionCreateOrConnectWithoutUserInput = {
+export type SubscriptionCreateOrConnectWithoutUserSubscriptionsInput = {
   where: Prisma.SubscriptionWhereUniqueInput
-  create: Prisma.XOR<Prisma.SubscriptionCreateWithoutUserInput, Prisma.SubscriptionUncheckedCreateWithoutUserInput>
+  create: Prisma.XOR<Prisma.SubscriptionCreateWithoutUserSubscriptionsInput, Prisma.SubscriptionUncheckedCreateWithoutUserSubscriptionsInput>
 }
 
-export type SubscriptionCreateManyUserInputEnvelope = {
-  data: Prisma.SubscriptionCreateManyUserInput | Prisma.SubscriptionCreateManyUserInput[]
-  skipDuplicates?: boolean
+export type SubscriptionUpsertWithoutUserSubscriptionsInput = {
+  update: Prisma.XOR<Prisma.SubscriptionUpdateWithoutUserSubscriptionsInput, Prisma.SubscriptionUncheckedUpdateWithoutUserSubscriptionsInput>
+  create: Prisma.XOR<Prisma.SubscriptionCreateWithoutUserSubscriptionsInput, Prisma.SubscriptionUncheckedCreateWithoutUserSubscriptionsInput>
+  where?: Prisma.SubscriptionWhereInput
 }
 
-export type SubscriptionUpsertWithWhereUniqueWithoutUserInput = {
-  where: Prisma.SubscriptionWhereUniqueInput
-  update: Prisma.XOR<Prisma.SubscriptionUpdateWithoutUserInput, Prisma.SubscriptionUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.SubscriptionCreateWithoutUserInput, Prisma.SubscriptionUncheckedCreateWithoutUserInput>
+export type SubscriptionUpdateToOneWithWhereWithoutUserSubscriptionsInput = {
+  where?: Prisma.SubscriptionWhereInput
+  data: Prisma.XOR<Prisma.SubscriptionUpdateWithoutUserSubscriptionsInput, Prisma.SubscriptionUncheckedUpdateWithoutUserSubscriptionsInput>
 }
 
-export type SubscriptionUpdateWithWhereUniqueWithoutUserInput = {
-  where: Prisma.SubscriptionWhereUniqueInput
-  data: Prisma.XOR<Prisma.SubscriptionUpdateWithoutUserInput, Prisma.SubscriptionUncheckedUpdateWithoutUserInput>
-}
-
-export type SubscriptionUpdateManyWithWhereWithoutUserInput = {
-  where: Prisma.SubscriptionScalarWhereInput
-  data: Prisma.XOR<Prisma.SubscriptionUpdateManyMutationInput, Prisma.SubscriptionUncheckedUpdateManyWithoutUserInput>
-}
-
-export type SubscriptionScalarWhereInput = {
-  AND?: Prisma.SubscriptionScalarWhereInput | Prisma.SubscriptionScalarWhereInput[]
-  OR?: Prisma.SubscriptionScalarWhereInput[]
-  NOT?: Prisma.SubscriptionScalarWhereInput | Prisma.SubscriptionScalarWhereInput[]
-  id?: Prisma.StringFilter<"Subscription"> | string
-  name?: Prisma.StringFilter<"Subscription"> | string
-  price?: Prisma.StringFilter<"Subscription"> | string
-  messageLimit?: Prisma.IntFilter<"Subscription"> | number
-  features?: Prisma.StringNullableListFilter<"Subscription">
-  userId?: Prisma.StringNullableFilter<"Subscription"> | string | null
-  isPopular?: Prisma.BoolFilter<"Subscription"> | boolean
-  isActive?: Prisma.BoolFilter<"Subscription"> | boolean
-  createdAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
-}
-
-export type SubscriptionCreateManyUserInput = {
-  id?: string
-  name: string
-  price: string
-  messageLimit: number
-  features?: Prisma.SubscriptionCreatefeaturesInput | string[]
-  isPopular?: boolean
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type SubscriptionUpdateWithoutUserInput = {
+export type SubscriptionUpdateWithoutUserSubscriptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -703,29 +652,18 @@ export type SubscriptionUpdateWithoutUserInput = {
   payments?: Prisma.PaymentUpdateManyWithoutSubscriptionNestedInput
 }
 
-export type SubscriptionUncheckedUpdateWithoutUserInput = {
+export type SubscriptionUncheckedUpdateWithoutUserSubscriptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutSubscriptionNestedInput
-}
-
-export type SubscriptionUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  price?: Prisma.StringFieldUpdateOperationsInput | string
-  messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
-  isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -735,10 +673,12 @@ export type SubscriptionUncheckedUpdateManyWithoutUserInput = {
 
 export type SubscriptionCountOutputType = {
   payments: number
+  userSubscriptions: number
 }
 
 export type SubscriptionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   payments?: boolean | SubscriptionCountOutputTypeCountPaymentsArgs
+  userSubscriptions?: boolean | SubscriptionCountOutputTypeCountUserSubscriptionsArgs
 }
 
 /**
@@ -758,20 +698,27 @@ export type SubscriptionCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime
   where?: Prisma.PaymentWhereInput
 }
 
+/**
+ * SubscriptionCountOutputType without action
+ */
+export type SubscriptionCountOutputTypeCountUserSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserSubscriptionWhereInput
+}
+
 
 export type SubscriptionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   price?: boolean
   messageLimit?: boolean
+  durationDays?: boolean
   features?: boolean
-  userId?: boolean
   isPopular?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  user?: boolean | Prisma.Subscription$userArgs<ExtArgs>
   payments?: boolean | Prisma.Subscription$paymentsArgs<ExtArgs>
+  userSubscriptions?: boolean | Prisma.Subscription$userSubscriptionsArgs<ExtArgs>
   _count?: boolean | Prisma.SubscriptionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["subscription"]>
 
@@ -780,13 +727,12 @@ export type SubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   name?: boolean
   price?: boolean
   messageLimit?: boolean
+  durationDays?: boolean
   features?: boolean
-  userId?: boolean
   isPopular?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  user?: boolean | Prisma.Subscription$userArgs<ExtArgs>
 }, ExtArgs["result"]["subscription"]>
 
 export type SubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -794,13 +740,12 @@ export type SubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   name?: boolean
   price?: boolean
   messageLimit?: boolean
+  durationDays?: boolean
   features?: boolean
-  userId?: boolean
   isPopular?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  user?: boolean | Prisma.Subscription$userArgs<ExtArgs>
 }, ExtArgs["result"]["subscription"]>
 
 export type SubscriptionSelectScalar = {
@@ -808,40 +753,36 @@ export type SubscriptionSelectScalar = {
   name?: boolean
   price?: boolean
   messageLimit?: boolean
+  durationDays?: boolean
   features?: boolean
-  userId?: boolean
   isPopular?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "price" | "messageLimit" | "features" | "userId" | "isPopular" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
+export type SubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "price" | "messageLimit" | "durationDays" | "features" | "isPopular" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
 export type SubscriptionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.Subscription$userArgs<ExtArgs>
   payments?: boolean | Prisma.Subscription$paymentsArgs<ExtArgs>
+  userSubscriptions?: boolean | Prisma.Subscription$userSubscriptionsArgs<ExtArgs>
   _count?: boolean | Prisma.SubscriptionCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type SubscriptionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.Subscription$userArgs<ExtArgs>
-}
-export type SubscriptionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.Subscription$userArgs<ExtArgs>
-}
+export type SubscriptionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type SubscriptionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $SubscriptionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Subscription"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs> | null
     payments: Prisma.$PaymentPayload<ExtArgs>[]
+    userSubscriptions: Prisma.$UserSubscriptionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     price: string
     messageLimit: number
+    durationDays: number
     features: string[]
-    userId: string | null
     isPopular: boolean
     isActive: boolean
     createdAt: Date
@@ -1240,8 +1181,8 @@ readonly fields: SubscriptionFieldRefs;
  */
 export interface Prisma__SubscriptionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.Subscription$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Subscription$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   payments<T extends Prisma.Subscription$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Subscription$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userSubscriptions<T extends Prisma.Subscription$userSubscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Subscription$userSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1275,8 +1216,8 @@ export interface SubscriptionFieldRefs {
   readonly name: Prisma.FieldRef<"Subscription", 'String'>
   readonly price: Prisma.FieldRef<"Subscription", 'String'>
   readonly messageLimit: Prisma.FieldRef<"Subscription", 'Int'>
+  readonly durationDays: Prisma.FieldRef<"Subscription", 'Int'>
   readonly features: Prisma.FieldRef<"Subscription", 'String[]'>
-  readonly userId: Prisma.FieldRef<"Subscription", 'String'>
   readonly isPopular: Prisma.FieldRef<"Subscription", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"Subscription", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Subscription", 'DateTime'>
@@ -1535,10 +1476,6 @@ export type SubscriptionCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    */
   data: Prisma.SubscriptionCreateManyInput | Prisma.SubscriptionCreateManyInput[]
   skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SubscriptionIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1609,10 +1546,6 @@ export type SubscriptionUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    * Limit how many Subscriptions to update.
    */
   limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SubscriptionIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1682,25 +1615,6 @@ export type SubscriptionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
 }
 
 /**
- * Subscription.user
- */
-export type Subscription$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the User
-   */
-  select?: Prisma.UserSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the User
-   */
-  omit?: Prisma.UserOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
-}
-
-/**
  * Subscription.payments
  */
 export type Subscription$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1722,6 +1636,30 @@ export type Subscription$paymentsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
+}
+
+/**
+ * Subscription.userSubscriptions
+ */
+export type Subscription$userSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserSubscription
+   */
+  select?: Prisma.UserSubscriptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserSubscription
+   */
+  omit?: Prisma.UserSubscriptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserSubscriptionInclude<ExtArgs> | null
+  where?: Prisma.UserSubscriptionWhereInput
+  orderBy?: Prisma.UserSubscriptionOrderByWithRelationInput | Prisma.UserSubscriptionOrderByWithRelationInput[]
+  cursor?: Prisma.UserSubscriptionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserSubscriptionScalarFieldEnum | Prisma.UserSubscriptionScalarFieldEnum[]
 }
 
 /**

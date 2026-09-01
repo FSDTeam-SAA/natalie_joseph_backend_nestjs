@@ -36,6 +36,12 @@ export class CreateSubscriptionDto {
   })
   messageLimit: number;
 
+  @ApiProperty({ example: 30, required: false, default: 30 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  durationDays?: number;
+
   @ApiProperty({
     example: [
       '1000 messages per month',

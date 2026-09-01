@@ -1,0 +1,17 @@
+model UserSubscription {
+  id             String   @id @default(uuid())
+  userId         String
+  subscriptionId String
+  messageLimit   Int
+  messagesUsed   Int      @default(0)
+  startsAt       DateTime @default(now())
+  endsAt         DateTime
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscription Subscription @relation(fields: [subscriptionId], references: [id])
+
+  @@map("user_subscriptions")
+}

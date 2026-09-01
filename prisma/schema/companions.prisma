@@ -1,5 +1,5 @@
 model Companions {
-  id                 String   @id @default(uuid())
+  id                 String        @id @default(uuid())
   name               String
   age                Int
   profession         String
@@ -14,7 +14,8 @@ model Companions {
   profileImage       String?
   coverImage         String?
   galleryImages      String[]
-  status             Boolean  @default(true)
+  status             Boolean       @default(true)
+  chatMessages       ChatMessage[]
 
   @@map("companions")
 }

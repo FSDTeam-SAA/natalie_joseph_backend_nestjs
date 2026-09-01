@@ -1,0 +1,13 @@
+model ChatMessage {
+  id          String   @id @default(uuid())
+  userId      String
+  companionId String
+  message     String
+  usedCredit  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+
+  @@map("chat_messages")
+}

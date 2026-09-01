@@ -11,6 +11,7 @@ import { SubscriptionModule } from './app/module/subscription/subscription.modul
 import { PaymentModule } from './app/module/payment/payment.module';
 import { WebhookModule } from './app/module/webhook/webhook.module';
 import { CompanionsModule } from './app/module/companions/companions.module';
+import { ChatModule } from './app/module/chat/chat.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CompanionsModule } from './app/module/companions/companions.module';
     PaymentModule,
     WebhookModule,
     CompanionsModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

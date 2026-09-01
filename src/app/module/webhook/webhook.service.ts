@@ -70,19 +70,46 @@ export class WebhookService {
       this.logger.warn(`Payment not found for PaymentIntent ${intent.id}`);
       return;
     }
+    // Stripe retries webhook events; never grant the same plan/credits twice.
+    if (payment.status === 'completed') return;
 
-    const shouldAssignSubscription =
-      (intent.metadata.paymentType || payment.paymentType) === 'subscription';
+    const paymentType = intent.metadata.paymentType || payment.paymentType;
 
     await this.prisma.$transaction(async (transaction) => {
-      await transaction.payment.update({
-        where: { id: payment.id },
+      const completed = await transaction.payment.updateMany({
+        where: { id: payment.id, status: { not: 'completed' } },
         data: { status: 'completed' },
       });
-      if (shouldAssignSubscription) {
-        await transaction.subscription.update({
+      if (completed.count === 0) return;
+      if (paymentType === 'subscription' && payment.subscriptionId) {
+        const plan = await transaction.subscription.findUniqueOrThrow({
           where: { id: payment.subscriptionId },
-          data: { userId: payment.userId },
+        });
+        const startsAt = new Date();
+        const endsAt = new Date(startsAt);
+        endsAt.setUTCDate(endsAt.getUTCDate() + plan.durationDays);
+
+        await transaction.userSubscription.updateMany({
+          where: { userId: payment.userId, isActive: true },
+          data: { isActive: false },
+        });
+        await transaction.userSubscription.create({
+          data: {
+            userId: payment.userId,
+            subscriptionId: plan.id,
+            messageLimit: plan.messageLimit,
+            startsAt,
+            endsAt,
+          },
+        });
+        await transaction.user.update({
+          where: { id: payment.userId },
+          data: { isSubscribed: true },
+        });
+      } else if (paymentType === 'credits' && payment.creditAmount) {
+        await transaction.user.update({
+          where: { id: payment.userId },
+          data: { creditBalance: { increment: payment.creditAmount } },
         });
       }
     });

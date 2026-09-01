@@ -288,6 +288,7 @@ export type CompanionsWhereInput = {
   coverImage?: Prisma.StringNullableFilter<"Companions"> | string | null
   galleryImages?: Prisma.StringNullableListFilter<"Companions">
   status?: Prisma.BoolFilter<"Companions"> | boolean
+  chatMessages?: Prisma.ChatMessageListRelationFilter
 }
 
 export type CompanionsOrderByWithRelationInput = {
@@ -307,6 +308,7 @@ export type CompanionsOrderByWithRelationInput = {
   coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   galleryImages?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  chatMessages?: Prisma.ChatMessageOrderByRelationAggregateInput
 }
 
 export type CompanionsWhereUniqueInput = Prisma.AtLeast<{
@@ -329,6 +331,7 @@ export type CompanionsWhereUniqueInput = Prisma.AtLeast<{
   coverImage?: Prisma.StringNullableFilter<"Companions"> | string | null
   galleryImages?: Prisma.StringNullableListFilter<"Companions">
   status?: Prisma.BoolFilter<"Companions"> | boolean
+  chatMessages?: Prisma.ChatMessageListRelationFilter
 }, "id">
 
 export type CompanionsOrderByWithAggregationInput = {
@@ -394,6 +397,7 @@ export type CompanionsCreateInput = {
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
 }
 
 export type CompanionsUncheckedCreateInput = {
@@ -413,6 +417,7 @@ export type CompanionsUncheckedCreateInput = {
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
 }
 
 export type CompanionsUpdateInput = {
@@ -432,6 +437,7 @@ export type CompanionsUpdateInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
 }
 
 export type CompanionsUncheckedUpdateInput = {
@@ -451,6 +457,7 @@ export type CompanionsUncheckedUpdateInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
 }
 
 export type CompanionsCreateManyInput = {
@@ -508,6 +515,11 @@ export type CompanionsUncheckedUpdateManyInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+}
+
+export type CompanionsScalarRelationFilter = {
+  is?: Prisma.CompanionsWhereInput
+  isNot?: Prisma.CompanionsWhereInput
 }
 
 export type StringNullableListFilter<$PrismaModel = never> = {
@@ -575,6 +587,20 @@ export type CompanionsSumOrderByAggregateInput = {
   age?: Prisma.SortOrder
 }
 
+export type CompanionsCreateNestedOneWithoutChatMessagesInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutChatMessagesInput, Prisma.CompanionsUncheckedCreateWithoutChatMessagesInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutChatMessagesInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+}
+
+export type CompanionsUpdateOneRequiredWithoutChatMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutChatMessagesInput, Prisma.CompanionsUncheckedCreateWithoutChatMessagesInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutChatMessagesInput
+  upsert?: Prisma.CompanionsUpsertWithoutChatMessagesInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutChatMessagesInput, Prisma.CompanionsUpdateWithoutChatMessagesInput>, Prisma.CompanionsUncheckedUpdateWithoutChatMessagesInput>
+}
+
 export type CompanionsCreatepersonalityTraitsInput = {
   set: string[]
 }
@@ -589,10 +615,6 @@ export type CompanionsCreatevoiceDescriptionInput = {
 
 export type CompanionsCreategalleryImagesInput = {
   set: string[]
-}
-
-export type StringFieldUpdateOperationsInput = {
-  set?: string
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -627,10 +649,127 @@ export type CompanionsUpdategalleryImagesInput = {
   push?: string | string[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
+export type CompanionsCreateWithoutChatMessagesInput = {
+  id?: string
+  name: string
+  age: number
+  profession: string
+  location: string
+  bio: string
+  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  communicationStyle: string
+  lifestyle: string
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
 }
 
+export type CompanionsUncheckedCreateWithoutChatMessagesInput = {
+  id?: string
+  name: string
+  age: number
+  profession: string
+  location: string
+  bio: string
+  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  communicationStyle: string
+  lifestyle: string
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+}
+
+export type CompanionsCreateOrConnectWithoutChatMessagesInput = {
+  where: Prisma.CompanionsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutChatMessagesInput, Prisma.CompanionsUncheckedCreateWithoutChatMessagesInput>
+}
+
+export type CompanionsUpsertWithoutChatMessagesInput = {
+  update: Prisma.XOR<Prisma.CompanionsUpdateWithoutChatMessagesInput, Prisma.CompanionsUncheckedUpdateWithoutChatMessagesInput>
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutChatMessagesInput, Prisma.CompanionsUncheckedCreateWithoutChatMessagesInput>
+  where?: Prisma.CompanionsWhereInput
+}
+
+export type CompanionsUpdateToOneWithWhereWithoutChatMessagesInput = {
+  where?: Prisma.CompanionsWhereInput
+  data: Prisma.XOR<Prisma.CompanionsUpdateWithoutChatMessagesInput, Prisma.CompanionsUncheckedUpdateWithoutChatMessagesInput>
+}
+
+export type CompanionsUpdateWithoutChatMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.IntFieldUpdateOperationsInput | number
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+}
+
+export type CompanionsUncheckedUpdateWithoutChatMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.IntFieldUpdateOperationsInput | number
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+}
+
+
+/**
+ * Count Type CompanionsCountOutputType
+ */
+
+export type CompanionsCountOutputType = {
+  chatMessages: number
+}
+
+export type CompanionsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  chatMessages?: boolean | CompanionsCountOutputTypeCountChatMessagesArgs
+}
+
+/**
+ * CompanionsCountOutputType without action
+ */
+export type CompanionsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CompanionsCountOutputType
+   */
+  select?: Prisma.CompanionsCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * CompanionsCountOutputType without action
+ */
+export type CompanionsCountOutputTypeCountChatMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatMessageWhereInput
+}
 
 
 export type CompanionsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -650,6 +789,8 @@ export type CompanionsSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   coverImage?: boolean
   galleryImages?: boolean
   status?: boolean
+  chatMessages?: boolean | Prisma.Companions$chatMessagesArgs<ExtArgs>
+  _count?: boolean | Prisma.CompanionsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["companions"]>
 
 export type CompanionsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -710,10 +851,18 @@ export type CompanionsSelectScalar = {
 }
 
 export type CompanionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "age" | "profession" | "location" | "bio" | "personalityTraits" | "interests" | "communicationStyle" | "lifestyle" | "backstory" | "voiceDescription" | "profileImage" | "coverImage" | "galleryImages" | "status", ExtArgs["result"]["companions"]>
+export type CompanionsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  chatMessages?: boolean | Prisma.Companions$chatMessagesArgs<ExtArgs>
+  _count?: boolean | Prisma.CompanionsCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type CompanionsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type CompanionsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $CompanionsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Companions"
-  objects: {}
+  objects: {
+    chatMessages: Prisma.$ChatMessagePayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
@@ -1125,6 +1274,7 @@ readonly fields: CompanionsFieldRefs;
  */
 export interface Prisma__CompanionsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  chatMessages<T extends Prisma.Companions$chatMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$chatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1187,6 +1337,10 @@ export type CompanionsFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   omit?: Prisma.CompanionsOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionsInclude<ExtArgs> | null
+  /**
    * Filter, which Companions to fetch.
    */
   where: Prisma.CompanionsWhereUniqueInput
@@ -1205,6 +1359,10 @@ export type CompanionsFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extens
    */
   omit?: Prisma.CompanionsOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionsInclude<ExtArgs> | null
+  /**
    * Filter, which Companions to fetch.
    */
   where: Prisma.CompanionsWhereUniqueInput
@@ -1222,6 +1380,10 @@ export type CompanionsFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the Companions
    */
   omit?: Prisma.CompanionsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionsInclude<ExtArgs> | null
   /**
    * Filter, which Companions to fetch.
    */
@@ -1271,6 +1433,10 @@ export type CompanionsFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensi
    */
   omit?: Prisma.CompanionsOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionsInclude<ExtArgs> | null
+  /**
    * Filter, which Companions to fetch.
    */
   where?: Prisma.CompanionsWhereInput
@@ -1318,6 +1484,10 @@ export type CompanionsFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the Companions
    */
   omit?: Prisma.CompanionsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionsInclude<ExtArgs> | null
   /**
    * Filter, which Companions to fetch.
    */
@@ -1367,6 +1537,10 @@ export type CompanionsCreateArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   omit?: Prisma.CompanionsOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionsInclude<ExtArgs> | null
+  /**
    * The data needed to create a Companions.
    */
   data: Prisma.XOR<Prisma.CompanionsCreateInput, Prisma.CompanionsUncheckedCreateInput>
@@ -1414,6 +1588,10 @@ export type CompanionsUpdateArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Companions
    */
   omit?: Prisma.CompanionsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionsInclude<ExtArgs> | null
   /**
    * The data needed to update a Companions.
    */
@@ -1481,6 +1659,10 @@ export type CompanionsUpsertArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   omit?: Prisma.CompanionsOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionsInclude<ExtArgs> | null
+  /**
    * The filter to search for the Companions to update in case it exists.
    */
   where: Prisma.CompanionsWhereUniqueInput
@@ -1507,6 +1689,10 @@ export type CompanionsDeleteArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   omit?: Prisma.CompanionsOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionsInclude<ExtArgs> | null
+  /**
    * Filter which Companions to delete.
    */
   where: Prisma.CompanionsWhereUniqueInput
@@ -1527,6 +1713,30 @@ export type CompanionsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
+ * Companions.chatMessages
+ */
+export type Companions$chatMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatMessage
+   */
+  select?: Prisma.ChatMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatMessage
+   */
+  omit?: Prisma.ChatMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatMessageInclude<ExtArgs> | null
+  where?: Prisma.ChatMessageWhereInput
+  orderBy?: Prisma.ChatMessageOrderByWithRelationInput | Prisma.ChatMessageOrderByWithRelationInput[]
+  cursor?: Prisma.ChatMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatMessageScalarFieldEnum | Prisma.ChatMessageScalarFieldEnum[]
+}
+
+/**
  * Companions without action
  */
 export type CompanionsDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1538,4 +1748,8 @@ export type CompanionsDefaultArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Companions
    */
   omit?: Prisma.CompanionsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionsInclude<ExtArgs> | null
 }

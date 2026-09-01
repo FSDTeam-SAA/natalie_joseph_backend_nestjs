@@ -1,22 +1,24 @@
 model User {
-  id              String         @id @default(uuid())
-  email           String         @unique
+  id              String             @id @default(uuid())
+  email           String             @unique
   name            String?
   password        String
-  role            UserRole       @default(user)
+  role            UserRole           @default(user)
   phoneNumber     String?
   profileImage    String?
   otp             String?
   otpExpiry       DateTime?
-  status          Status         @default(approved)
-  verifiedForgot  Boolean        @default(false)
+  status          Status             @default(approved)
+  verifiedForgot  Boolean            @default(false)
   stripeAccountId String?
   adultEligible   Boolean?
-  subscriptions   Subscription[]
-  isSubscribed    Boolean        @default(false)
+  subscriptions   UserSubscription[]
+  isSubscribed    Boolean            @default(false)
+  creditBalance   Int                @default(0)
   payments        Payment[]
-  createAt        DateTime       @default(now())
-  updateAt        DateTime       @updatedAt
+  chatMessages    ChatMessage[]
+  createAt        DateTime           @default(now())
+  updateAt        DateTime           @updatedAt
 
   @@map("users")
 }

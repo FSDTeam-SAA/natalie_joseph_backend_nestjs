@@ -51,11 +51,13 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  ChatMessage: 'ChatMessage',
   Companions: 'Companions',
   Newsletter: 'Newsletter',
   Payment: 'Payment',
   Subscription: 'Subscription',
-  User: 'User'
+  User: 'User',
+  UserSubscription: 'UserSubscription'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -72,6 +74,18 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const ChatMessageScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companionId: 'companionId',
+  message: 'message',
+  usedCredit: 'usedCredit',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
 
 
 export const CompanionsScalarFieldEnum = {
@@ -110,6 +124,7 @@ export const PaymentScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   subscriptionId: 'subscriptionId',
+  creditAmount: 'creditAmount',
   amount: 'amount',
   status: 'status',
   stripePaymentIntentId: 'stripePaymentIntentId',
@@ -126,8 +141,8 @@ export const SubscriptionScalarFieldEnum = {
   name: 'name',
   price: 'price',
   messageLimit: 'messageLimit',
+  durationDays: 'durationDays',
   features: 'features',
-  userId: 'userId',
   isPopular: 'isPopular',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -152,11 +167,28 @@ export const UserScalarFieldEnum = {
   stripeAccountId: 'stripeAccountId',
   adultEligible: 'adultEligible',
   isSubscribed: 'isSubscribed',
+  creditBalance: 'creditBalance',
   createAt: 'createAt',
   updateAt: 'updateAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const UserSubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  subscriptionId: 'subscriptionId',
+  messageLimit: 'messageLimit',
+  messagesUsed: 'messagesUsed',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserSubscriptionScalarFieldEnum = (typeof UserSubscriptionScalarFieldEnum)[keyof typeof UserSubscriptionScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -1,16 +1,16 @@
 model Subscription {
-  id           String    @id @default(uuid())
-  name         String
-  price        String
-  messageLimit Int
-  features     String[]
-  userId       String?
-  isPopular    Boolean   @default(false)
-  isActive     Boolean   @default(true)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  user         User?     @relation(fields: [userId], references: [id])
-  payments     Payment[]
+  id                String             @id @default(uuid())
+  name              String
+  price             String
+  messageLimit      Int
+  durationDays      Int                @default(30)
+  features          String[]
+  isPopular         Boolean            @default(false)
+  isActive          Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  payments          Payment[]
+  userSubscriptions UserSubscription[]
 
   @@map("subscriptions")
 }

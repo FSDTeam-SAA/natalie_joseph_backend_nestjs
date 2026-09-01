@@ -159,16 +159,4 @@ export class CreateCompanionDto {
     value === 'true' ? true : value === 'false' ? false : value,
   )
   status?: boolean;
-
-  @ApiPropertyOptional({
-    example: true,
-    default: false,
-    description: 'Whether the companion is adult eligible',
-  })
-  @IsOptional()
-  @IsBoolean()
-  @Transform(({ value }) =>
-    value === 'true' ? true : value === 'false' ? false : value,
-  )
-  adultEligible?: boolean;
 }
