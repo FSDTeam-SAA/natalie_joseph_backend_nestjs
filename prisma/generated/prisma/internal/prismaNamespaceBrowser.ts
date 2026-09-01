@@ -231,6 +231,7 @@ export const UserScalarFieldEnum = {
   stripeAccountId: 'stripeAccountId',
   adultEligible: 'adultEligible',
   isSubscribed: 'isSubscribed',
+  isFreeTrialUsed: 'isFreeTrialUsed',
   creditBalance: 'creditBalance',
   createAt: 'createAt',
   updateAt: 'updateAt'

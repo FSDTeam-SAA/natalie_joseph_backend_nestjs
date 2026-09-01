@@ -49,6 +49,7 @@ export type UserMinAggregateOutputType = {
   stripeAccountId: string | null
   adultEligible: boolean | null
   isSubscribed: boolean | null
+  isFreeTrialUsed: boolean | null
   creditBalance: number | null
   createAt: Date | null
   updateAt: Date | null
@@ -69,6 +70,7 @@ export type UserMaxAggregateOutputType = {
   stripeAccountId: string | null
   adultEligible: boolean | null
   isSubscribed: boolean | null
+  isFreeTrialUsed: boolean | null
   creditBalance: number | null
   createAt: Date | null
   updateAt: Date | null
@@ -89,6 +91,7 @@ export type UserCountAggregateOutputType = {
   stripeAccountId: number
   adultEligible: number
   isSubscribed: number
+  isFreeTrialUsed: number
   creditBalance: number
   createAt: number
   updateAt: number
@@ -119,6 +122,7 @@ export type UserMinAggregateInputType = {
   stripeAccountId?: true
   adultEligible?: true
   isSubscribed?: true
+  isFreeTrialUsed?: true
   creditBalance?: true
   createAt?: true
   updateAt?: true
@@ -139,6 +143,7 @@ export type UserMaxAggregateInputType = {
   stripeAccountId?: true
   adultEligible?: true
   isSubscribed?: true
+  isFreeTrialUsed?: true
   creditBalance?: true
   createAt?: true
   updateAt?: true
@@ -159,6 +164,7 @@ export type UserCountAggregateInputType = {
   stripeAccountId?: true
   adultEligible?: true
   isSubscribed?: true
+  isFreeTrialUsed?: true
   creditBalance?: true
   createAt?: true
   updateAt?: true
@@ -266,6 +272,7 @@ export type UserGroupByOutputType = {
   stripeAccountId: string | null
   adultEligible: boolean | null
   isSubscribed: boolean
+  isFreeTrialUsed: boolean
   creditBalance: number
   createAt: Date
   updateAt: Date
@@ -309,6 +316,7 @@ export type UserWhereInput = {
   stripeAccountId?: Prisma.StringNullableFilter<"User"> | string | null
   adultEligible?: Prisma.BoolNullableFilter<"User"> | boolean | null
   isSubscribed?: Prisma.BoolFilter<"User"> | boolean
+  isFreeTrialUsed?: Prisma.BoolFilter<"User"> | boolean
   creditBalance?: Prisma.IntFilter<"User"> | number
   createAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updateAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -334,6 +342,7 @@ export type UserOrderByWithRelationInput = {
   stripeAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
   adultEligible?: Prisma.SortOrderInput | Prisma.SortOrder
   isSubscribed?: Prisma.SortOrder
+  isFreeTrialUsed?: Prisma.SortOrder
   creditBalance?: Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
@@ -362,6 +371,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   stripeAccountId?: Prisma.StringNullableFilter<"User"> | string | null
   adultEligible?: Prisma.BoolNullableFilter<"User"> | boolean | null
   isSubscribed?: Prisma.BoolFilter<"User"> | boolean
+  isFreeTrialUsed?: Prisma.BoolFilter<"User"> | boolean
   creditBalance?: Prisma.IntFilter<"User"> | number
   createAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updateAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -387,6 +397,7 @@ export type UserOrderByWithAggregationInput = {
   stripeAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
   adultEligible?: Prisma.SortOrderInput | Prisma.SortOrder
   isSubscribed?: Prisma.SortOrder
+  isFreeTrialUsed?: Prisma.SortOrder
   creditBalance?: Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
@@ -415,6 +426,7 @@ export type UserScalarWhereWithAggregatesInput = {
   stripeAccountId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   adultEligible?: Prisma.BoolNullableWithAggregatesFilter<"User"> | boolean | null
   isSubscribed?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  isFreeTrialUsed?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   creditBalance?: Prisma.IntWithAggregatesFilter<"User"> | number
   createAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updateAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -435,6 +447,7 @@ export type UserCreateInput = {
   stripeAccountId?: string | null
   adultEligible?: boolean | null
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: number
   createAt?: Date | string
   updateAt?: Date | string
@@ -460,6 +473,7 @@ export type UserUncheckedCreateInput = {
   stripeAccountId?: string | null
   adultEligible?: boolean | null
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: number
   createAt?: Date | string
   updateAt?: Date | string
@@ -485,6 +499,7 @@ export type UserUpdateInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -510,6 +525,7 @@ export type UserUncheckedUpdateInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -535,6 +551,7 @@ export type UserCreateManyInput = {
   stripeAccountId?: string | null
   adultEligible?: boolean | null
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: number
   createAt?: Date | string
   updateAt?: Date | string
@@ -555,6 +572,7 @@ export type UserUpdateManyMutationInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -575,6 +593,7 @@ export type UserUncheckedUpdateManyInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -600,6 +619,7 @@ export type UserCountOrderByAggregateInput = {
   stripeAccountId?: Prisma.SortOrder
   adultEligible?: Prisma.SortOrder
   isSubscribed?: Prisma.SortOrder
+  isFreeTrialUsed?: Prisma.SortOrder
   creditBalance?: Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
@@ -624,6 +644,7 @@ export type UserMaxOrderByAggregateInput = {
   stripeAccountId?: Prisma.SortOrder
   adultEligible?: Prisma.SortOrder
   isSubscribed?: Prisma.SortOrder
+  isFreeTrialUsed?: Prisma.SortOrder
   creditBalance?: Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
@@ -644,6 +665,7 @@ export type UserMinOrderByAggregateInput = {
   stripeAccountId?: Prisma.SortOrder
   adultEligible?: Prisma.SortOrder
   isSubscribed?: Prisma.SortOrder
+  isFreeTrialUsed?: Prisma.SortOrder
   creditBalance?: Prisma.SortOrder
   createAt?: Prisma.SortOrder
   updateAt?: Prisma.SortOrder
@@ -754,6 +776,7 @@ export type UserCreateWithoutChatMessagesInput = {
   stripeAccountId?: string | null
   adultEligible?: boolean | null
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: number
   createAt?: Date | string
   updateAt?: Date | string
@@ -778,6 +801,7 @@ export type UserUncheckedCreateWithoutChatMessagesInput = {
   stripeAccountId?: string | null
   adultEligible?: boolean | null
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: number
   createAt?: Date | string
   updateAt?: Date | string
@@ -818,6 +842,7 @@ export type UserUpdateWithoutChatMessagesInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -842,6 +867,7 @@ export type UserUncheckedUpdateWithoutChatMessagesInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -866,6 +892,7 @@ export type UserCreateWithoutCreditTransactionsInput = {
   stripeAccountId?: string | null
   adultEligible?: boolean | null
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: number
   createAt?: Date | string
   updateAt?: Date | string
@@ -890,6 +917,7 @@ export type UserUncheckedCreateWithoutCreditTransactionsInput = {
   stripeAccountId?: string | null
   adultEligible?: boolean | null
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: number
   createAt?: Date | string
   updateAt?: Date | string
@@ -930,6 +958,7 @@ export type UserUpdateWithoutCreditTransactionsInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -954,6 +983,7 @@ export type UserUncheckedUpdateWithoutCreditTransactionsInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -978,6 +1008,7 @@ export type UserCreateWithoutGiftTransactionsInput = {
   stripeAccountId?: string | null
   adultEligible?: boolean | null
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: number
   createAt?: Date | string
   updateAt?: Date | string
@@ -1002,6 +1033,7 @@ export type UserUncheckedCreateWithoutGiftTransactionsInput = {
   stripeAccountId?: string | null
   adultEligible?: boolean | null
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: number
   createAt?: Date | string
   updateAt?: Date | string
@@ -1042,6 +1074,7 @@ export type UserUpdateWithoutGiftTransactionsInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1066,6 +1099,7 @@ export type UserUncheckedUpdateWithoutGiftTransactionsInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1090,6 +1124,7 @@ export type UserCreateWithoutPaymentsInput = {
   stripeAccountId?: string | null
   adultEligible?: boolean | null
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: number
   createAt?: Date | string
   updateAt?: Date | string
@@ -1114,6 +1149,7 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   stripeAccountId?: string | null
   adultEligible?: boolean | null
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: number
   createAt?: Date | string
   updateAt?: Date | string
@@ -1154,6 +1190,7 @@ export type UserUpdateWithoutPaymentsInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1178,6 +1215,7 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1202,6 +1240,7 @@ export type UserCreateWithoutSubscriptionsInput = {
   stripeAccountId?: string | null
   adultEligible?: boolean | null
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: number
   createAt?: Date | string
   updateAt?: Date | string
@@ -1226,6 +1265,7 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   stripeAccountId?: string | null
   adultEligible?: boolean | null
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: number
   createAt?: Date | string
   updateAt?: Date | string
@@ -1266,6 +1306,7 @@ export type UserUpdateWithoutSubscriptionsInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1290,6 +1331,7 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1381,6 +1423,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   stripeAccountId?: boolean
   adultEligible?: boolean
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: boolean
   createAt?: boolean
   updateAt?: boolean
@@ -1407,6 +1450,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   stripeAccountId?: boolean
   adultEligible?: boolean
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: boolean
   createAt?: boolean
   updateAt?: boolean
@@ -1427,6 +1471,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   stripeAccountId?: boolean
   adultEligible?: boolean
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: boolean
   createAt?: boolean
   updateAt?: boolean
@@ -1447,12 +1492,13 @@ export type UserSelectScalar = {
   stripeAccountId?: boolean
   adultEligible?: boolean
   isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
   creditBalance?: boolean
   createAt?: boolean
   updateAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "phoneNumber" | "profileImage" | "otp" | "otpExpiry" | "status" | "verifiedForgot" | "stripeAccountId" | "adultEligible" | "isSubscribed" | "creditBalance" | "createAt" | "updateAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "phoneNumber" | "profileImage" | "otp" | "otpExpiry" | "status" | "verifiedForgot" | "stripeAccountId" | "adultEligible" | "isSubscribed" | "isFreeTrialUsed" | "creditBalance" | "createAt" | "updateAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   subscriptions?: boolean | Prisma.User$subscriptionsArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
@@ -1488,6 +1534,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     stripeAccountId: string | null
     adultEligible: boolean | null
     isSubscribed: boolean
+    isFreeTrialUsed: boolean
     creditBalance: number
     createAt: Date
     updateAt: Date
@@ -1933,6 +1980,7 @@ export interface UserFieldRefs {
   readonly stripeAccountId: Prisma.FieldRef<"User", 'String'>
   readonly adultEligible: Prisma.FieldRef<"User", 'Boolean'>
   readonly isSubscribed: Prisma.FieldRef<"User", 'Boolean'>
+  readonly isFreeTrialUsed: Prisma.FieldRef<"User", 'Boolean'>
   readonly creditBalance: Prisma.FieldRef<"User", 'Int'>
   readonly createAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updateAt: Prisma.FieldRef<"User", 'DateTime'>

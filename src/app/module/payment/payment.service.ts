@@ -49,6 +49,14 @@ export class PaymentService {
       endsAt.setUTCDate(endsAt.getUTCDate() + subscription.durationDays);
 
       const payment = await this.prisma.$transaction(async (transaction) => {
+        const freeTrialClaim = await transaction.user.updateMany({
+          where: { id: user.id, isFreeTrialUsed: false },
+          data: { isFreeTrialUsed: true, isSubscribed: true },
+        });
+        if (freeTrialClaim.count === 0) {
+          throw new BadRequestException('Free trial has already been used');
+        }
+
         await transaction.userSubscription.updateMany({
           where: { userId: user.id, isActive: true },
           data: { isActive: false },
@@ -62,11 +70,6 @@ export class PaymentService {
             startsAt,
             endsAt,
           },
-        });
-
-        await transaction.user.update({
-          where: { id: user.id },
-          data: { isSubscribed: true },
         });
 
         return transaction.payment.create({
