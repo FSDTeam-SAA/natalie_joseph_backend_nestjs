@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Credit Purchase Test</title>
+    <link rel="stylesheet" href="stripe-test.css" />
+    <script src="https://js.stripe.com/v3/"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="top">
+        <div>
+          <h1>Credit purchase test</h1>
+          <p class="sub">
+            Buy an admin-created package and verify the webhook wallet credit.
+          </p>
+        </div>
+        <span class="badge">Stripe test mode</span>
+      </header>
+      <section class="grid">
+        <div class="panel">
+          <h2>1. Connection & wallet</h2>
+          <label for="api">Backend API</label
+          ><input id="api" value="http://localhost:8080/api/v1" />
+          <label for="pk">Stripe publishable key (pk_test_...)</label
+          ><input id="pk" type="password" placeholder="pk_test_..." />
+          <label for="token">User JWT</label
+          ><input
+            id="token"
+            type="password"
+            placeholder="Paste user access token"
+          />
+          <div class="actions">
+            <button id="load">Load packages</button
+            ><button id="wallet-btn" class="secondary">Refresh wallet</button
+            ><a class="link" href="paymenttest.html">Subscription test →</a>
+          </div>
+          <label>Current balance</label>
+          <div id="balance" class="wallet">—</div>
+          <p class="hint">
+            The wallet changes only after Stripe sends
+            <code>payment_intent.succeeded</code> to your webhook.
+          </p>
+        </div>
+        <div class="panel">
+          <h2>2. Choose credit package</h2>
+          <div id="packages" class="items">
+            <div class="meta">Load packages first.</div>
+          </div>
+          <div class="actions">
+            <button id="start" disabled>Buy selected package</button>
+          </div>
+          <div id="payment-box" class="hidden">
+            <h2>3. Card payment</h2>
+            <div id="payment-element"></div>
+            <div class="actions"><button id="pay">Confirm payment</button></div>
+            <p class="hint">
+              Test card: <code>4242 4242 4242 4242</code>, any future expiry and
+              CVC.
+            </p>
+          </div>
+          <div id="status" class="status">Ready.</div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const state = {
+        packageId: null,
+        stripe: null,
+        elements: null,
+        balance: null,
+      };
+      const saved = JSON.parse(
+        localStorage.getItem('stripeTestConfig') || '{}',
+      );
+      $('api').value = saved.api || $('api').value;
+      $('pk').value = saved.pk || '';
+      $('token').value = saved.token || '';
+      function config() {
+        const c = {
+          api: $('api').value.replace(/\/$/, ''),
+          pk: $('pk').value.trim(),
+          token: $('token').value.trim(),
+        };
+        localStorage.setItem('stripeTestConfig', JSON.stringify(c));
+        return c;
+      }
+      function status(m, t = '') {
+        $('status').textContent = m;
+        $('status').className = `status ${t}`;
+      }
+      async function jsonFetch(url, o = {}) {
+        const r = await fetch(url, o);
+        const b = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(b.message || `HTTP ${r.status}`);
+        return b;
+      }
+      async function wallet() {
+        const c = config();
+        if (!c.token) throw new Error('User JWT is required');
+        const b = await jsonFetch(`${c.api}/credits/wallet`, {
+          headers: { Authorization: `Bearer ${c.token}` },
+        });
+        state.balance = b.data.creditBalance;
+        $('balance').textContent = `${state.balance} credits`;
+        return state.balance;
+      }
+      $('wallet-btn').onclick = async () => {
+        try {
+          status('Refreshing wallet…');
+          await wallet();
+          status('Wallet refreshed.', 'success');
+        } catch (e) {
+          status(e.message, 'error');
+        }
+      };
+      $('load').onclick = async () => {
+        try {
+          $('load').disabled = true;
+          status('Loading credit packages…');
+          const c = config();
+          const [b] = await Promise.all([
+            jsonFetch(`${c.api}/credits/packages`),
+            c.token ? wallet() : Promise.resolve(),
+          ]);
+          const list = b.data || [];
+          $('packages').replaceChildren();
+          list.forEach((p) => {
+            const card = document.createElement('div');
+            card.className = 'item';
+            card.innerHTML = `<div class="item-head"><span>${escapeHtml(p.name)}</span><span>$${escapeHtml(p.price)} ${escapeHtml(p.currency.toUpperCase())}</span></div><div class="meta">${p.credits} credits</div>`;
+            card.onclick = () => {
+              document
+                .querySelectorAll('.item')
+                .forEach((x) => x.classList.remove('selected'));
+              card.classList.add('selected');
+              state.packageId = p.id;
+              $('start').disabled = false;
+            };
+            $('packages').append(card);
+          });
+          status(
+            list.length
+              ? `Loaded ${list.length} package(s). Select one.`
+              : 'No active credit packages found.',
+          );
+        } catch (e) {
+          status(e.message, 'error');
+        } finally {
+          $('load').disabled = false;
+        }
+      };
+      $('start').onclick = async () => {
+        try {
+          const c = config();
+          if (!c.token) throw new Error('User JWT is required');
+          if (!c.pk) throw new Error('Stripe publishable key is required');
+          $('start').disabled = true;
+          status('Creating credit payment…');
+          const b = await jsonFetch(`${c.api}/credits/purchase`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${c.token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ packageId: state.packageId }),
+          });
+          state.stripe = Stripe(c.pk);
+          state.elements = state.stripe.elements({
+            clientSecret: b.data.clientSecret,
+            appearance: { theme: 'stripe' },
+          });
+          $('payment-element').replaceChildren();
+          state.elements.create('payment').mount('#payment-element');
+          $('payment-box').classList.remove('hidden');
+          status(
+            `Pending payment created (${b.data.payment.id}). Enter card details.`,
+          );
+        } catch (e) {
+          status(e.message, 'error');
+        } finally {
+          $('start').disabled = false;
+        }
+      };
+      $('pay').onclick = async () => {
+        try {
+          $('pay').disabled = true;
+          const before = state.balance;
+          status('Confirming payment with Stripe…');
+          const r = await state.stripe.confirmPayment({
+            elements: state.elements,
+            confirmParams: { return_url: location.href },
+            redirect: 'if_required',
+          });
+          if (r.error) throw new Error(r.error.message);
+          status(
+            `Stripe status: ${r.paymentIntent.status}. Waiting for webhook…`,
+          );
+          for (let i = 0; i < 10; i++) {
+            await new Promise((x) => setTimeout(x, 1500));
+            const current = await wallet();
+            if (before === null || current > before) {
+              status(
+                `Payment succeeded. Wallet updated to ${current} credits.`,
+                'success',
+              );
+              return;
+            }
+          }
+          status(
+            'Stripe succeeded, but wallet has not updated yet. Check webhook logs and refresh wallet.',
+            'error',
+          );
+        } catch (e) {
+          status(e.message, 'error');
+        } finally {
+          $('pay').disabled = false;
+        }
+      };
+      function escapeHtml(v) {
+        return String(v).replace(
+          /[&<>'"]/g,
+          (c) =>
+            ({
+              '&': '&amp;',
+              '<': '&lt;',
+              '>': '&gt;',
+              "'": '&#39;',
+              '"': '&quot;',
+            })[c],
+        );
+      }
+    </script>
+  </body>
+</html>

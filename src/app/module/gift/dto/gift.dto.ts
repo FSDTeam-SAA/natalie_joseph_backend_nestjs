@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsInt,
@@ -14,19 +15,25 @@ export class CreateGiftDto {
   @IsNotEmpty()
   name!: string;
 
-  @ApiPropertyOptional({ example: 'https://example.com/rose.png' })
+  @ApiPropertyOptional({
+    example: 'https://example.com/rose.png',
+    type: 'string',
+    format: 'binary',
+  })
   @IsOptional()
   @IsString()
   image?: string;
 
-  @ApiProperty({ example: 10 })
+  @ApiPropertyOptional({ example: 10 })
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   creditCost!: number;
 
   @ApiPropertyOptional({ default: true })
   @IsOptional()
   @IsBoolean()
+  @Type(() => Boolean)
   isActive?: boolean;
 }
 

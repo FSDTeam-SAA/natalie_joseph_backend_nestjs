@@ -4,6 +4,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import buildWhereConditions from 'src/app/helper/buildWhereConditions';
+import { fileUpload } from 'src/app/helper/fileUploder';
+import paginationHelper, { IOptions } from 'src/app/helper/pagenation';
+import { IFilterParams } from 'src/app/helper/pick';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGiftDto, UpdateGiftDto } from './dto/gift.dto';
 
@@ -11,15 +15,27 @@ import { CreateGiftDto, UpdateGiftDto } from './dto/gift.dto';
 export class GiftService {
   constructor(private readonly prisma: PrismaService) {}
 
-  createGift(payload: CreateGiftDto) {
+  async createGift(payload: CreateGiftDto, file?: Express.Multer.File) {
+    if (file) {
+      const { url } = await fileUpload.uploadToCloudinary(file);
+      payload.image = url;
+    }
     return this.prisma.gift.create({ data: payload });
   }
 
-  getActiveGifts() {
-    return this.prisma.gift.findMany({
-      where: { isActive: true },
-      orderBy: { creditCost: 'asc' },
-    });
+  async getActiveGifts(params: IFilterParams, options: IOptions) {
+    const { limit, page, skip, sortBy, sortOrder } = paginationHelper(options);
+    const where = buildWhereConditions(params, ['name']);
+    const [total, result] = await Promise.all([
+      this.prisma.gift.count({ where }),
+      this.prisma.gift.findMany({
+        where,
+        orderBy: { [sortBy]: sortOrder },
+        take: limit,
+        skip,
+      }),
+    ]);
+    return { data: result, meta: { total, page, limit } };
   }
 
   async updateGift(id: string, payload: UpdateGiftDto) {

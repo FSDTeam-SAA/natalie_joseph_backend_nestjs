@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Subscription Payment Test</title>
+    <link rel="stylesheet" href="stripe-test.css" />
+    <script src="https://js.stripe.com/v3/"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="top">
+        <div>
+          <h1>Subscription payment test</h1>
+          <p class="sub">
+            Load a plan, create a PaymentIntent, then confirm it with Stripe.
+          </p>
+        </div>
+        <span class="badge">Local test tool</span>
+      </header>
+      <section class="grid">
+        <div class="panel">
+          <h2>1. Connection</h2>
+          <label for="api">Backend API</label
+          ><input id="api" value="http://localhost:8080/api/v1" />
+          <label for="pk">Stripe publishable key (pk_test_...)</label
+          ><input id="pk" type="password" placeholder="pk_test_..." />
+          <label for="token">User JWT</label
+          ><input
+            id="token"
+            type="password"
+            placeholder="Paste user access token"
+          />
+          <div class="actions">
+            <button id="load">Load subscriptions</button
+            ><a class="link" href="credittest.html">Credit test →</a>
+          </div>
+          <p class="hint">
+            Use a local HTTP server, for example <code>npx serve .</code>. Never
+            paste your Stripe secret key here.
+          </p>
+        </div>
+        <div class="panel">
+          <h2>2. Choose plan</h2>
+          <div id="plans" class="items">
+            <div class="meta">Load subscriptions first.</div>
+          </div>
+          <div class="actions">
+            <button id="start" disabled>Start subscription</button>
+          </div>
+          <div id="payment-box" class="hidden">
+            <h2>3. Card payment</h2>
+            <div id="payment-element"></div>
+            <div class="actions"><button id="pay">Confirm payment</button></div>
+            <p class="hint">
+              Test card: <code>4242 4242 4242 4242</code>, any future expiry,
+              any CVC.
+            </p>
+          </div>
+          <div id="status" class="status">Ready.</div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const state = {
+        planId: null,
+        stripe: null,
+        elements: null,
+        clientSecret: null,
+      };
+      const saved = JSON.parse(
+        localStorage.getItem('stripeTestConfig') || '{}',
+      );
+      $('api').value = saved.api || $('api').value;
+      $('pk').value = saved.pk || '';
+      $('token').value = saved.token || '';
+      function config() {
+        const c = {
+          api: $('api').value.replace(/\/$/, ''),
+          pk: $('pk').value.trim(),
+          token: $('token').value.trim(),
+        };
+        localStorage.setItem('stripeTestConfig', JSON.stringify(c));
+        return c;
+      }
+      function status(message, type = '') {
+        $('status').textContent = message;
+        $('status').className = `status ${type}`;
+      }
+      async function jsonFetch(url, options = {}) {
+        const r = await fetch(url, options);
+        const body = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(body.message || `HTTP ${r.status}`);
+        return body;
+      }
+      $('load').onclick = async () => {
+        try {
+          $('load').disabled = true;
+          status('Loading subscriptions…');
+          const c = config();
+          const body = await jsonFetch(
+            `${c.api}/subscription?limit=100&isActive=true`,
+          );
+          const plans = body.data || [];
+          $('plans').replaceChildren();
+          plans.forEach((plan) => {
+            const card = document.createElement('div');
+            card.className = 'item';
+            card.innerHTML = `<div class="item-head"><span>${escapeHtml(plan.name)}</span><span>$${escapeHtml(plan.price)}</span></div><div class="meta">${plan.messageLimit} messages · ${plan.durationDays} days</div>`;
+            card.onclick = () => {
+              document
+                .querySelectorAll('.item')
+                .forEach((x) => x.classList.remove('selected'));
+              card.classList.add('selected');
+              state.planId = plan.id;
+              $('start').disabled = false;
+            };
+            $('plans').append(card);
+          });
+          status(
+            plans.length
+              ? `Loaded ${plans.length} plan(s). Select one.`
+              : 'No active plans found.',
+          );
+        } catch (e) {
+          status(e.message, 'error');
+        } finally {
+          $('load').disabled = false;
+        }
+      };
+      $('start').onclick = async () => {
+        try {
+          const c = config();
+          if (!c.token) throw new Error('User JWT is required');
+          $('start').disabled = true;
+          status('Creating subscription payment…');
+          const body = await jsonFetch(
+            `${c.api}/payment/subscription/${state.planId}`,
+            { method: 'POST', headers: { Authorization: `Bearer ${c.token}` } },
+          );
+          const data = body.data;
+          if (data.activated && !data.clientSecret) {
+            $('payment-box').classList.add('hidden');
+            status('Free subscription activated successfully.', 'success');
+            return;
+          }
+          if (!c.pk) throw new Error('Stripe publishable key is required');
+          state.clientSecret = data.clientSecret;
+          state.stripe = Stripe(c.pk);
+          state.elements = state.stripe.elements({
+            clientSecret: data.clientSecret,
+            appearance: { theme: 'stripe' },
+          });
+          $('payment-element').replaceChildren();
+          state.elements.create('payment').mount('#payment-element');
+          $('payment-box').classList.remove('hidden');
+          status(
+            `Payment created (${data.payment.id}). Enter test card details.`,
+          );
+        } catch (e) {
+          status(e.message, 'error');
+        } finally {
+          $('start').disabled = false;
+        }
+      };
+      $('pay').onclick = async () => {
+        try {
+          $('pay').disabled = true;
+          status('Confirming payment with Stripe…');
+          const result = await state.stripe.confirmPayment({
+            elements: state.elements,
+            confirmParams: { return_url: location.href },
+            redirect: 'if_required',
+          });
+          if (result.error) throw new Error(result.error.message);
+          const pi = result.paymentIntent;
+          status(
+            `Stripe status: ${pi.status}.\nWebhook will activate the subscription after success.`,
+            `success`,
+          );
+        } catch (e) {
+          status(e.message, 'error');
+        } finally {
+          $('pay').disabled = false;
+        }
+      };
+      function escapeHtml(v) {
+        return String(v).replace(
+          /[&<>'"]/g,
+          (c) =>
+            ({
+              '&': '&amp;',
+              '<': '&lt;',
+              '>': '&gt;',
+              "'": '&#39;',
+              '"': '&quot;',
+            })[c],
+        );
+      }
+    </script>
+  </body>
+</html>
