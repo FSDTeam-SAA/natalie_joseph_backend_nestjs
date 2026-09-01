@@ -13,7 +13,7 @@ export class SubscribePaymentCronService implements OnApplicationBootstrap {
     void this.expireSubscriptions();
   }
 
-  @Cron(CronExpression.EVERY_30_SECONDS, {
+  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT, {
     name: 'expire-user-subscriptions',
   })
   async expireSubscriptions() {
