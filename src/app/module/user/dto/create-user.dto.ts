@@ -5,25 +5,25 @@ export class CreateUserDto {
   @ApiPropertyOptional({ example: '' })
   @IsString()
   @IsNotEmpty({ message: 'Name is requried' })
-  name: string;
+  name!: string;
 
   @ApiPropertyOptional({ example: '' })
   @IsEmail()
   @IsNotEmpty({ message: 'Email is requried' })
-  email: string;
+  email!: string;
 
   @ApiPropertyOptional({ example: '' })
   @IsString()
   @IsNotEmpty({ message: 'Password is requried' })
-  password: string;
+  password!: string;
 
   @ApiPropertyOptional({ example: '' })
   @IsString()
   @IsNotEmpty({ message: 'Phone number is requried' })
-  phoneNumber: string;
+  phoneNumber!: string;
 
   @ApiPropertyOptional({ type: 'string', format: 'binary' })
   @IsString()
   @IsOptional()
-  profileImage: string;
+  profileImage?: string;
 }

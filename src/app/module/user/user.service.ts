@@ -1,12 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 import bcrypt from 'bcrypt';
 import config from 'src/app/config';
-import { IFilterParams } from 'src/app/helper/pick';
-import paginationHelper, { IOptions } from 'src/app/helper/pagenation';
 import buildWhereConditions from 'src/app/helper/buildWhereConditions';
+import { fileUpload } from 'src/app/helper/fileUploder';
+import paginationHelper, { IOptions } from 'src/app/helper/pagenation';
+import { IFilterParams } from 'src/app/helper/pick';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -64,5 +65,96 @@ export class UserService {
         limit,
       },
     };
+  }
+
+  async getUserById(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return user;
+  }
+
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    file?: Express.Multer.File,
+  ) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (file) {
+      const { url } = await fileUpload.uploadToCloudinary(file);
+      updateUserDto.profileImage = url;
+    }
+
+    const hashPassword = await bcrypt.hash(
+      updateUserDto.password!,
+      Number(config.bcryptSaltRounds) || 10,
+    );
+    const result = await this.prisma.user.update({
+      where: { id },
+      data: {
+        ...updateUserDto,
+        password: hashPassword,
+      },
+    });
+    return result;
+  }
+
+  async deleteUser(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    await this.prisma.user.delete({
+      where: { id },
+    });
+  }
+
+  async myProfile(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return user;
+  }
+
+  async UpdateMyProfile(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    file?: Express.Multer.File,
+  ) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    if (file) {
+      const { url } = await fileUpload.uploadToCloudinary(file);
+      updateUserDto.profileImage = url;
+    }
+    const hashPassword = await bcrypt.hash(
+      updateUserDto.password!,
+      Number(config.bcryptSaltRounds) || 10,
+    );
+    const result = await this.prisma.user.update({
+      where: { id },
+      data: {
+        ...updateUserDto,
+        password: hashPassword,
+      },
+    });
+    return result;
   }
 }
