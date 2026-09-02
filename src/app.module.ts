@@ -16,6 +16,7 @@ import { ChatModule } from './app/module/chat/chat.module';
 import { SubscribePaymentCronService } from './app/helper/subscribePayment.cron';
 import { CreditModule } from './app/module/credit/credit.module';
 import { GiftModule } from './app/module/gift/gift.module';
+import { DashboardModule } from './app/module/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { GiftModule } from './app/module/gift/gift.module';
     ChatModule,
     CreditModule,
     GiftModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService, SubscribePaymentCronService],
