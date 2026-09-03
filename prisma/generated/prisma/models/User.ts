@@ -324,6 +324,7 @@ export type UserWhereInput = {
   payments?: Prisma.PaymentListRelationFilter
   chatMessages?: Prisma.ChatMessageListRelationFilter
   creditTransactions?: Prisma.CreditTransactionListRelationFilter
+  purchasedCreditLots?: Prisma.PurchasedCreditLotListRelationFilter
   giftTransactions?: Prisma.GiftTransactionListRelationFilter
 }
 
@@ -350,6 +351,7 @@ export type UserOrderByWithRelationInput = {
   payments?: Prisma.PaymentOrderByRelationAggregateInput
   chatMessages?: Prisma.ChatMessageOrderByRelationAggregateInput
   creditTransactions?: Prisma.CreditTransactionOrderByRelationAggregateInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotOrderByRelationAggregateInput
   giftTransactions?: Prisma.GiftTransactionOrderByRelationAggregateInput
 }
 
@@ -379,6 +381,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   payments?: Prisma.PaymentListRelationFilter
   chatMessages?: Prisma.ChatMessageListRelationFilter
   creditTransactions?: Prisma.CreditTransactionListRelationFilter
+  purchasedCreditLots?: Prisma.PurchasedCreditLotListRelationFilter
   giftTransactions?: Prisma.GiftTransactionListRelationFilter
 }, "id" | "email">
 
@@ -455,6 +458,7 @@ export type UserCreateInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotCreateNestedManyWithoutUserInput
   giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutUserInput
 }
 
@@ -481,6 +485,7 @@ export type UserUncheckedCreateInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedCreateNestedManyWithoutUserInput
   giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -507,6 +512,7 @@ export type UserUpdateInput = {
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUpdateManyWithoutUserNestedInput
   giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutUserNestedInput
 }
 
@@ -533,6 +539,7 @@ export type UserUncheckedUpdateInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedUpdateManyWithoutUserNestedInput
   giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -703,6 +710,20 @@ export type UserUpdateOneRequiredWithoutCreditTransactionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreditTransactionsInput, Prisma.UserUpdateWithoutCreditTransactionsInput>, Prisma.UserUncheckedUpdateWithoutCreditTransactionsInput>
 }
 
+export type UserCreateNestedOneWithoutPurchasedCreditLotsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPurchasedCreditLotsInput, Prisma.UserUncheckedCreateWithoutPurchasedCreditLotsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPurchasedCreditLotsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPurchasedCreditLotsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPurchasedCreditLotsInput, Prisma.UserUncheckedCreateWithoutPurchasedCreditLotsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPurchasedCreditLotsInput
+  upsert?: Prisma.UserUpsertWithoutPurchasedCreditLotsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPurchasedCreditLotsInput, Prisma.UserUpdateWithoutPurchasedCreditLotsInput>, Prisma.UserUncheckedUpdateWithoutPurchasedCreditLotsInput>
+}
+
 export type UserCreateNestedOneWithoutGiftTransactionsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutGiftTransactionsInput, Prisma.UserUncheckedCreateWithoutGiftTransactionsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutGiftTransactionsInput
@@ -783,6 +804,7 @@ export type UserCreateWithoutChatMessagesInput = {
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotCreateNestedManyWithoutUserInput
   giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutUserInput
 }
 
@@ -808,6 +830,7 @@ export type UserUncheckedCreateWithoutChatMessagesInput = {
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedCreateNestedManyWithoutUserInput
   giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -849,6 +872,7 @@ export type UserUpdateWithoutChatMessagesInput = {
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUpdateManyWithoutUserNestedInput
   giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutUserNestedInput
 }
 
@@ -874,6 +898,7 @@ export type UserUncheckedUpdateWithoutChatMessagesInput = {
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedUpdateManyWithoutUserNestedInput
   giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -899,6 +924,7 @@ export type UserCreateWithoutCreditTransactionsInput = {
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotCreateNestedManyWithoutUserInput
   giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutUserInput
 }
 
@@ -924,6 +950,7 @@ export type UserUncheckedCreateWithoutCreditTransactionsInput = {
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedCreateNestedManyWithoutUserInput
   giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -965,6 +992,7 @@ export type UserUpdateWithoutCreditTransactionsInput = {
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUpdateManyWithoutUserNestedInput
   giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutUserNestedInput
 }
 
@@ -990,6 +1018,127 @@ export type UserUncheckedUpdateWithoutCreditTransactionsInput = {
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPurchasedCreditLotsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createAt?: Date | string
+  updateAt?: Date | string
+  subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPurchasedCreditLotsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createAt?: Date | string
+  updateAt?: Date | string
+  subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPurchasedCreditLotsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPurchasedCreditLotsInput, Prisma.UserUncheckedCreateWithoutPurchasedCreditLotsInput>
+}
+
+export type UserUpsertWithoutPurchasedCreditLotsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPurchasedCreditLotsInput, Prisma.UserUncheckedUpdateWithoutPurchasedCreditLotsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPurchasedCreditLotsInput, Prisma.UserUncheckedCreateWithoutPurchasedCreditLotsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPurchasedCreditLotsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPurchasedCreditLotsInput, Prisma.UserUncheckedUpdateWithoutPurchasedCreditLotsInput>
+}
+
+export type UserUpdateWithoutPurchasedCreditLotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPurchasedCreditLotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
   giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1016,6 +1165,7 @@ export type UserCreateWithoutGiftTransactionsInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGiftTransactionsInput = {
@@ -1041,6 +1191,7 @@ export type UserUncheckedCreateWithoutGiftTransactionsInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGiftTransactionsInput = {
@@ -1082,6 +1233,7 @@ export type UserUpdateWithoutGiftTransactionsInput = {
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGiftTransactionsInput = {
@@ -1107,6 +1259,7 @@ export type UserUncheckedUpdateWithoutGiftTransactionsInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPaymentsInput = {
@@ -1131,6 +1284,7 @@ export type UserCreateWithoutPaymentsInput = {
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotCreateNestedManyWithoutUserInput
   giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutUserInput
 }
 
@@ -1156,6 +1310,7 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedCreateNestedManyWithoutUserInput
   giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1197,6 +1352,7 @@ export type UserUpdateWithoutPaymentsInput = {
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUpdateManyWithoutUserNestedInput
   giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutUserNestedInput
 }
 
@@ -1222,6 +1378,7 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedUpdateManyWithoutUserNestedInput
   giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1247,6 +1404,7 @@ export type UserCreateWithoutSubscriptionsInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotCreateNestedManyWithoutUserInput
   giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutUserInput
 }
 
@@ -1272,6 +1430,7 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedCreateNestedManyWithoutUserInput
   giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1313,6 +1472,7 @@ export type UserUpdateWithoutSubscriptionsInput = {
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUpdateManyWithoutUserNestedInput
   giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutUserNestedInput
 }
 
@@ -1338,6 +1498,7 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedUpdateManyWithoutUserNestedInput
   giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1351,6 +1512,7 @@ export type UserCountOutputType = {
   payments: number
   chatMessages: number
   creditTransactions: number
+  purchasedCreditLots: number
   giftTransactions: number
 }
 
@@ -1359,6 +1521,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   payments?: boolean | UserCountOutputTypeCountPaymentsArgs
   chatMessages?: boolean | UserCountOutputTypeCountChatMessagesArgs
   creditTransactions?: boolean | UserCountOutputTypeCountCreditTransactionsArgs
+  purchasedCreditLots?: boolean | UserCountOutputTypeCountPurchasedCreditLotsArgs
   giftTransactions?: boolean | UserCountOutputTypeCountGiftTransactionsArgs
 }
 
@@ -1403,6 +1566,13 @@ export type UserCountOutputTypeCountCreditTransactionsArgs<ExtArgs extends runti
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountPurchasedCreditLotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PurchasedCreditLotWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountGiftTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.GiftTransactionWhereInput
 }
@@ -1431,6 +1601,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
   chatMessages?: boolean | Prisma.User$chatMessagesArgs<ExtArgs>
   creditTransactions?: boolean | Prisma.User$creditTransactionsArgs<ExtArgs>
+  purchasedCreditLots?: boolean | Prisma.User$purchasedCreditLotsArgs<ExtArgs>
   giftTransactions?: boolean | Prisma.User$giftTransactionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -1504,6 +1675,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
   chatMessages?: boolean | Prisma.User$chatMessagesArgs<ExtArgs>
   creditTransactions?: boolean | Prisma.User$creditTransactionsArgs<ExtArgs>
+  purchasedCreditLots?: boolean | Prisma.User$purchasedCreditLotsArgs<ExtArgs>
   giftTransactions?: boolean | Prisma.User$giftTransactionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1517,6 +1689,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     payments: Prisma.$PaymentPayload<ExtArgs>[]
     chatMessages: Prisma.$ChatMessagePayload<ExtArgs>[]
     creditTransactions: Prisma.$CreditTransactionPayload<ExtArgs>[]
+    purchasedCreditLots: Prisma.$PurchasedCreditLotPayload<ExtArgs>[]
     giftTransactions: Prisma.$GiftTransactionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1936,6 +2109,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   payments<T extends Prisma.User$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   chatMessages<T extends Prisma.User$chatMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$chatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   creditTransactions<T extends Prisma.User$creditTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$creditTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CreditTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  purchasedCreditLots<T extends Prisma.User$purchasedCreditLotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$purchasedCreditLotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PurchasedCreditLotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   giftTransactions<T extends Prisma.User$giftTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$giftTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GiftTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2470,6 +2644,30 @@ export type User$creditTransactionsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.CreditTransactionScalarFieldEnum | Prisma.CreditTransactionScalarFieldEnum[]
+}
+
+/**
+ * User.purchasedCreditLots
+ */
+export type User$purchasedCreditLotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PurchasedCreditLot
+   */
+  select?: Prisma.PurchasedCreditLotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PurchasedCreditLot
+   */
+  omit?: Prisma.PurchasedCreditLotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PurchasedCreditLotInclude<ExtArgs> | null
+  where?: Prisma.PurchasedCreditLotWhereInput
+  orderBy?: Prisma.PurchasedCreditLotOrderByWithRelationInput | Prisma.PurchasedCreditLotOrderByWithRelationInput[]
+  cursor?: Prisma.PurchasedCreditLotWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PurchasedCreditLotScalarFieldEnum | Prisma.PurchasedCreditLotScalarFieldEnum[]
 }
 
 /**

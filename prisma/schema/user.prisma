@@ -19,6 +19,7 @@ model User {
   payments           Payment[]
   chatMessages       ChatMessage[]
   creditTransactions CreditTransaction[]
+  purchasedCreditLots PurchasedCreditLot[]
   giftTransactions   GiftTransaction[]
   createAt           DateTime            @default(now())
   updateAt           DateTime            @updatedAt

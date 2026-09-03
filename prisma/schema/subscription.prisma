@@ -2,7 +2,8 @@ model Subscription {
   id                String             @id @default(uuid())
   name              String
   price             String
-  messageLimit      Int
+  messageLimit      Int                @default(0)
+  creditAllowance   Int                @default(0)
   durationDays      Int                @default(30)
   features          String[]
   isPopular         Boolean            @default(false)

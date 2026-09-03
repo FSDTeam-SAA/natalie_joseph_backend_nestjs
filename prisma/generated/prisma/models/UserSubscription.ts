@@ -29,11 +29,15 @@ export type AggregateUserSubscription = {
 export type UserSubscriptionAvgAggregateOutputType = {
   messageLimit: number | null
   messagesUsed: number | null
+  creditAllowance: number | null
+  creditsUsed: number | null
 }
 
 export type UserSubscriptionSumAggregateOutputType = {
   messageLimit: number | null
   messagesUsed: number | null
+  creditAllowance: number | null
+  creditsUsed: number | null
 }
 
 export type UserSubscriptionMinAggregateOutputType = {
@@ -42,6 +46,8 @@ export type UserSubscriptionMinAggregateOutputType = {
   subscriptionId: string | null
   messageLimit: number | null
   messagesUsed: number | null
+  creditAllowance: number | null
+  creditsUsed: number | null
   startsAt: Date | null
   endsAt: Date | null
   isActive: boolean | null
@@ -55,6 +61,8 @@ export type UserSubscriptionMaxAggregateOutputType = {
   subscriptionId: string | null
   messageLimit: number | null
   messagesUsed: number | null
+  creditAllowance: number | null
+  creditsUsed: number | null
   startsAt: Date | null
   endsAt: Date | null
   isActive: boolean | null
@@ -68,6 +76,8 @@ export type UserSubscriptionCountAggregateOutputType = {
   subscriptionId: number
   messageLimit: number
   messagesUsed: number
+  creditAllowance: number
+  creditsUsed: number
   startsAt: number
   endsAt: number
   isActive: number
@@ -80,11 +90,15 @@ export type UserSubscriptionCountAggregateOutputType = {
 export type UserSubscriptionAvgAggregateInputType = {
   messageLimit?: true
   messagesUsed?: true
+  creditAllowance?: true
+  creditsUsed?: true
 }
 
 export type UserSubscriptionSumAggregateInputType = {
   messageLimit?: true
   messagesUsed?: true
+  creditAllowance?: true
+  creditsUsed?: true
 }
 
 export type UserSubscriptionMinAggregateInputType = {
@@ -93,6 +107,8 @@ export type UserSubscriptionMinAggregateInputType = {
   subscriptionId?: true
   messageLimit?: true
   messagesUsed?: true
+  creditAllowance?: true
+  creditsUsed?: true
   startsAt?: true
   endsAt?: true
   isActive?: true
@@ -106,6 +122,8 @@ export type UserSubscriptionMaxAggregateInputType = {
   subscriptionId?: true
   messageLimit?: true
   messagesUsed?: true
+  creditAllowance?: true
+  creditsUsed?: true
   startsAt?: true
   endsAt?: true
   isActive?: true
@@ -119,6 +137,8 @@ export type UserSubscriptionCountAggregateInputType = {
   subscriptionId?: true
   messageLimit?: true
   messagesUsed?: true
+  creditAllowance?: true
+  creditsUsed?: true
   startsAt?: true
   endsAt?: true
   isActive?: true
@@ -219,6 +239,8 @@ export type UserSubscriptionGroupByOutputType = {
   subscriptionId: string
   messageLimit: number
   messagesUsed: number
+  creditAllowance: number
+  creditsUsed: number
   startsAt: Date
   endsAt: Date
   isActive: boolean
@@ -255,6 +277,8 @@ export type UserSubscriptionWhereInput = {
   subscriptionId?: Prisma.StringFilter<"UserSubscription"> | string
   messageLimit?: Prisma.IntFilter<"UserSubscription"> | number
   messagesUsed?: Prisma.IntFilter<"UserSubscription"> | number
+  creditAllowance?: Prisma.IntFilter<"UserSubscription"> | number
+  creditsUsed?: Prisma.IntFilter<"UserSubscription"> | number
   startsAt?: Prisma.DateTimeFilter<"UserSubscription"> | Date | string
   endsAt?: Prisma.DateTimeFilter<"UserSubscription"> | Date | string
   isActive?: Prisma.BoolFilter<"UserSubscription"> | boolean
@@ -270,6 +294,8 @@ export type UserSubscriptionOrderByWithRelationInput = {
   subscriptionId?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
   messagesUsed?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
+  creditsUsed?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -288,6 +314,8 @@ export type UserSubscriptionWhereUniqueInput = Prisma.AtLeast<{
   subscriptionId?: Prisma.StringFilter<"UserSubscription"> | string
   messageLimit?: Prisma.IntFilter<"UserSubscription"> | number
   messagesUsed?: Prisma.IntFilter<"UserSubscription"> | number
+  creditAllowance?: Prisma.IntFilter<"UserSubscription"> | number
+  creditsUsed?: Prisma.IntFilter<"UserSubscription"> | number
   startsAt?: Prisma.DateTimeFilter<"UserSubscription"> | Date | string
   endsAt?: Prisma.DateTimeFilter<"UserSubscription"> | Date | string
   isActive?: Prisma.BoolFilter<"UserSubscription"> | boolean
@@ -303,6 +331,8 @@ export type UserSubscriptionOrderByWithAggregationInput = {
   subscriptionId?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
   messagesUsed?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
+  creditsUsed?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -324,6 +354,8 @@ export type UserSubscriptionScalarWhereWithAggregatesInput = {
   subscriptionId?: Prisma.StringWithAggregatesFilter<"UserSubscription"> | string
   messageLimit?: Prisma.IntWithAggregatesFilter<"UserSubscription"> | number
   messagesUsed?: Prisma.IntWithAggregatesFilter<"UserSubscription"> | number
+  creditAllowance?: Prisma.IntWithAggregatesFilter<"UserSubscription"> | number
+  creditsUsed?: Prisma.IntWithAggregatesFilter<"UserSubscription"> | number
   startsAt?: Prisma.DateTimeWithAggregatesFilter<"UserSubscription"> | Date | string
   endsAt?: Prisma.DateTimeWithAggregatesFilter<"UserSubscription"> | Date | string
   isActive?: Prisma.BoolWithAggregatesFilter<"UserSubscription"> | boolean
@@ -335,6 +367,8 @@ export type UserSubscriptionCreateInput = {
   id?: string
   messageLimit: number
   messagesUsed?: number
+  creditAllowance?: number
+  creditsUsed?: number
   startsAt?: Date | string
   endsAt: Date | string
   isActive?: boolean
@@ -350,6 +384,8 @@ export type UserSubscriptionUncheckedCreateInput = {
   subscriptionId: string
   messageLimit: number
   messagesUsed?: number
+  creditAllowance?: number
+  creditsUsed?: number
   startsAt?: Date | string
   endsAt: Date | string
   isActive?: boolean
@@ -361,6 +397,8 @@ export type UserSubscriptionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
+  creditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -376,6 +414,8 @@ export type UserSubscriptionUncheckedUpdateInput = {
   subscriptionId?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
+  creditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -389,6 +429,8 @@ export type UserSubscriptionCreateManyInput = {
   subscriptionId: string
   messageLimit: number
   messagesUsed?: number
+  creditAllowance?: number
+  creditsUsed?: number
   startsAt?: Date | string
   endsAt: Date | string
   isActive?: boolean
@@ -400,6 +442,8 @@ export type UserSubscriptionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
+  creditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -413,6 +457,8 @@ export type UserSubscriptionUncheckedUpdateManyInput = {
   subscriptionId?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
+  creditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -436,6 +482,8 @@ export type UserSubscriptionCountOrderByAggregateInput = {
   subscriptionId?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
   messagesUsed?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
+  creditsUsed?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -446,6 +494,8 @@ export type UserSubscriptionCountOrderByAggregateInput = {
 export type UserSubscriptionAvgOrderByAggregateInput = {
   messageLimit?: Prisma.SortOrder
   messagesUsed?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
+  creditsUsed?: Prisma.SortOrder
 }
 
 export type UserSubscriptionMaxOrderByAggregateInput = {
@@ -454,6 +504,8 @@ export type UserSubscriptionMaxOrderByAggregateInput = {
   subscriptionId?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
   messagesUsed?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
+  creditsUsed?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -467,6 +519,8 @@ export type UserSubscriptionMinOrderByAggregateInput = {
   subscriptionId?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
   messagesUsed?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
+  creditsUsed?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -477,6 +531,8 @@ export type UserSubscriptionMinOrderByAggregateInput = {
 export type UserSubscriptionSumOrderByAggregateInput = {
   messageLimit?: Prisma.SortOrder
   messagesUsed?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
+  creditsUsed?: Prisma.SortOrder
 }
 
 export type UserSubscriptionCreateNestedManyWithoutSubscriptionInput = {
@@ -567,6 +623,8 @@ export type UserSubscriptionCreateWithoutSubscriptionInput = {
   id?: string
   messageLimit: number
   messagesUsed?: number
+  creditAllowance?: number
+  creditsUsed?: number
   startsAt?: Date | string
   endsAt: Date | string
   isActive?: boolean
@@ -580,6 +638,8 @@ export type UserSubscriptionUncheckedCreateWithoutSubscriptionInput = {
   userId: string
   messageLimit: number
   messagesUsed?: number
+  creditAllowance?: number
+  creditsUsed?: number
   startsAt?: Date | string
   endsAt: Date | string
   isActive?: boolean
@@ -622,6 +682,8 @@ export type UserSubscriptionScalarWhereInput = {
   subscriptionId?: Prisma.StringFilter<"UserSubscription"> | string
   messageLimit?: Prisma.IntFilter<"UserSubscription"> | number
   messagesUsed?: Prisma.IntFilter<"UserSubscription"> | number
+  creditAllowance?: Prisma.IntFilter<"UserSubscription"> | number
+  creditsUsed?: Prisma.IntFilter<"UserSubscription"> | number
   startsAt?: Prisma.DateTimeFilter<"UserSubscription"> | Date | string
   endsAt?: Prisma.DateTimeFilter<"UserSubscription"> | Date | string
   isActive?: Prisma.BoolFilter<"UserSubscription"> | boolean
@@ -633,6 +695,8 @@ export type UserSubscriptionCreateWithoutUserInput = {
   id?: string
   messageLimit: number
   messagesUsed?: number
+  creditAllowance?: number
+  creditsUsed?: number
   startsAt?: Date | string
   endsAt: Date | string
   isActive?: boolean
@@ -646,6 +710,8 @@ export type UserSubscriptionUncheckedCreateWithoutUserInput = {
   subscriptionId: string
   messageLimit: number
   messagesUsed?: number
+  creditAllowance?: number
+  creditsUsed?: number
   startsAt?: Date | string
   endsAt: Date | string
   isActive?: boolean
@@ -684,6 +750,8 @@ export type UserSubscriptionCreateManySubscriptionInput = {
   userId: string
   messageLimit: number
   messagesUsed?: number
+  creditAllowance?: number
+  creditsUsed?: number
   startsAt?: Date | string
   endsAt: Date | string
   isActive?: boolean
@@ -695,6 +763,8 @@ export type UserSubscriptionUpdateWithoutSubscriptionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
+  creditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -708,6 +778,8 @@ export type UserSubscriptionUncheckedUpdateWithoutSubscriptionInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
+  creditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -720,6 +792,8 @@ export type UserSubscriptionUncheckedUpdateManyWithoutSubscriptionInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
+  creditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -732,6 +806,8 @@ export type UserSubscriptionCreateManyUserInput = {
   subscriptionId: string
   messageLimit: number
   messagesUsed?: number
+  creditAllowance?: number
+  creditsUsed?: number
   startsAt?: Date | string
   endsAt: Date | string
   isActive?: boolean
@@ -743,6 +819,8 @@ export type UserSubscriptionUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
+  creditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -756,6 +834,8 @@ export type UserSubscriptionUncheckedUpdateWithoutUserInput = {
   subscriptionId?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
+  creditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -768,6 +848,8 @@ export type UserSubscriptionUncheckedUpdateManyWithoutUserInput = {
   subscriptionId?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
+  creditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -783,6 +865,8 @@ export type UserSubscriptionSelect<ExtArgs extends runtime.Types.Extensions.Inte
   subscriptionId?: boolean
   messageLimit?: boolean
   messagesUsed?: boolean
+  creditAllowance?: boolean
+  creditsUsed?: boolean
   startsAt?: boolean
   endsAt?: boolean
   isActive?: boolean
@@ -798,6 +882,8 @@ export type UserSubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   subscriptionId?: boolean
   messageLimit?: boolean
   messagesUsed?: boolean
+  creditAllowance?: boolean
+  creditsUsed?: boolean
   startsAt?: boolean
   endsAt?: boolean
   isActive?: boolean
@@ -813,6 +899,8 @@ export type UserSubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   subscriptionId?: boolean
   messageLimit?: boolean
   messagesUsed?: boolean
+  creditAllowance?: boolean
+  creditsUsed?: boolean
   startsAt?: boolean
   endsAt?: boolean
   isActive?: boolean
@@ -828,6 +916,8 @@ export type UserSubscriptionSelectScalar = {
   subscriptionId?: boolean
   messageLimit?: boolean
   messagesUsed?: boolean
+  creditAllowance?: boolean
+  creditsUsed?: boolean
   startsAt?: boolean
   endsAt?: boolean
   isActive?: boolean
@@ -835,7 +925,7 @@ export type UserSubscriptionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserSubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "subscriptionId" | "messageLimit" | "messagesUsed" | "startsAt" | "endsAt" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["userSubscription"]>
+export type UserSubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "subscriptionId" | "messageLimit" | "messagesUsed" | "creditAllowance" | "creditsUsed" | "startsAt" | "endsAt" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["userSubscription"]>
 export type UserSubscriptionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   subscription?: boolean | Prisma.SubscriptionDefaultArgs<ExtArgs>
@@ -861,6 +951,8 @@ export type $UserSubscriptionPayload<ExtArgs extends runtime.Types.Extensions.In
     subscriptionId: string
     messageLimit: number
     messagesUsed: number
+    creditAllowance: number
+    creditsUsed: number
     startsAt: Date
     endsAt: Date
     isActive: boolean
@@ -1296,6 +1388,8 @@ export interface UserSubscriptionFieldRefs {
   readonly subscriptionId: Prisma.FieldRef<"UserSubscription", 'String'>
   readonly messageLimit: Prisma.FieldRef<"UserSubscription", 'Int'>
   readonly messagesUsed: Prisma.FieldRef<"UserSubscription", 'Int'>
+  readonly creditAllowance: Prisma.FieldRef<"UserSubscription", 'Int'>
+  readonly creditsUsed: Prisma.FieldRef<"UserSubscription", 'Int'>
   readonly startsAt: Prisma.FieldRef<"UserSubscription", 'DateTime'>
   readonly endsAt: Prisma.FieldRef<"UserSubscription", 'DateTime'>
   readonly isActive: Prisma.FieldRef<"UserSubscription", 'Boolean'>

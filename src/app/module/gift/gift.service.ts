@@ -9,11 +9,15 @@ import { fileUpload } from 'src/app/helper/fileUploder';
 import paginationHelper, { IOptions } from 'src/app/helper/pagenation';
 import { IFilterParams } from 'src/app/helper/pick';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreditService } from '../credit/credit.service';
 import { CreateGiftDto, UpdateGiftDto } from './dto/gift.dto';
 
 @Injectable()
 export class GiftService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly creditService: CreditService,
+  ) {}
 
   async createGift(payload: CreateGiftDto, file?: Express.Multer.File) {
     if (file) {
@@ -80,11 +84,12 @@ export class GiftService {
         );
       }
 
-      const debited = await transaction.user.updateMany({
-        where: { id: userId, creditBalance: { gte: gift.creditCost } },
-        data: { creditBalance: { decrement: gift.creditCost } },
-      });
-      if (debited.count === 0) {
+      const charge = await this.creditService.consumeCredits(
+        transaction,
+        userId,
+        gift.creditCost,
+      );
+      if (!charge) {
         throw new HttpException(
           'Not enough credits to send this gift',
           HttpStatus.PAYMENT_REQUIRED,
@@ -95,7 +100,7 @@ export class GiftService {
         where: { id: userId },
         select: { creditBalance: true },
       });
-      const balanceBefore = user.creditBalance + gift.creditCost;
+      const balanceBefore = user.creditBalance + charge.fromPurchased;
 
       const giftTransaction = await transaction.giftTransaction.create({
         data: {
@@ -106,18 +111,19 @@ export class GiftService {
         },
       });
 
-      await transaction.creditTransaction.create({
-        data: {
-          userId,
-          companionId,
-          direction: 'debit',
-          reason: 'gift',
-          amount: gift.creditCost,
-          balanceBefore,
-          balanceAfter: user.creditBalance,
-          referenceId: giftTransaction.id,
-        },
-      });
+      if (charge.fromPurchased > 0)
+        await transaction.creditTransaction.create({
+          data: {
+            userId,
+            companionId,
+            direction: 'debit',
+            reason: 'gift',
+            amount: charge.fromPurchased,
+            balanceBefore,
+            balanceAfter: user.creditBalance,
+            referenceId: giftTransaction.id,
+          },
+        });
 
       const chatMessage = await transaction.chatMessage.create({
         data: {

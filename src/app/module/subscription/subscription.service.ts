@@ -20,8 +20,16 @@ export class SubscriptionService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    const creditAllowance =
+      createSubscriptionDto.creditAllowance ??
+      createSubscriptionDto.messageLimit ??
+      0;
     const result = await this.prisma.subscription.create({
-      data: createSubscriptionDto,
+      data: {
+        ...createSubscriptionDto,
+        messageLimit: createSubscriptionDto.messageLimit ?? 0,
+        creditAllowance,
+      },
     });
     return result;
   }
@@ -64,9 +72,11 @@ export class SubscriptionService {
     if (!subscribe) {
       throw new HttpException('Subscription not found', HttpStatus.NOT_FOUND);
     }
+    const creditAllowance =
+      payload.creditAllowance ?? payload.messageLimit ?? undefined;
     const result = await this.prisma.subscription.update({
       where: { id },
-      data: payload,
+      data: { ...payload, creditAllowance },
     });
     return result;
   }

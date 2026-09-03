@@ -67,6 +67,7 @@ export class PaymentService {
             userId: user.id,
             subscriptionId: subscription.id,
             messageLimit: subscription.messageLimit,
+            creditAllowance: subscription.creditAllowance,
             startsAt,
             endsAt,
           },

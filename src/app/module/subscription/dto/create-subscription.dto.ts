@@ -26,15 +26,25 @@ export class CreateSubscriptionDto {
   @IsNotEmpty({ message: 'Price is required' })
   price: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 1000,
-    description: 'Maximum number of messages allowed',
+    description: 'Deprecated: use creditAllowance',
   })
+  @IsOptional()
   @IsInt({ message: 'Message limit must be an integer' })
   @Min(0, {
     message: 'Message limit cannot be negative',
   })
-  messageLimit: number;
+  messageLimit?: number;
+
+  @ApiPropertyOptional({
+    example: 500,
+    description: 'Credits granted for each subscription period',
+  })
+  @IsOptional()
+  @IsInt({ message: 'Credit allowance must be an integer' })
+  @Min(0, { message: 'Credit allowance cannot be negative' })
+  creditAllowance?: number;
 
   @ApiProperty({ example: 30, required: false, default: 30 })
   @IsOptional()

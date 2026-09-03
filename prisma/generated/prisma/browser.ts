@@ -38,6 +38,11 @@ export type CreditPackage = Prisma.CreditPackageModel
  */
 export type CreditTransaction = Prisma.CreditTransactionModel
 /**
+ * Model PurchasedCreditLot
+ * 
+ */
+export type PurchasedCreditLot = Prisma.PurchasedCreditLotModel
+/**
  * Model Gift
  * 
  */

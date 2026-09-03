@@ -28,11 +28,13 @@ export type AggregateSubscription = {
 
 export type SubscriptionAvgAggregateOutputType = {
   messageLimit: number | null
+  creditAllowance: number | null
   durationDays: number | null
 }
 
 export type SubscriptionSumAggregateOutputType = {
   messageLimit: number | null
+  creditAllowance: number | null
   durationDays: number | null
 }
 
@@ -41,6 +43,7 @@ export type SubscriptionMinAggregateOutputType = {
   name: string | null
   price: string | null
   messageLimit: number | null
+  creditAllowance: number | null
   durationDays: number | null
   isPopular: boolean | null
   isActive: boolean | null
@@ -53,6 +56,7 @@ export type SubscriptionMaxAggregateOutputType = {
   name: string | null
   price: string | null
   messageLimit: number | null
+  creditAllowance: number | null
   durationDays: number | null
   isPopular: boolean | null
   isActive: boolean | null
@@ -65,6 +69,7 @@ export type SubscriptionCountAggregateOutputType = {
   name: number
   price: number
   messageLimit: number
+  creditAllowance: number
   durationDays: number
   features: number
   isPopular: number
@@ -77,11 +82,13 @@ export type SubscriptionCountAggregateOutputType = {
 
 export type SubscriptionAvgAggregateInputType = {
   messageLimit?: true
+  creditAllowance?: true
   durationDays?: true
 }
 
 export type SubscriptionSumAggregateInputType = {
   messageLimit?: true
+  creditAllowance?: true
   durationDays?: true
 }
 
@@ -90,6 +97,7 @@ export type SubscriptionMinAggregateInputType = {
   name?: true
   price?: true
   messageLimit?: true
+  creditAllowance?: true
   durationDays?: true
   isPopular?: true
   isActive?: true
@@ -102,6 +110,7 @@ export type SubscriptionMaxAggregateInputType = {
   name?: true
   price?: true
   messageLimit?: true
+  creditAllowance?: true
   durationDays?: true
   isPopular?: true
   isActive?: true
@@ -114,6 +123,7 @@ export type SubscriptionCountAggregateInputType = {
   name?: true
   price?: true
   messageLimit?: true
+  creditAllowance?: true
   durationDays?: true
   features?: true
   isPopular?: true
@@ -214,6 +224,7 @@ export type SubscriptionGroupByOutputType = {
   name: string
   price: string
   messageLimit: number
+  creditAllowance: number
   durationDays: number
   features: string[]
   isPopular: boolean
@@ -250,6 +261,7 @@ export type SubscriptionWhereInput = {
   name?: Prisma.StringFilter<"Subscription"> | string
   price?: Prisma.StringFilter<"Subscription"> | string
   messageLimit?: Prisma.IntFilter<"Subscription"> | number
+  creditAllowance?: Prisma.IntFilter<"Subscription"> | number
   durationDays?: Prisma.IntFilter<"Subscription"> | number
   features?: Prisma.StringNullableListFilter<"Subscription">
   isPopular?: Prisma.BoolFilter<"Subscription"> | boolean
@@ -265,6 +277,7 @@ export type SubscriptionOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
   durationDays?: Prisma.SortOrder
   features?: Prisma.SortOrder
   isPopular?: Prisma.SortOrder
@@ -283,6 +296,7 @@ export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Subscription"> | string
   price?: Prisma.StringFilter<"Subscription"> | string
   messageLimit?: Prisma.IntFilter<"Subscription"> | number
+  creditAllowance?: Prisma.IntFilter<"Subscription"> | number
   durationDays?: Prisma.IntFilter<"Subscription"> | number
   features?: Prisma.StringNullableListFilter<"Subscription">
   isPopular?: Prisma.BoolFilter<"Subscription"> | boolean
@@ -298,6 +312,7 @@ export type SubscriptionOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
   durationDays?: Prisma.SortOrder
   features?: Prisma.SortOrder
   isPopular?: Prisma.SortOrder
@@ -319,6 +334,7 @@ export type SubscriptionScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Subscription"> | string
   price?: Prisma.StringWithAggregatesFilter<"Subscription"> | string
   messageLimit?: Prisma.IntWithAggregatesFilter<"Subscription"> | number
+  creditAllowance?: Prisma.IntWithAggregatesFilter<"Subscription"> | number
   durationDays?: Prisma.IntWithAggregatesFilter<"Subscription"> | number
   features?: Prisma.StringNullableListFilter<"Subscription">
   isPopular?: Prisma.BoolWithAggregatesFilter<"Subscription"> | boolean
@@ -331,7 +347,8 @@ export type SubscriptionCreateInput = {
   id?: string
   name: string
   price: string
-  messageLimit: number
+  messageLimit?: number
+  creditAllowance?: number
   durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
   isPopular?: boolean
@@ -346,7 +363,8 @@ export type SubscriptionUncheckedCreateInput = {
   id?: string
   name: string
   price: string
-  messageLimit: number
+  messageLimit?: number
+  creditAllowance?: number
   durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
   isPopular?: boolean
@@ -362,6 +380,7 @@ export type SubscriptionUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -377,6 +396,7 @@ export type SubscriptionUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -391,7 +411,8 @@ export type SubscriptionCreateManyInput = {
   id?: string
   name: string
   price: string
-  messageLimit: number
+  messageLimit?: number
+  creditAllowance?: number
   durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
   isPopular?: boolean
@@ -405,6 +426,7 @@ export type SubscriptionUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -418,6 +440,7 @@ export type SubscriptionUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -436,6 +459,7 @@ export type SubscriptionCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
   durationDays?: Prisma.SortOrder
   features?: Prisma.SortOrder
   isPopular?: Prisma.SortOrder
@@ -446,6 +470,7 @@ export type SubscriptionCountOrderByAggregateInput = {
 
 export type SubscriptionAvgOrderByAggregateInput = {
   messageLimit?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
   durationDays?: Prisma.SortOrder
 }
 
@@ -454,6 +479,7 @@ export type SubscriptionMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
   durationDays?: Prisma.SortOrder
   isPopular?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -466,6 +492,7 @@ export type SubscriptionMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
   durationDays?: Prisma.SortOrder
   isPopular?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -475,6 +502,7 @@ export type SubscriptionMinOrderByAggregateInput = {
 
 export type SubscriptionSumOrderByAggregateInput = {
   messageLimit?: Prisma.SortOrder
+  creditAllowance?: Prisma.SortOrder
   durationDays?: Prisma.SortOrder
 }
 
@@ -526,7 +554,8 @@ export type SubscriptionCreateWithoutPaymentsInput = {
   id?: string
   name: string
   price: string
-  messageLimit: number
+  messageLimit?: number
+  creditAllowance?: number
   durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
   isPopular?: boolean
@@ -540,7 +569,8 @@ export type SubscriptionUncheckedCreateWithoutPaymentsInput = {
   id?: string
   name: string
   price: string
-  messageLimit: number
+  messageLimit?: number
+  creditAllowance?: number
   durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
   isPopular?: boolean
@@ -571,6 +601,7 @@ export type SubscriptionUpdateWithoutPaymentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -585,6 +616,7 @@ export type SubscriptionUncheckedUpdateWithoutPaymentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -598,7 +630,8 @@ export type SubscriptionCreateWithoutUserSubscriptionsInput = {
   id?: string
   name: string
   price: string
-  messageLimit: number
+  messageLimit?: number
+  creditAllowance?: number
   durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
   isPopular?: boolean
@@ -612,7 +645,8 @@ export type SubscriptionUncheckedCreateWithoutUserSubscriptionsInput = {
   id?: string
   name: string
   price: string
-  messageLimit: number
+  messageLimit?: number
+  creditAllowance?: number
   durationDays?: number
   features?: Prisma.SubscriptionCreatefeaturesInput | string[]
   isPopular?: boolean
@@ -643,6 +677,7 @@ export type SubscriptionUpdateWithoutUserSubscriptionsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -657,6 +692,7 @@ export type SubscriptionUncheckedUpdateWithoutUserSubscriptionsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   features?: Prisma.SubscriptionUpdatefeaturesInput | string[]
   isPopular?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -711,6 +747,7 @@ export type SubscriptionSelect<ExtArgs extends runtime.Types.Extensions.Internal
   name?: boolean
   price?: boolean
   messageLimit?: boolean
+  creditAllowance?: boolean
   durationDays?: boolean
   features?: boolean
   isPopular?: boolean
@@ -727,6 +764,7 @@ export type SubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   name?: boolean
   price?: boolean
   messageLimit?: boolean
+  creditAllowance?: boolean
   durationDays?: boolean
   features?: boolean
   isPopular?: boolean
@@ -740,6 +778,7 @@ export type SubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   name?: boolean
   price?: boolean
   messageLimit?: boolean
+  creditAllowance?: boolean
   durationDays?: boolean
   features?: boolean
   isPopular?: boolean
@@ -753,6 +792,7 @@ export type SubscriptionSelectScalar = {
   name?: boolean
   price?: boolean
   messageLimit?: boolean
+  creditAllowance?: boolean
   durationDays?: boolean
   features?: boolean
   isPopular?: boolean
@@ -761,7 +801,7 @@ export type SubscriptionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type SubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "price" | "messageLimit" | "durationDays" | "features" | "isPopular" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
+export type SubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "price" | "messageLimit" | "creditAllowance" | "durationDays" | "features" | "isPopular" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
 export type SubscriptionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   payments?: boolean | Prisma.Subscription$paymentsArgs<ExtArgs>
   userSubscriptions?: boolean | Prisma.Subscription$userSubscriptionsArgs<ExtArgs>
@@ -781,6 +821,7 @@ export type $SubscriptionPayload<ExtArgs extends runtime.Types.Extensions.Intern
     name: string
     price: string
     messageLimit: number
+    creditAllowance: number
     durationDays: number
     features: string[]
     isPopular: boolean
@@ -1216,6 +1257,7 @@ export interface SubscriptionFieldRefs {
   readonly name: Prisma.FieldRef<"Subscription", 'String'>
   readonly price: Prisma.FieldRef<"Subscription", 'String'>
   readonly messageLimit: Prisma.FieldRef<"Subscription", 'Int'>
+  readonly creditAllowance: Prisma.FieldRef<"Subscription", 'Int'>
   readonly durationDays: Prisma.FieldRef<"Subscription", 'Int'>
   readonly features: Prisma.FieldRef<"Subscription", 'String[]'>
   readonly isPopular: Prisma.FieldRef<"Subscription", 'Boolean'>

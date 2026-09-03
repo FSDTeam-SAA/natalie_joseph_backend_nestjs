@@ -98,6 +98,7 @@ export class WebhookService {
             userId: payment.userId,
             subscriptionId: plan.id,
             messageLimit: plan.messageLimit,
+            creditAllowance: plan.creditAllowance,
             startsAt,
             endsAt,
           },
@@ -107,10 +108,23 @@ export class WebhookService {
           data: { isSubscribed: true },
         });
       } else if (paymentType === 'credits' && payment.creditAmount) {
+        const purchasedAt = new Date();
+        const expiresAt = new Date(purchasedAt);
+        expiresAt.setUTCDate(expiresAt.getUTCDate() + 90);
         const user = await transaction.user.update({
           where: { id: payment.userId },
           data: { creditBalance: { increment: payment.creditAmount } },
           select: { creditBalance: true },
+        });
+        await transaction.purchasedCreditLot.create({
+          data: {
+            userId: payment.userId,
+            paymentId: payment.id,
+            originalAmount: payment.creditAmount,
+            remainingAmount: payment.creditAmount,
+            purchasedAt,
+            expiresAt,
+          },
         });
         await transaction.creditTransaction.create({
           data: {

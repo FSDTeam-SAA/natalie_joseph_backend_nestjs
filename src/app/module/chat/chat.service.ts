@@ -5,12 +5,19 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreditService } from '../credit/credit.service';
 
 @Injectable()
 export class ChatService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly creditService: CreditService,
+  ) {}
 
   async getUsage(userId: string) {
+    await this.prisma.$transaction((tx) =>
+      this.creditService.expirePurchasedCredits(tx, userId),
+    );
     const now = new Date();
     const [subscription, user] = await Promise.all([
       this.prisma.userSubscription.findFirst({
@@ -42,9 +49,30 @@ export class ChatService {
               subscription.messageLimit - subscription.messagesUsed,
               0,
             ),
+            creditAllowance: subscription.creditAllowance,
+            creditsUsed: subscription.creditsUsed,
+            subscriptionCreditsRemaining: Math.max(
+              subscription.creditAllowance - subscription.creditsUsed,
+              0,
+            ),
             endsAt: subscription.endsAt,
           }
         : null,
+      purchasedCredits: user.creditBalance,
+      totalCredits:
+        user.creditBalance +
+        (subscription
+          ? Math.max(subscription.creditAllowance - subscription.creditsUsed, 0)
+          : 0),
+      lowCredit:
+        user.creditBalance +
+          (subscription
+            ? Math.max(
+                subscription.creditAllowance - subscription.creditsUsed,
+                0,
+              )
+            : 0) <=
+        Math.max(10, Math.ceil((subscription?.creditAllowance ?? 0) * 0.1)),
       creditBalance: user.creditBalance,
     };
   }
@@ -76,28 +104,14 @@ export class ChatService {
         );
       }
 
-      const quotaUpdate = await tx.userSubscription.updateMany({
-        where: {
-          id: activeSubscription.id,
-          messagesUsed: { lt: activeSubscription.messageLimit },
-        },
-        data: { messagesUsed: { increment: 1 } },
-      });
-
-      let usedCredit = false;
-      if (quotaUpdate.count === 0) {
-        const creditUpdate = await tx.user.updateMany({
-          where: { id: userId, creditBalance: { gte: 1 } },
-          data: { creditBalance: { decrement: 1 } },
-        });
-        if (creditUpdate.count === 0) {
-          throw new HttpException(
-            'Message limit reached. Buy credits to continue',
-            HttpStatus.PAYMENT_REQUIRED,
-          );
-        }
-        usedCredit = true;
+      const charge = await this.creditService.consumeCredits(tx, userId, 1);
+      if (!charge) {
+        throw new HttpException(
+          'Not enough credits. Buy credits to continue',
+          HttpStatus.PAYMENT_REQUIRED,
+        );
       }
+      const usedCredit = charge.fromPurchased > 0;
 
       const savedMessage = await tx.chatMessage.create({
         data: { userId, companionId, message, usedCredit },
@@ -120,8 +134,8 @@ export class ChatService {
             companionId,
             direction: 'debit',
             reason: 'extra_message',
-            amount: 1,
-            balanceBefore: user.creditBalance + 1,
+            amount: charge.fromPurchased,
+            balanceBefore: user.creditBalance + charge.fromPurchased,
             balanceAfter: user.creditBalance,
             referenceId: savedMessage.id,
           },
@@ -131,10 +145,22 @@ export class ChatService {
       return {
         message: savedMessage,
         usage: {
-          messagesUsed: subscription?.messagesUsed,
-          messageLimit: subscription?.messageLimit,
+          creditsUsed: subscription?.creditsUsed,
+          creditAllowance: subscription?.creditAllowance,
+          subscriptionCreditsRemaining: subscription
+            ? Math.max(
+                subscription.creditAllowance - subscription.creditsUsed,
+                0,
+              )
+            : 0,
+          purchasedCredits: user?.creditBalance,
           creditBalance: user?.creditBalance,
-          chargedFrom: usedCredit ? 'wallet' : 'subscription',
+          chargedFrom:
+            charge.fromSubscription > 0 && charge.fromPurchased > 0
+              ? 'subscription_and_purchased'
+              : usedCredit
+                ? 'purchased'
+                : 'subscription',
         },
       };
     });

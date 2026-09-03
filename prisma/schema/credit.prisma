@@ -30,3 +30,20 @@ model CreditTransaction {
   @@index([userId, createdAt])
   @@map("credit_transactions")
 }
+
+model PurchasedCreditLot {
+  id               String   @id @default(uuid())
+  userId           String
+  paymentId        String   @unique
+  originalAmount   Int
+  remainingAmount  Int
+  purchasedAt      DateTime @default(now())
+  expiresAt        DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt, remainingAmount])
+  @@map("purchased_credit_lots")
+}

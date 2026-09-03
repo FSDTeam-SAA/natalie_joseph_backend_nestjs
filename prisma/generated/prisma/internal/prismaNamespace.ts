@@ -401,6 +401,7 @@ export const ModelName = {
   Companions: 'Companions',
   CreditPackage: 'CreditPackage',
   CreditTransaction: 'CreditTransaction',
+  PurchasedCreditLot: 'PurchasedCreditLot',
   Gift: 'Gift',
   GiftTransaction: 'GiftTransaction',
   Newsletter: 'Newsletter',
@@ -423,7 +424,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "chatMessage" | "companions" | "creditPackage" | "creditTransaction" | "gift" | "giftTransaction" | "newsletter" | "payment" | "subscription" | "user" | "userSubscription"
+    modelProps: "chatMessage" | "companions" | "creditPackage" | "creditTransaction" | "purchasedCreditLot" | "gift" | "giftTransaction" | "newsletter" | "payment" | "subscription" | "user" | "userSubscription"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -720,6 +721,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CreditTransactionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CreditTransactionCountAggregateOutputType> | number
+        }
+      }
+    }
+    PurchasedCreditLot: {
+      payload: Prisma.$PurchasedCreditLotPayload<ExtArgs>
+      fields: Prisma.PurchasedCreditLotFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PurchasedCreditLotFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchasedCreditLotPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PurchasedCreditLotFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchasedCreditLotPayload>
+        }
+        findFirst: {
+          args: Prisma.PurchasedCreditLotFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchasedCreditLotPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PurchasedCreditLotFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchasedCreditLotPayload>
+        }
+        findMany: {
+          args: Prisma.PurchasedCreditLotFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchasedCreditLotPayload>[]
+        }
+        create: {
+          args: Prisma.PurchasedCreditLotCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchasedCreditLotPayload>
+        }
+        createMany: {
+          args: Prisma.PurchasedCreditLotCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PurchasedCreditLotCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchasedCreditLotPayload>[]
+        }
+        delete: {
+          args: Prisma.PurchasedCreditLotDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchasedCreditLotPayload>
+        }
+        update: {
+          args: Prisma.PurchasedCreditLotUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchasedCreditLotPayload>
+        }
+        deleteMany: {
+          args: Prisma.PurchasedCreditLotDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PurchasedCreditLotUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PurchasedCreditLotUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchasedCreditLotPayload>[]
+        }
+        upsert: {
+          args: Prisma.PurchasedCreditLotUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PurchasedCreditLotPayload>
+        }
+        aggregate: {
+          args: Prisma.PurchasedCreditLotAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePurchasedCreditLot>
+        }
+        groupBy: {
+          args: Prisma.PurchasedCreditLotGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PurchasedCreditLotGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PurchasedCreditLotCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PurchasedCreditLotCountAggregateOutputType> | number
         }
       }
     }
@@ -1347,6 +1422,21 @@ export const CreditTransactionScalarFieldEnum = {
 export type CreditTransactionScalarFieldEnum = (typeof CreditTransactionScalarFieldEnum)[keyof typeof CreditTransactionScalarFieldEnum]
 
 
+export const PurchasedCreditLotScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  paymentId: 'paymentId',
+  originalAmount: 'originalAmount',
+  remainingAmount: 'remainingAmount',
+  purchasedAt: 'purchasedAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PurchasedCreditLotScalarFieldEnum = (typeof PurchasedCreditLotScalarFieldEnum)[keyof typeof PurchasedCreditLotScalarFieldEnum]
+
+
 export const GiftScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -1405,6 +1495,7 @@ export const SubscriptionScalarFieldEnum = {
   name: 'name',
   price: 'price',
   messageLimit: 'messageLimit',
+  creditAllowance: 'creditAllowance',
   durationDays: 'durationDays',
   features: 'features',
   isPopular: 'isPopular',
@@ -1446,6 +1537,8 @@ export const UserSubscriptionScalarFieldEnum = {
   subscriptionId: 'subscriptionId',
   messageLimit: 'messageLimit',
   messagesUsed: 'messagesUsed',
+  creditAllowance: 'creditAllowance',
+  creditsUsed: 'creditsUsed',
   startsAt: 'startsAt',
   endsAt: 'endsAt',
   isActive: 'isActive',
@@ -1801,6 +1894,7 @@ export type GlobalOmitConfig = {
   companions?: Prisma.CompanionsOmit
   creditPackage?: Prisma.CreditPackageOmit
   creditTransaction?: Prisma.CreditTransactionOmit
+  purchasedCreditLot?: Prisma.PurchasedCreditLotOmit
   gift?: Prisma.GiftOmit
   giftTransaction?: Prisma.GiftTransactionOmit
   newsletter?: Prisma.NewsletterOmit

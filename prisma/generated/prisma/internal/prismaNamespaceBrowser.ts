@@ -55,6 +55,7 @@ export const ModelName = {
   Companions: 'Companions',
   CreditPackage: 'CreditPackage',
   CreditTransaction: 'CreditTransaction',
+  PurchasedCreditLot: 'PurchasedCreditLot',
   Gift: 'Gift',
   GiftTransaction: 'GiftTransaction',
   Newsletter: 'Newsletter',
@@ -147,6 +148,21 @@ export const CreditTransactionScalarFieldEnum = {
 export type CreditTransactionScalarFieldEnum = (typeof CreditTransactionScalarFieldEnum)[keyof typeof CreditTransactionScalarFieldEnum]
 
 
+export const PurchasedCreditLotScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  paymentId: 'paymentId',
+  originalAmount: 'originalAmount',
+  remainingAmount: 'remainingAmount',
+  purchasedAt: 'purchasedAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PurchasedCreditLotScalarFieldEnum = (typeof PurchasedCreditLotScalarFieldEnum)[keyof typeof PurchasedCreditLotScalarFieldEnum]
+
+
 export const GiftScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -205,6 +221,7 @@ export const SubscriptionScalarFieldEnum = {
   name: 'name',
   price: 'price',
   messageLimit: 'messageLimit',
+  creditAllowance: 'creditAllowance',
   durationDays: 'durationDays',
   features: 'features',
   isPopular: 'isPopular',
@@ -246,6 +263,8 @@ export const UserSubscriptionScalarFieldEnum = {
   subscriptionId: 'subscriptionId',
   messageLimit: 'messageLimit',
   messagesUsed: 'messagesUsed',
+  creditAllowance: 'creditAllowance',
+  creditsUsed: 'creditsUsed',
   startsAt: 'startsAt',
   endsAt: 'endsAt',
   isActive: 'isActive',
