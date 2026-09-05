@@ -38,40 +38,47 @@ export type CompanionsMinAggregateOutputType = {
   id: string | null
   name: string | null
   age: number | null
-  profession: string | null
+  title: string | null
   location: string | null
   bio: string | null
+  profession: string | null
   communicationStyle: string | null
   lifestyle: string | null
   backstory: string | null
   profileImage: string | null
   coverImage: string | null
   status: boolean | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CompanionsMaxAggregateOutputType = {
   id: string | null
   name: string | null
   age: number | null
-  profession: string | null
+  title: string | null
   location: string | null
   bio: string | null
+  profession: string | null
   communicationStyle: string | null
   lifestyle: string | null
   backstory: string | null
   profileImage: string | null
   coverImage: string | null
   status: boolean | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CompanionsCountAggregateOutputType = {
   id: number
   name: number
   age: number
-  profession: number
+  title: number
+  traits: number
   location: number
   bio: number
-  personalityTraits: number
+  profession: number
   interests: number
   communicationStyle: number
   lifestyle: number
@@ -81,6 +88,8 @@ export type CompanionsCountAggregateOutputType = {
   coverImage: number
   galleryImages: number
   status: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -97,40 +106,47 @@ export type CompanionsMinAggregateInputType = {
   id?: true
   name?: true
   age?: true
-  profession?: true
+  title?: true
   location?: true
   bio?: true
+  profession?: true
   communicationStyle?: true
   lifestyle?: true
   backstory?: true
   profileImage?: true
   coverImage?: true
   status?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type CompanionsMaxAggregateInputType = {
   id?: true
   name?: true
   age?: true
-  profession?: true
+  title?: true
   location?: true
   bio?: true
+  profession?: true
   communicationStyle?: true
   lifestyle?: true
   backstory?: true
   profileImage?: true
   coverImage?: true
   status?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type CompanionsCountAggregateInputType = {
   id?: true
   name?: true
   age?: true
-  profession?: true
+  title?: true
+  traits?: true
   location?: true
   bio?: true
-  personalityTraits?: true
+  profession?: true
   interests?: true
   communicationStyle?: true
   lifestyle?: true
@@ -140,6 +156,8 @@ export type CompanionsCountAggregateInputType = {
   coverImage?: true
   galleryImages?: true
   status?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -233,10 +251,11 @@ export type CompanionsGroupByOutputType = {
   id: string
   name: string
   age: number
-  profession: string
+  title: string
+  traits: string[]
   location: string
   bio: string
-  personalityTraits: string[]
+  profession: string
   interests: string[]
   communicationStyle: string
   lifestyle: string
@@ -246,6 +265,8 @@ export type CompanionsGroupByOutputType = {
   coverImage: string | null
   galleryImages: string[]
   status: boolean
+  createdAt: Date
+  updatedAt: Date
   _count: CompanionsCountAggregateOutputType | null
   _avg: CompanionsAvgAggregateOutputType | null
   _sum: CompanionsSumAggregateOutputType | null
@@ -275,10 +296,11 @@ export type CompanionsWhereInput = {
   id?: Prisma.StringFilter<"Companions"> | string
   name?: Prisma.StringFilter<"Companions"> | string
   age?: Prisma.IntFilter<"Companions"> | number
-  profession?: Prisma.StringFilter<"Companions"> | string
+  title?: Prisma.StringFilter<"Companions"> | string
+  traits?: Prisma.StringNullableListFilter<"Companions">
   location?: Prisma.StringFilter<"Companions"> | string
   bio?: Prisma.StringFilter<"Companions"> | string
-  personalityTraits?: Prisma.StringNullableListFilter<"Companions">
+  profession?: Prisma.StringFilter<"Companions"> | string
   interests?: Prisma.StringNullableListFilter<"Companions">
   communicationStyle?: Prisma.StringFilter<"Companions"> | string
   lifestyle?: Prisma.StringFilter<"Companions"> | string
@@ -288,6 +310,8 @@ export type CompanionsWhereInput = {
   coverImage?: Prisma.StringNullableFilter<"Companions"> | string | null
   galleryImages?: Prisma.StringNullableListFilter<"Companions">
   status?: Prisma.BoolFilter<"Companions"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
   chatMessages?: Prisma.ChatMessageListRelationFilter
   creditTransactions?: Prisma.CreditTransactionListRelationFilter
   giftTransactions?: Prisma.GiftTransactionListRelationFilter
@@ -297,10 +321,11 @@ export type CompanionsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   age?: Prisma.SortOrder
-  profession?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  traits?: Prisma.SortOrder
   location?: Prisma.SortOrder
   bio?: Prisma.SortOrder
-  personalityTraits?: Prisma.SortOrder
+  profession?: Prisma.SortOrder
   interests?: Prisma.SortOrder
   communicationStyle?: Prisma.SortOrder
   lifestyle?: Prisma.SortOrder
@@ -310,6 +335,8 @@ export type CompanionsOrderByWithRelationInput = {
   coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   galleryImages?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   chatMessages?: Prisma.ChatMessageOrderByRelationAggregateInput
   creditTransactions?: Prisma.CreditTransactionOrderByRelationAggregateInput
   giftTransactions?: Prisma.GiftTransactionOrderByRelationAggregateInput
@@ -322,10 +349,11 @@ export type CompanionsWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.CompanionsWhereInput | Prisma.CompanionsWhereInput[]
   name?: Prisma.StringFilter<"Companions"> | string
   age?: Prisma.IntFilter<"Companions"> | number
-  profession?: Prisma.StringFilter<"Companions"> | string
+  title?: Prisma.StringFilter<"Companions"> | string
+  traits?: Prisma.StringNullableListFilter<"Companions">
   location?: Prisma.StringFilter<"Companions"> | string
   bio?: Prisma.StringFilter<"Companions"> | string
-  personalityTraits?: Prisma.StringNullableListFilter<"Companions">
+  profession?: Prisma.StringFilter<"Companions"> | string
   interests?: Prisma.StringNullableListFilter<"Companions">
   communicationStyle?: Prisma.StringFilter<"Companions"> | string
   lifestyle?: Prisma.StringFilter<"Companions"> | string
@@ -335,6 +363,8 @@ export type CompanionsWhereUniqueInput = Prisma.AtLeast<{
   coverImage?: Prisma.StringNullableFilter<"Companions"> | string | null
   galleryImages?: Prisma.StringNullableListFilter<"Companions">
   status?: Prisma.BoolFilter<"Companions"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
   chatMessages?: Prisma.ChatMessageListRelationFilter
   creditTransactions?: Prisma.CreditTransactionListRelationFilter
   giftTransactions?: Prisma.GiftTransactionListRelationFilter
@@ -344,10 +374,11 @@ export type CompanionsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   age?: Prisma.SortOrder
-  profession?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  traits?: Prisma.SortOrder
   location?: Prisma.SortOrder
   bio?: Prisma.SortOrder
-  personalityTraits?: Prisma.SortOrder
+  profession?: Prisma.SortOrder
   interests?: Prisma.SortOrder
   communicationStyle?: Prisma.SortOrder
   lifestyle?: Prisma.SortOrder
@@ -357,6 +388,8 @@ export type CompanionsOrderByWithAggregationInput = {
   coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   galleryImages?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.CompanionsCountOrderByAggregateInput
   _avg?: Prisma.CompanionsAvgOrderByAggregateInput
   _max?: Prisma.CompanionsMaxOrderByAggregateInput
@@ -371,10 +404,11 @@ export type CompanionsScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Companions"> | string
   name?: Prisma.StringWithAggregatesFilter<"Companions"> | string
   age?: Prisma.IntWithAggregatesFilter<"Companions"> | number
-  profession?: Prisma.StringWithAggregatesFilter<"Companions"> | string
+  title?: Prisma.StringWithAggregatesFilter<"Companions"> | string
+  traits?: Prisma.StringNullableListFilter<"Companions">
   location?: Prisma.StringWithAggregatesFilter<"Companions"> | string
   bio?: Prisma.StringWithAggregatesFilter<"Companions"> | string
-  personalityTraits?: Prisma.StringNullableListFilter<"Companions">
+  profession?: Prisma.StringWithAggregatesFilter<"Companions"> | string
   interests?: Prisma.StringNullableListFilter<"Companions">
   communicationStyle?: Prisma.StringWithAggregatesFilter<"Companions"> | string
   lifestyle?: Prisma.StringWithAggregatesFilter<"Companions"> | string
@@ -384,16 +418,19 @@ export type CompanionsScalarWhereWithAggregatesInput = {
   coverImage?: Prisma.StringNullableWithAggregatesFilter<"Companions"> | string | null
   galleryImages?: Prisma.StringNullableListFilter<"Companions">
   status?: Prisma.BoolWithAggregatesFilter<"Companions"> | boolean
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Companions"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Companions"> | Date | string
 }
 
 export type CompanionsCreateInput = {
   id?: string
   name: string
   age: number
-  profession: string
+  title: string
+  traits?: Prisma.CompanionsCreatetraitsInput | string[]
   location: string
   bio: string
-  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  profession: string
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
   communicationStyle: string
   lifestyle: string
@@ -403,6 +440,8 @@ export type CompanionsCreateInput = {
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
   creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutCompanionInput
   giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutCompanionInput
@@ -412,10 +451,11 @@ export type CompanionsUncheckedCreateInput = {
   id?: string
   name: string
   age: number
-  profession: string
+  title: string
+  traits?: Prisma.CompanionsCreatetraitsInput | string[]
   location: string
   bio: string
-  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  profession: string
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
   communicationStyle: string
   lifestyle: string
@@ -425,6 +465,8 @@ export type CompanionsUncheckedCreateInput = {
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
   creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutCompanionInput
   giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutCompanionInput
@@ -434,10 +476,11 @@ export type CompanionsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.IntFieldUpdateOperationsInput | number
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
   location?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
   lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
@@ -447,6 +490,8 @@ export type CompanionsUpdateInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
   creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutCompanionNestedInput
   giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutCompanionNestedInput
@@ -456,10 +501,11 @@ export type CompanionsUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.IntFieldUpdateOperationsInput | number
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
   location?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
   lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
@@ -469,6 +515,8 @@ export type CompanionsUncheckedUpdateInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
   giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
@@ -478,10 +526,11 @@ export type CompanionsCreateManyInput = {
   id?: string
   name: string
   age: number
-  profession: string
+  title: string
+  traits?: Prisma.CompanionsCreatetraitsInput | string[]
   location: string
   bio: string
-  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  profession: string
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
   communicationStyle: string
   lifestyle: string
@@ -491,16 +540,19 @@ export type CompanionsCreateManyInput = {
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CompanionsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.IntFieldUpdateOperationsInput | number
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
   location?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
   lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
@@ -510,16 +562,19 @@ export type CompanionsUpdateManyMutationInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CompanionsUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.IntFieldUpdateOperationsInput | number
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
   location?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
   lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
@@ -529,6 +584,8 @@ export type CompanionsUncheckedUpdateManyInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CompanionsScalarRelationFilter = {
@@ -548,10 +605,11 @@ export type CompanionsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   age?: Prisma.SortOrder
-  profession?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  traits?: Prisma.SortOrder
   location?: Prisma.SortOrder
   bio?: Prisma.SortOrder
-  personalityTraits?: Prisma.SortOrder
+  profession?: Prisma.SortOrder
   interests?: Prisma.SortOrder
   communicationStyle?: Prisma.SortOrder
   lifestyle?: Prisma.SortOrder
@@ -561,6 +619,8 @@ export type CompanionsCountOrderByAggregateInput = {
   coverImage?: Prisma.SortOrder
   galleryImages?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CompanionsAvgOrderByAggregateInput = {
@@ -571,30 +631,36 @@ export type CompanionsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   age?: Prisma.SortOrder
-  profession?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   location?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  profession?: Prisma.SortOrder
   communicationStyle?: Prisma.SortOrder
   lifestyle?: Prisma.SortOrder
   backstory?: Prisma.SortOrder
   profileImage?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CompanionsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   age?: Prisma.SortOrder
-  profession?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   location?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  profession?: Prisma.SortOrder
   communicationStyle?: Prisma.SortOrder
   lifestyle?: Prisma.SortOrder
   backstory?: Prisma.SortOrder
   profileImage?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CompanionsSumOrderByAggregateInput = {
@@ -620,7 +686,7 @@ export type CompanionsUpdateOneRequiredWithoutChatMessagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutChatMessagesInput, Prisma.CompanionsUpdateWithoutChatMessagesInput>, Prisma.CompanionsUncheckedUpdateWithoutChatMessagesInput>
 }
 
-export type CompanionsCreatepersonalityTraitsInput = {
+export type CompanionsCreatetraitsInput = {
   set: string[]
 }
 
@@ -636,7 +702,7 @@ export type CompanionsCreategalleryImagesInput = {
   set: string[]
 }
 
-export type CompanionsUpdatepersonalityTraitsInput = {
+export type CompanionsUpdatetraitsInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -690,10 +756,11 @@ export type CompanionsCreateWithoutChatMessagesInput = {
   id?: string
   name: string
   age: number
-  profession: string
+  title: string
+  traits?: Prisma.CompanionsCreatetraitsInput | string[]
   location: string
   bio: string
-  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  profession: string
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
   communicationStyle: string
   lifestyle: string
@@ -703,6 +770,8 @@ export type CompanionsCreateWithoutChatMessagesInput = {
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutCompanionInput
   giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutCompanionInput
 }
@@ -711,10 +780,11 @@ export type CompanionsUncheckedCreateWithoutChatMessagesInput = {
   id?: string
   name: string
   age: number
-  profession: string
+  title: string
+  traits?: Prisma.CompanionsCreatetraitsInput | string[]
   location: string
   bio: string
-  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  profession: string
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
   communicationStyle: string
   lifestyle: string
@@ -724,6 +794,8 @@ export type CompanionsUncheckedCreateWithoutChatMessagesInput = {
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutCompanionInput
   giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutCompanionInput
 }
@@ -748,10 +820,11 @@ export type CompanionsUpdateWithoutChatMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.IntFieldUpdateOperationsInput | number
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
   location?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
   lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
@@ -761,6 +834,8 @@ export type CompanionsUpdateWithoutChatMessagesInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutCompanionNestedInput
   giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutCompanionNestedInput
 }
@@ -769,10 +844,11 @@ export type CompanionsUncheckedUpdateWithoutChatMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.IntFieldUpdateOperationsInput | number
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
   location?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
   lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
@@ -782,6 +858,8 @@ export type CompanionsUncheckedUpdateWithoutChatMessagesInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
   giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
 }
@@ -790,10 +868,11 @@ export type CompanionsCreateWithoutCreditTransactionsInput = {
   id?: string
   name: string
   age: number
-  profession: string
+  title: string
+  traits?: Prisma.CompanionsCreatetraitsInput | string[]
   location: string
   bio: string
-  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  profession: string
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
   communicationStyle: string
   lifestyle: string
@@ -803,6 +882,8 @@ export type CompanionsCreateWithoutCreditTransactionsInput = {
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
   giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutCompanionInput
 }
@@ -811,10 +892,11 @@ export type CompanionsUncheckedCreateWithoutCreditTransactionsInput = {
   id?: string
   name: string
   age: number
-  profession: string
+  title: string
+  traits?: Prisma.CompanionsCreatetraitsInput | string[]
   location: string
   bio: string
-  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  profession: string
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
   communicationStyle: string
   lifestyle: string
@@ -824,6 +906,8 @@ export type CompanionsUncheckedCreateWithoutCreditTransactionsInput = {
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
   giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutCompanionInput
 }
@@ -848,10 +932,11 @@ export type CompanionsUpdateWithoutCreditTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.IntFieldUpdateOperationsInput | number
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
   location?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
   lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
@@ -861,6 +946,8 @@ export type CompanionsUpdateWithoutCreditTransactionsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
   giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutCompanionNestedInput
 }
@@ -869,10 +956,11 @@ export type CompanionsUncheckedUpdateWithoutCreditTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.IntFieldUpdateOperationsInput | number
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
   location?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
   lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
@@ -882,6 +970,8 @@ export type CompanionsUncheckedUpdateWithoutCreditTransactionsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
   giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
 }
@@ -890,10 +980,11 @@ export type CompanionsCreateWithoutGiftTransactionsInput = {
   id?: string
   name: string
   age: number
-  profession: string
+  title: string
+  traits?: Prisma.CompanionsCreatetraitsInput | string[]
   location: string
   bio: string
-  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  profession: string
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
   communicationStyle: string
   lifestyle: string
@@ -903,6 +994,8 @@ export type CompanionsCreateWithoutGiftTransactionsInput = {
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
   creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutCompanionInput
 }
@@ -911,10 +1004,11 @@ export type CompanionsUncheckedCreateWithoutGiftTransactionsInput = {
   id?: string
   name: string
   age: number
-  profession: string
+  title: string
+  traits?: Prisma.CompanionsCreatetraitsInput | string[]
   location: string
   bio: string
-  personalityTraits?: Prisma.CompanionsCreatepersonalityTraitsInput | string[]
+  profession: string
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
   communicationStyle: string
   lifestyle: string
@@ -924,6 +1018,8 @@ export type CompanionsUncheckedCreateWithoutGiftTransactionsInput = {
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
   creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutCompanionInput
 }
@@ -948,10 +1044,11 @@ export type CompanionsUpdateWithoutGiftTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.IntFieldUpdateOperationsInput | number
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
   location?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
   lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
@@ -961,6 +1058,8 @@ export type CompanionsUpdateWithoutGiftTransactionsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
   creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutCompanionNestedInput
 }
@@ -969,10 +1068,11 @@ export type CompanionsUncheckedUpdateWithoutGiftTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.IntFieldUpdateOperationsInput | number
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
   location?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  personalityTraits?: Prisma.CompanionsUpdatepersonalityTraitsInput | string[]
+  profession?: Prisma.StringFieldUpdateOperationsInput | string
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
   lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
@@ -982,6 +1082,8 @@ export type CompanionsUncheckedUpdateWithoutGiftTransactionsInput = {
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
 }
@@ -1039,10 +1141,11 @@ export type CompanionsSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   id?: boolean
   name?: boolean
   age?: boolean
-  profession?: boolean
+  title?: boolean
+  traits?: boolean
   location?: boolean
   bio?: boolean
-  personalityTraits?: boolean
+  profession?: boolean
   interests?: boolean
   communicationStyle?: boolean
   lifestyle?: boolean
@@ -1052,6 +1155,8 @@ export type CompanionsSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   coverImage?: boolean
   galleryImages?: boolean
   status?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   chatMessages?: boolean | Prisma.Companions$chatMessagesArgs<ExtArgs>
   creditTransactions?: boolean | Prisma.Companions$creditTransactionsArgs<ExtArgs>
   giftTransactions?: boolean | Prisma.Companions$giftTransactionsArgs<ExtArgs>
@@ -1062,10 +1167,11 @@ export type CompanionsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   id?: boolean
   name?: boolean
   age?: boolean
-  profession?: boolean
+  title?: boolean
+  traits?: boolean
   location?: boolean
   bio?: boolean
-  personalityTraits?: boolean
+  profession?: boolean
   interests?: boolean
   communicationStyle?: boolean
   lifestyle?: boolean
@@ -1075,16 +1181,19 @@ export type CompanionsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   coverImage?: boolean
   galleryImages?: boolean
   status?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["companions"]>
 
 export type CompanionsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   age?: boolean
-  profession?: boolean
+  title?: boolean
+  traits?: boolean
   location?: boolean
   bio?: boolean
-  personalityTraits?: boolean
+  profession?: boolean
   interests?: boolean
   communicationStyle?: boolean
   lifestyle?: boolean
@@ -1094,16 +1203,19 @@ export type CompanionsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   coverImage?: boolean
   galleryImages?: boolean
   status?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["companions"]>
 
 export type CompanionsSelectScalar = {
   id?: boolean
   name?: boolean
   age?: boolean
-  profession?: boolean
+  title?: boolean
+  traits?: boolean
   location?: boolean
   bio?: boolean
-  personalityTraits?: boolean
+  profession?: boolean
   interests?: boolean
   communicationStyle?: boolean
   lifestyle?: boolean
@@ -1113,9 +1225,11 @@ export type CompanionsSelectScalar = {
   coverImage?: boolean
   galleryImages?: boolean
   status?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type CompanionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "age" | "profession" | "location" | "bio" | "personalityTraits" | "interests" | "communicationStyle" | "lifestyle" | "backstory" | "voiceDescription" | "profileImage" | "coverImage" | "galleryImages" | "status", ExtArgs["result"]["companions"]>
+export type CompanionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "age" | "title" | "traits" | "location" | "bio" | "profession" | "interests" | "communicationStyle" | "lifestyle" | "backstory" | "voiceDescription" | "profileImage" | "coverImage" | "galleryImages" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["companions"]>
 export type CompanionsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   chatMessages?: boolean | Prisma.Companions$chatMessagesArgs<ExtArgs>
   creditTransactions?: boolean | Prisma.Companions$creditTransactionsArgs<ExtArgs>
@@ -1136,10 +1250,11 @@ export type $CompanionsPayload<ExtArgs extends runtime.Types.Extensions.Internal
     id: string
     name: string
     age: number
-    profession: string
+    title: string
+    traits: string[]
     location: string
     bio: string
-    personalityTraits: string[]
+    profession: string
     interests: string[]
     communicationStyle: string
     lifestyle: string
@@ -1149,6 +1264,8 @@ export type $CompanionsPayload<ExtArgs extends runtime.Types.Extensions.Internal
     coverImage: string | null
     galleryImages: string[]
     status: boolean
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["companions"]>
   composites: {}
 }
@@ -1578,10 +1695,11 @@ export interface CompanionsFieldRefs {
   readonly id: Prisma.FieldRef<"Companions", 'String'>
   readonly name: Prisma.FieldRef<"Companions", 'String'>
   readonly age: Prisma.FieldRef<"Companions", 'Int'>
-  readonly profession: Prisma.FieldRef<"Companions", 'String'>
+  readonly title: Prisma.FieldRef<"Companions", 'String'>
+  readonly traits: Prisma.FieldRef<"Companions", 'String[]'>
   readonly location: Prisma.FieldRef<"Companions", 'String'>
   readonly bio: Prisma.FieldRef<"Companions", 'String'>
-  readonly personalityTraits: Prisma.FieldRef<"Companions", 'String[]'>
+  readonly profession: Prisma.FieldRef<"Companions", 'String'>
   readonly interests: Prisma.FieldRef<"Companions", 'String[]'>
   readonly communicationStyle: Prisma.FieldRef<"Companions", 'String'>
   readonly lifestyle: Prisma.FieldRef<"Companions", 'String'>
@@ -1591,6 +1709,8 @@ export interface CompanionsFieldRefs {
   readonly coverImage: Prisma.FieldRef<"Companions", 'String'>
   readonly galleryImages: Prisma.FieldRef<"Companions", 'String[]'>
   readonly status: Prisma.FieldRef<"Companions", 'Boolean'>
+  readonly createdAt: Prisma.FieldRef<"Companions", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Companions", 'DateTime'>
 }
     
 

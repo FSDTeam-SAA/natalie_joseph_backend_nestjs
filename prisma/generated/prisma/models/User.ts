@@ -51,8 +51,8 @@ export type UserMinAggregateOutputType = {
   isSubscribed: boolean | null
   isFreeTrialUsed: boolean | null
   creditBalance: number | null
-  createAt: Date | null
-  updateAt: Date | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -72,8 +72,8 @@ export type UserMaxAggregateOutputType = {
   isSubscribed: boolean | null
   isFreeTrialUsed: boolean | null
   creditBalance: number | null
-  createAt: Date | null
-  updateAt: Date | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -93,8 +93,8 @@ export type UserCountAggregateOutputType = {
   isSubscribed: number
   isFreeTrialUsed: number
   creditBalance: number
-  createAt: number
-  updateAt: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -124,8 +124,8 @@ export type UserMinAggregateInputType = {
   isSubscribed?: true
   isFreeTrialUsed?: true
   creditBalance?: true
-  createAt?: true
-  updateAt?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -145,8 +145,8 @@ export type UserMaxAggregateInputType = {
   isSubscribed?: true
   isFreeTrialUsed?: true
   creditBalance?: true
-  createAt?: true
-  updateAt?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -166,8 +166,8 @@ export type UserCountAggregateInputType = {
   isSubscribed?: true
   isFreeTrialUsed?: true
   creditBalance?: true
-  createAt?: true
-  updateAt?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -274,8 +274,8 @@ export type UserGroupByOutputType = {
   isSubscribed: boolean
   isFreeTrialUsed: boolean
   creditBalance: number
-  createAt: Date
-  updateAt: Date
+  createdAt: Date
+  updatedAt: Date
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -318,8 +318,8 @@ export type UserWhereInput = {
   isSubscribed?: Prisma.BoolFilter<"User"> | boolean
   isFreeTrialUsed?: Prisma.BoolFilter<"User"> | boolean
   creditBalance?: Prisma.IntFilter<"User"> | number
-  createAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  updateAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   subscriptions?: Prisma.UserSubscriptionListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   chatMessages?: Prisma.ChatMessageListRelationFilter
@@ -345,8 +345,8 @@ export type UserOrderByWithRelationInput = {
   isSubscribed?: Prisma.SortOrder
   isFreeTrialUsed?: Prisma.SortOrder
   creditBalance?: Prisma.SortOrder
-  createAt?: Prisma.SortOrder
-  updateAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   subscriptions?: Prisma.UserSubscriptionOrderByRelationAggregateInput
   payments?: Prisma.PaymentOrderByRelationAggregateInput
   chatMessages?: Prisma.ChatMessageOrderByRelationAggregateInput
@@ -375,8 +375,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   isSubscribed?: Prisma.BoolFilter<"User"> | boolean
   isFreeTrialUsed?: Prisma.BoolFilter<"User"> | boolean
   creditBalance?: Prisma.IntFilter<"User"> | number
-  createAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  updateAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   subscriptions?: Prisma.UserSubscriptionListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   chatMessages?: Prisma.ChatMessageListRelationFilter
@@ -402,8 +402,8 @@ export type UserOrderByWithAggregationInput = {
   isSubscribed?: Prisma.SortOrder
   isFreeTrialUsed?: Prisma.SortOrder
   creditBalance?: Prisma.SortOrder
-  createAt?: Prisma.SortOrder
-  updateAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -431,8 +431,8 @@ export type UserScalarWhereWithAggregatesInput = {
   isSubscribed?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   isFreeTrialUsed?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   creditBalance?: Prisma.IntWithAggregatesFilter<"User"> | number
-  createAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
-  updateAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
 
 export type UserCreateInput = {
@@ -452,8 +452,8 @@ export type UserCreateInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
@@ -479,8 +479,8 @@ export type UserUncheckedCreateInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
@@ -506,8 +506,8 @@ export type UserUpdateInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
@@ -533,8 +533,8 @@ export type UserUncheckedUpdateInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
@@ -560,8 +560,8 @@ export type UserCreateManyInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type UserUpdateManyMutationInput = {
@@ -581,8 +581,8 @@ export type UserUpdateManyMutationInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -602,8 +602,8 @@ export type UserUncheckedUpdateManyInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserScalarRelationFilter = {
@@ -628,8 +628,8 @@ export type UserCountOrderByAggregateInput = {
   isSubscribed?: Prisma.SortOrder
   isFreeTrialUsed?: Prisma.SortOrder
   creditBalance?: Prisma.SortOrder
-  createAt?: Prisma.SortOrder
-  updateAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -653,8 +653,8 @@ export type UserMaxOrderByAggregateInput = {
   isSubscribed?: Prisma.SortOrder
   isFreeTrialUsed?: Prisma.SortOrder
   creditBalance?: Prisma.SortOrder
-  createAt?: Prisma.SortOrder
-  updateAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -674,8 +674,8 @@ export type UserMinOrderByAggregateInput = {
   isSubscribed?: Prisma.SortOrder
   isFreeTrialUsed?: Prisma.SortOrder
   creditBalance?: Prisma.SortOrder
-  createAt?: Prisma.SortOrder
-  updateAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
@@ -799,8 +799,8 @@ export type UserCreateWithoutChatMessagesInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
@@ -825,8 +825,8 @@ export type UserUncheckedCreateWithoutChatMessagesInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -867,8 +867,8 @@ export type UserUpdateWithoutChatMessagesInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
@@ -893,8 +893,8 @@ export type UserUncheckedUpdateWithoutChatMessagesInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -919,8 +919,8 @@ export type UserCreateWithoutCreditTransactionsInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
@@ -945,8 +945,8 @@ export type UserUncheckedCreateWithoutCreditTransactionsInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
@@ -987,8 +987,8 @@ export type UserUpdateWithoutCreditTransactionsInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
@@ -1013,8 +1013,8 @@ export type UserUncheckedUpdateWithoutCreditTransactionsInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
@@ -1039,8 +1039,8 @@ export type UserCreateWithoutPurchasedCreditLotsInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
@@ -1065,8 +1065,8 @@ export type UserUncheckedCreateWithoutPurchasedCreditLotsInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
@@ -1107,8 +1107,8 @@ export type UserUpdateWithoutPurchasedCreditLotsInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
@@ -1133,8 +1133,8 @@ export type UserUncheckedUpdateWithoutPurchasedCreditLotsInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
@@ -1159,8 +1159,8 @@ export type UserCreateWithoutGiftTransactionsInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
@@ -1185,8 +1185,8 @@ export type UserUncheckedCreateWithoutGiftTransactionsInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
@@ -1227,8 +1227,8 @@ export type UserUpdateWithoutGiftTransactionsInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
@@ -1253,8 +1253,8 @@ export type UserUncheckedUpdateWithoutGiftTransactionsInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
@@ -1279,8 +1279,8 @@ export type UserCreateWithoutPaymentsInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
@@ -1305,8 +1305,8 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1347,8 +1347,8 @@ export type UserUpdateWithoutPaymentsInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
@@ -1373,8 +1373,8 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1399,8 +1399,8 @@ export type UserCreateWithoutSubscriptionsInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
@@ -1425,8 +1425,8 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
-  createAt?: Date | string
-  updateAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
   creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1467,8 +1467,8 @@ export type UserUpdateWithoutSubscriptionsInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
@@ -1493,8 +1493,8 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
-  createAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updateAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1595,8 +1595,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: boolean
-  createAt?: boolean
-  updateAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   subscriptions?: boolean | Prisma.User$subscriptionsArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
   chatMessages?: boolean | Prisma.User$chatMessagesArgs<ExtArgs>
@@ -1623,8 +1623,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: boolean
-  createAt?: boolean
-  updateAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1644,8 +1644,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: boolean
-  createAt?: boolean
-  updateAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -1665,11 +1665,11 @@ export type UserSelectScalar = {
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: boolean
-  createAt?: boolean
-  updateAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "phoneNumber" | "profileImage" | "otp" | "otpExpiry" | "status" | "verifiedForgot" | "stripeAccountId" | "adultEligible" | "isSubscribed" | "isFreeTrialUsed" | "creditBalance" | "createAt" | "updateAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "phoneNumber" | "profileImage" | "otp" | "otpExpiry" | "status" | "verifiedForgot" | "stripeAccountId" | "adultEligible" | "isSubscribed" | "isFreeTrialUsed" | "creditBalance" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   subscriptions?: boolean | Prisma.User$subscriptionsArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
@@ -1709,8 +1709,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     isSubscribed: boolean
     isFreeTrialUsed: boolean
     creditBalance: number
-    createAt: Date
-    updateAt: Date
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -2156,8 +2156,8 @@ export interface UserFieldRefs {
   readonly isSubscribed: Prisma.FieldRef<"User", 'Boolean'>
   readonly isFreeTrialUsed: Prisma.FieldRef<"User", 'Boolean'>
   readonly creditBalance: Prisma.FieldRef<"User", 'Int'>
-  readonly createAt: Prisma.FieldRef<"User", 'DateTime'>
-  readonly updateAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 

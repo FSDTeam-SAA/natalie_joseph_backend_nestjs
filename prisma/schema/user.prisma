@@ -21,8 +21,8 @@ model User {
   creditTransactions CreditTransaction[]
   purchasedCreditLots PurchasedCreditLot[]
   giftTransactions   GiftTransaction[]
-  createAt           DateTime            @default(now())
-  updateAt           DateTime            @updatedAt
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
 
   @@map("users")
 }

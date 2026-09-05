@@ -45,6 +45,12 @@ export class CreateCompanionDto {
   age!: number;
 
   @ApiProperty({
+    example: 'The Intelligent & Curious Companion',
+  })
+  @IsString()
+  title!: string;
+
+  @ApiProperty({
     example: 'Software Engineer',
     description: 'Profession of the companion',
   })
@@ -67,13 +73,13 @@ export class CreateCompanionDto {
 
   @ApiProperty({
     type: [String],
-    example: ['Friendly', 'Caring', 'Adventurous'],
-    description: 'Personality traits',
+    example: ['Social', 'Playful', 'Confident', 'Charming'],
+    description: 'Traits',
   })
   @IsArray()
   @IsString({ each: true })
   @Transform(toStringArray)
-  personalityTraits!: string[];
+  traits!: string[];
 
   @ApiProperty({
     type: [String],
