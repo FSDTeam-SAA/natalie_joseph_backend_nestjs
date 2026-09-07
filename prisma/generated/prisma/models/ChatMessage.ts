@@ -39,6 +39,9 @@ export type ChatMessageMinAggregateOutputType = {
   userId: string | null
   companionId: string | null
   message: string | null
+  response: string | null
+  aiMessageId: string | null
+  conversationId: string | null
   usedCredit: boolean | null
   type: $Enums.ChatMessageType | null
   giftId: string | null
@@ -51,6 +54,9 @@ export type ChatMessageMaxAggregateOutputType = {
   userId: string | null
   companionId: string | null
   message: string | null
+  response: string | null
+  aiMessageId: string | null
+  conversationId: string | null
   usedCredit: boolean | null
   type: $Enums.ChatMessageType | null
   giftId: string | null
@@ -63,6 +69,9 @@ export type ChatMessageCountAggregateOutputType = {
   userId: number
   companionId: number
   message: number
+  response: number
+  aiMessageId: number
+  conversationId: number
   usedCredit: number
   type: number
   giftId: number
@@ -85,6 +94,9 @@ export type ChatMessageMinAggregateInputType = {
   userId?: true
   companionId?: true
   message?: true
+  response?: true
+  aiMessageId?: true
+  conversationId?: true
   usedCredit?: true
   type?: true
   giftId?: true
@@ -97,6 +109,9 @@ export type ChatMessageMaxAggregateInputType = {
   userId?: true
   companionId?: true
   message?: true
+  response?: true
+  aiMessageId?: true
+  conversationId?: true
   usedCredit?: true
   type?: true
   giftId?: true
@@ -109,6 +124,9 @@ export type ChatMessageCountAggregateInputType = {
   userId?: true
   companionId?: true
   message?: true
+  response?: true
+  aiMessageId?: true
+  conversationId?: true
   usedCredit?: true
   type?: true
   giftId?: true
@@ -208,6 +226,9 @@ export type ChatMessageGroupByOutputType = {
   userId: string
   companionId: string
   message: string
+  response: string | null
+  aiMessageId: string | null
+  conversationId: string | null
   usedCredit: boolean
   type: $Enums.ChatMessageType
   giftId: string | null
@@ -243,6 +264,9 @@ export type ChatMessageWhereInput = {
   userId?: Prisma.StringFilter<"ChatMessage"> | string
   companionId?: Prisma.StringFilter<"ChatMessage"> | string
   message?: Prisma.StringFilter<"ChatMessage"> | string
+  response?: Prisma.StringNullableFilter<"ChatMessage"> | string | null
+  aiMessageId?: Prisma.StringNullableFilter<"ChatMessage"> | string | null
+  conversationId?: Prisma.StringNullableFilter<"ChatMessage"> | string | null
   usedCredit?: Prisma.BoolFilter<"ChatMessage"> | boolean
   type?: Prisma.EnumChatMessageTypeFilter<"ChatMessage"> | $Enums.ChatMessageType
   giftId?: Prisma.StringNullableFilter<"ChatMessage"> | string | null
@@ -258,6 +282,9 @@ export type ChatMessageOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   companionId?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  response?: Prisma.SortOrderInput | Prisma.SortOrder
+  aiMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  conversationId?: Prisma.SortOrderInput | Prisma.SortOrder
   usedCredit?: Prisma.SortOrder
   type?: Prisma.SortOrder
   giftId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -276,6 +303,9 @@ export type ChatMessageWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"ChatMessage"> | string
   companionId?: Prisma.StringFilter<"ChatMessage"> | string
   message?: Prisma.StringFilter<"ChatMessage"> | string
+  response?: Prisma.StringNullableFilter<"ChatMessage"> | string | null
+  aiMessageId?: Prisma.StringNullableFilter<"ChatMessage"> | string | null
+  conversationId?: Prisma.StringNullableFilter<"ChatMessage"> | string | null
   usedCredit?: Prisma.BoolFilter<"ChatMessage"> | boolean
   type?: Prisma.EnumChatMessageTypeFilter<"ChatMessage"> | $Enums.ChatMessageType
   giftId?: Prisma.StringNullableFilter<"ChatMessage"> | string | null
@@ -291,6 +321,9 @@ export type ChatMessageOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   companionId?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  response?: Prisma.SortOrderInput | Prisma.SortOrder
+  aiMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  conversationId?: Prisma.SortOrderInput | Prisma.SortOrder
   usedCredit?: Prisma.SortOrder
   type?: Prisma.SortOrder
   giftId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -311,6 +344,9 @@ export type ChatMessageScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"ChatMessage"> | string
   companionId?: Prisma.StringWithAggregatesFilter<"ChatMessage"> | string
   message?: Prisma.StringWithAggregatesFilter<"ChatMessage"> | string
+  response?: Prisma.StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
+  aiMessageId?: Prisma.StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
+  conversationId?: Prisma.StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
   usedCredit?: Prisma.BoolWithAggregatesFilter<"ChatMessage"> | boolean
   type?: Prisma.EnumChatMessageTypeWithAggregatesFilter<"ChatMessage"> | $Enums.ChatMessageType
   giftId?: Prisma.StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
@@ -321,6 +357,9 @@ export type ChatMessageScalarWhereWithAggregatesInput = {
 export type ChatMessageCreateInput = {
   id?: string
   message: string
+  response?: string | null
+  aiMessageId?: string | null
+  conversationId?: string | null
   usedCredit?: boolean
   type?: $Enums.ChatMessageType
   creditCost?: number
@@ -335,6 +374,9 @@ export type ChatMessageUncheckedCreateInput = {
   userId: string
   companionId: string
   message: string
+  response?: string | null
+  aiMessageId?: string | null
+  conversationId?: string | null
   usedCredit?: boolean
   type?: $Enums.ChatMessageType
   giftId?: string | null
@@ -345,6 +387,9 @@ export type ChatMessageUncheckedCreateInput = {
 export type ChatMessageUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  response?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedCredit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   type?: Prisma.EnumChatMessageTypeFieldUpdateOperationsInput | $Enums.ChatMessageType
   creditCost?: Prisma.IntFieldUpdateOperationsInput | number
@@ -359,6 +404,9 @@ export type ChatMessageUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   companionId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  response?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedCredit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   type?: Prisma.EnumChatMessageTypeFieldUpdateOperationsInput | $Enums.ChatMessageType
   giftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -371,6 +419,9 @@ export type ChatMessageCreateManyInput = {
   userId: string
   companionId: string
   message: string
+  response?: string | null
+  aiMessageId?: string | null
+  conversationId?: string | null
   usedCredit?: boolean
   type?: $Enums.ChatMessageType
   giftId?: string | null
@@ -381,6 +432,9 @@ export type ChatMessageCreateManyInput = {
 export type ChatMessageUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  response?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedCredit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   type?: Prisma.EnumChatMessageTypeFieldUpdateOperationsInput | $Enums.ChatMessageType
   creditCost?: Prisma.IntFieldUpdateOperationsInput | number
@@ -392,6 +446,9 @@ export type ChatMessageUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   companionId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  response?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedCredit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   type?: Prisma.EnumChatMessageTypeFieldUpdateOperationsInput | $Enums.ChatMessageType
   giftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -404,6 +461,9 @@ export type ChatMessageCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   companionId?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  response?: Prisma.SortOrder
+  aiMessageId?: Prisma.SortOrder
+  conversationId?: Prisma.SortOrder
   usedCredit?: Prisma.SortOrder
   type?: Prisma.SortOrder
   giftId?: Prisma.SortOrder
@@ -420,6 +480,9 @@ export type ChatMessageMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   companionId?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  response?: Prisma.SortOrder
+  aiMessageId?: Prisma.SortOrder
+  conversationId?: Prisma.SortOrder
   usedCredit?: Prisma.SortOrder
   type?: Prisma.SortOrder
   giftId?: Prisma.SortOrder
@@ -432,6 +495,9 @@ export type ChatMessageMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   companionId?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  response?: Prisma.SortOrder
+  aiMessageId?: Prisma.SortOrder
+  conversationId?: Prisma.SortOrder
   usedCredit?: Prisma.SortOrder
   type?: Prisma.SortOrder
   giftId?: Prisma.SortOrder
@@ -457,6 +523,10 @@ export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
@@ -475,10 +545,6 @@ export type IntFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
-}
-
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
 }
 
 export type ChatMessageCreateNestedManyWithoutCompanionInput = {
@@ -610,6 +676,9 @@ export type ChatMessageUncheckedUpdateManyWithoutUserNestedInput = {
 export type ChatMessageCreateWithoutCompanionInput = {
   id?: string
   message: string
+  response?: string | null
+  aiMessageId?: string | null
+  conversationId?: string | null
   usedCredit?: boolean
   type?: $Enums.ChatMessageType
   creditCost?: number
@@ -622,6 +691,9 @@ export type ChatMessageUncheckedCreateWithoutCompanionInput = {
   id?: string
   userId: string
   message: string
+  response?: string | null
+  aiMessageId?: string | null
+  conversationId?: string | null
   usedCredit?: boolean
   type?: $Enums.ChatMessageType
   giftId?: string | null
@@ -663,6 +735,9 @@ export type ChatMessageScalarWhereInput = {
   userId?: Prisma.StringFilter<"ChatMessage"> | string
   companionId?: Prisma.StringFilter<"ChatMessage"> | string
   message?: Prisma.StringFilter<"ChatMessage"> | string
+  response?: Prisma.StringNullableFilter<"ChatMessage"> | string | null
+  aiMessageId?: Prisma.StringNullableFilter<"ChatMessage"> | string | null
+  conversationId?: Prisma.StringNullableFilter<"ChatMessage"> | string | null
   usedCredit?: Prisma.BoolFilter<"ChatMessage"> | boolean
   type?: Prisma.EnumChatMessageTypeFilter<"ChatMessage"> | $Enums.ChatMessageType
   giftId?: Prisma.StringNullableFilter<"ChatMessage"> | string | null
@@ -673,6 +748,9 @@ export type ChatMessageScalarWhereInput = {
 export type ChatMessageCreateWithoutGiftInput = {
   id?: string
   message: string
+  response?: string | null
+  aiMessageId?: string | null
+  conversationId?: string | null
   usedCredit?: boolean
   type?: $Enums.ChatMessageType
   creditCost?: number
@@ -686,6 +764,9 @@ export type ChatMessageUncheckedCreateWithoutGiftInput = {
   userId: string
   companionId: string
   message: string
+  response?: string | null
+  aiMessageId?: string | null
+  conversationId?: string | null
   usedCredit?: boolean
   type?: $Enums.ChatMessageType
   creditCost?: number
@@ -721,6 +802,9 @@ export type ChatMessageUpdateManyWithWhereWithoutGiftInput = {
 export type ChatMessageCreateWithoutUserInput = {
   id?: string
   message: string
+  response?: string | null
+  aiMessageId?: string | null
+  conversationId?: string | null
   usedCredit?: boolean
   type?: $Enums.ChatMessageType
   creditCost?: number
@@ -733,6 +817,9 @@ export type ChatMessageUncheckedCreateWithoutUserInput = {
   id?: string
   companionId: string
   message: string
+  response?: string | null
+  aiMessageId?: string | null
+  conversationId?: string | null
   usedCredit?: boolean
   type?: $Enums.ChatMessageType
   giftId?: string | null
@@ -770,6 +857,9 @@ export type ChatMessageCreateManyCompanionInput = {
   id?: string
   userId: string
   message: string
+  response?: string | null
+  aiMessageId?: string | null
+  conversationId?: string | null
   usedCredit?: boolean
   type?: $Enums.ChatMessageType
   giftId?: string | null
@@ -780,6 +870,9 @@ export type ChatMessageCreateManyCompanionInput = {
 export type ChatMessageUpdateWithoutCompanionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  response?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedCredit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   type?: Prisma.EnumChatMessageTypeFieldUpdateOperationsInput | $Enums.ChatMessageType
   creditCost?: Prisma.IntFieldUpdateOperationsInput | number
@@ -792,6 +885,9 @@ export type ChatMessageUncheckedUpdateWithoutCompanionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  response?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedCredit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   type?: Prisma.EnumChatMessageTypeFieldUpdateOperationsInput | $Enums.ChatMessageType
   giftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -803,6 +899,9 @@ export type ChatMessageUncheckedUpdateManyWithoutCompanionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  response?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedCredit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   type?: Prisma.EnumChatMessageTypeFieldUpdateOperationsInput | $Enums.ChatMessageType
   giftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -815,6 +914,9 @@ export type ChatMessageCreateManyGiftInput = {
   userId: string
   companionId: string
   message: string
+  response?: string | null
+  aiMessageId?: string | null
+  conversationId?: string | null
   usedCredit?: boolean
   type?: $Enums.ChatMessageType
   creditCost?: number
@@ -824,6 +926,9 @@ export type ChatMessageCreateManyGiftInput = {
 export type ChatMessageUpdateWithoutGiftInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  response?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedCredit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   type?: Prisma.EnumChatMessageTypeFieldUpdateOperationsInput | $Enums.ChatMessageType
   creditCost?: Prisma.IntFieldUpdateOperationsInput | number
@@ -837,6 +942,9 @@ export type ChatMessageUncheckedUpdateWithoutGiftInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   companionId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  response?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedCredit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   type?: Prisma.EnumChatMessageTypeFieldUpdateOperationsInput | $Enums.ChatMessageType
   creditCost?: Prisma.IntFieldUpdateOperationsInput | number
@@ -848,6 +956,9 @@ export type ChatMessageUncheckedUpdateManyWithoutGiftInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   companionId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  response?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedCredit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   type?: Prisma.EnumChatMessageTypeFieldUpdateOperationsInput | $Enums.ChatMessageType
   creditCost?: Prisma.IntFieldUpdateOperationsInput | number
@@ -858,6 +969,9 @@ export type ChatMessageCreateManyUserInput = {
   id?: string
   companionId: string
   message: string
+  response?: string | null
+  aiMessageId?: string | null
+  conversationId?: string | null
   usedCredit?: boolean
   type?: $Enums.ChatMessageType
   giftId?: string | null
@@ -868,6 +982,9 @@ export type ChatMessageCreateManyUserInput = {
 export type ChatMessageUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  response?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedCredit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   type?: Prisma.EnumChatMessageTypeFieldUpdateOperationsInput | $Enums.ChatMessageType
   creditCost?: Prisma.IntFieldUpdateOperationsInput | number
@@ -880,6 +997,9 @@ export type ChatMessageUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   companionId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  response?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedCredit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   type?: Prisma.EnumChatMessageTypeFieldUpdateOperationsInput | $Enums.ChatMessageType
   giftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -891,6 +1011,9 @@ export type ChatMessageUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   companionId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  response?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedCredit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   type?: Prisma.EnumChatMessageTypeFieldUpdateOperationsInput | $Enums.ChatMessageType
   giftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -905,6 +1028,9 @@ export type ChatMessageSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   userId?: boolean
   companionId?: boolean
   message?: boolean
+  response?: boolean
+  aiMessageId?: boolean
+  conversationId?: boolean
   usedCredit?: boolean
   type?: boolean
   giftId?: boolean
@@ -920,6 +1046,9 @@ export type ChatMessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   userId?: boolean
   companionId?: boolean
   message?: boolean
+  response?: boolean
+  aiMessageId?: boolean
+  conversationId?: boolean
   usedCredit?: boolean
   type?: boolean
   giftId?: boolean
@@ -935,6 +1064,9 @@ export type ChatMessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   userId?: boolean
   companionId?: boolean
   message?: boolean
+  response?: boolean
+  aiMessageId?: boolean
+  conversationId?: boolean
   usedCredit?: boolean
   type?: boolean
   giftId?: boolean
@@ -950,6 +1082,9 @@ export type ChatMessageSelectScalar = {
   userId?: boolean
   companionId?: boolean
   message?: boolean
+  response?: boolean
+  aiMessageId?: boolean
+  conversationId?: boolean
   usedCredit?: boolean
   type?: boolean
   giftId?: boolean
@@ -957,7 +1092,7 @@ export type ChatMessageSelectScalar = {
   createdAt?: boolean
 }
 
-export type ChatMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "companionId" | "message" | "usedCredit" | "type" | "giftId" | "creditCost" | "createdAt", ExtArgs["result"]["chatMessage"]>
+export type ChatMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "companionId" | "message" | "response" | "aiMessageId" | "conversationId" | "usedCredit" | "type" | "giftId" | "creditCost" | "createdAt", ExtArgs["result"]["chatMessage"]>
 export type ChatMessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   companion?: boolean | Prisma.CompanionsDefaultArgs<ExtArgs>
@@ -986,6 +1121,9 @@ export type $ChatMessagePayload<ExtArgs extends runtime.Types.Extensions.Interna
     userId: string
     companionId: string
     message: string
+    response: string | null
+    aiMessageId: string | null
+    conversationId: string | null
     usedCredit: boolean
     type: $Enums.ChatMessageType
     giftId: string | null
@@ -1421,6 +1559,9 @@ export interface ChatMessageFieldRefs {
   readonly userId: Prisma.FieldRef<"ChatMessage", 'String'>
   readonly companionId: Prisma.FieldRef<"ChatMessage", 'String'>
   readonly message: Prisma.FieldRef<"ChatMessage", 'String'>
+  readonly response: Prisma.FieldRef<"ChatMessage", 'String'>
+  readonly aiMessageId: Prisma.FieldRef<"ChatMessage", 'String'>
+  readonly conversationId: Prisma.FieldRef<"ChatMessage", 'String'>
   readonly usedCredit: Prisma.FieldRef<"ChatMessage", 'Boolean'>
   readonly type: Prisma.FieldRef<"ChatMessage", 'ChatMessageType'>
   readonly giftId: Prisma.FieldRef<"ChatMessage", 'String'>

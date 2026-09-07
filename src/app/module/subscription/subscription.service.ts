@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import buildWhereConditions from 'src/app/helper/buildWhereConditions';
 import paginationHelper, { IOptions } from 'src/app/helper/pagenation';
 import { IFilterParams } from 'src/app/helper/pick';
@@ -37,6 +42,13 @@ export class SubscriptionService {
   async getAllSubscription(params: IFilterParams, options: IOptions) {
     const { page, skip, limit, sortBy, sortOrder } = paginationHelper(options);
     const { features, ...filterParams } = params;
+    for (const key of ['isActive', 'isPopular']) {
+      const value: unknown = filterParams[key];
+      if (value === undefined) continue;
+      if (value === true || value === 'true') filterParams[key] = true;
+      else if (value === false || value === 'false') filterParams[key] = false;
+      else throw new BadRequestException(`${key} must be true or false`);
+    }
     const whereConditions = buildWhereConditions(
       filterParams,
       ['name'],

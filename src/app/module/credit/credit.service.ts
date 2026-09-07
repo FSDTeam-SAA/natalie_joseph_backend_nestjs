@@ -58,6 +58,8 @@ export class CreditService {
   }
 
   async expirePurchasedCredits(tx: Prisma.TransactionClient, userId: string) {
+    // All credit consumers/expiry jobs use the same wallet lock.
+    await tx.$queryRaw`SELECT id FROM users WHERE id = ${userId} FOR UPDATE`;
     const now = new Date();
     const expired = await tx.purchasedCreditLot.findMany({
       where: { userId, expiresAt: { lte: now }, remainingAmount: { gt: 0 } },

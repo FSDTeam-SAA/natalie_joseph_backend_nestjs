@@ -1,6 +1,7 @@
 model Companions {
   id                 String              @id @default(uuid())
   name               String
+  aiCompanionId      String?
   age                Int
   title              String
   traits             String[]
@@ -17,6 +18,7 @@ model Companions {
   galleryImages      String[]
   status             Boolean             @default(true)
   chatMessages       ChatMessage[]
+  chatConversations  ChatConversation[]
   creditTransactions CreditTransaction[]
   giftTransactions   GiftTransaction[]
   createdAt          DateTime            @default(now())

@@ -9,6 +9,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/ChatMessage.js'
+export type * from './models/ChatConversation.js'
 export type * from './models/Companions.js'
 export type * from './models/CreditPackage.js'
 export type * from './models/CreditTransaction.js'

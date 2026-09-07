@@ -3,6 +3,9 @@ model ChatMessage {
   userId      String
   companionId String
   message     String
+  response    String?
+  aiMessageId String?
+  conversationId String?
   usedCredit  Boolean         @default(false)
   type        ChatMessageType @default(text)
   giftId      String?
@@ -15,4 +18,18 @@ model ChatMessage {
 
   @@index([userId, companionId, createdAt])
   @@map("chat_messages")
+}
+
+model ChatConversation {
+  id String @id @default(uuid())
+  userId String
+  companionId String
+  aiConversationId String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, companionId])
+  @@map("chat_conversations")
 }

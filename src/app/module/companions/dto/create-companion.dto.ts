@@ -6,6 +6,7 @@ import {
   IsInt,
   IsOptional,
   IsString,
+  IsUUID,
   Min,
 } from 'class-validator';
 
@@ -27,6 +28,14 @@ const toStringArray = ({ value }: { value: unknown }): unknown => {
 };
 
 export class CreateCompanionDto {
+  @ApiPropertyOptional({
+    description:
+      'Companion UUID from the AI service; defaults to this backend companion ID',
+  })
+  @IsOptional()
+  @IsUUID()
+  aiCompanionId?: string;
+
   @ApiProperty({
     example: 'Sophia',
     description: 'Name of the companion',

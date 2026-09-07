@@ -18,6 +18,7 @@ model User {
   creditBalance      Int                 @default(0)
   payments           Payment[]
   chatMessages       ChatMessage[]
+  chatConversations  ChatConversation[]
   creditTransactions CreditTransaction[]
   purchasedCreditLots PurchasedCreditLot[]
   giftTransactions   GiftTransaction[]
