@@ -113,13 +113,13 @@ export class ChatService {
       async (tx) => {
         // Serialize this user's chat charges and conversation creation across instances.
         await tx.$queryRaw`SELECT id FROM users WHERE id = ${userId} FOR UPDATE`;
-        const companion = await tx.companions.findFirst({
-          where: { id: companionId, status: true },
-          select: { id: true, aiCompanionId: true },
-        });
-        if (!companion) {
-          throw new NotFoundException('Companion not found');
-        }
+        // const companion = await tx.companions.findFirst({
+        //   where: { id: companionId, status: true },
+        //   select: { id: true, aiCompanionId: true },
+        // });
+        // if (!companion) {
+        //   throw new NotFoundException('Companion not found');
+        // }
 
         const now = new Date();
         const activeSubscription = await tx.userSubscription.findFirst({
@@ -147,8 +147,8 @@ export class ChatService {
         }
         const usedCredit = charge.fromPurchased > 0;
 
-        // const aiCompanionId = companionId;
-        const aiCompanionId = companion.aiCompanionId || companion.id;
+        const aiCompanionId = companionId;
+        // const aiCompanionId = companion.aiCompanionId || companion.id;
         let conversation = await tx.chatConversation.findUnique({
           where: { userId_companionId: { userId, companionId } },
         });

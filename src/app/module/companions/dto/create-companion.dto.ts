@@ -28,13 +28,13 @@ const toStringArray = ({ value }: { value: unknown }): unknown => {
 };
 
 export class CreateCompanionDto {
-  @ApiPropertyOptional({
-    description:
-      'Companion UUID from the AI service; defaults to this backend companion ID',
-  })
-  @IsOptional()
-  @IsUUID()
-  aiCompanionId?: string;
+  // @ApiPropertyOptional({
+  //   description:
+  //     'Companion UUID from the AI service; defaults to this backend companion ID',
+  // })
+  // @IsOptional()
+  // @IsUUID()
+  // aiCompanionId?: string;
 
   @ApiProperty({
     example: 'Sophia',
