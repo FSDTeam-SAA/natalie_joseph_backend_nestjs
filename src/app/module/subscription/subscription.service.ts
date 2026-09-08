@@ -100,8 +100,9 @@ export class SubscriptionService {
     if (!subscribe) {
       throw new HttpException('Subscription not found', HttpStatus.NOT_FOUND);
     }
-    const result = await this.prisma.subscription.delete({
+    const result = await this.prisma.subscription.update({
       where: { id },
+      data: { isActive: false },
     });
     return result;
   }

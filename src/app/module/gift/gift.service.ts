@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import buildWhereConditions from 'src/app/helper/buildWhereConditions';
 import { fileUpload } from 'src/app/helper/fileUploder';
 import paginationHelper, { IOptions } from 'src/app/helper/pagenation';
@@ -84,10 +85,12 @@ export class GiftService {
         );
       }
 
+      const giftTransactionId = randomUUID();
       const charge = await this.creditService.consumeCredits(
         transaction,
         userId,
         gift.creditCost,
+        { reason: 'gift', companionId, referenceId: giftTransactionId },
       );
       if (!charge) {
         throw new HttpException(
@@ -100,30 +103,16 @@ export class GiftService {
         where: { id: userId },
         select: { creditBalance: true },
       });
-      const balanceBefore = user.creditBalance + charge.fromPurchased;
 
       const giftTransaction = await transaction.giftTransaction.create({
         data: {
           userId,
           companionId,
+          id: giftTransactionId,
           giftId: gift.id,
           creditCost: gift.creditCost,
         },
       });
-
-      if (charge.fromPurchased > 0)
-        await transaction.creditTransaction.create({
-          data: {
-            userId,
-            companionId,
-            direction: 'debit',
-            reason: 'gift',
-            amount: charge.fromPurchased,
-            balanceBefore,
-            balanceAfter: user.creditBalance,
-            referenceId: giftTransaction.id,
-          },
-        });
 
       const chatMessage = await transaction.chatMessage.create({
         data: {
@@ -132,12 +121,32 @@ export class GiftService {
           giftId: gift.id,
           type: 'gift',
           message: `Sent ${gift.name}`,
-          usedCredit: true,
+          usedCredit: charge.fromPurchased > 0,
           creditCost: gift.creditCost,
         },
         include: { gift: true },
       });
 
+      const conversation = await transaction.chatConversation.upsert({
+        where: { userId_companionId: { userId, companionId } },
+        create: { userId, companionId },
+        update: { updatedAt: new Date() },
+      });
+      await transaction.chatMessage.update({
+        where: { id: chatMessage.id },
+        data: { conversationId: conversation.id },
+      });
+
+      await transaction.relationship.upsert({
+        where: { userId_companionId: { userId, companionId } },
+        create: {
+          userId,
+          companionId,
+          interactions: 1,
+          lastInteractionAt: now,
+        },
+        update: { interactions: { increment: 1 }, lastInteractionAt: now },
+      });
       return {
         giftTransaction,
         chatMessage,

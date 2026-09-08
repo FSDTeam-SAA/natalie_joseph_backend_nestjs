@@ -42,6 +42,8 @@ export type UserSubscriptionSumAggregateOutputType = {
 
 export type UserSubscriptionMinAggregateOutputType = {
   id: string | null
+  stripeInvoiceId: string | null
+  stripeSubscriptionId: string | null
   userId: string | null
   subscriptionId: string | null
   messageLimit: number | null
@@ -57,6 +59,8 @@ export type UserSubscriptionMinAggregateOutputType = {
 
 export type UserSubscriptionMaxAggregateOutputType = {
   id: string | null
+  stripeInvoiceId: string | null
+  stripeSubscriptionId: string | null
   userId: string | null
   subscriptionId: string | null
   messageLimit: number | null
@@ -72,6 +76,8 @@ export type UserSubscriptionMaxAggregateOutputType = {
 
 export type UserSubscriptionCountAggregateOutputType = {
   id: number
+  stripeInvoiceId: number
+  stripeSubscriptionId: number
   userId: number
   subscriptionId: number
   messageLimit: number
@@ -103,6 +109,8 @@ export type UserSubscriptionSumAggregateInputType = {
 
 export type UserSubscriptionMinAggregateInputType = {
   id?: true
+  stripeInvoiceId?: true
+  stripeSubscriptionId?: true
   userId?: true
   subscriptionId?: true
   messageLimit?: true
@@ -118,6 +126,8 @@ export type UserSubscriptionMinAggregateInputType = {
 
 export type UserSubscriptionMaxAggregateInputType = {
   id?: true
+  stripeInvoiceId?: true
+  stripeSubscriptionId?: true
   userId?: true
   subscriptionId?: true
   messageLimit?: true
@@ -133,6 +143,8 @@ export type UserSubscriptionMaxAggregateInputType = {
 
 export type UserSubscriptionCountAggregateInputType = {
   id?: true
+  stripeInvoiceId?: true
+  stripeSubscriptionId?: true
   userId?: true
   subscriptionId?: true
   messageLimit?: true
@@ -235,6 +247,8 @@ export type UserSubscriptionGroupByArgs<ExtArgs extends runtime.Types.Extensions
 
 export type UserSubscriptionGroupByOutputType = {
   id: string
+  stripeInvoiceId: string | null
+  stripeSubscriptionId: string | null
   userId: string
   subscriptionId: string
   messageLimit: number
@@ -273,6 +287,8 @@ export type UserSubscriptionWhereInput = {
   OR?: Prisma.UserSubscriptionWhereInput[]
   NOT?: Prisma.UserSubscriptionWhereInput | Prisma.UserSubscriptionWhereInput[]
   id?: Prisma.StringFilter<"UserSubscription"> | string
+  stripeInvoiceId?: Prisma.StringNullableFilter<"UserSubscription"> | string | null
+  stripeSubscriptionId?: Prisma.StringNullableFilter<"UserSubscription"> | string | null
   userId?: Prisma.StringFilter<"UserSubscription"> | string
   subscriptionId?: Prisma.StringFilter<"UserSubscription"> | string
   messageLimit?: Prisma.IntFilter<"UserSubscription"> | number
@@ -290,6 +306,8 @@ export type UserSubscriptionWhereInput = {
 
 export type UserSubscriptionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  stripeInvoiceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   subscriptionId?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
@@ -307,9 +325,11 @@ export type UserSubscriptionOrderByWithRelationInput = {
 
 export type UserSubscriptionWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  stripeInvoiceId?: string
   AND?: Prisma.UserSubscriptionWhereInput | Prisma.UserSubscriptionWhereInput[]
   OR?: Prisma.UserSubscriptionWhereInput[]
   NOT?: Prisma.UserSubscriptionWhereInput | Prisma.UserSubscriptionWhereInput[]
+  stripeSubscriptionId?: Prisma.StringNullableFilter<"UserSubscription"> | string | null
   userId?: Prisma.StringFilter<"UserSubscription"> | string
   subscriptionId?: Prisma.StringFilter<"UserSubscription"> | string
   messageLimit?: Prisma.IntFilter<"UserSubscription"> | number
@@ -323,10 +343,12 @@ export type UserSubscriptionWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"UserSubscription"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   subscription?: Prisma.XOR<Prisma.SubscriptionScalarRelationFilter, Prisma.SubscriptionWhereInput>
-}, "id">
+}, "id" | "stripeInvoiceId">
 
 export type UserSubscriptionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  stripeInvoiceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   subscriptionId?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
@@ -350,6 +372,8 @@ export type UserSubscriptionScalarWhereWithAggregatesInput = {
   OR?: Prisma.UserSubscriptionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.UserSubscriptionScalarWhereWithAggregatesInput | Prisma.UserSubscriptionScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"UserSubscription"> | string
+  stripeInvoiceId?: Prisma.StringNullableWithAggregatesFilter<"UserSubscription"> | string | null
+  stripeSubscriptionId?: Prisma.StringNullableWithAggregatesFilter<"UserSubscription"> | string | null
   userId?: Prisma.StringWithAggregatesFilter<"UserSubscription"> | string
   subscriptionId?: Prisma.StringWithAggregatesFilter<"UserSubscription"> | string
   messageLimit?: Prisma.IntWithAggregatesFilter<"UserSubscription"> | number
@@ -365,6 +389,8 @@ export type UserSubscriptionScalarWhereWithAggregatesInput = {
 
 export type UserSubscriptionCreateInput = {
   id?: string
+  stripeInvoiceId?: string | null
+  stripeSubscriptionId?: string | null
   messageLimit: number
   messagesUsed?: number
   creditAllowance?: number
@@ -380,6 +406,8 @@ export type UserSubscriptionCreateInput = {
 
 export type UserSubscriptionUncheckedCreateInput = {
   id?: string
+  stripeInvoiceId?: string | null
+  stripeSubscriptionId?: string | null
   userId: string
   subscriptionId: string
   messageLimit: number
@@ -395,6 +423,8 @@ export type UserSubscriptionUncheckedCreateInput = {
 
 export type UserSubscriptionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
   creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
@@ -410,6 +440,8 @@ export type UserSubscriptionUpdateInput = {
 
 export type UserSubscriptionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   subscriptionId?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
@@ -425,6 +457,8 @@ export type UserSubscriptionUncheckedUpdateInput = {
 
 export type UserSubscriptionCreateManyInput = {
   id?: string
+  stripeInvoiceId?: string | null
+  stripeSubscriptionId?: string | null
   userId: string
   subscriptionId: string
   messageLimit: number
@@ -440,6 +474,8 @@ export type UserSubscriptionCreateManyInput = {
 
 export type UserSubscriptionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
   creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
@@ -453,6 +489,8 @@ export type UserSubscriptionUpdateManyMutationInput = {
 
 export type UserSubscriptionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   subscriptionId?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
@@ -478,6 +516,8 @@ export type UserSubscriptionOrderByRelationAggregateInput = {
 
 export type UserSubscriptionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  stripeInvoiceId?: Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   subscriptionId?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
@@ -500,6 +540,8 @@ export type UserSubscriptionAvgOrderByAggregateInput = {
 
 export type UserSubscriptionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  stripeInvoiceId?: Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   subscriptionId?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
@@ -515,6 +557,8 @@ export type UserSubscriptionMaxOrderByAggregateInput = {
 
 export type UserSubscriptionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  stripeInvoiceId?: Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   subscriptionId?: Prisma.SortOrder
   messageLimit?: Prisma.SortOrder
@@ -621,6 +665,8 @@ export type UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput = {
 
 export type UserSubscriptionCreateWithoutSubscriptionInput = {
   id?: string
+  stripeInvoiceId?: string | null
+  stripeSubscriptionId?: string | null
   messageLimit: number
   messagesUsed?: number
   creditAllowance?: number
@@ -635,6 +681,8 @@ export type UserSubscriptionCreateWithoutSubscriptionInput = {
 
 export type UserSubscriptionUncheckedCreateWithoutSubscriptionInput = {
   id?: string
+  stripeInvoiceId?: string | null
+  stripeSubscriptionId?: string | null
   userId: string
   messageLimit: number
   messagesUsed?: number
@@ -678,6 +726,8 @@ export type UserSubscriptionScalarWhereInput = {
   OR?: Prisma.UserSubscriptionScalarWhereInput[]
   NOT?: Prisma.UserSubscriptionScalarWhereInput | Prisma.UserSubscriptionScalarWhereInput[]
   id?: Prisma.StringFilter<"UserSubscription"> | string
+  stripeInvoiceId?: Prisma.StringNullableFilter<"UserSubscription"> | string | null
+  stripeSubscriptionId?: Prisma.StringNullableFilter<"UserSubscription"> | string | null
   userId?: Prisma.StringFilter<"UserSubscription"> | string
   subscriptionId?: Prisma.StringFilter<"UserSubscription"> | string
   messageLimit?: Prisma.IntFilter<"UserSubscription"> | number
@@ -693,6 +743,8 @@ export type UserSubscriptionScalarWhereInput = {
 
 export type UserSubscriptionCreateWithoutUserInput = {
   id?: string
+  stripeInvoiceId?: string | null
+  stripeSubscriptionId?: string | null
   messageLimit: number
   messagesUsed?: number
   creditAllowance?: number
@@ -707,6 +759,8 @@ export type UserSubscriptionCreateWithoutUserInput = {
 
 export type UserSubscriptionUncheckedCreateWithoutUserInput = {
   id?: string
+  stripeInvoiceId?: string | null
+  stripeSubscriptionId?: string | null
   subscriptionId: string
   messageLimit: number
   messagesUsed?: number
@@ -747,6 +801,8 @@ export type UserSubscriptionUpdateManyWithWhereWithoutUserInput = {
 
 export type UserSubscriptionCreateManySubscriptionInput = {
   id?: string
+  stripeInvoiceId?: string | null
+  stripeSubscriptionId?: string | null
   userId: string
   messageLimit: number
   messagesUsed?: number
@@ -761,6 +817,8 @@ export type UserSubscriptionCreateManySubscriptionInput = {
 
 export type UserSubscriptionUpdateWithoutSubscriptionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
   creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
@@ -775,6 +833,8 @@ export type UserSubscriptionUpdateWithoutSubscriptionInput = {
 
 export type UserSubscriptionUncheckedUpdateWithoutSubscriptionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -789,6 +849,8 @@ export type UserSubscriptionUncheckedUpdateWithoutSubscriptionInput = {
 
 export type UserSubscriptionUncheckedUpdateManyWithoutSubscriptionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -803,6 +865,8 @@ export type UserSubscriptionUncheckedUpdateManyWithoutSubscriptionInput = {
 
 export type UserSubscriptionCreateManyUserInput = {
   id?: string
+  stripeInvoiceId?: string | null
+  stripeSubscriptionId?: string | null
   subscriptionId: string
   messageLimit: number
   messagesUsed?: number
@@ -817,6 +881,8 @@ export type UserSubscriptionCreateManyUserInput = {
 
 export type UserSubscriptionUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
   creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
@@ -831,6 +897,8 @@ export type UserSubscriptionUpdateWithoutUserInput = {
 
 export type UserSubscriptionUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subscriptionId?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -845,6 +913,8 @@ export type UserSubscriptionUncheckedUpdateWithoutUserInput = {
 
 export type UserSubscriptionUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subscriptionId?: Prisma.StringFieldUpdateOperationsInput | string
   messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
   messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -861,6 +931,8 @@ export type UserSubscriptionUncheckedUpdateManyWithoutUserInput = {
 
 export type UserSubscriptionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  stripeInvoiceId?: boolean
+  stripeSubscriptionId?: boolean
   userId?: boolean
   subscriptionId?: boolean
   messageLimit?: boolean
@@ -878,6 +950,8 @@ export type UserSubscriptionSelect<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type UserSubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  stripeInvoiceId?: boolean
+  stripeSubscriptionId?: boolean
   userId?: boolean
   subscriptionId?: boolean
   messageLimit?: boolean
@@ -895,6 +969,8 @@ export type UserSubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
 
 export type UserSubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  stripeInvoiceId?: boolean
+  stripeSubscriptionId?: boolean
   userId?: boolean
   subscriptionId?: boolean
   messageLimit?: boolean
@@ -912,6 +988,8 @@ export type UserSubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
 
 export type UserSubscriptionSelectScalar = {
   id?: boolean
+  stripeInvoiceId?: boolean
+  stripeSubscriptionId?: boolean
   userId?: boolean
   subscriptionId?: boolean
   messageLimit?: boolean
@@ -925,7 +1003,7 @@ export type UserSubscriptionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserSubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "subscriptionId" | "messageLimit" | "messagesUsed" | "creditAllowance" | "creditsUsed" | "startsAt" | "endsAt" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["userSubscription"]>
+export type UserSubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "stripeInvoiceId" | "stripeSubscriptionId" | "userId" | "subscriptionId" | "messageLimit" | "messagesUsed" | "creditAllowance" | "creditsUsed" | "startsAt" | "endsAt" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["userSubscription"]>
 export type UserSubscriptionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   subscription?: boolean | Prisma.SubscriptionDefaultArgs<ExtArgs>
@@ -947,6 +1025,8 @@ export type $UserSubscriptionPayload<ExtArgs extends runtime.Types.Extensions.In
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    stripeInvoiceId: string | null
+    stripeSubscriptionId: string | null
     userId: string
     subscriptionId: string
     messageLimit: number
@@ -1384,6 +1464,8 @@ export interface Prisma__UserSubscriptionClient<T, Null = never, ExtArgs extends
  */
 export interface UserSubscriptionFieldRefs {
   readonly id: Prisma.FieldRef<"UserSubscription", 'String'>
+  readonly stripeInvoiceId: Prisma.FieldRef<"UserSubscription", 'String'>
+  readonly stripeSubscriptionId: Prisma.FieldRef<"UserSubscription", 'String'>
   readonly userId: Prisma.FieldRef<"UserSubscription", 'String'>
   readonly subscriptionId: Prisma.FieldRef<"UserSubscription", 'String'>
   readonly messageLimit: Prisma.FieldRef<"UserSubscription", 'Int'>

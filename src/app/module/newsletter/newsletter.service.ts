@@ -5,7 +5,7 @@ import buildWhereConditions from 'src/app/helper/buildWhereConditions';
 import { newsletterWelcomeTemplate } from 'src/app/helper/emailTemplates/newsletterWelcome';
 import paginationHelper, { IOptions } from 'src/app/helper/pagenation';
 import { IFilterParams } from 'src/app/helper/pick';
-import { MailQueueService } from 'src/app/module/queue/mail-queue.service';
+import sendMailer from 'src/app/helper/sendMailer';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { BroadcastNewsletterDto } from './dto/broadcast-newsletter.dto';
 import { CreateNewsletterDto } from './dto/create-newsletter.dto';
@@ -14,11 +14,7 @@ import { CreateNewsletterDto } from './dto/create-newsletter.dto';
 export class NewsletterService {
   private readonly adminEmail: string | undefined;
 
-  constructor(
-    private readonly prisma: PrismaService,
-
-    private readonly mailQueue: MailQueueService,
-  ) {
+  constructor(private readonly prisma: PrismaService) {
     this.adminEmail = config.email?.admin || `sauravsarkar.developer@gmail.com`;
   }
 
@@ -40,7 +36,7 @@ export class NewsletterService {
       },
     });
 
-    // 2. Then add email jobs
+    // 2. Send emails directly through SMTP
     const mails = [
       {
         to: result.email,
@@ -57,7 +53,9 @@ export class NewsletterService {
       });
     }
 
-    await this.mailQueue.sendBulk(mails);
+    for (const mail of mails) {
+      await sendMailer(mail.to, mail.subject, mail.html);
+    }
 
     return result;
   }
@@ -117,8 +115,10 @@ export class NewsletterService {
       html,
     }));
 
-    await this.mailQueue.sendBulk(mails);
+    for (const mail of mails) {
+      await sendMailer(mail.to, mail.subject, mail.html);
+    }
 
-    return { queued: mails.length };
+    return { sent: mails.length };
   }
 }

@@ -29,9 +29,6 @@ export default {
     admin: process.env.ADMIN_EMAIL,
     security: process.env.EMAIL_SECURITY,
   },
-  redis: {
-    url: process.env.REDIS_URL,
-  },
   stripe: {
     publicKey: process.env.STRIPE_PUBLISHABLE_KEY,
     secretKey: process.env.STRIPE_SECRET_KEY,

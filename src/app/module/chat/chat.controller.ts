@@ -78,6 +78,7 @@ export class ChatController {
       companionId,
       payload.message,
       request.headers.authorization!,
+      payload.type,
     );
     return { message: 'Message sent successfully', data };
   }

@@ -1,34 +1,41 @@
 model ChatMessage {
-  id          String          @id @default(uuid())
-  userId      String
-  companionId String
-  message     String
-  response    String?
-  aiMessageId String?
+  id             String          @id @default(uuid())
+  userId         String
+  companionId    String
+  message        String
+  response       String?
+  aiMessageId    String?
   conversationId String?
-  usedCredit  Boolean         @default(false)
-  type        ChatMessageType @default(text)
-  giftId      String?
-  creditCost  Int             @default(0)
-  createdAt   DateTime        @default(now())
+  usedCredit     Boolean         @default(false)
+  type           ChatMessageType @default(text)
+  giftId         String?
+  creditCost     Int             @default(0)
+  createdAt      DateTime        @default(now())
 
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
-  gift      Gift?      @relation(fields: [giftId], references: [id], onDelete: SetNull)
+  sender       String            @default("user")
+  humanAdminId String?
+  conversation ChatConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companion    Companions        @relation(fields: [companionId], references: [id], onDelete: Cascade)
+  gift         Gift?             @relation(fields: [giftId], references: [id], onDelete: SetNull)
 
   @@index([userId, companionId, createdAt])
   @@map("chat_messages")
 }
 
 model ChatConversation {
-  id String @id @default(uuid())
-  userId String
-  companionId String
-  aiConversationId String @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+  id               String                  @id @default(uuid())
+  userId           String
+  companionId      String
+  aiConversationId String?                 @unique
+  mode             String                  @default("ai")
+  assignedAdminId  String?
+  messages         ChatMessage[]
+  modeEvents       ConversationModeEvent[]
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+  user             User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companion        Companions              @relation(fields: [companionId], references: [id], onDelete: Cascade)
 
   @@unique([userId, companionId])
   @@map("chat_conversations")

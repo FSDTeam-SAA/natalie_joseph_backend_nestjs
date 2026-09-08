@@ -57,6 +57,12 @@ export const ModelName = {
   CreditPackage: 'CreditPackage',
   CreditTransaction: 'CreditTransaction',
   PurchasedCreditLot: 'PurchasedCreditLot',
+  CreditCost: 'CreditCost',
+  Relationship: 'Relationship',
+  StoryEvent: 'StoryEvent',
+  PhotoView: 'PhotoView',
+  Notification: 'Notification',
+  ConversationModeEvent: 'ConversationModeEvent',
   Gift: 'Gift',
   GiftTransaction: 'GiftTransaction',
   Newsletter: 'Newsletter',
@@ -94,7 +100,9 @@ export const ChatMessageScalarFieldEnum = {
   type: 'type',
   giftId: 'giftId',
   creditCost: 'creditCost',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  sender: 'sender',
+  humanAdminId: 'humanAdminId'
 } as const
 
 export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
@@ -105,6 +113,8 @@ export const ChatConversationScalarFieldEnum = {
   userId: 'userId',
   companionId: 'companionId',
   aiConversationId: 'aiConversationId',
+  mode: 'mode',
+  assignedAdminId: 'assignedAdminId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -161,6 +171,7 @@ export const CreditTransactionScalarFieldEnum = {
   amount: 'amount',
   balanceBefore: 'balanceBefore',
   balanceAfter: 'balanceAfter',
+  source: 'source',
   referenceId: 'referenceId',
   createdAt: 'createdAt'
 } as const
@@ -181,6 +192,83 @@ export const PurchasedCreditLotScalarFieldEnum = {
 } as const
 
 export type PurchasedCreditLotScalarFieldEnum = (typeof PurchasedCreditLotScalarFieldEnum)[keyof typeof PurchasedCreditLotScalarFieldEnum]
+
+
+export const CreditCostScalarFieldEnum = {
+  action: 'action',
+  credits: 'credits',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CreditCostScalarFieldEnum = (typeof CreditCostScalarFieldEnum)[keyof typeof CreditCostScalarFieldEnum]
+
+
+export const RelationshipScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companionId: 'companionId',
+  nickname: 'nickname',
+  notes: 'notes',
+  interactions: 'interactions',
+  lastInteractionAt: 'lastInteractionAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RelationshipScalarFieldEnum = (typeof RelationshipScalarFieldEnum)[keyof typeof RelationshipScalarFieldEnum]
+
+
+export const StoryEventScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  day: 'day',
+  title: 'title',
+  content: 'content',
+  published: 'published',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StoryEventScalarFieldEnum = (typeof StoryEventScalarFieldEnum)[keyof typeof StoryEventScalarFieldEnum]
+
+
+export const PhotoViewScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companionId: 'companionId',
+  photoUrl: 'photoUrl',
+  creditCost: 'creditCost',
+  viewCount: 'viewCount',
+  firstViewedAt: 'firstViewedAt',
+  lastViewedAt: 'lastViewedAt'
+} as const
+
+export type PhotoViewScalarFieldEnum = (typeof PhotoViewScalarFieldEnum)[keyof typeof PhotoViewScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  referenceId: 'referenceId',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const ConversationModeEventScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  adminId: 'adminId',
+  mode: 'mode',
+  createdAt: 'createdAt'
+} as const
+
+export type ConversationModeEventScalarFieldEnum = (typeof ConversationModeEventScalarFieldEnum)[keyof typeof ConversationModeEventScalarFieldEnum]
 
 
 export const GiftScalarFieldEnum = {
@@ -228,6 +316,7 @@ export const PaymentScalarFieldEnum = {
   amount: 'amount',
   status: 'status',
   stripePaymentIntentId: 'stripePaymentIntentId',
+  stripeInvoiceId: 'stripeInvoiceId',
   paymentType: 'paymentType',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -266,6 +355,10 @@ export const UserScalarFieldEnum = {
   status: 'status',
   verifiedForgot: 'verifiedForgot',
   stripeAccountId: 'stripeAccountId',
+  billingSubscriptionId: 'billingSubscriptionId',
+  billingStatus: 'billingStatus',
+  cancelAtPeriodEnd: 'cancelAtPeriodEnd',
+  lowCreditNotified: 'lowCreditNotified',
   adultEligible: 'adultEligible',
   isSubscribed: 'isSubscribed',
   isFreeTrialUsed: 'isFreeTrialUsed',
@@ -279,6 +372,8 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const UserSubscriptionScalarFieldEnum = {
   id: 'id',
+  stripeInvoiceId: 'stripeInvoiceId',
+  stripeSubscriptionId: 'stripeSubscriptionId',
   userId: 'userId',
   subscriptionId: 'subscriptionId',
   messageLimit: 'messageLimit',

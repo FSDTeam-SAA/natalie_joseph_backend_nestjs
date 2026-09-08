@@ -55,6 +55,7 @@ export class AiApi {
     companionId: string,
     message: string,
     authorization: string,
+    idempotencyKey: string,
   ) {
     const data = await this.post<AiReply>(
       '/chat',
@@ -62,6 +63,7 @@ export class AiApi {
         conversation_id: conversationId,
         companion_id: companionId,
         message,
+        idempotency_key: idempotencyKey,
       },
       authorization,
     );

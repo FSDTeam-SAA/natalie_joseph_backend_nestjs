@@ -1,29 +1,36 @@
 model User {
-  id                 String              @id @default(uuid())
-  email              String              @unique
-  name               String?
-  password           String
-  role               UserRole            @default(user)
-  phoneNumber        String?
-  profileImage       String?
-  otp                String?
-  otpExpiry          DateTime?
-  status             Status              @default(approved)
-  verifiedForgot     Boolean             @default(false)
-  stripeAccountId    String?
-  adultEligible      Boolean?
-  subscriptions      UserSubscription[]
-  isSubscribed       Boolean             @default(false)
-  isFreeTrialUsed    Boolean             @default(false)
-  creditBalance      Int                 @default(0)
-  payments           Payment[]
-  chatMessages       ChatMessage[]
-  chatConversations  ChatConversation[]
-  creditTransactions CreditTransaction[]
-  purchasedCreditLots PurchasedCreditLot[]
-  giftTransactions   GiftTransaction[]
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
+  id                    String               @id @default(uuid())
+  email                 String               @unique
+  name                  String?
+  password              String
+  role                  UserRole             @default(user)
+  phoneNumber           String?
+  profileImage          String?
+  otp                   String?
+  otpExpiry             DateTime?
+  status                Status               @default(approved)
+  verifiedForgot        Boolean              @default(false)
+  stripeAccountId       String?
+  billingSubscriptionId String?              @unique
+  billingStatus         String?
+  cancelAtPeriodEnd     Boolean              @default(false)
+  lowCreditNotified     Boolean              @default(false)
+  relationships         Relationship[]
+  notifications         Notification[]
+  photoViews            PhotoView[]
+  adultEligible         Boolean?
+  subscriptions         UserSubscription[]
+  isSubscribed          Boolean              @default(false)
+  isFreeTrialUsed       Boolean              @default(false)
+  creditBalance         Int                  @default(0)
+  payments              Payment[]
+  chatMessages          ChatMessage[]
+  chatConversations     ChatConversation[]
+  creditTransactions    CreditTransaction[]
+  purchasedCreditLots   PurchasedCreditLot[]
+  giftTransactions      GiftTransaction[]
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
 
   @@map("users")
 }

@@ -1,5 +1,7 @@
+import { BillingService } from './billing.service';
 import {
   Controller,
+  Get,
   Body,
   HttpCode,
   HttpStatus,
@@ -18,7 +20,38 @@ import { BuyCreditsDto } from './dto/buy-credits.dto';
 @ApiTags('Payment')
 @Controller('payment')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+  constructor(
+    private readonly paymentService: PaymentService,
+    private readonly billing: BillingService,
+  ) {}
+
+  @Get('subscription/status')
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('user', 'admin'))
+  status(@Req() request: Request) {
+    return this.billing.status(request.user!.id);
+  }
+
+  @Post('billing-portal')
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('user', 'admin'))
+  portal(@Req() request: Request) {
+    return this.billing.portal(request.user!.id);
+  }
+
+  @Post('subscription/cancel')
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('user', 'admin'))
+  cancel(@Req() request: Request) {
+    return this.billing.cancel(request.user!.id);
+  }
+
+  @Post('subscription/:subscriptionId/upgrade')
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('user', 'admin'))
+  upgrade(@Req() request: Request, @Param('subscriptionId') id: string) {
+    return this.billing.upgrade(request.user!.id, id);
+  }
 
   @Post('subscription/:subscriptionId')
   @HttpCode(HttpStatus.CREATED)

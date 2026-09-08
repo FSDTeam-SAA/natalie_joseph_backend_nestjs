@@ -47,7 +47,7 @@ export class NewsletterController {
     const data = await this.newsletterService.broadcastNewsletter(dto);
 
     return {
-      message: 'Newsletter broadcast queued successfully',
+      message: 'Newsletter broadcast sent successfully',
       data,
     };
   }

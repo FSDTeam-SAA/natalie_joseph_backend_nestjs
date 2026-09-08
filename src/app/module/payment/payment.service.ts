@@ -1,3 +1,5 @@
+import { BillingService } from './billing.service';
+import { grantSubscriptionCredits } from '../credit/credit-ledger';
 import {
   BadGatewayException,
   BadRequestException,
@@ -16,7 +18,10 @@ export class PaymentService {
   private readonly stripe?: Stripe;
   private readonly logger = new Logger(PaymentService.name);
 
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly billing: BillingService,
+  ) {
     if (config.stripe.secretKey) {
       this.stripe = new Stripe(config.stripe.secretKey);
     }
@@ -49,6 +54,19 @@ export class PaymentService {
       endsAt.setUTCDate(endsAt.getUTCDate() + subscription.durationDays);
 
       const payment = await this.prisma.$transaction(async (transaction) => {
+        await transaction.$queryRaw`SELECT id FROM users WHERE id = ${user.id} FOR UPDATE`;
+        const current = await transaction.user.findUniqueOrThrow({
+          where: { id: user.id },
+        });
+        if (
+          current.billingSubscriptionId ||
+          (await transaction.userSubscription.findFirst({
+            where: { userId, isActive: true, endsAt: { gt: new Date() } },
+          }))
+        )
+          throw new BadRequestException(
+            'Free trial cannot replace an existing subscription',
+          );
         const freeTrialClaim = await transaction.user.updateMany({
           where: { id: user.id, isFreeTrialUsed: false },
           data: { isFreeTrialUsed: true, isSubscribed: true },
@@ -57,20 +75,13 @@ export class PaymentService {
           throw new BadRequestException('Free trial has already been used');
         }
 
-        await transaction.userSubscription.updateMany({
-          where: { userId: user.id, isActive: true },
-          data: { isActive: false },
-        });
-
-        await transaction.userSubscription.create({
-          data: {
-            userId: user.id,
-            subscriptionId: subscription.id,
-            messageLimit: subscription.messageLimit,
-            creditAllowance: subscription.creditAllowance,
-            startsAt,
-            endsAt,
-          },
+        await grantSubscriptionCredits(transaction, {
+          userId: user.id,
+          subscriptionId: subscription.id,
+          messageLimit: subscription.messageLimit,
+          creditAllowance: subscription.creditAllowance,
+          startsAt,
+          endsAt,
         });
 
         return transaction.payment.create({
@@ -87,51 +98,7 @@ export class PaymentService {
       return { payment, clientSecret: null, activated: true };
     }
 
-    if (!this.stripe) {
-      throw new ServiceUnavailableException('Stripe is not configured');
-    }
-
-    let paymentIntent: Stripe.PaymentIntent;
-    try {
-      paymentIntent = await this.stripe.paymentIntents.create({
-        amount,
-        currency: 'usd',
-        automatic_payment_methods: { enabled: true },
-        metadata: {
-          paymentType: 'subscription',
-          userId: user.id,
-          subscriptionId: subscription.id,
-        },
-      });
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      this.logger.error(`Stripe PaymentIntent creation failed: ${message}`);
-      throw new BadGatewayException('Unable to initiate Stripe payment');
-    }
-
-    try {
-      const payment = await this.prisma.payment.create({
-        data: {
-          userId: user.id,
-          subscriptionId: subscription.id,
-          amount: subscription.price,
-          paymentType: 'subscription',
-          stripePaymentIntentId: paymentIntent.id,
-        },
-      });
-
-      return {
-        payment,
-        clientSecret: paymentIntent.client_secret,
-      };
-    } catch (error) {
-      try {
-        await this.stripe.paymentIntents.cancel(paymentIntent.id);
-      } catch {
-        // The webhook can safely ignore an intent without a local payment row.
-      }
-      throw error;
-    }
+    return this.billing.start(userId, subscriberId);
   }
 
   async buyCredits(userId: string, packageId: string) {

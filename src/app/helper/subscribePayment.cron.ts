@@ -1,3 +1,5 @@
+import { closeSubscriptionCredits } from '../module/credit/credit-ledger';
+import { CreditService } from '../module/credit/credit.service';
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -7,7 +9,10 @@ export class SubscribePaymentCronService implements OnApplicationBootstrap {
   private readonly logger = new Logger(SubscribePaymentCronService.name);
   private isRunning = false;
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly credits: CreditService,
+  ) {}
 
   onApplicationBootstrap() {
     void this.expireSubscriptions();
@@ -27,48 +32,24 @@ export class SubscribePaymentCronService implements OnApplicationBootstrap {
     this.logger.log(`Cron started at ${now.toISOString()}`);
 
     try {
-      // Keep these as separate atomic updates. Interactive transactions can
-      // time out behind connection poolers such as Supabase's PgBouncer.
-      const expiredSubscriptions =
-        await this.prisma.userSubscription.updateMany({
+      let expiredCount = 0;
+      while (true) {
+        const due = await this.prisma.userSubscription.findMany({
           where: { isActive: true, endsAt: { lte: now } },
-          data: { isActive: false },
+          select: { userId: true },
+          take: 100,
         });
-
-      const unsubscribedUsers = await this.prisma.user.updateMany({
-        where: {
-          isSubscribed: true,
-          subscriptions: {
-            none: {
-              isActive: true,
-              startsAt: { lte: now },
-              endsAt: { gt: now },
-            },
-          },
-        },
-        data: { isSubscribed: false },
-      });
-
-      // Also repairs a stale false flag if an active subscription exists.
-      const subscribedUsers = await this.prisma.user.updateMany({
-        where: {
-          isSubscribed: false,
-          subscriptions: {
-            some: {
-              isActive: true,
-              startsAt: { lte: now },
-              endsAt: { gt: now },
-            },
-          },
-        },
-        data: { isSubscribed: true },
-      });
-
-      const result = {
-        expiredSubscriptions: expiredSubscriptions.count,
-        usersMarkedUnsubscribed: unsubscribedUsers.count,
-        usersMarkedSubscribed: subscribedUsers.count,
-      };
+        if (!due.length) break;
+        for (const { userId } of due)
+          await this.prisma.$transaction(async (tx) => {
+            await tx.$queryRaw`SELECT id FROM users WHERE id = ${userId} FOR UPDATE`;
+            await closeSubscriptionCredits(tx, userId, true);
+            await this.credits.expirePurchasedCredits(tx, userId);
+            await this.credits.checkLowCredit(tx, userId);
+          });
+        expiredCount += due.length;
+      }
+      const result = { expiredSubscriptions: expiredCount };
 
       this.logger.log(
         `Cron completed at ${new Date().toISOString()}: ${JSON.stringify(result)}`,

@@ -23,12 +23,20 @@ enum CreditDirection {
 
 enum CreditReason {
   purchase
+  opening_balance
+  subscription_grant
+  subscription_expiry
+  expiry
+  photo
+  voice
   extra_message
   gift
 }
 
 enum ChatMessageType {
   text
+  voice
+  photo
   gift
 }
 

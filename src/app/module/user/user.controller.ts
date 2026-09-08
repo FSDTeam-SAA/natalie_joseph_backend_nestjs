@@ -121,7 +121,7 @@ export class UserController {
     summary: 'get my profile',
   })
   @ApiBearerAuth('access-token')
-  @UseGuards(AuthGuard('user'))
+  @UseGuards(AuthGuard('user', 'admin'))
   @HttpCode(HttpStatus.OK)
   async myProfile(@Req() req: Request) {
     const id = req.user!.id;
@@ -140,7 +140,7 @@ export class UserController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UpdateUserDto })
   @ApiBearerAuth('access-token')
-  @UseGuards(AuthGuard('user'))
+  @UseGuards(AuthGuard('user', 'admin'))
   @UseInterceptors(FileInterceptor('profileImage', fileUpload.uploadConfig))
   @HttpCode(HttpStatus.OK)
   async UpdateMyProfile(

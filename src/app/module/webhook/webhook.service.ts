@@ -1,3 +1,5 @@
+import { BillingService } from '../payment/billing.service';
+import { grantSubscriptionCredits } from '../credit/credit-ledger';
 import {
   BadRequestException,
   Injectable,
@@ -14,7 +16,10 @@ export class WebhookService {
   private readonly stripe?: Stripe;
   private readonly logger = new Logger(WebhookService.name);
 
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly billing: BillingService,
+  ) {
     if (config.stripe.secretKey) {
       this.stripe = new Stripe(config.stripe.secretKey);
     }
@@ -45,8 +50,21 @@ export class WebhookService {
 
     try {
       switch (event.type) {
+        case 'invoice.paid':
+          await this.billing.invoicePaid(event.data.object);
+          break;
+        case 'invoice.payment_failed':
+          await this.billing.invoiceFailed(event.data.object);
+          break;
+        case 'customer.subscription.updated':
+        case 'customer.subscription.deleted':
+          await this.billing.subscriptionChanged(event.data.object);
+          break;
         case 'payment_intent.succeeded':
-          await this.handlePaymentIntentSucceeded(event.data.object);
+          await this.handlePaymentIntentSucceeded(
+            event.data.object,
+            new Date(event.created * 1000),
+          );
           break;
         case 'payment_intent.payment_failed':
           await this.handlePaymentIntentFailed(event.data.object);
@@ -62,7 +80,10 @@ export class WebhookService {
     }
   }
 
-  private async handlePaymentIntentSucceeded(intent: Stripe.PaymentIntent) {
+  private async handlePaymentIntentSucceeded(
+    intent: Stripe.PaymentIntent,
+    paidAt: Date,
+  ) {
     const payment = await this.prisma.payment.findFirst({
       where: { stripePaymentIntentId: intent.id },
     });
@@ -73,11 +94,14 @@ export class WebhookService {
     // Stripe retries webhook events; never grant the same plan/credits twice.
     if (payment.status === 'completed') return;
 
-    const paymentType = intent.metadata.paymentType || payment.paymentType;
+    const paymentType = payment.paymentType;
+    if (intent.amount_received !== Math.round(Number(payment.amount) * 100))
+      throw new BadRequestException('Payment amount mismatch');
 
     await this.prisma.$transaction(async (transaction) => {
+      await transaction.$queryRaw`SELECT id FROM users WHERE id = ${payment.userId} FOR UPDATE`;
       const completed = await transaction.payment.updateMany({
-        where: { id: payment.id, status: { not: 'completed' } },
+        where: { id: payment.id, status: { in: ['pending', 'failed'] } },
         data: { status: 'completed' },
       });
       if (completed.count === 0) return;
@@ -85,35 +109,33 @@ export class WebhookService {
         const plan = await transaction.subscription.findUniqueOrThrow({
           where: { id: payment.subscriptionId },
         });
-        const startsAt = new Date();
+        const startsAt = paidAt;
         const endsAt = new Date(startsAt);
         endsAt.setUTCDate(endsAt.getUTCDate() + plan.durationDays);
 
-        await transaction.userSubscription.updateMany({
-          where: { userId: payment.userId, isActive: true },
-          data: { isActive: false },
+        const user = await transaction.user.findUniqueOrThrow({
+          where: { id: payment.userId },
         });
-        await transaction.userSubscription.create({
-          data: {
+        // An old one-time payment cannot replace a newer recurring plan.
+        if (!user.billingSubscriptionId)
+          await grantSubscriptionCredits(transaction, {
             userId: payment.userId,
             subscriptionId: plan.id,
             messageLimit: plan.messageLimit,
             creditAllowance: plan.creditAllowance,
             startsAt,
             endsAt,
-          },
-        });
-        await transaction.user.update({
-          where: { id: payment.userId },
-          data: { isSubscribed: true },
-        });
+          });
       } else if (paymentType === 'credits' && payment.creditAmount) {
-        const purchasedAt = new Date();
+        const purchasedAt = paidAt;
         const expiresAt = new Date(purchasedAt);
         expiresAt.setUTCDate(expiresAt.getUTCDate() + 90);
         const user = await transaction.user.update({
           where: { id: payment.userId },
-          data: { creditBalance: { increment: payment.creditAmount } },
+          data: {
+            creditBalance: { increment: payment.creditAmount },
+            lowCreditNotified: false,
+          },
           select: { creditBalance: true },
         });
         await transaction.purchasedCreditLot.create({
@@ -150,8 +172,8 @@ export class WebhookService {
       this.logger.warn(`Payment not found for PaymentIntent ${intent.id}`);
       return;
     }
-    await this.prisma.payment.update({
-      where: { id: payment.id },
+    await this.prisma.payment.updateMany({
+      where: { id: payment.id, status: 'pending' },
       data: { status: 'failed' },
     });
   }

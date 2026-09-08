@@ -46,6 +46,12 @@ export type CreditDirection = (typeof CreditDirection)[keyof typeof CreditDirect
 
 export const CreditReason = {
   purchase: 'purchase',
+  opening_balance: 'opening_balance',
+  subscription_grant: 'subscription_grant',
+  subscription_expiry: 'subscription_expiry',
+  expiry: 'expiry',
+  photo: 'photo',
+  voice: 'voice',
   extra_message: 'extra_message',
   gift: 'gift'
 } as const
@@ -55,6 +61,8 @@ export type CreditReason = (typeof CreditReason)[keyof typeof CreditReason]
 
 export const ChatMessageType = {
   text: 'text',
+  voice: 'voice',
+  photo: 'photo',
   gift: 'gift'
 } as const
 

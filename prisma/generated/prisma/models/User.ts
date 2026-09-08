@@ -47,6 +47,10 @@ export type UserMinAggregateOutputType = {
   status: $Enums.Status | null
   verifiedForgot: boolean | null
   stripeAccountId: string | null
+  billingSubscriptionId: string | null
+  billingStatus: string | null
+  cancelAtPeriodEnd: boolean | null
+  lowCreditNotified: boolean | null
   adultEligible: boolean | null
   isSubscribed: boolean | null
   isFreeTrialUsed: boolean | null
@@ -68,6 +72,10 @@ export type UserMaxAggregateOutputType = {
   status: $Enums.Status | null
   verifiedForgot: boolean | null
   stripeAccountId: string | null
+  billingSubscriptionId: string | null
+  billingStatus: string | null
+  cancelAtPeriodEnd: boolean | null
+  lowCreditNotified: boolean | null
   adultEligible: boolean | null
   isSubscribed: boolean | null
   isFreeTrialUsed: boolean | null
@@ -89,6 +97,10 @@ export type UserCountAggregateOutputType = {
   status: number
   verifiedForgot: number
   stripeAccountId: number
+  billingSubscriptionId: number
+  billingStatus: number
+  cancelAtPeriodEnd: number
+  lowCreditNotified: number
   adultEligible: number
   isSubscribed: number
   isFreeTrialUsed: number
@@ -120,6 +132,10 @@ export type UserMinAggregateInputType = {
   status?: true
   verifiedForgot?: true
   stripeAccountId?: true
+  billingSubscriptionId?: true
+  billingStatus?: true
+  cancelAtPeriodEnd?: true
+  lowCreditNotified?: true
   adultEligible?: true
   isSubscribed?: true
   isFreeTrialUsed?: true
@@ -141,6 +157,10 @@ export type UserMaxAggregateInputType = {
   status?: true
   verifiedForgot?: true
   stripeAccountId?: true
+  billingSubscriptionId?: true
+  billingStatus?: true
+  cancelAtPeriodEnd?: true
+  lowCreditNotified?: true
   adultEligible?: true
   isSubscribed?: true
   isFreeTrialUsed?: true
@@ -162,6 +182,10 @@ export type UserCountAggregateInputType = {
   status?: true
   verifiedForgot?: true
   stripeAccountId?: true
+  billingSubscriptionId?: true
+  billingStatus?: true
+  cancelAtPeriodEnd?: true
+  lowCreditNotified?: true
   adultEligible?: true
   isSubscribed?: true
   isFreeTrialUsed?: true
@@ -270,6 +294,10 @@ export type UserGroupByOutputType = {
   status: $Enums.Status
   verifiedForgot: boolean
   stripeAccountId: string | null
+  billingSubscriptionId: string | null
+  billingStatus: string | null
+  cancelAtPeriodEnd: boolean
+  lowCreditNotified: boolean
   adultEligible: boolean | null
   isSubscribed: boolean
   isFreeTrialUsed: boolean
@@ -314,12 +342,19 @@ export type UserWhereInput = {
   status?: Prisma.EnumStatusFilter<"User"> | $Enums.Status
   verifiedForgot?: Prisma.BoolFilter<"User"> | boolean
   stripeAccountId?: Prisma.StringNullableFilter<"User"> | string | null
+  billingSubscriptionId?: Prisma.StringNullableFilter<"User"> | string | null
+  billingStatus?: Prisma.StringNullableFilter<"User"> | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFilter<"User"> | boolean
+  lowCreditNotified?: Prisma.BoolFilter<"User"> | boolean
   adultEligible?: Prisma.BoolNullableFilter<"User"> | boolean | null
   isSubscribed?: Prisma.BoolFilter<"User"> | boolean
   isFreeTrialUsed?: Prisma.BoolFilter<"User"> | boolean
   creditBalance?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  relationships?: Prisma.RelationshipListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
+  photoViews?: Prisma.PhotoViewListRelationFilter
   subscriptions?: Prisma.UserSubscriptionListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   chatMessages?: Prisma.ChatMessageListRelationFilter
@@ -342,12 +377,19 @@ export type UserOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   verifiedForgot?: Prisma.SortOrder
   stripeAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelAtPeriodEnd?: Prisma.SortOrder
+  lowCreditNotified?: Prisma.SortOrder
   adultEligible?: Prisma.SortOrderInput | Prisma.SortOrder
   isSubscribed?: Prisma.SortOrder
   isFreeTrialUsed?: Prisma.SortOrder
   creditBalance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  relationships?: Prisma.RelationshipOrderByRelationAggregateInput
+  notifications?: Prisma.NotificationOrderByRelationAggregateInput
+  photoViews?: Prisma.PhotoViewOrderByRelationAggregateInput
   subscriptions?: Prisma.UserSubscriptionOrderByRelationAggregateInput
   payments?: Prisma.PaymentOrderByRelationAggregateInput
   chatMessages?: Prisma.ChatMessageOrderByRelationAggregateInput
@@ -360,6 +402,7 @@ export type UserOrderByWithRelationInput = {
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
+  billingSubscriptionId?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
@@ -373,12 +416,18 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumStatusFilter<"User"> | $Enums.Status
   verifiedForgot?: Prisma.BoolFilter<"User"> | boolean
   stripeAccountId?: Prisma.StringNullableFilter<"User"> | string | null
+  billingStatus?: Prisma.StringNullableFilter<"User"> | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFilter<"User"> | boolean
+  lowCreditNotified?: Prisma.BoolFilter<"User"> | boolean
   adultEligible?: Prisma.BoolNullableFilter<"User"> | boolean | null
   isSubscribed?: Prisma.BoolFilter<"User"> | boolean
   isFreeTrialUsed?: Prisma.BoolFilter<"User"> | boolean
   creditBalance?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  relationships?: Prisma.RelationshipListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
+  photoViews?: Prisma.PhotoViewListRelationFilter
   subscriptions?: Prisma.UserSubscriptionListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   chatMessages?: Prisma.ChatMessageListRelationFilter
@@ -386,7 +435,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   creditTransactions?: Prisma.CreditTransactionListRelationFilter
   purchasedCreditLots?: Prisma.PurchasedCreditLotListRelationFilter
   giftTransactions?: Prisma.GiftTransactionListRelationFilter
-}, "id" | "email">
+}, "id" | "email" | "billingSubscriptionId">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -401,6 +450,10 @@ export type UserOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   verifiedForgot?: Prisma.SortOrder
   stripeAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelAtPeriodEnd?: Prisma.SortOrder
+  lowCreditNotified?: Prisma.SortOrder
   adultEligible?: Prisma.SortOrderInput | Prisma.SortOrder
   isSubscribed?: Prisma.SortOrder
   isFreeTrialUsed?: Prisma.SortOrder
@@ -430,6 +483,10 @@ export type UserScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumStatusWithAggregatesFilter<"User"> | $Enums.Status
   verifiedForgot?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   stripeAccountId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  billingSubscriptionId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  billingStatus?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  cancelAtPeriodEnd?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  lowCreditNotified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   adultEligible?: Prisma.BoolNullableWithAggregatesFilter<"User"> | boolean | null
   isSubscribed?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   isFreeTrialUsed?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
@@ -451,12 +508,19 @@ export type UserCreateInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
@@ -479,12 +543,19 @@ export type UserUncheckedCreateInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
@@ -507,12 +578,19 @@ export type UserUpdateInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
@@ -535,12 +613,19 @@ export type UserUncheckedUpdateInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
@@ -563,6 +648,10 @@ export type UserCreateManyInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
@@ -584,6 +673,10 @@ export type UserUpdateManyMutationInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -605,6 +698,10 @@ export type UserUncheckedUpdateManyInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -631,6 +728,10 @@ export type UserCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   verifiedForgot?: Prisma.SortOrder
   stripeAccountId?: Prisma.SortOrder
+  billingSubscriptionId?: Prisma.SortOrder
+  billingStatus?: Prisma.SortOrder
+  cancelAtPeriodEnd?: Prisma.SortOrder
+  lowCreditNotified?: Prisma.SortOrder
   adultEligible?: Prisma.SortOrder
   isSubscribed?: Prisma.SortOrder
   isFreeTrialUsed?: Prisma.SortOrder
@@ -656,6 +757,10 @@ export type UserMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   verifiedForgot?: Prisma.SortOrder
   stripeAccountId?: Prisma.SortOrder
+  billingSubscriptionId?: Prisma.SortOrder
+  billingStatus?: Prisma.SortOrder
+  cancelAtPeriodEnd?: Prisma.SortOrder
+  lowCreditNotified?: Prisma.SortOrder
   adultEligible?: Prisma.SortOrder
   isSubscribed?: Prisma.SortOrder
   isFreeTrialUsed?: Prisma.SortOrder
@@ -677,6 +782,10 @@ export type UserMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   verifiedForgot?: Prisma.SortOrder
   stripeAccountId?: Prisma.SortOrder
+  billingSubscriptionId?: Prisma.SortOrder
+  billingStatus?: Prisma.SortOrder
+  cancelAtPeriodEnd?: Prisma.SortOrder
+  lowCreditNotified?: Prisma.SortOrder
   adultEligible?: Prisma.SortOrder
   isSubscribed?: Prisma.SortOrder
   isFreeTrialUsed?: Prisma.SortOrder
@@ -745,6 +854,48 @@ export type UserUpdateOneRequiredWithoutPurchasedCreditLotsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPurchasedCreditLotsInput, Prisma.UserUpdateWithoutPurchasedCreditLotsInput>, Prisma.UserUncheckedUpdateWithoutPurchasedCreditLotsInput>
 }
 
+export type UserCreateNestedOneWithoutRelationshipsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRelationshipsInput, Prisma.UserUncheckedCreateWithoutRelationshipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRelationshipsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutRelationshipsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRelationshipsInput, Prisma.UserUncheckedCreateWithoutRelationshipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRelationshipsInput
+  upsert?: Prisma.UserUpsertWithoutRelationshipsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRelationshipsInput, Prisma.UserUpdateWithoutRelationshipsInput>, Prisma.UserUncheckedUpdateWithoutRelationshipsInput>
+}
+
+export type UserCreateNestedOneWithoutPhotoViewsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPhotoViewsInput, Prisma.UserUncheckedCreateWithoutPhotoViewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPhotoViewsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPhotoViewsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPhotoViewsInput, Prisma.UserUncheckedCreateWithoutPhotoViewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPhotoViewsInput
+  upsert?: Prisma.UserUpsertWithoutPhotoViewsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPhotoViewsInput, Prisma.UserUpdateWithoutPhotoViewsInput>, Prisma.UserUncheckedUpdateWithoutPhotoViewsInput>
+}
+
+export type UserCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.UserUpsertWithoutNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+}
+
 export type UserCreateNestedOneWithoutGiftTransactionsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutGiftTransactionsInput, Prisma.UserUncheckedCreateWithoutGiftTransactionsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutGiftTransactionsInput
@@ -775,10 +926,6 @@ export type UserUpdateOneRequiredWithoutPaymentsNestedInput = {
 
 export type EnumUserRoleFieldUpdateOperationsInput = {
   set?: $Enums.UserRole
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
 }
 
 export type EnumStatusFieldUpdateOperationsInput = {
@@ -816,12 +963,19 @@ export type UserCreateWithoutChatMessagesInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutUserInput
@@ -843,12 +997,19 @@ export type UserUncheckedCreateWithoutChatMessagesInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutUserInput
@@ -886,12 +1047,19 @@ export type UserUpdateWithoutChatMessagesInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatConversations?: Prisma.ChatConversationUpdateManyWithoutUserNestedInput
@@ -913,12 +1081,19 @@ export type UserUncheckedUpdateWithoutChatMessagesInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutUserNestedInput
@@ -940,12 +1115,19 @@ export type UserCreateWithoutChatConversationsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
@@ -967,12 +1149,19 @@ export type UserUncheckedCreateWithoutChatConversationsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
@@ -1010,12 +1199,19 @@ export type UserUpdateWithoutChatConversationsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
@@ -1037,12 +1233,19 @@ export type UserUncheckedUpdateWithoutChatConversationsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
@@ -1064,12 +1267,19 @@ export type UserCreateWithoutCreditTransactionsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
@@ -1091,12 +1301,19 @@ export type UserUncheckedCreateWithoutCreditTransactionsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
@@ -1134,12 +1351,19 @@ export type UserUpdateWithoutCreditTransactionsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
@@ -1161,12 +1385,19 @@ export type UserUncheckedUpdateWithoutCreditTransactionsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
@@ -1188,12 +1419,19 @@ export type UserCreateWithoutPurchasedCreditLotsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
@@ -1215,12 +1453,19 @@ export type UserUncheckedCreateWithoutPurchasedCreditLotsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
@@ -1258,12 +1503,19 @@ export type UserUpdateWithoutPurchasedCreditLotsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
@@ -1285,17 +1537,480 @@ export type UserUncheckedUpdateWithoutPurchasedCreditLotsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
   chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutRelationshipsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
+  chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutRelationshipsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
+  chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutRelationshipsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRelationshipsInput, Prisma.UserUncheckedCreateWithoutRelationshipsInput>
+}
+
+export type UserUpsertWithoutRelationshipsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRelationshipsInput, Prisma.UserUncheckedUpdateWithoutRelationshipsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRelationshipsInput, Prisma.UserUncheckedCreateWithoutRelationshipsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRelationshipsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRelationshipsInput, Prisma.UserUncheckedUpdateWithoutRelationshipsInput>
+}
+
+export type UserUpdateWithoutRelationshipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
+  chatConversations?: Prisma.ChatConversationUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRelationshipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPhotoViewsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
+  chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPhotoViewsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
+  chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPhotoViewsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPhotoViewsInput, Prisma.UserUncheckedCreateWithoutPhotoViewsInput>
+}
+
+export type UserUpsertWithoutPhotoViewsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPhotoViewsInput, Prisma.UserUncheckedUpdateWithoutPhotoViewsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPhotoViewsInput, Prisma.UserUncheckedCreateWithoutPhotoViewsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPhotoViewsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPhotoViewsInput, Prisma.UserUncheckedUpdateWithoutPhotoViewsInput>
+}
+
+export type UserUpdateWithoutPhotoViewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
+  chatConversations?: Prisma.ChatConversationUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPhotoViewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutNotificationsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
+  chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutNotificationsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
+  chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+}
+
+export type UserUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type UserUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
+  chatConversations?: Prisma.ChatConversationUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedUpdateManyWithoutUserNestedInput
   giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1312,12 +2027,19 @@ export type UserCreateWithoutGiftTransactionsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
@@ -1339,12 +2061,19 @@ export type UserUncheckedCreateWithoutGiftTransactionsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
@@ -1382,12 +2111,19 @@ export type UserUpdateWithoutGiftTransactionsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
@@ -1409,12 +2145,19 @@ export type UserUncheckedUpdateWithoutGiftTransactionsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
@@ -1436,12 +2179,19 @@ export type UserCreateWithoutPaymentsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
   chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutUserInput
@@ -1463,12 +2213,19 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
   chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutUserInput
@@ -1506,12 +2263,19 @@ export type UserUpdateWithoutPaymentsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
   chatConversations?: Prisma.ChatConversationUpdateManyWithoutUserNestedInput
@@ -1533,12 +2297,19 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
   chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutUserNestedInput
@@ -1560,12 +2331,19 @@ export type UserCreateWithoutSubscriptionsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
   chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutUserInput
@@ -1587,12 +2365,19 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   status?: $Enums.Status
   verifiedForgot?: boolean
   stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean | null
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
   chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutUserInput
@@ -1630,12 +2415,19 @@ export type UserUpdateWithoutSubscriptionsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
   chatConversations?: Prisma.ChatConversationUpdateManyWithoutUserNestedInput
@@ -1657,12 +2449,19 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
   chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutUserNestedInput
@@ -1677,6 +2476,9 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
  */
 
 export type UserCountOutputType = {
+  relationships: number
+  notifications: number
+  photoViews: number
   subscriptions: number
   payments: number
   chatMessages: number
@@ -1687,6 +2489,9 @@ export type UserCountOutputType = {
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  relationships?: boolean | UserCountOutputTypeCountRelationshipsArgs
+  notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
+  photoViews?: boolean | UserCountOutputTypeCountPhotoViewsArgs
   subscriptions?: boolean | UserCountOutputTypeCountSubscriptionsArgs
   payments?: boolean | UserCountOutputTypeCountPaymentsArgs
   chatMessages?: boolean | UserCountOutputTypeCountChatMessagesArgs
@@ -1704,6 +2509,27 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRelationshipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RelationshipWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPhotoViewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PhotoViewWhereInput
 }
 
 /**
@@ -1769,12 +2595,19 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   status?: boolean
   verifiedForgot?: boolean
   stripeAccountId?: boolean
+  billingSubscriptionId?: boolean
+  billingStatus?: boolean
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
   creditBalance?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  relationships?: boolean | Prisma.User$relationshipsArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  photoViews?: boolean | Prisma.User$photoViewsArgs<ExtArgs>
   subscriptions?: boolean | Prisma.User$subscriptionsArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
   chatMessages?: boolean | Prisma.User$chatMessagesArgs<ExtArgs>
@@ -1798,6 +2631,10 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   status?: boolean
   verifiedForgot?: boolean
   stripeAccountId?: boolean
+  billingSubscriptionId?: boolean
+  billingStatus?: boolean
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
@@ -1819,6 +2656,10 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   status?: boolean
   verifiedForgot?: boolean
   stripeAccountId?: boolean
+  billingSubscriptionId?: boolean
+  billingStatus?: boolean
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
@@ -1840,6 +2681,10 @@ export type UserSelectScalar = {
   status?: boolean
   verifiedForgot?: boolean
   stripeAccountId?: boolean
+  billingSubscriptionId?: boolean
+  billingStatus?: boolean
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
   adultEligible?: boolean
   isSubscribed?: boolean
   isFreeTrialUsed?: boolean
@@ -1848,8 +2693,11 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "phoneNumber" | "profileImage" | "otp" | "otpExpiry" | "status" | "verifiedForgot" | "stripeAccountId" | "adultEligible" | "isSubscribed" | "isFreeTrialUsed" | "creditBalance" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "phoneNumber" | "profileImage" | "otp" | "otpExpiry" | "status" | "verifiedForgot" | "stripeAccountId" | "billingSubscriptionId" | "billingStatus" | "cancelAtPeriodEnd" | "lowCreditNotified" | "adultEligible" | "isSubscribed" | "isFreeTrialUsed" | "creditBalance" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  relationships?: boolean | Prisma.User$relationshipsArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  photoViews?: boolean | Prisma.User$photoViewsArgs<ExtArgs>
   subscriptions?: boolean | Prisma.User$subscriptionsArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
   chatMessages?: boolean | Prisma.User$chatMessagesArgs<ExtArgs>
@@ -1865,6 +2713,9 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    relationships: Prisma.$RelationshipPayload<ExtArgs>[]
+    notifications: Prisma.$NotificationPayload<ExtArgs>[]
+    photoViews: Prisma.$PhotoViewPayload<ExtArgs>[]
     subscriptions: Prisma.$UserSubscriptionPayload<ExtArgs>[]
     payments: Prisma.$PaymentPayload<ExtArgs>[]
     chatMessages: Prisma.$ChatMessagePayload<ExtArgs>[]
@@ -1886,6 +2737,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     status: $Enums.Status
     verifiedForgot: boolean
     stripeAccountId: string | null
+    billingSubscriptionId: string | null
+    billingStatus: string | null
+    cancelAtPeriodEnd: boolean
+    lowCreditNotified: boolean
     adultEligible: boolean | null
     isSubscribed: boolean
     isFreeTrialUsed: boolean
@@ -2286,6 +3141,9 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  relationships<T extends Prisma.User$relationshipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$relationshipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RelationshipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  photoViews<T extends Prisma.User$photoViewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$photoViewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PhotoViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   subscriptions<T extends Prisma.User$subscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$subscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payments<T extends Prisma.User$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   chatMessages<T extends Prisma.User$chatMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$chatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2334,6 +3192,10 @@ export interface UserFieldRefs {
   readonly status: Prisma.FieldRef<"User", 'Status'>
   readonly verifiedForgot: Prisma.FieldRef<"User", 'Boolean'>
   readonly stripeAccountId: Prisma.FieldRef<"User", 'String'>
+  readonly billingSubscriptionId: Prisma.FieldRef<"User", 'String'>
+  readonly billingStatus: Prisma.FieldRef<"User", 'String'>
+  readonly cancelAtPeriodEnd: Prisma.FieldRef<"User", 'Boolean'>
+  readonly lowCreditNotified: Prisma.FieldRef<"User", 'Boolean'>
   readonly adultEligible: Prisma.FieldRef<"User", 'Boolean'>
   readonly isSubscribed: Prisma.FieldRef<"User", 'Boolean'>
   readonly isFreeTrialUsed: Prisma.FieldRef<"User", 'Boolean'>
@@ -2730,6 +3592,78 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
+}
+
+/**
+ * User.relationships
+ */
+export type User$relationshipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Relationship
+   */
+  select?: Prisma.RelationshipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Relationship
+   */
+  omit?: Prisma.RelationshipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RelationshipInclude<ExtArgs> | null
+  where?: Prisma.RelationshipWhereInput
+  orderBy?: Prisma.RelationshipOrderByWithRelationInput | Prisma.RelationshipOrderByWithRelationInput[]
+  cursor?: Prisma.RelationshipWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RelationshipScalarFieldEnum | Prisma.RelationshipScalarFieldEnum[]
+}
+
+/**
+ * User.notifications
+ */
+export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
+}
+
+/**
+ * User.photoViews
+ */
+export type User$photoViewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PhotoView
+   */
+  select?: Prisma.PhotoViewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PhotoView
+   */
+  omit?: Prisma.PhotoViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PhotoViewInclude<ExtArgs> | null
+  where?: Prisma.PhotoViewWhereInput
+  orderBy?: Prisma.PhotoViewOrderByWithRelationInput | Prisma.PhotoViewOrderByWithRelationInput[]
+  cursor?: Prisma.PhotoViewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PhotoViewScalarFieldEnum | Prisma.PhotoViewScalarFieldEnum[]
 }
 
 /**

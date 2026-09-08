@@ -17,6 +17,9 @@ model Companions {
   coverImage         String?
   galleryImages      String[]
   status             Boolean             @default(true)
+  relationships      Relationship[]
+  storyEvents        StoryEvent[]
+  photoViews         PhotoView[]
   chatMessages       ChatMessage[]
   chatConversations  ChatConversation[]
   creditTransactions CreditTransaction[]

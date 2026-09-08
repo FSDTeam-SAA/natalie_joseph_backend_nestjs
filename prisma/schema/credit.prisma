@@ -21,6 +21,7 @@ model CreditTransaction {
   amount        Int
   balanceBefore Int
   balanceAfter  Int
+  source        String          @default("purchased")
   referenceId   String?
   createdAt     DateTime        @default(now())
 
@@ -32,15 +33,15 @@ model CreditTransaction {
 }
 
 model PurchasedCreditLot {
-  id               String   @id @default(uuid())
-  userId           String
-  paymentId        String   @unique
-  originalAmount   Int
-  remainingAmount  Int
-  purchasedAt      DateTime @default(now())
-  expiresAt        DateTime
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id              String   @id @default(uuid())
+  userId          String
+  paymentId       String   @unique
+  originalAmount  Int
+  remainingAmount Int
+  purchasedAt     DateTime @default(now())
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

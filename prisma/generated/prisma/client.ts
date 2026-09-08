@@ -70,6 +70,36 @@ export type CreditTransaction = Prisma.CreditTransactionModel
  */
 export type PurchasedCreditLot = Prisma.PurchasedCreditLotModel
 /**
+ * Model CreditCost
+ * 
+ */
+export type CreditCost = Prisma.CreditCostModel
+/**
+ * Model Relationship
+ * 
+ */
+export type Relationship = Prisma.RelationshipModel
+/**
+ * Model StoryEvent
+ * 
+ */
+export type StoryEvent = Prisma.StoryEventModel
+/**
+ * Model PhotoView
+ * 
+ */
+export type PhotoView = Prisma.PhotoViewModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
+ * Model ConversationModeEvent
+ * 
+ */
+export type ConversationModeEvent = Prisma.ConversationModeEventModel
+/**
  * Model Gift
  * 
  */

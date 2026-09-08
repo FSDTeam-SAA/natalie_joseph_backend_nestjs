@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import {
   BadRequestException,
   HttpException,
@@ -18,66 +19,53 @@ export class ChatService {
   ) {}
 
   async getUsage(userId: string) {
-    await this.prisma.$transaction((tx) =>
-      this.creditService.expirePurchasedCredits(tx, userId),
-    );
-    const now = new Date();
-    const [subscription, user] = await Promise.all([
-      this.prisma.userSubscription.findFirst({
-        where: {
-          userId,
-          isActive: true,
-          startsAt: { lte: now },
-          endsAt: { gt: now },
-        },
-        orderBy: { endsAt: 'desc' },
-        include: { subscription: { select: { id: true, name: true } } },
-      }),
-      this.prisma.user.findUnique({
-        where: { id: userId },
-        select: { creditBalance: true },
-      }),
-    ]);
+    return this.prisma.$transaction(async (tx) => {
+      await this.creditService.expirePurchasedCredits(tx, userId);
+      const now = new Date();
+      const [subscription, user] = await Promise.all([
+        tx.userSubscription.findFirst({
+          where: {
+            userId,
+            isActive: true,
+            startsAt: { lte: now },
+            endsAt: { gt: now },
+          },
+          orderBy: { endsAt: 'desc' },
+          include: { subscription: { select: { id: true, name: true } } },
+        }),
+        tx.user.findUnique({
+          where: { id: userId },
+          select: { creditBalance: true },
+        }),
+      ]);
 
-    if (!user) throw new NotFoundException('User not found');
+      if (!user) throw new NotFoundException('User not found');
 
-    return {
-      subscription: subscription
-        ? {
-            id: subscription.subscription.id,
-            name: subscription.subscription.name,
-            messagesUsed: subscription.messagesUsed,
-            messageLimit: subscription.messageLimit,
-            messagesRemaining: Math.max(
-              subscription.messageLimit - subscription.messagesUsed,
-              0,
-            ),
-            creditAllowance: subscription.creditAllowance,
-            creditsUsed: subscription.creditsUsed,
-            subscriptionCreditsRemaining: Math.max(
-              subscription.creditAllowance - subscription.creditsUsed,
-              0,
-            ),
-            endsAt: subscription.endsAt,
-          }
-        : null,
-      purchasedCredits: user.creditBalance,
-      totalCredits:
-        user.creditBalance +
-        (subscription
-          ? Math.max(subscription.creditAllowance - subscription.creditsUsed, 0)
-          : 0),
-      lowCredit:
-        user.creditBalance +
-          (subscription
-            ? Math.max(
+      return {
+        subscription: subscription
+          ? {
+              id: subscription.subscription.id,
+              name: subscription.subscription.name,
+              messagesUsed: subscription.messagesUsed,
+              messageLimit: subscription.messageLimit,
+              messagesRemaining: Math.max(
+                subscription.messageLimit - subscription.messagesUsed,
+                0,
+              ),
+              creditAllowance: subscription.creditAllowance,
+              creditsUsed: subscription.creditsUsed,
+              subscriptionCreditsRemaining: Math.max(
                 subscription.creditAllowance - subscription.creditsUsed,
                 0,
-              )
-            : 0) <=
-        Math.max(10, Math.ceil((subscription?.creditAllowance ?? 0) * 0.1)),
-      creditBalance: user.creditBalance,
-    };
+              ),
+              endsAt: subscription.endsAt,
+            }
+          : null,
+        purchasedCredits: user.creditBalance,
+        ...(await this.creditService.checkLowCredit(tx, userId)),
+        creditBalance: user.creditBalance,
+      };
+    });
   }
 
   async getMessages(userId: string, companionId: string, page = 1) {
@@ -106,6 +94,7 @@ export class ChatService {
     companionId: string,
     message: string,
     authorization: string,
+    type: 'text' | 'voice' = 'text',
   ) {
     message = message.trim();
     if (!message) throw new BadRequestException('Message must not be blank');
@@ -113,13 +102,10 @@ export class ChatService {
       async (tx) => {
         // Serialize this user's chat charges and conversation creation across instances.
         await tx.$queryRaw`SELECT id FROM users WHERE id = ${userId} FOR UPDATE`;
-        // const companion = await tx.companions.findFirst({
-        //   where: { id: companionId, status: true },
-        //   select: { id: true, aiCompanionId: true },
-        // });
-        // if (!companion) {
-        //   throw new NotFoundException('Companion not found');
-        // }
+        const companion = await tx.companions.findFirst({
+          where: { id: companionId, status: true },
+        });
+        if (!companion) throw new NotFoundException('Companion not found');
 
         const now = new Date();
         const activeSubscription = await tx.userSubscription.findFirst({
@@ -138,7 +124,20 @@ export class ChatService {
           );
         }
 
-        const charge = await this.creditService.consumeCredits(tx, userId, 1);
+        const messageId = randomUUID();
+        const costs = await this.creditService.getCosts(tx);
+        const creditCost = type === 'voice' ? costs.voice : costs.message;
+        const charge = await this.creditService.consumeCredits(
+          tx,
+          userId,
+          creditCost,
+          {
+            reason: type === 'voice' ? 'voice' : 'extra_message',
+            companionId,
+            referenceId: messageId,
+            message: true,
+          },
+        );
         if (!charge) {
           throw new HttpException(
             'Not enough credits. Buy credits to continue',
@@ -147,8 +146,7 @@ export class ChatService {
         }
         const usedCredit = charge.fromPurchased > 0;
 
-        const aiCompanionId = companionId;
-        // const aiCompanionId = companion.aiCompanionId || companion.id;
+        const aiCompanionId = companion.aiCompanionId || companion.id;
         let conversation = await tx.chatConversation.findUnique({
           where: { userId_companionId: { userId, companionId } },
         });
@@ -161,12 +159,26 @@ export class ChatService {
             data: { userId, companionId, aiConversationId: remote.id },
           });
         }
-        const reply = await this.aiApi.sendMessage(
-          conversation.aiConversationId,
-          aiCompanionId,
-          message,
-          authorization,
-        );
+        if (conversation.mode === 'ai' && !conversation.aiConversationId) {
+          const remote = await this.aiApi.createConversation(
+            aiCompanionId,
+            authorization,
+          );
+          conversation = await tx.chatConversation.update({
+            where: { id: conversation.id },
+            data: { aiConversationId: remote.id },
+          });
+        }
+        const reply =
+          conversation.mode === 'human'
+            ? null
+            : await this.aiApi.sendMessage(
+                conversation.aiConversationId!,
+                aiCompanionId,
+                message,
+                authorization,
+                messageId,
+              );
         await tx.chatConversation.update({
           where: { id: conversation.id },
           data: { updatedAt: new Date() },
@@ -174,13 +186,15 @@ export class ChatService {
 
         const savedMessage = await tx.chatMessage.create({
           data: {
+            id: messageId,
+            type,
             userId,
             companionId,
             message,
             usedCredit,
-            creditCost: 1,
-            response: reply.response,
-            aiMessageId: reply.message_id,
+            creditCost,
+            response: reply?.response ?? null,
+            aiMessageId: reply?.message_id,
             conversationId: conversation.id,
           },
         });
@@ -195,24 +209,21 @@ export class ChatService {
           }),
         ]);
 
-        if (usedCredit && user) {
-          await tx.creditTransaction.create({
-            data: {
-              userId,
-              companionId,
-              direction: 'debit',
-              reason: 'extra_message',
-              amount: charge.fromPurchased,
-              balanceBefore: user.creditBalance + charge.fromPurchased,
-              balanceAfter: user.creditBalance,
-              referenceId: savedMessage.id,
-            },
-          });
-        }
+        await tx.relationship.upsert({
+          where: { userId_companionId: { userId, companionId } },
+          create: {
+            userId,
+            companionId,
+            interactions: 1,
+            lastInteractionAt: now,
+          },
+          update: { interactions: { increment: 1 }, lastInteractionAt: now },
+        });
 
         return {
+          mode: conversation.mode,
           message: savedMessage,
-          response: reply.response,
+          response: reply?.response ?? null,
           conversationId: conversation.id,
           usage: {
             creditsUsed: subscription?.creditsUsed,
