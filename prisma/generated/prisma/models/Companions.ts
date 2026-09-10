@@ -27,24 +27,21 @@ export type AggregateCompanions = {
 }
 
 export type CompanionsAvgAggregateOutputType = {
+  version: number | null
   age: number | null
 }
 
 export type CompanionsSumAggregateOutputType = {
+  version: number | null
   age: number | null
 }
 
 export type CompanionsMinAggregateOutputType = {
   id: string | null
   name: string | null
-  aiCompanionId: string | null
-  age: number | null
+  version: number | null
   title: string | null
-  location: string | null
-  bio: string | null
-  profession: string | null
-  communicationStyle: string | null
-  lifestyle: string | null
+  age: number | null
   backstory: string | null
   profileImage: string | null
   coverImage: string | null
@@ -56,14 +53,9 @@ export type CompanionsMinAggregateOutputType = {
 export type CompanionsMaxAggregateOutputType = {
   id: string | null
   name: string | null
-  aiCompanionId: string | null
-  age: number | null
+  version: number | null
   title: string | null
-  location: string | null
-  bio: string | null
-  profession: string | null
-  communicationStyle: string | null
-  lifestyle: string | null
+  age: number | null
   backstory: string | null
   profileImage: string | null
   coverImage: string | null
@@ -75,22 +67,16 @@ export type CompanionsMaxAggregateOutputType = {
 export type CompanionsCountAggregateOutputType = {
   id: number
   name: number
-  aiCompanionId: number
-  age: number
+  version: number
   title: number
-  traits: number
-  location: number
-  bio: number
-  profession: number
-  interests: number
-  communicationStyle: number
-  lifestyle: number
+  age: number
   backstory: number
   voiceDescription: number
   profileImage: number
   coverImage: number
   galleryImages: number
   status: number
+  interests: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -98,24 +84,21 @@ export type CompanionsCountAggregateOutputType = {
 
 
 export type CompanionsAvgAggregateInputType = {
+  version?: true
   age?: true
 }
 
 export type CompanionsSumAggregateInputType = {
+  version?: true
   age?: true
 }
 
 export type CompanionsMinAggregateInputType = {
   id?: true
   name?: true
-  aiCompanionId?: true
-  age?: true
+  version?: true
   title?: true
-  location?: true
-  bio?: true
-  profession?: true
-  communicationStyle?: true
-  lifestyle?: true
+  age?: true
   backstory?: true
   profileImage?: true
   coverImage?: true
@@ -127,14 +110,9 @@ export type CompanionsMinAggregateInputType = {
 export type CompanionsMaxAggregateInputType = {
   id?: true
   name?: true
-  aiCompanionId?: true
-  age?: true
+  version?: true
   title?: true
-  location?: true
-  bio?: true
-  profession?: true
-  communicationStyle?: true
-  lifestyle?: true
+  age?: true
   backstory?: true
   profileImage?: true
   coverImage?: true
@@ -146,22 +124,16 @@ export type CompanionsMaxAggregateInputType = {
 export type CompanionsCountAggregateInputType = {
   id?: true
   name?: true
-  aiCompanionId?: true
-  age?: true
+  version?: true
   title?: true
-  traits?: true
-  location?: true
-  bio?: true
-  profession?: true
-  interests?: true
-  communicationStyle?: true
-  lifestyle?: true
+  age?: true
   backstory?: true
   voiceDescription?: true
   profileImage?: true
   coverImage?: true
   galleryImages?: true
   status?: true
+  interests?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -256,22 +228,16 @@ export type CompanionsGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 export type CompanionsGroupByOutputType = {
   id: string
   name: string
-  aiCompanionId: string | null
-  age: number
+  version: number
   title: string
-  traits: string[]
-  location: string
-  bio: string
-  profession: string
-  interests: string[]
-  communicationStyle: string
-  lifestyle: string
+  age: number | null
   backstory: string | null
   voiceDescription: string[]
   profileImage: string | null
   coverImage: string | null
   galleryImages: string[]
   status: boolean
+  interests: string[]
   createdAt: Date
   updatedAt: Date
   _count: CompanionsCountAggregateOutputType | null
@@ -302,24 +268,23 @@ export type CompanionsWhereInput = {
   NOT?: Prisma.CompanionsWhereInput | Prisma.CompanionsWhereInput[]
   id?: Prisma.StringFilter<"Companions"> | string
   name?: Prisma.StringFilter<"Companions"> | string
-  aiCompanionId?: Prisma.StringNullableFilter<"Companions"> | string | null
-  age?: Prisma.IntFilter<"Companions"> | number
+  version?: Prisma.IntFilter<"Companions"> | number
   title?: Prisma.StringFilter<"Companions"> | string
-  traits?: Prisma.StringNullableListFilter<"Companions">
-  location?: Prisma.StringFilter<"Companions"> | string
-  bio?: Prisma.StringFilter<"Companions"> | string
-  profession?: Prisma.StringFilter<"Companions"> | string
-  interests?: Prisma.StringNullableListFilter<"Companions">
-  communicationStyle?: Prisma.StringFilter<"Companions"> | string
-  lifestyle?: Prisma.StringFilter<"Companions"> | string
+  age?: Prisma.IntNullableFilter<"Companions"> | number | null
   backstory?: Prisma.StringNullableFilter<"Companions"> | string | null
   voiceDescription?: Prisma.StringNullableListFilter<"Companions">
   profileImage?: Prisma.StringNullableFilter<"Companions"> | string | null
   coverImage?: Prisma.StringNullableFilter<"Companions"> | string | null
   galleryImages?: Prisma.StringNullableListFilter<"Companions">
   status?: Prisma.BoolFilter<"Companions"> | boolean
+  interests?: Prisma.StringNullableListFilter<"Companions">
   createdAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
+  personality?: Prisma.XOR<Prisma.CompanionPersonalityNullableScalarRelationFilter, Prisma.CompanionPersonalityWhereInput> | null
+  communicationStyle?: Prisma.XOR<Prisma.CompanionCommunicationStyleNullableScalarRelationFilter, Prisma.CompanionCommunicationStyleWhereInput> | null
+  background?: Prisma.XOR<Prisma.CompanionBackgroundNullableScalarRelationFilter, Prisma.CompanionBackgroundWhereInput> | null
+  visualProfile?: Prisma.XOR<Prisma.CompanionVisualProfileNullableScalarRelationFilter, Prisma.CompanionVisualProfileWhereInput> | null
+  voice?: Prisma.XOR<Prisma.CompanionVoiceNullableScalarRelationFilter, Prisma.CompanionVoiceWhereInput> | null
   relationships?: Prisma.RelationshipListRelationFilter
   storyEvents?: Prisma.StoryEventListRelationFilter
   photoViews?: Prisma.PhotoViewListRelationFilter
@@ -332,24 +297,23 @@ export type CompanionsWhereInput = {
 export type CompanionsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  aiCompanionId?: Prisma.SortOrderInput | Prisma.SortOrder
-  age?: Prisma.SortOrder
+  version?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  traits?: Prisma.SortOrder
-  location?: Prisma.SortOrder
-  bio?: Prisma.SortOrder
-  profession?: Prisma.SortOrder
-  interests?: Prisma.SortOrder
-  communicationStyle?: Prisma.SortOrder
-  lifestyle?: Prisma.SortOrder
+  age?: Prisma.SortOrderInput | Prisma.SortOrder
   backstory?: Prisma.SortOrderInput | Prisma.SortOrder
   voiceDescription?: Prisma.SortOrder
   profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
   coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   galleryImages?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  interests?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  personality?: Prisma.CompanionPersonalityOrderByWithRelationInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleOrderByWithRelationInput
+  background?: Prisma.CompanionBackgroundOrderByWithRelationInput
+  visualProfile?: Prisma.CompanionVisualProfileOrderByWithRelationInput
+  voice?: Prisma.CompanionVoiceOrderByWithRelationInput
   relationships?: Prisma.RelationshipOrderByRelationAggregateInput
   storyEvents?: Prisma.StoryEventOrderByRelationAggregateInput
   photoViews?: Prisma.PhotoViewOrderByRelationAggregateInput
@@ -365,24 +329,23 @@ export type CompanionsWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CompanionsWhereInput[]
   NOT?: Prisma.CompanionsWhereInput | Prisma.CompanionsWhereInput[]
   name?: Prisma.StringFilter<"Companions"> | string
-  aiCompanionId?: Prisma.StringNullableFilter<"Companions"> | string | null
-  age?: Prisma.IntFilter<"Companions"> | number
+  version?: Prisma.IntFilter<"Companions"> | number
   title?: Prisma.StringFilter<"Companions"> | string
-  traits?: Prisma.StringNullableListFilter<"Companions">
-  location?: Prisma.StringFilter<"Companions"> | string
-  bio?: Prisma.StringFilter<"Companions"> | string
-  profession?: Prisma.StringFilter<"Companions"> | string
-  interests?: Prisma.StringNullableListFilter<"Companions">
-  communicationStyle?: Prisma.StringFilter<"Companions"> | string
-  lifestyle?: Prisma.StringFilter<"Companions"> | string
+  age?: Prisma.IntNullableFilter<"Companions"> | number | null
   backstory?: Prisma.StringNullableFilter<"Companions"> | string | null
   voiceDescription?: Prisma.StringNullableListFilter<"Companions">
   profileImage?: Prisma.StringNullableFilter<"Companions"> | string | null
   coverImage?: Prisma.StringNullableFilter<"Companions"> | string | null
   galleryImages?: Prisma.StringNullableListFilter<"Companions">
   status?: Prisma.BoolFilter<"Companions"> | boolean
+  interests?: Prisma.StringNullableListFilter<"Companions">
   createdAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
+  personality?: Prisma.XOR<Prisma.CompanionPersonalityNullableScalarRelationFilter, Prisma.CompanionPersonalityWhereInput> | null
+  communicationStyle?: Prisma.XOR<Prisma.CompanionCommunicationStyleNullableScalarRelationFilter, Prisma.CompanionCommunicationStyleWhereInput> | null
+  background?: Prisma.XOR<Prisma.CompanionBackgroundNullableScalarRelationFilter, Prisma.CompanionBackgroundWhereInput> | null
+  visualProfile?: Prisma.XOR<Prisma.CompanionVisualProfileNullableScalarRelationFilter, Prisma.CompanionVisualProfileWhereInput> | null
+  voice?: Prisma.XOR<Prisma.CompanionVoiceNullableScalarRelationFilter, Prisma.CompanionVoiceWhereInput> | null
   relationships?: Prisma.RelationshipListRelationFilter
   storyEvents?: Prisma.StoryEventListRelationFilter
   photoViews?: Prisma.PhotoViewListRelationFilter
@@ -395,22 +358,16 @@ export type CompanionsWhereUniqueInput = Prisma.AtLeast<{
 export type CompanionsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  aiCompanionId?: Prisma.SortOrderInput | Prisma.SortOrder
-  age?: Prisma.SortOrder
+  version?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  traits?: Prisma.SortOrder
-  location?: Prisma.SortOrder
-  bio?: Prisma.SortOrder
-  profession?: Prisma.SortOrder
-  interests?: Prisma.SortOrder
-  communicationStyle?: Prisma.SortOrder
-  lifestyle?: Prisma.SortOrder
+  age?: Prisma.SortOrderInput | Prisma.SortOrder
   backstory?: Prisma.SortOrderInput | Prisma.SortOrder
   voiceDescription?: Prisma.SortOrder
   profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
   coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   galleryImages?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  interests?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CompanionsCountOrderByAggregateInput
@@ -426,22 +383,16 @@ export type CompanionsScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CompanionsScalarWhereWithAggregatesInput | Prisma.CompanionsScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Companions"> | string
   name?: Prisma.StringWithAggregatesFilter<"Companions"> | string
-  aiCompanionId?: Prisma.StringNullableWithAggregatesFilter<"Companions"> | string | null
-  age?: Prisma.IntWithAggregatesFilter<"Companions"> | number
+  version?: Prisma.IntWithAggregatesFilter<"Companions"> | number
   title?: Prisma.StringWithAggregatesFilter<"Companions"> | string
-  traits?: Prisma.StringNullableListFilter<"Companions">
-  location?: Prisma.StringWithAggregatesFilter<"Companions"> | string
-  bio?: Prisma.StringWithAggregatesFilter<"Companions"> | string
-  profession?: Prisma.StringWithAggregatesFilter<"Companions"> | string
-  interests?: Prisma.StringNullableListFilter<"Companions">
-  communicationStyle?: Prisma.StringWithAggregatesFilter<"Companions"> | string
-  lifestyle?: Prisma.StringWithAggregatesFilter<"Companions"> | string
+  age?: Prisma.IntNullableWithAggregatesFilter<"Companions"> | number | null
   backstory?: Prisma.StringNullableWithAggregatesFilter<"Companions"> | string | null
   voiceDescription?: Prisma.StringNullableListFilter<"Companions">
   profileImage?: Prisma.StringNullableWithAggregatesFilter<"Companions"> | string | null
   coverImage?: Prisma.StringNullableWithAggregatesFilter<"Companions"> | string | null
   galleryImages?: Prisma.StringNullableListFilter<"Companions">
   status?: Prisma.BoolWithAggregatesFilter<"Companions"> | boolean
+  interests?: Prisma.StringNullableListFilter<"Companions">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Companions"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Companions"> | Date | string
 }
@@ -449,24 +400,23 @@ export type CompanionsScalarWhereWithAggregatesInput = {
 export type CompanionsCreateInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
   storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
@@ -479,24 +429,23 @@ export type CompanionsCreateInput = {
 export type CompanionsUncheckedCreateInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
   storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
@@ -509,24 +458,23 @@ export type CompanionsUncheckedCreateInput = {
 export type CompanionsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
@@ -539,24 +487,23 @@ export type CompanionsUpdateInput = {
 export type CompanionsUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
@@ -569,22 +516,16 @@ export type CompanionsUncheckedUpdateInput = {
 export type CompanionsCreateManyInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -592,22 +533,16 @@ export type CompanionsCreateManyInput = {
 export type CompanionsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -615,22 +550,16 @@ export type CompanionsUpdateManyMutationInput = {
 export type CompanionsUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -651,41 +580,31 @@ export type StringNullableListFilter<$PrismaModel = never> = {
 export type CompanionsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  aiCompanionId?: Prisma.SortOrder
-  age?: Prisma.SortOrder
+  version?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  traits?: Prisma.SortOrder
-  location?: Prisma.SortOrder
-  bio?: Prisma.SortOrder
-  profession?: Prisma.SortOrder
-  interests?: Prisma.SortOrder
-  communicationStyle?: Prisma.SortOrder
-  lifestyle?: Prisma.SortOrder
+  age?: Prisma.SortOrder
   backstory?: Prisma.SortOrder
   voiceDescription?: Prisma.SortOrder
   profileImage?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   galleryImages?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  interests?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type CompanionsAvgOrderByAggregateInput = {
+  version?: Prisma.SortOrder
   age?: Prisma.SortOrder
 }
 
 export type CompanionsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  aiCompanionId?: Prisma.SortOrder
-  age?: Prisma.SortOrder
+  version?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  location?: Prisma.SortOrder
-  bio?: Prisma.SortOrder
-  profession?: Prisma.SortOrder
-  communicationStyle?: Prisma.SortOrder
-  lifestyle?: Prisma.SortOrder
+  age?: Prisma.SortOrder
   backstory?: Prisma.SortOrder
   profileImage?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
@@ -697,14 +616,9 @@ export type CompanionsMaxOrderByAggregateInput = {
 export type CompanionsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  aiCompanionId?: Prisma.SortOrder
-  age?: Prisma.SortOrder
+  version?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  location?: Prisma.SortOrder
-  bio?: Prisma.SortOrder
-  profession?: Prisma.SortOrder
-  communicationStyle?: Prisma.SortOrder
-  lifestyle?: Prisma.SortOrder
+  age?: Prisma.SortOrder
   backstory?: Prisma.SortOrder
   profileImage?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
@@ -714,6 +628,7 @@ export type CompanionsMinOrderByAggregateInput = {
 }
 
 export type CompanionsSumOrderByAggregateInput = {
+  version?: Prisma.SortOrder
   age?: Prisma.SortOrder
 }
 
@@ -750,14 +665,6 @@ export type CompanionsUpdateOneRequiredWithoutChatConversationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutChatConversationsInput, Prisma.CompanionsUpdateWithoutChatConversationsInput>, Prisma.CompanionsUncheckedUpdateWithoutChatConversationsInput>
 }
 
-export type CompanionsCreatetraitsInput = {
-  set: string[]
-}
-
-export type CompanionsCreateinterestsInput = {
-  set: string[]
-}
-
 export type CompanionsCreatevoiceDescriptionInput = {
   set: string[]
 }
@@ -766,14 +673,16 @@ export type CompanionsCreategalleryImagesInput = {
   set: string[]
 }
 
-export type CompanionsUpdatetraitsInput = {
-  set?: string[]
-  push?: string | string[]
+export type CompanionsCreateinterestsInput = {
+  set: string[]
 }
 
-export type CompanionsUpdateinterestsInput = {
-  set?: string[]
-  push?: string | string[]
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type CompanionsUpdatevoiceDescriptionInput = {
@@ -784,6 +693,81 @@ export type CompanionsUpdatevoiceDescriptionInput = {
 export type CompanionsUpdategalleryImagesInput = {
   set?: string[]
   push?: string | string[]
+}
+
+export type CompanionsUpdateinterestsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type CompanionsCreateNestedOneWithoutPersonalityInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutPersonalityInput, Prisma.CompanionsUncheckedCreateWithoutPersonalityInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutPersonalityInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+}
+
+export type CompanionsUpdateOneRequiredWithoutPersonalityNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutPersonalityInput, Prisma.CompanionsUncheckedCreateWithoutPersonalityInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutPersonalityInput
+  upsert?: Prisma.CompanionsUpsertWithoutPersonalityInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutPersonalityInput, Prisma.CompanionsUpdateWithoutPersonalityInput>, Prisma.CompanionsUncheckedUpdateWithoutPersonalityInput>
+}
+
+export type CompanionsCreateNestedOneWithoutCommunicationStyleInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutCommunicationStyleInput, Prisma.CompanionsUncheckedCreateWithoutCommunicationStyleInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutCommunicationStyleInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+}
+
+export type CompanionsUpdateOneRequiredWithoutCommunicationStyleNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutCommunicationStyleInput, Prisma.CompanionsUncheckedCreateWithoutCommunicationStyleInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutCommunicationStyleInput
+  upsert?: Prisma.CompanionsUpsertWithoutCommunicationStyleInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutCommunicationStyleInput, Prisma.CompanionsUpdateWithoutCommunicationStyleInput>, Prisma.CompanionsUncheckedUpdateWithoutCommunicationStyleInput>
+}
+
+export type CompanionsCreateNestedOneWithoutBackgroundInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutBackgroundInput, Prisma.CompanionsUncheckedCreateWithoutBackgroundInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutBackgroundInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+}
+
+export type CompanionsUpdateOneRequiredWithoutBackgroundNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutBackgroundInput, Prisma.CompanionsUncheckedCreateWithoutBackgroundInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutBackgroundInput
+  upsert?: Prisma.CompanionsUpsertWithoutBackgroundInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutBackgroundInput, Prisma.CompanionsUpdateWithoutBackgroundInput>, Prisma.CompanionsUncheckedUpdateWithoutBackgroundInput>
+}
+
+export type CompanionsCreateNestedOneWithoutVisualProfileInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutVisualProfileInput, Prisma.CompanionsUncheckedCreateWithoutVisualProfileInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutVisualProfileInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+}
+
+export type CompanionsUpdateOneRequiredWithoutVisualProfileNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutVisualProfileInput, Prisma.CompanionsUncheckedCreateWithoutVisualProfileInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutVisualProfileInput
+  upsert?: Prisma.CompanionsUpsertWithoutVisualProfileInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutVisualProfileInput, Prisma.CompanionsUpdateWithoutVisualProfileInput>, Prisma.CompanionsUncheckedUpdateWithoutVisualProfileInput>
+}
+
+export type CompanionsCreateNestedOneWithoutVoiceInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutVoiceInput, Prisma.CompanionsUncheckedCreateWithoutVoiceInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutVoiceInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+}
+
+export type CompanionsUpdateOneRequiredWithoutVoiceNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutVoiceInput, Prisma.CompanionsUncheckedCreateWithoutVoiceInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutVoiceInput
+  upsert?: Prisma.CompanionsUpsertWithoutVoiceInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutVoiceInput, Prisma.CompanionsUpdateWithoutVoiceInput>, Prisma.CompanionsUncheckedUpdateWithoutVoiceInput>
 }
 
 export type CompanionsCreateNestedOneWithoutCreditTransactionsInput = {
@@ -861,24 +845,23 @@ export type CompanionsUpdateOneRequiredWithoutGiftTransactionsNestedInput = {
 export type CompanionsCreateWithoutChatMessagesInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
   storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
@@ -890,24 +873,23 @@ export type CompanionsCreateWithoutChatMessagesInput = {
 export type CompanionsUncheckedCreateWithoutChatMessagesInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
   storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
@@ -935,24 +917,23 @@ export type CompanionsUpdateToOneWithWhereWithoutChatMessagesInput = {
 export type CompanionsUpdateWithoutChatMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
@@ -964,24 +945,23 @@ export type CompanionsUpdateWithoutChatMessagesInput = {
 export type CompanionsUncheckedUpdateWithoutChatMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
@@ -993,24 +973,23 @@ export type CompanionsUncheckedUpdateWithoutChatMessagesInput = {
 export type CompanionsCreateWithoutChatConversationsInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
   storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
@@ -1022,24 +1001,23 @@ export type CompanionsCreateWithoutChatConversationsInput = {
 export type CompanionsUncheckedCreateWithoutChatConversationsInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
   storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
@@ -1067,24 +1045,23 @@ export type CompanionsUpdateToOneWithWhereWithoutChatConversationsInput = {
 export type CompanionsUpdateWithoutChatConversationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
@@ -1096,24 +1073,23 @@ export type CompanionsUpdateWithoutChatConversationsInput = {
 export type CompanionsUncheckedUpdateWithoutChatConversationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
@@ -1122,27 +1098,666 @@ export type CompanionsUncheckedUpdateWithoutChatConversationsInput = {
   giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
 }
 
-export type CompanionsCreateWithoutCreditTransactionsInput = {
+export type CompanionsCreateWithoutPersonalityInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsUncheckedCreateWithoutPersonalityInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsCreateOrConnectWithoutPersonalityInput = {
+  where: Prisma.CompanionsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutPersonalityInput, Prisma.CompanionsUncheckedCreateWithoutPersonalityInput>
+}
+
+export type CompanionsUpsertWithoutPersonalityInput = {
+  update: Prisma.XOR<Prisma.CompanionsUpdateWithoutPersonalityInput, Prisma.CompanionsUncheckedUpdateWithoutPersonalityInput>
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutPersonalityInput, Prisma.CompanionsUncheckedCreateWithoutPersonalityInput>
+  where?: Prisma.CompanionsWhereInput
+}
+
+export type CompanionsUpdateToOneWithWhereWithoutPersonalityInput = {
+  where?: Prisma.CompanionsWhereInput
+  data: Prisma.XOR<Prisma.CompanionsUpdateWithoutPersonalityInput, Prisma.CompanionsUncheckedUpdateWithoutPersonalityInput>
+}
+
+export type CompanionsUpdateWithoutPersonalityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsUncheckedUpdateWithoutPersonalityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsCreateWithoutCommunicationStyleInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsUncheckedCreateWithoutCommunicationStyleInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsCreateOrConnectWithoutCommunicationStyleInput = {
+  where: Prisma.CompanionsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutCommunicationStyleInput, Prisma.CompanionsUncheckedCreateWithoutCommunicationStyleInput>
+}
+
+export type CompanionsUpsertWithoutCommunicationStyleInput = {
+  update: Prisma.XOR<Prisma.CompanionsUpdateWithoutCommunicationStyleInput, Prisma.CompanionsUncheckedUpdateWithoutCommunicationStyleInput>
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutCommunicationStyleInput, Prisma.CompanionsUncheckedCreateWithoutCommunicationStyleInput>
+  where?: Prisma.CompanionsWhereInput
+}
+
+export type CompanionsUpdateToOneWithWhereWithoutCommunicationStyleInput = {
+  where?: Prisma.CompanionsWhereInput
+  data: Prisma.XOR<Prisma.CompanionsUpdateWithoutCommunicationStyleInput, Prisma.CompanionsUncheckedUpdateWithoutCommunicationStyleInput>
+}
+
+export type CompanionsUpdateWithoutCommunicationStyleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsUncheckedUpdateWithoutCommunicationStyleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsCreateWithoutBackgroundInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsUncheckedCreateWithoutBackgroundInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsCreateOrConnectWithoutBackgroundInput = {
+  where: Prisma.CompanionsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutBackgroundInput, Prisma.CompanionsUncheckedCreateWithoutBackgroundInput>
+}
+
+export type CompanionsUpsertWithoutBackgroundInput = {
+  update: Prisma.XOR<Prisma.CompanionsUpdateWithoutBackgroundInput, Prisma.CompanionsUncheckedUpdateWithoutBackgroundInput>
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutBackgroundInput, Prisma.CompanionsUncheckedCreateWithoutBackgroundInput>
+  where?: Prisma.CompanionsWhereInput
+}
+
+export type CompanionsUpdateToOneWithWhereWithoutBackgroundInput = {
+  where?: Prisma.CompanionsWhereInput
+  data: Prisma.XOR<Prisma.CompanionsUpdateWithoutBackgroundInput, Prisma.CompanionsUncheckedUpdateWithoutBackgroundInput>
+}
+
+export type CompanionsUpdateWithoutBackgroundInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsUncheckedUpdateWithoutBackgroundInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsCreateWithoutVisualProfileInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsUncheckedCreateWithoutVisualProfileInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsCreateOrConnectWithoutVisualProfileInput = {
+  where: Prisma.CompanionsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutVisualProfileInput, Prisma.CompanionsUncheckedCreateWithoutVisualProfileInput>
+}
+
+export type CompanionsUpsertWithoutVisualProfileInput = {
+  update: Prisma.XOR<Prisma.CompanionsUpdateWithoutVisualProfileInput, Prisma.CompanionsUncheckedUpdateWithoutVisualProfileInput>
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutVisualProfileInput, Prisma.CompanionsUncheckedCreateWithoutVisualProfileInput>
+  where?: Prisma.CompanionsWhereInput
+}
+
+export type CompanionsUpdateToOneWithWhereWithoutVisualProfileInput = {
+  where?: Prisma.CompanionsWhereInput
+  data: Prisma.XOR<Prisma.CompanionsUpdateWithoutVisualProfileInput, Prisma.CompanionsUncheckedUpdateWithoutVisualProfileInput>
+}
+
+export type CompanionsUpdateWithoutVisualProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsUncheckedUpdateWithoutVisualProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsCreateWithoutVoiceInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsUncheckedCreateWithoutVoiceInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsCreateOrConnectWithoutVoiceInput = {
+  where: Prisma.CompanionsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutVoiceInput, Prisma.CompanionsUncheckedCreateWithoutVoiceInput>
+}
+
+export type CompanionsUpsertWithoutVoiceInput = {
+  update: Prisma.XOR<Prisma.CompanionsUpdateWithoutVoiceInput, Prisma.CompanionsUncheckedUpdateWithoutVoiceInput>
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutVoiceInput, Prisma.CompanionsUncheckedCreateWithoutVoiceInput>
+  where?: Prisma.CompanionsWhereInput
+}
+
+export type CompanionsUpdateToOneWithWhereWithoutVoiceInput = {
+  where?: Prisma.CompanionsWhereInput
+  data: Prisma.XOR<Prisma.CompanionsUpdateWithoutVoiceInput, Prisma.CompanionsUncheckedUpdateWithoutVoiceInput>
+}
+
+export type CompanionsUpdateWithoutVoiceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsUncheckedUpdateWithoutVoiceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsCreateWithoutCreditTransactionsInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
   storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
@@ -1154,24 +1769,23 @@ export type CompanionsCreateWithoutCreditTransactionsInput = {
 export type CompanionsUncheckedCreateWithoutCreditTransactionsInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
   storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
@@ -1199,24 +1813,23 @@ export type CompanionsUpdateToOneWithWhereWithoutCreditTransactionsInput = {
 export type CompanionsUpdateWithoutCreditTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
@@ -1228,24 +1841,23 @@ export type CompanionsUpdateWithoutCreditTransactionsInput = {
 export type CompanionsUncheckedUpdateWithoutCreditTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
@@ -1257,24 +1869,23 @@ export type CompanionsUncheckedUpdateWithoutCreditTransactionsInput = {
 export type CompanionsCreateWithoutRelationshipsInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
   storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
@@ -1286,24 +1897,23 @@ export type CompanionsCreateWithoutRelationshipsInput = {
 export type CompanionsUncheckedCreateWithoutRelationshipsInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
   storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
@@ -1331,24 +1941,23 @@ export type CompanionsUpdateToOneWithWhereWithoutRelationshipsInput = {
 export type CompanionsUpdateWithoutRelationshipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
@@ -1360,24 +1969,23 @@ export type CompanionsUpdateWithoutRelationshipsInput = {
 export type CompanionsUncheckedUpdateWithoutRelationshipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
@@ -1389,24 +1997,23 @@ export type CompanionsUncheckedUpdateWithoutRelationshipsInput = {
 export type CompanionsCreateWithoutStoryEventsInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
@@ -1418,24 +2025,23 @@ export type CompanionsCreateWithoutStoryEventsInput = {
 export type CompanionsUncheckedCreateWithoutStoryEventsInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
@@ -1463,24 +2069,23 @@ export type CompanionsUpdateToOneWithWhereWithoutStoryEventsInput = {
 export type CompanionsUpdateWithoutStoryEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
@@ -1492,24 +2097,23 @@ export type CompanionsUpdateWithoutStoryEventsInput = {
 export type CompanionsUncheckedUpdateWithoutStoryEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
@@ -1521,24 +2125,23 @@ export type CompanionsUncheckedUpdateWithoutStoryEventsInput = {
 export type CompanionsCreateWithoutPhotoViewsInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
   storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
   chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
@@ -1550,24 +2153,23 @@ export type CompanionsCreateWithoutPhotoViewsInput = {
 export type CompanionsUncheckedCreateWithoutPhotoViewsInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
   storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
   chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
@@ -1595,24 +2197,23 @@ export type CompanionsUpdateToOneWithWhereWithoutPhotoViewsInput = {
 export type CompanionsUpdateWithoutPhotoViewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
   chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
@@ -1624,24 +2225,23 @@ export type CompanionsUpdateWithoutPhotoViewsInput = {
 export type CompanionsUncheckedUpdateWithoutPhotoViewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
@@ -1653,24 +2253,23 @@ export type CompanionsUncheckedUpdateWithoutPhotoViewsInput = {
 export type CompanionsCreateWithoutGiftTransactionsInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
   storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
@@ -1682,24 +2281,23 @@ export type CompanionsCreateWithoutGiftTransactionsInput = {
 export type CompanionsUncheckedCreateWithoutGiftTransactionsInput = {
   id?: string
   name: string
-  aiCompanionId?: string | null
-  age: number
+  version?: number
   title: string
-  traits?: Prisma.CompanionsCreatetraitsInput | string[]
-  location: string
-  bio: string
-  profession: string
-  interests?: Prisma.CompanionsCreateinterestsInput | string[]
-  communicationStyle: string
-  lifestyle: string
+  age?: number | null
   backstory?: string | null
   voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
   profileImage?: string | null
   coverImage?: string | null
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
   storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
@@ -1727,24 +2325,23 @@ export type CompanionsUpdateToOneWithWhereWithoutGiftTransactionsInput = {
 export type CompanionsUpdateWithoutGiftTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
@@ -1756,24 +2353,23 @@ export type CompanionsUpdateWithoutGiftTransactionsInput = {
 export type CompanionsUncheckedUpdateWithoutGiftTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  aiCompanionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  traits?: Prisma.CompanionsUpdatetraitsInput | string[]
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  bio?: Prisma.StringFieldUpdateOperationsInput | string
-  profession?: Prisma.StringFieldUpdateOperationsInput | string
-  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
-  communicationStyle?: Prisma.StringFieldUpdateOperationsInput | string
-  lifestyle?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
   storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
@@ -1870,24 +2466,23 @@ export type CompanionsCountOutputTypeCountGiftTransactionsArgs<ExtArgs extends r
 export type CompanionsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  aiCompanionId?: boolean
-  age?: boolean
+  version?: boolean
   title?: boolean
-  traits?: boolean
-  location?: boolean
-  bio?: boolean
-  profession?: boolean
-  interests?: boolean
-  communicationStyle?: boolean
-  lifestyle?: boolean
+  age?: boolean
   backstory?: boolean
   voiceDescription?: boolean
   profileImage?: boolean
   coverImage?: boolean
   galleryImages?: boolean
   status?: boolean
+  interests?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  personality?: boolean | Prisma.Companions$personalityArgs<ExtArgs>
+  communicationStyle?: boolean | Prisma.Companions$communicationStyleArgs<ExtArgs>
+  background?: boolean | Prisma.Companions$backgroundArgs<ExtArgs>
+  visualProfile?: boolean | Prisma.Companions$visualProfileArgs<ExtArgs>
+  voice?: boolean | Prisma.Companions$voiceArgs<ExtArgs>
   relationships?: boolean | Prisma.Companions$relationshipsArgs<ExtArgs>
   storyEvents?: boolean | Prisma.Companions$storyEventsArgs<ExtArgs>
   photoViews?: boolean | Prisma.Companions$photoViewsArgs<ExtArgs>
@@ -1901,22 +2496,16 @@ export type CompanionsSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type CompanionsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  aiCompanionId?: boolean
-  age?: boolean
+  version?: boolean
   title?: boolean
-  traits?: boolean
-  location?: boolean
-  bio?: boolean
-  profession?: boolean
-  interests?: boolean
-  communicationStyle?: boolean
-  lifestyle?: boolean
+  age?: boolean
   backstory?: boolean
   voiceDescription?: boolean
   profileImage?: boolean
   coverImage?: boolean
   galleryImages?: boolean
   status?: boolean
+  interests?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companions"]>
@@ -1924,22 +2513,16 @@ export type CompanionsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
 export type CompanionsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
-  aiCompanionId?: boolean
-  age?: boolean
+  version?: boolean
   title?: boolean
-  traits?: boolean
-  location?: boolean
-  bio?: boolean
-  profession?: boolean
-  interests?: boolean
-  communicationStyle?: boolean
-  lifestyle?: boolean
+  age?: boolean
   backstory?: boolean
   voiceDescription?: boolean
   profileImage?: boolean
   coverImage?: boolean
   galleryImages?: boolean
   status?: boolean
+  interests?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companions"]>
@@ -1947,28 +2530,27 @@ export type CompanionsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
 export type CompanionsSelectScalar = {
   id?: boolean
   name?: boolean
-  aiCompanionId?: boolean
-  age?: boolean
+  version?: boolean
   title?: boolean
-  traits?: boolean
-  location?: boolean
-  bio?: boolean
-  profession?: boolean
-  interests?: boolean
-  communicationStyle?: boolean
-  lifestyle?: boolean
+  age?: boolean
   backstory?: boolean
   voiceDescription?: boolean
   profileImage?: boolean
   coverImage?: boolean
   galleryImages?: boolean
   status?: boolean
+  interests?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CompanionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "aiCompanionId" | "age" | "title" | "traits" | "location" | "bio" | "profession" | "interests" | "communicationStyle" | "lifestyle" | "backstory" | "voiceDescription" | "profileImage" | "coverImage" | "galleryImages" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["companions"]>
+export type CompanionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "version" | "title" | "age" | "backstory" | "voiceDescription" | "profileImage" | "coverImage" | "galleryImages" | "status" | "interests" | "createdAt" | "updatedAt", ExtArgs["result"]["companions"]>
 export type CompanionsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  personality?: boolean | Prisma.Companions$personalityArgs<ExtArgs>
+  communicationStyle?: boolean | Prisma.Companions$communicationStyleArgs<ExtArgs>
+  background?: boolean | Prisma.Companions$backgroundArgs<ExtArgs>
+  visualProfile?: boolean | Prisma.Companions$visualProfileArgs<ExtArgs>
+  voice?: boolean | Prisma.Companions$voiceArgs<ExtArgs>
   relationships?: boolean | Prisma.Companions$relationshipsArgs<ExtArgs>
   storyEvents?: boolean | Prisma.Companions$storyEventsArgs<ExtArgs>
   photoViews?: boolean | Prisma.Companions$photoViewsArgs<ExtArgs>
@@ -1984,6 +2566,11 @@ export type CompanionsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.E
 export type $CompanionsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Companions"
   objects: {
+    personality: Prisma.$CompanionPersonalityPayload<ExtArgs> | null
+    communicationStyle: Prisma.$CompanionCommunicationStylePayload<ExtArgs> | null
+    background: Prisma.$CompanionBackgroundPayload<ExtArgs> | null
+    visualProfile: Prisma.$CompanionVisualProfilePayload<ExtArgs> | null
+    voice: Prisma.$CompanionVoicePayload<ExtArgs> | null
     relationships: Prisma.$RelationshipPayload<ExtArgs>[]
     storyEvents: Prisma.$StoryEventPayload<ExtArgs>[]
     photoViews: Prisma.$PhotoViewPayload<ExtArgs>[]
@@ -1995,22 +2582,16 @@ export type $CompanionsPayload<ExtArgs extends runtime.Types.Extensions.Internal
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
-    aiCompanionId: string | null
-    age: number
+    version: number
     title: string
-    traits: string[]
-    location: string
-    bio: string
-    profession: string
-    interests: string[]
-    communicationStyle: string
-    lifestyle: string
+    age: number | null
     backstory: string | null
     voiceDescription: string[]
     profileImage: string | null
     coverImage: string | null
     galleryImages: string[]
     status: boolean
+    interests: string[]
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["companions"]>
@@ -2407,6 +2988,11 @@ readonly fields: CompanionsFieldRefs;
  */
 export interface Prisma__CompanionsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  personality<T extends Prisma.Companions$personalityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$personalityArgs<ExtArgs>>): Prisma.Prisma__CompanionPersonalityClient<runtime.Types.Result.GetResult<Prisma.$CompanionPersonalityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  communicationStyle<T extends Prisma.Companions$communicationStyleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$communicationStyleArgs<ExtArgs>>): Prisma.Prisma__CompanionCommunicationStyleClient<runtime.Types.Result.GetResult<Prisma.$CompanionCommunicationStylePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  background<T extends Prisma.Companions$backgroundArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$backgroundArgs<ExtArgs>>): Prisma.Prisma__CompanionBackgroundClient<runtime.Types.Result.GetResult<Prisma.$CompanionBackgroundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  visualProfile<T extends Prisma.Companions$visualProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$visualProfileArgs<ExtArgs>>): Prisma.Prisma__CompanionVisualProfileClient<runtime.Types.Result.GetResult<Prisma.$CompanionVisualProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  voice<T extends Prisma.Companions$voiceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$voiceArgs<ExtArgs>>): Prisma.Prisma__CompanionVoiceClient<runtime.Types.Result.GetResult<Prisma.$CompanionVoicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   relationships<T extends Prisma.Companions$relationshipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$relationshipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RelationshipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   storyEvents<T extends Prisma.Companions$storyEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$storyEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StoryEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   photoViews<T extends Prisma.Companions$photoViewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$photoViewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PhotoViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2445,22 +3031,16 @@ export interface Prisma__CompanionsClient<T, Null = never, ExtArgs extends runti
 export interface CompanionsFieldRefs {
   readonly id: Prisma.FieldRef<"Companions", 'String'>
   readonly name: Prisma.FieldRef<"Companions", 'String'>
-  readonly aiCompanionId: Prisma.FieldRef<"Companions", 'String'>
-  readonly age: Prisma.FieldRef<"Companions", 'Int'>
+  readonly version: Prisma.FieldRef<"Companions", 'Int'>
   readonly title: Prisma.FieldRef<"Companions", 'String'>
-  readonly traits: Prisma.FieldRef<"Companions", 'String[]'>
-  readonly location: Prisma.FieldRef<"Companions", 'String'>
-  readonly bio: Prisma.FieldRef<"Companions", 'String'>
-  readonly profession: Prisma.FieldRef<"Companions", 'String'>
-  readonly interests: Prisma.FieldRef<"Companions", 'String[]'>
-  readonly communicationStyle: Prisma.FieldRef<"Companions", 'String'>
-  readonly lifestyle: Prisma.FieldRef<"Companions", 'String'>
+  readonly age: Prisma.FieldRef<"Companions", 'Int'>
   readonly backstory: Prisma.FieldRef<"Companions", 'String'>
   readonly voiceDescription: Prisma.FieldRef<"Companions", 'String[]'>
   readonly profileImage: Prisma.FieldRef<"Companions", 'String'>
   readonly coverImage: Prisma.FieldRef<"Companions", 'String'>
   readonly galleryImages: Prisma.FieldRef<"Companions", 'String[]'>
   readonly status: Prisma.FieldRef<"Companions", 'Boolean'>
+  readonly interests: Prisma.FieldRef<"Companions", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"Companions", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Companions", 'DateTime'>
 }
@@ -2853,6 +3433,101 @@ export type CompanionsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many Companions to delete.
    */
   limit?: number
+}
+
+/**
+ * Companions.personality
+ */
+export type Companions$personalityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CompanionPersonality
+   */
+  select?: Prisma.CompanionPersonalitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CompanionPersonality
+   */
+  omit?: Prisma.CompanionPersonalityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionPersonalityInclude<ExtArgs> | null
+  where?: Prisma.CompanionPersonalityWhereInput
+}
+
+/**
+ * Companions.communicationStyle
+ */
+export type Companions$communicationStyleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CompanionCommunicationStyle
+   */
+  select?: Prisma.CompanionCommunicationStyleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CompanionCommunicationStyle
+   */
+  omit?: Prisma.CompanionCommunicationStyleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionCommunicationStyleInclude<ExtArgs> | null
+  where?: Prisma.CompanionCommunicationStyleWhereInput
+}
+
+/**
+ * Companions.background
+ */
+export type Companions$backgroundArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CompanionBackground
+   */
+  select?: Prisma.CompanionBackgroundSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CompanionBackground
+   */
+  omit?: Prisma.CompanionBackgroundOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionBackgroundInclude<ExtArgs> | null
+  where?: Prisma.CompanionBackgroundWhereInput
+}
+
+/**
+ * Companions.visualProfile
+ */
+export type Companions$visualProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CompanionVisualProfile
+   */
+  select?: Prisma.CompanionVisualProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CompanionVisualProfile
+   */
+  omit?: Prisma.CompanionVisualProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionVisualProfileInclude<ExtArgs> | null
+  where?: Prisma.CompanionVisualProfileWhereInput
+}
+
+/**
+ * Companions.voice
+ */
+export type Companions$voiceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CompanionVoice
+   */
+  select?: Prisma.CompanionVoiceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CompanionVoice
+   */
+  omit?: Prisma.CompanionVoiceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanionVoiceInclude<ExtArgs> | null
+  where?: Prisma.CompanionVoiceWhereInput
 }
 
 /**

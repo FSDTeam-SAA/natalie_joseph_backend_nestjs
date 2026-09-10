@@ -26,16 +26,9 @@ import type { Request } from 'express';
 import { fileUpload } from 'src/app/helper/fileUploder';
 import pick from 'src/app/helper/pick';
 import { AuthGuard } from 'src/app/middlewares/auth.guard';
-import type { CompanionFiles } from './companions.service';
 import { CompanionsService } from './companions.service';
 import { CreateCompanionDto } from './dto/create-companion.dto';
 import { UpdateCompanionDto } from './dto/update-companion.dto';
-
-const companionFileFields = [
-  { name: 'profileImage', maxCount: 1 },
-  { name: 'coverImage', maxCount: 1 },
-  { name: 'galleryImages', maxCount: 10 },
-];
 
 @ApiTags('Companions')
 @Controller('companions')
@@ -45,17 +38,11 @@ export class CompanionsController {
   @Post()
   @ApiOperation({ summary: 'Create a companion' })
   @ApiBearerAuth('access-token')
-  @ApiConsumes('multipart/form-data')
+  @ApiConsumes('application/json')
   @ApiBody({ type: CreateCompanionDto })
   @UseGuards(AuthGuard('admin'))
-  @UseInterceptors(
-    FileFieldsInterceptor(companionFileFields, fileUpload.uploadConfig),
-  )
-  async createCompanion(
-    @Body() payload: CreateCompanionDto,
-    @UploadedFiles() files: CompanionFiles = {},
-  ) {
-    const data = await this.companionsService.createCompanion(payload, files);
+  async createCompanion(@Body() payload: CreateCompanionDto) {
+    const data = await this.companionsService.createCompanion(payload);
     return { message: 'Companion created successfully', data };
   }
 
@@ -63,7 +50,7 @@ export class CompanionsController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get all companions' })
   @ApiQuery({ name: 'searchTerm', required: false, type: String })
-  @ApiQuery({ name: 'profession', required: false, type: String })
+  @ApiQuery({ name: 'occupation', required: false, type: String })
   @ApiQuery({ name: 'location', required: false, type: String })
   @ApiQuery({ name: 'status', required: false, type: Boolean })
   @ApiQuery({ name: 'interest', required: false, type: String })
@@ -75,18 +62,15 @@ export class CompanionsController {
   async getAllCompanions(@Req() request: Request) {
     const filters = pick(request.query, [
       'searchTerm',
+      'name',
+      'title',
+      'backstory',
+      'occupation',
       'profession',
       'location',
       'status',
       'interest',
       'personalityTrait',
-      'name',
-      'profession',
-      'location',
-      'bio',
-      'communicationStyle',
-      'lifestyle',
-      'backstory',
     ]);
     const options = pick(request.query, [
       'page',
@@ -116,23 +100,151 @@ export class CompanionsController {
   @Put(':id')
   @ApiOperation({ summary: 'Update a companion' })
   @ApiBearerAuth('access-token')
-  @ApiConsumes('multipart/form-data')
+  @ApiConsumes('application/json')
   @ApiBody({ type: UpdateCompanionDto })
   @UseGuards(AuthGuard('admin'))
-  @UseInterceptors(
-    FileFieldsInterceptor(companionFileFields, fileUpload.uploadConfig),
-  )
   async updateCompanion(
     @Param('id') id: string,
     @Body() payload: UpdateCompanionDto,
-    @UploadedFiles() files: CompanionFiles = {},
   ) {
-    const data = await this.companionsService.updateCompanion(
-      id,
-      payload,
-      files,
-    );
+    const data = await this.companionsService.updateCompanion(id, payload);
     return { message: 'Companion updated successfully', data };
+  }
+
+  @Put(':id/profile-image')
+  @ApiOperation({ summary: 'Set or replace companion profileImage' })
+  @ApiBearerAuth('access-token')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['profileImage'],
+      properties: { profileImage: { type: 'string', format: 'binary' } },
+    },
+  })
+  @UseGuards(AuthGuard('admin'))
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: 'profileImage', maxCount: 1 }],
+      fileUpload.uploadConfig,
+    ),
+  )
+  async updateProfileImage(
+    @Param('id') id: string,
+    @UploadedFiles() files: { profileImage?: Express.Multer.File[] } = {},
+  ) {
+    const data = await this.companionsService.updateImages(
+      id,
+      'profileImage',
+      files.profileImage ?? [],
+      false,
+    );
+    return { message: 'Companion images updated successfully', data };
+  }
+
+  @Put(':id/cover-image')
+  @ApiOperation({ summary: 'Set or replace companion coverImage' })
+  @ApiBearerAuth('access-token')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['coverImage'],
+      properties: { coverImage: { type: 'string', format: 'binary' } },
+    },
+  })
+  @UseGuards(AuthGuard('admin'))
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: 'coverImage', maxCount: 1 }],
+      fileUpload.uploadConfig,
+    ),
+  )
+  async updateCoverImage(
+    @Param('id') id: string,
+    @UploadedFiles() files: { coverImage?: Express.Multer.File[] } = {},
+  ) {
+    const data = await this.companionsService.updateImages(
+      id,
+      'coverImage',
+      files.coverImage ?? [],
+      false,
+    );
+    return { message: 'Companion images updated successfully', data };
+  }
+
+  @Post(':id/gallery')
+  @ApiOperation({ summary: 'Add to companion galleryImages' })
+  @ApiBearerAuth('access-token')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['galleryImages'],
+      properties: {
+        galleryImages: {
+          type: 'array',
+          items: { type: 'string', format: 'binary' },
+          maxItems: 10,
+        },
+      },
+    },
+  })
+  @UseGuards(AuthGuard('admin'))
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: 'galleryImages', maxCount: 10 }],
+      fileUpload.uploadConfig,
+    ),
+  )
+  async addGalleryImages(
+    @Param('id') id: string,
+    @UploadedFiles() files: { galleryImages?: Express.Multer.File[] } = {},
+  ) {
+    const data = await this.companionsService.updateImages(
+      id,
+      'galleryImages',
+      files.galleryImages ?? [],
+      true,
+    );
+    return { message: 'Companion images updated successfully', data };
+  }
+
+  @Put(':id/gallery')
+  @ApiOperation({ summary: 'Set or replace companion galleryImages' })
+  @ApiBearerAuth('access-token')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['galleryImages'],
+      properties: {
+        galleryImages: {
+          type: 'array',
+          items: { type: 'string', format: 'binary' },
+          maxItems: 10,
+        },
+      },
+    },
+  })
+  @UseGuards(AuthGuard('admin'))
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: 'galleryImages', maxCount: 10 }],
+      fileUpload.uploadConfig,
+    ),
+  )
+  async updateGalleryImages(
+    @Param('id') id: string,
+    @UploadedFiles() files: { galleryImages?: Express.Multer.File[] } = {},
+  ) {
+    const data = await this.companionsService.updateImages(
+      id,
+      'galleryImages',
+      files.galleryImages ?? [],
+      false,
+    );
+    return { message: 'Companion images updated successfully', data };
   }
 
   @Delete(':id')

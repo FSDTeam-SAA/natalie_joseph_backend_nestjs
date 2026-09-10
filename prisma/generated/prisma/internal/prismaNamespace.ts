@@ -400,6 +400,12 @@ export const ModelName = {
   ChatMessage: 'ChatMessage',
   ChatConversation: 'ChatConversation',
   Companions: 'Companions',
+  CompanionPersonality: 'CompanionPersonality',
+  CompanionCommunicationStyle: 'CompanionCommunicationStyle',
+  CompanionBackground: 'CompanionBackground',
+  CompanionVisualProfile: 'CompanionVisualProfile',
+  CompanionVoice: 'CompanionVoice',
+  CompanionVoiceSettings: 'CompanionVoiceSettings',
   CreditPackage: 'CreditPackage',
   CreditTransaction: 'CreditTransaction',
   PurchasedCreditLot: 'PurchasedCreditLot',
@@ -431,7 +437,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "chatMessage" | "chatConversation" | "companions" | "creditPackage" | "creditTransaction" | "purchasedCreditLot" | "creditCost" | "relationship" | "storyEvent" | "photoView" | "notification" | "conversationModeEvent" | "gift" | "giftTransaction" | "newsletter" | "payment" | "subscription" | "user" | "userSubscription"
+    modelProps: "chatMessage" | "chatConversation" | "companions" | "companionPersonality" | "companionCommunicationStyle" | "companionBackground" | "companionVisualProfile" | "companionVoice" | "companionVoiceSettings" | "creditPackage" | "creditTransaction" | "purchasedCreditLot" | "creditCost" | "relationship" | "storyEvent" | "photoView" | "notification" | "conversationModeEvent" | "gift" | "giftTransaction" | "newsletter" | "payment" | "subscription" | "user" | "userSubscription"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -654,6 +660,450 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CompanionsCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CompanionsCountAggregateOutputType> | number
+        }
+      }
+    }
+    CompanionPersonality: {
+      payload: Prisma.$CompanionPersonalityPayload<ExtArgs>
+      fields: Prisma.CompanionPersonalityFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CompanionPersonalityFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionPersonalityPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CompanionPersonalityFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionPersonalityPayload>
+        }
+        findFirst: {
+          args: Prisma.CompanionPersonalityFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionPersonalityPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CompanionPersonalityFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionPersonalityPayload>
+        }
+        findMany: {
+          args: Prisma.CompanionPersonalityFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionPersonalityPayload>[]
+        }
+        create: {
+          args: Prisma.CompanionPersonalityCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionPersonalityPayload>
+        }
+        createMany: {
+          args: Prisma.CompanionPersonalityCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CompanionPersonalityCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionPersonalityPayload>[]
+        }
+        delete: {
+          args: Prisma.CompanionPersonalityDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionPersonalityPayload>
+        }
+        update: {
+          args: Prisma.CompanionPersonalityUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionPersonalityPayload>
+        }
+        deleteMany: {
+          args: Prisma.CompanionPersonalityDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CompanionPersonalityUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CompanionPersonalityUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionPersonalityPayload>[]
+        }
+        upsert: {
+          args: Prisma.CompanionPersonalityUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionPersonalityPayload>
+        }
+        aggregate: {
+          args: Prisma.CompanionPersonalityAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanionPersonality>
+        }
+        groupBy: {
+          args: Prisma.CompanionPersonalityGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionPersonalityGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CompanionPersonalityCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionPersonalityCountAggregateOutputType> | number
+        }
+      }
+    }
+    CompanionCommunicationStyle: {
+      payload: Prisma.$CompanionCommunicationStylePayload<ExtArgs>
+      fields: Prisma.CompanionCommunicationStyleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CompanionCommunicationStyleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionCommunicationStylePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CompanionCommunicationStyleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionCommunicationStylePayload>
+        }
+        findFirst: {
+          args: Prisma.CompanionCommunicationStyleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionCommunicationStylePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CompanionCommunicationStyleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionCommunicationStylePayload>
+        }
+        findMany: {
+          args: Prisma.CompanionCommunicationStyleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionCommunicationStylePayload>[]
+        }
+        create: {
+          args: Prisma.CompanionCommunicationStyleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionCommunicationStylePayload>
+        }
+        createMany: {
+          args: Prisma.CompanionCommunicationStyleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CompanionCommunicationStyleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionCommunicationStylePayload>[]
+        }
+        delete: {
+          args: Prisma.CompanionCommunicationStyleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionCommunicationStylePayload>
+        }
+        update: {
+          args: Prisma.CompanionCommunicationStyleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionCommunicationStylePayload>
+        }
+        deleteMany: {
+          args: Prisma.CompanionCommunicationStyleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CompanionCommunicationStyleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CompanionCommunicationStyleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionCommunicationStylePayload>[]
+        }
+        upsert: {
+          args: Prisma.CompanionCommunicationStyleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionCommunicationStylePayload>
+        }
+        aggregate: {
+          args: Prisma.CompanionCommunicationStyleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanionCommunicationStyle>
+        }
+        groupBy: {
+          args: Prisma.CompanionCommunicationStyleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionCommunicationStyleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CompanionCommunicationStyleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionCommunicationStyleCountAggregateOutputType> | number
+        }
+      }
+    }
+    CompanionBackground: {
+      payload: Prisma.$CompanionBackgroundPayload<ExtArgs>
+      fields: Prisma.CompanionBackgroundFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CompanionBackgroundFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionBackgroundPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CompanionBackgroundFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionBackgroundPayload>
+        }
+        findFirst: {
+          args: Prisma.CompanionBackgroundFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionBackgroundPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CompanionBackgroundFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionBackgroundPayload>
+        }
+        findMany: {
+          args: Prisma.CompanionBackgroundFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionBackgroundPayload>[]
+        }
+        create: {
+          args: Prisma.CompanionBackgroundCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionBackgroundPayload>
+        }
+        createMany: {
+          args: Prisma.CompanionBackgroundCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CompanionBackgroundCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionBackgroundPayload>[]
+        }
+        delete: {
+          args: Prisma.CompanionBackgroundDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionBackgroundPayload>
+        }
+        update: {
+          args: Prisma.CompanionBackgroundUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionBackgroundPayload>
+        }
+        deleteMany: {
+          args: Prisma.CompanionBackgroundDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CompanionBackgroundUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CompanionBackgroundUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionBackgroundPayload>[]
+        }
+        upsert: {
+          args: Prisma.CompanionBackgroundUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionBackgroundPayload>
+        }
+        aggregate: {
+          args: Prisma.CompanionBackgroundAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanionBackground>
+        }
+        groupBy: {
+          args: Prisma.CompanionBackgroundGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionBackgroundGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CompanionBackgroundCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionBackgroundCountAggregateOutputType> | number
+        }
+      }
+    }
+    CompanionVisualProfile: {
+      payload: Prisma.$CompanionVisualProfilePayload<ExtArgs>
+      fields: Prisma.CompanionVisualProfileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CompanionVisualProfileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVisualProfilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CompanionVisualProfileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVisualProfilePayload>
+        }
+        findFirst: {
+          args: Prisma.CompanionVisualProfileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVisualProfilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CompanionVisualProfileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVisualProfilePayload>
+        }
+        findMany: {
+          args: Prisma.CompanionVisualProfileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVisualProfilePayload>[]
+        }
+        create: {
+          args: Prisma.CompanionVisualProfileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVisualProfilePayload>
+        }
+        createMany: {
+          args: Prisma.CompanionVisualProfileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CompanionVisualProfileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVisualProfilePayload>[]
+        }
+        delete: {
+          args: Prisma.CompanionVisualProfileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVisualProfilePayload>
+        }
+        update: {
+          args: Prisma.CompanionVisualProfileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVisualProfilePayload>
+        }
+        deleteMany: {
+          args: Prisma.CompanionVisualProfileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CompanionVisualProfileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CompanionVisualProfileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVisualProfilePayload>[]
+        }
+        upsert: {
+          args: Prisma.CompanionVisualProfileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVisualProfilePayload>
+        }
+        aggregate: {
+          args: Prisma.CompanionVisualProfileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanionVisualProfile>
+        }
+        groupBy: {
+          args: Prisma.CompanionVisualProfileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionVisualProfileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CompanionVisualProfileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionVisualProfileCountAggregateOutputType> | number
+        }
+      }
+    }
+    CompanionVoice: {
+      payload: Prisma.$CompanionVoicePayload<ExtArgs>
+      fields: Prisma.CompanionVoiceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CompanionVoiceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoicePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CompanionVoiceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoicePayload>
+        }
+        findFirst: {
+          args: Prisma.CompanionVoiceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoicePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CompanionVoiceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoicePayload>
+        }
+        findMany: {
+          args: Prisma.CompanionVoiceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoicePayload>[]
+        }
+        create: {
+          args: Prisma.CompanionVoiceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoicePayload>
+        }
+        createMany: {
+          args: Prisma.CompanionVoiceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CompanionVoiceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoicePayload>[]
+        }
+        delete: {
+          args: Prisma.CompanionVoiceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoicePayload>
+        }
+        update: {
+          args: Prisma.CompanionVoiceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoicePayload>
+        }
+        deleteMany: {
+          args: Prisma.CompanionVoiceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CompanionVoiceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CompanionVoiceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoicePayload>[]
+        }
+        upsert: {
+          args: Prisma.CompanionVoiceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoicePayload>
+        }
+        aggregate: {
+          args: Prisma.CompanionVoiceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanionVoice>
+        }
+        groupBy: {
+          args: Prisma.CompanionVoiceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionVoiceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CompanionVoiceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionVoiceCountAggregateOutputType> | number
+        }
+      }
+    }
+    CompanionVoiceSettings: {
+      payload: Prisma.$CompanionVoiceSettingsPayload<ExtArgs>
+      fields: Prisma.CompanionVoiceSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CompanionVoiceSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoiceSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CompanionVoiceSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoiceSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.CompanionVoiceSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoiceSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CompanionVoiceSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoiceSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.CompanionVoiceSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoiceSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.CompanionVoiceSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoiceSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.CompanionVoiceSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CompanionVoiceSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoiceSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.CompanionVoiceSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoiceSettingsPayload>
+        }
+        update: {
+          args: Prisma.CompanionVoiceSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoiceSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.CompanionVoiceSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CompanionVoiceSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CompanionVoiceSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoiceSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.CompanionVoiceSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionVoiceSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.CompanionVoiceSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanionVoiceSettings>
+        }
+        groupBy: {
+          args: Prisma.CompanionVoiceSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionVoiceSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CompanionVoiceSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionVoiceSettingsCountAggregateOutputType> | number
         }
       }
     }
@@ -1917,27 +2367,103 @@ export type ChatConversationScalarFieldEnum = (typeof ChatConversationScalarFiel
 export const CompanionsScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  aiCompanionId: 'aiCompanionId',
-  age: 'age',
+  version: 'version',
   title: 'title',
-  traits: 'traits',
-  location: 'location',
-  bio: 'bio',
-  profession: 'profession',
-  interests: 'interests',
-  communicationStyle: 'communicationStyle',
-  lifestyle: 'lifestyle',
+  age: 'age',
   backstory: 'backstory',
   voiceDescription: 'voiceDescription',
   profileImage: 'profileImage',
   coverImage: 'coverImage',
   galleryImages: 'galleryImages',
   status: 'status',
+  interests: 'interests',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type CompanionsScalarFieldEnum = (typeof CompanionsScalarFieldEnum)[keyof typeof CompanionsScalarFieldEnum]
+
+
+export const CompanionPersonalityScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  traits: 'traits',
+  about: 'about',
+  essence: 'essence',
+  sharedTraits: 'sharedTraits',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanionPersonalityScalarFieldEnum = (typeof CompanionPersonalityScalarFieldEnum)[keyof typeof CompanionPersonalityScalarFieldEnum]
+
+
+export const CompanionCommunicationStyleScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  styleTraits: 'styleTraits',
+  topicsSheEnjoys: 'topicsSheEnjoys',
+  whatYouExperience: 'whatYouExperience',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanionCommunicationStyleScalarFieldEnum = (typeof CompanionCommunicationStyleScalarFieldEnum)[keyof typeof CompanionCommunicationStyleScalarFieldEnum]
+
+
+export const CompanionBackgroundScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  location: 'location',
+  occupation: 'occupation',
+  lifestyle: 'lifestyle',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanionBackgroundScalarFieldEnum = (typeof CompanionBackgroundScalarFieldEnum)[keyof typeof CompanionBackgroundScalarFieldEnum]
+
+
+export const CompanionVisualProfileScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  aestheticKeywords: 'aestheticKeywords',
+  note: 'note',
+  referenceImages: 'referenceImages',
+  physicalIdentity: 'physicalIdentity',
+  generationInstructions: 'generationInstructions',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanionVisualProfileScalarFieldEnum = (typeof CompanionVisualProfileScalarFieldEnum)[keyof typeof CompanionVisualProfileScalarFieldEnum]
+
+
+export const CompanionVoiceScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  provider: 'provider',
+  voiceId: 'voiceId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanionVoiceScalarFieldEnum = (typeof CompanionVoiceScalarFieldEnum)[keyof typeof CompanionVoiceScalarFieldEnum]
+
+
+export const CompanionVoiceSettingsScalarFieldEnum = {
+  id: 'id',
+  voiceId: 'voiceId',
+  stability: 'stability',
+  similarityBoost: 'similarityBoost',
+  style: 'style',
+  useSpeakerBoost: 'useSpeakerBoost',
+  speed: 'speed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanionVoiceSettingsScalarFieldEnum = (typeof CompanionVoiceSettingsScalarFieldEnum)[keyof typeof CompanionVoiceSettingsScalarFieldEnum]
 
 
 export const CreditPackageScalarFieldEnum = {
@@ -2276,6 +2802,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
  * Reference to a field of type 'CreditDirection'
  */
 export type EnumCreditDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CreditDirection'>
@@ -2356,20 +2896,6 @@ export type EnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
  * Reference to a field of type 'Status[]'
  */
 export type ListEnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Status[]'>
-    
-
-
-/**
- * Reference to a field of type 'Float'
- */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-/**
- * Reference to a field of type 'Float[]'
- */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -2526,6 +3052,12 @@ export type GlobalOmitConfig = {
   chatMessage?: Prisma.ChatMessageOmit
   chatConversation?: Prisma.ChatConversationOmit
   companions?: Prisma.CompanionsOmit
+  companionPersonality?: Prisma.CompanionPersonalityOmit
+  companionCommunicationStyle?: Prisma.CompanionCommunicationStyleOmit
+  companionBackground?: Prisma.CompanionBackgroundOmit
+  companionVisualProfile?: Prisma.CompanionVisualProfileOmit
+  companionVoice?: Prisma.CompanionVoiceOmit
+  companionVoiceSettings?: Prisma.CompanionVoiceSettingsOmit
   creditPackage?: Prisma.CreditPackageOmit
   creditTransaction?: Prisma.CreditTransactionOmit
   purchasedCreditLot?: Prisma.PurchasedCreditLotOmit

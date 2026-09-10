@@ -55,6 +55,36 @@ export type ChatConversation = Prisma.ChatConversationModel
  */
 export type Companions = Prisma.CompanionsModel
 /**
+ * Model CompanionPersonality
+ * 
+ */
+export type CompanionPersonality = Prisma.CompanionPersonalityModel
+/**
+ * Model CompanionCommunicationStyle
+ * 
+ */
+export type CompanionCommunicationStyle = Prisma.CompanionCommunicationStyleModel
+/**
+ * Model CompanionBackground
+ * 
+ */
+export type CompanionBackground = Prisma.CompanionBackgroundModel
+/**
+ * Model CompanionVisualProfile
+ * 
+ */
+export type CompanionVisualProfile = Prisma.CompanionVisualProfileModel
+/**
+ * Model CompanionVoice
+ * 
+ */
+export type CompanionVoice = Prisma.CompanionVoiceModel
+/**
+ * Model CompanionVoiceSettings
+ * 
+ */
+export type CompanionVoiceSettings = Prisma.CompanionVoiceSettingsModel
+/**
  * Model CreditPackage
  * 
  */

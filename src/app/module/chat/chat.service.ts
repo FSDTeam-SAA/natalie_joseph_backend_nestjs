@@ -146,7 +146,7 @@ export class ChatService {
         }
         const usedCredit = charge.fromPurchased > 0;
 
-        const aiCompanionId = companion.aiCompanionId || companion.id;
+        const aiCompanionId = companion.id;
         let conversation = await tx.chatConversation.findUnique({
           where: { userId_companionId: { userId, companionId } },
         });

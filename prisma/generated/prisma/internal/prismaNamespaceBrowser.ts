@@ -54,6 +54,12 @@ export const ModelName = {
   ChatMessage: 'ChatMessage',
   ChatConversation: 'ChatConversation',
   Companions: 'Companions',
+  CompanionPersonality: 'CompanionPersonality',
+  CompanionCommunicationStyle: 'CompanionCommunicationStyle',
+  CompanionBackground: 'CompanionBackground',
+  CompanionVisualProfile: 'CompanionVisualProfile',
+  CompanionVoice: 'CompanionVoice',
+  CompanionVoiceSettings: 'CompanionVoiceSettings',
   CreditPackage: 'CreditPackage',
   CreditTransaction: 'CreditTransaction',
   PurchasedCreditLot: 'PurchasedCreditLot',
@@ -125,27 +131,103 @@ export type ChatConversationScalarFieldEnum = (typeof ChatConversationScalarFiel
 export const CompanionsScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  aiCompanionId: 'aiCompanionId',
-  age: 'age',
+  version: 'version',
   title: 'title',
-  traits: 'traits',
-  location: 'location',
-  bio: 'bio',
-  profession: 'profession',
-  interests: 'interests',
-  communicationStyle: 'communicationStyle',
-  lifestyle: 'lifestyle',
+  age: 'age',
   backstory: 'backstory',
   voiceDescription: 'voiceDescription',
   profileImage: 'profileImage',
   coverImage: 'coverImage',
   galleryImages: 'galleryImages',
   status: 'status',
+  interests: 'interests',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type CompanionsScalarFieldEnum = (typeof CompanionsScalarFieldEnum)[keyof typeof CompanionsScalarFieldEnum]
+
+
+export const CompanionPersonalityScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  traits: 'traits',
+  about: 'about',
+  essence: 'essence',
+  sharedTraits: 'sharedTraits',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanionPersonalityScalarFieldEnum = (typeof CompanionPersonalityScalarFieldEnum)[keyof typeof CompanionPersonalityScalarFieldEnum]
+
+
+export const CompanionCommunicationStyleScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  styleTraits: 'styleTraits',
+  topicsSheEnjoys: 'topicsSheEnjoys',
+  whatYouExperience: 'whatYouExperience',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanionCommunicationStyleScalarFieldEnum = (typeof CompanionCommunicationStyleScalarFieldEnum)[keyof typeof CompanionCommunicationStyleScalarFieldEnum]
+
+
+export const CompanionBackgroundScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  location: 'location',
+  occupation: 'occupation',
+  lifestyle: 'lifestyle',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanionBackgroundScalarFieldEnum = (typeof CompanionBackgroundScalarFieldEnum)[keyof typeof CompanionBackgroundScalarFieldEnum]
+
+
+export const CompanionVisualProfileScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  aestheticKeywords: 'aestheticKeywords',
+  note: 'note',
+  referenceImages: 'referenceImages',
+  physicalIdentity: 'physicalIdentity',
+  generationInstructions: 'generationInstructions',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanionVisualProfileScalarFieldEnum = (typeof CompanionVisualProfileScalarFieldEnum)[keyof typeof CompanionVisualProfileScalarFieldEnum]
+
+
+export const CompanionVoiceScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  provider: 'provider',
+  voiceId: 'voiceId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanionVoiceScalarFieldEnum = (typeof CompanionVoiceScalarFieldEnum)[keyof typeof CompanionVoiceScalarFieldEnum]
+
+
+export const CompanionVoiceSettingsScalarFieldEnum = {
+  id: 'id',
+  voiceId: 'voiceId',
+  stability: 'stability',
+  similarityBoost: 'similarityBoost',
+  style: 'style',
+  useSpeakerBoost: 'useSpeakerBoost',
+  speed: 'speed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanionVoiceSettingsScalarFieldEnum = (typeof CompanionVoiceSettingsScalarFieldEnum)[keyof typeof CompanionVoiceSettingsScalarFieldEnum]
 
 
 export const CreditPackageScalarFieldEnum = {

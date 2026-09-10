@@ -1,22 +1,27 @@
 model Companions {
-  id                 String              @id @default(uuid())
-  name               String
-  aiCompanionId      String?
-  age                Int
-  title              String
-  traits             String[]
-  location           String
-  bio                String
-  profession         String
-  interests          String[]
-  communicationStyle String
-  lifestyle          String
-  backstory          String?
-  voiceDescription   String[]
-  profileImage       String?
-  coverImage         String?
-  galleryImages      String[]
-  status             Boolean             @default(true)
+  id          String @id @default(uuid())
+  name    String
+  version Int    @default(1)
+  title   String
+
+  age              Int?
+  backstory        String?
+  voiceDescription String[]
+  profileImage     String?
+  coverImage       String?
+  galleryImages    String[]
+  status           Boolean  @default(true)
+
+  interests String[]
+
+  // Nested companion information
+  personality        CompanionPersonality?
+  communicationStyle CompanionCommunicationStyle?
+  background         CompanionBackground?
+  visualProfile      CompanionVisualProfile?
+  voice              CompanionVoice?
+
+  // Existing backend relations
   relationships      Relationship[]
   storyEvents        StoryEvent[]
   photoViews         PhotoView[]
@@ -24,8 +29,111 @@ model Companions {
   chatConversations  ChatConversation[]
   creditTransactions CreditTransaction[]
   giftTransactions   GiftTransaction[]
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("companions")
+}
+
+model CompanionPersonality {
+  id          String @id @default(uuid())
+  companionId String @unique
+
+  traits       String[]
+  about        String
+  essence      String
+  sharedTraits String[]
+
+  companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("companion_personalities")
+}
+
+model CompanionCommunicationStyle {
+  id          String @id @default(uuid())
+  companionId String @unique
+
+  styleTraits       String[]
+  topicsSheEnjoys   String
+  whatYouExperience String[]
+
+  companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("companion_communication_styles")
+}
+
+model CompanionBackground {
+  id          String @id @default(uuid())
+  companionId String @unique
+
+  location   String
+  occupation String
+  lifestyle  String[]
+
+  companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("companion_backgrounds")
+}
+
+model CompanionVisualProfile {
+  id          String @id @default(uuid())
+  companionId String @unique
+
+  aestheticKeywords      String[]
+  note                   String?
+  referenceImages        String[]
+  physicalIdentity       String?
+  generationInstructions String?
+
+  companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("companion_visual_profiles")
+}
+
+model CompanionVoice {
+  id          String @id @default(uuid())
+  companionId String @unique
+
+  provider String
+  voiceId  String?
+
+  settings CompanionVoiceSettings?
+
+  companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("companion_voices")
+}
+
+model CompanionVoiceSettings {
+  id      String @id @default(uuid())
+  voiceId String @unique
+
+  stability       Float
+  similarityBoost Float
+  style           Float
+  useSpeakerBoost Boolean
+  speed           Float
+
+  voice CompanionVoice @relation(fields: [voiceId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("companion_voice_settings")
 }

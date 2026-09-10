@@ -1,176 +1,299 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
+import { Transform, plainToInstance } from 'class-transformer';
 import {
   IsArray,
+  IsObject,
+  ValidateIf,
   IsBoolean,
   IsInt,
+  IsNumber,
   IsOptional,
   IsString,
+  IsNotEmpty,
   Min,
+  ValidateNested,
 } from 'class-validator';
 
-const toStringArray = ({ value }: { value: unknown }): unknown => {
-  if (Array.isArray(value)) {
-    return value.flatMap((item) =>
-      typeof item === 'string' ? item.split(',') : item,
-    );
-  }
-
-  if (typeof value === 'string') {
+export const toArray = ({ value }: { value: unknown }): unknown => {
+  if (typeof value !== 'string') return value;
+  try {
+    return JSON.parse(value);
+  } catch {
     return value
       .split(',')
-      .map((item) => item.trim())
+      .map((v) => v.trim())
       .filter(Boolean);
   }
-
-  return value;
 };
+export const nested = <T extends object>(cls: new () => T) =>
+  Transform(({ value }) => {
+    if (typeof value === 'string') {
+      try {
+        value = JSON.parse(value);
+      } catch {
+        return value;
+      }
+    }
+    return value && typeof value === 'object' && !Array.isArray(value)
+      ? plainToInstance(cls, value)
+      : value;
+  });
+export const toBoolean = ({ value }: { value: unknown }) =>
+  value === 'true' ? true : value === 'false' ? false : value;
+export const toNumber = ({ value }: { value: unknown }) =>
+  typeof value === 'string' && value.trim() !== '' ? Number(value) : value;
 
-export class CreateCompanionDto {
-  // @ApiPropertyOptional({
-  //   description:
-  //     'Companion UUID from the AI service; defaults to this backend companion ID',
-  // })
-  // @IsOptional()
-  // @IsUUID()
-  // aiCompanionId?: string;
-
-  @ApiProperty({
-    example: 'Sophia',
-    description: 'Name of the companion',
-  })
-  @IsString()
-  name!: string;
-
-  @ApiProperty({
-    example: 25,
-    description: 'Age of the companion',
-    minimum: 18,
-  })
-  @IsInt()
-  @Min(18)
-  @Type(() => Number)
-  age!: number;
-
-  @ApiProperty({
-    example: 'The Intelligent & Curious Companion',
-  })
-  @IsString()
-  title!: string;
-
-  @ApiProperty({
-    example: 'Software Engineer',
-    description: 'Profession of the companion',
-  })
-  @IsString()
-  profession!: string;
-
-  @ApiProperty({
-    example: 'New York, USA',
-    description: 'Current location of the companion',
-  })
-  @IsString()
-  location!: string;
-
-  @ApiProperty({
-    example: 'Friendly, adventurous, and loves meaningful conversations.',
-    description: 'Short biography of the companion',
-  })
-  @IsString()
-  bio!: string;
-
-  @ApiProperty({
-    type: [String],
-    example: ['Social', 'Playful', 'Confident', 'Charming'],
-    description: 'Traits',
-  })
+export class CompanionPersonalityDto {
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
   @IsArray()
   @IsString({ each: true })
-  @Transform(toStringArray)
   traits!: string[];
 
-  @ApiProperty({
-    type: [String],
-    example: ['Travel', 'Music', 'Photography', 'Movies'],
-    description: 'Interests',
-  })
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  about!: string;
+
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  essence!: string;
+
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
   @IsArray()
   @IsString({ each: true })
-  @Transform(toStringArray)
-  interests!: string[];
+  sharedTraits!: string[];
+}
 
-  @ApiProperty({
-    example: 'Friendly and casual',
-    description: 'Preferred communication style',
-  })
+export class CompanionCommunicationStyleDto {
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  styleTraits!: string[];
+
+  @ApiProperty({})
   @IsString()
-  communicationStyle!: string;
+  @IsNotEmpty()
+  topicsSheEnjoys!: string;
 
-  @ApiProperty({
-    example: 'Active and social',
-    description: 'Lifestyle',
-  })
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  whatYouExperience!: string[];
+}
+
+export class CompanionBackgroundDto {
+  @ApiProperty({})
   @IsString()
-  lifestyle!: string;
+  @IsNotEmpty()
+  location!: string;
 
-  @ApiPropertyOptional({
-    example:
-      'Sophia grew up in New York and developed a passion for technology and travel.',
-    description: 'Optional backstory',
-  })
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  occupation!: string;
+
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  lifestyle!: string[];
+}
+
+export class CompanionVisualProfileDto {
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  aestheticKeywords!: string[];
+
+  @ApiPropertyOptional({ type: String, nullable: true })
   @IsOptional()
   @IsString()
-  backstory?: string;
+  note?: string | null;
 
-  @ApiProperty({
-    type: [String],
-    example: ['Soft', 'Warm', 'Calm'],
-    description: 'Voice description',
-  })
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
   @IsArray()
   @IsString({ each: true })
-  @Transform(toStringArray)
+  referenceImages!: string[];
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  @IsOptional()
+  @IsString()
+  physicalIdentity?: string | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  @IsOptional()
+  @IsString()
+  generationInstructions?: string | null;
+}
+
+export class CompanionVoiceSettingsDto {
+  @ApiProperty({})
+  @Transform(toNumber)
+  @IsNumber()
+  stability!: number;
+
+  @ApiProperty({})
+  @Transform(toNumber)
+  @IsNumber()
+  similarityBoost!: number;
+
+  @ApiProperty({})
+  @Transform(toNumber)
+  @IsNumber()
+  style!: number;
+
+  @ApiProperty({})
+  @Transform(toBoolean)
+  @IsBoolean()
+  useSpeakerBoost!: boolean;
+
+  @ApiProperty({})
+  @Transform(toNumber)
+  @IsNumber()
+  speed!: number;
+}
+
+export class CompanionVoiceDto {
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  provider!: string;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  @IsOptional()
+  @IsString()
+  voiceId?: string | null;
+
+  @ApiPropertyOptional({
+    type: () => CompanionVoiceSettingsDto,
+    description: 'Nested JSON object',
+  })
+  @IsOptional()
+  @nested(CompanionVoiceSettingsDto)
+  @IsObject()
+  @ValidateNested()
+  settings?: CompanionVoiceSettingsDto;
+}
+
+export class CreateCompanionDto {
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @ApiPropertyOptional({})
+  @ValidateIf((_object, value) => value !== undefined)
+  @Transform(toNumber)
+  @IsInt()
+  @Min(1)
+  version?: number;
+
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  title!: string;
+
+  @ApiPropertyOptional({ type: Number, nullable: true })
+  @IsOptional()
+  @Transform(toNumber)
+  @IsInt()
+  @Min(18)
+  age?: number | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  @IsOptional()
+  @IsString()
+  backstory?: string | null;
+
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
   voiceDescription!: string[];
 
-  // Single file
-  @ApiPropertyOptional({
-    type: 'string',
-    format: 'binary',
-    description: 'Profile image',
-  })
+  @ApiPropertyOptional({ type: String, nullable: true })
   @IsOptional()
-  profileImage?: any;
+  @IsString()
+  profileImage?: string | null;
 
-  // Single file
-  @ApiPropertyOptional({
-    type: 'string',
-    format: 'binary',
-    description: 'Cover image',
-  })
+  @ApiPropertyOptional({ type: String, nullable: true })
   @IsOptional()
-  coverImage?: any;
+  @IsString()
+  coverImage?: string | null;
 
-  // Multiple files
-  @ApiPropertyOptional({
-    type: 'array',
-    items: {
-      type: 'string',
-      format: 'binary',
-    },
-    description: 'Gallery images',
-  })
-  @IsOptional()
-  galleryImages?: any[];
+  @ApiPropertyOptional({ type: [String] })
+  @ValidateIf((_object, value) => value !== undefined)
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  galleryImages?: string[];
 
-  @ApiPropertyOptional({
-    example: true,
-    default: true,
-    description: 'Whether the companion is active',
-  })
-  @IsOptional()
+  @ApiPropertyOptional({})
+  @ValidateIf((_object, value) => value !== undefined)
+  @Transform(toBoolean)
   @IsBoolean()
-  @Transform(({ value }) =>
-    value === 'true' ? true : value === 'false' ? false : value,
-  )
   status?: boolean;
+
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  interests!: string[];
+
+  @ApiPropertyOptional({
+    type: () => CompanionPersonalityDto,
+    description: 'Nested JSON object',
+  })
+  @IsOptional()
+  @nested(CompanionPersonalityDto)
+  @IsObject()
+  @ValidateNested()
+  personality?: CompanionPersonalityDto;
+
+  @ApiPropertyOptional({
+    type: () => CompanionCommunicationStyleDto,
+    description: 'Nested JSON object',
+  })
+  @IsOptional()
+  @nested(CompanionCommunicationStyleDto)
+  @IsObject()
+  @ValidateNested()
+  communicationStyle?: CompanionCommunicationStyleDto;
+
+  @ApiPropertyOptional({
+    type: () => CompanionBackgroundDto,
+    description: 'Nested JSON object',
+  })
+  @IsOptional()
+  @nested(CompanionBackgroundDto)
+  @IsObject()
+  @ValidateNested()
+  background?: CompanionBackgroundDto;
+
+  @ApiPropertyOptional({
+    type: () => CompanionVisualProfileDto,
+    description: 'Nested JSON object',
+  })
+  @IsOptional()
+  @nested(CompanionVisualProfileDto)
+  @IsObject()
+  @ValidateNested()
+  visualProfile?: CompanionVisualProfileDto;
+
+  @ApiPropertyOptional({
+    type: () => CompanionVoiceDto,
+    description: 'Nested JSON object',
+  })
+  @IsOptional()
+  @nested(CompanionVoiceDto)
+  @IsObject()
+  @ValidateNested()
+  voice?: CompanionVoiceDto;
 }
