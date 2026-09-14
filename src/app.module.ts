@@ -3,6 +3,7 @@ import { EngagementModule } from './app/module/engagement/engagement.module';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
+import { LegalPagesController } from './legal-pages.controller';
 import { AppService } from './app.service';
 import { NewsletterModule } from './app/module/newsletter/newsletter.module';
 import { UserModule } from './app/module/user/user.module';
@@ -17,6 +18,7 @@ import { SubscribePaymentCronService } from './app/helper/subscribePayment.cron'
 import { CreditModule } from './app/module/credit/credit.module';
 import { GiftModule } from './app/module/gift/gift.module';
 import { DashboardModule } from './app/module/dashboard/dashboard.module';
+import { WhatsAppModule } from './app/module/whatsapp/whatsapp.module';
 
 @Module({
   imports: [
@@ -30,13 +32,14 @@ import { DashboardModule } from './app/module/dashboard/dashboard.module';
     SubscriptionModule,
     PaymentModule,
     WebhookModule,
+    WhatsAppModule,
     CompanionsModule,
     ChatModule,
     CreditModule,
     GiftModule,
     DashboardModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, LegalPagesController],
   providers: [AppService, SubscribePaymentCronService],
 })
 export class AppModule {}

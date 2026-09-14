@@ -4,7 +4,9 @@ model ChatMessage {
   companionId    String
   message        String
   response       String?
+  aiPayload      Json?
   aiMessageId    String?
+  whatsappMessageKey String? @unique
   conversationId String?
   usedCredit     Boolean         @default(false)
   type           ChatMessageType @default(text)

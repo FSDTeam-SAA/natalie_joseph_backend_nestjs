@@ -21,7 +21,7 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('api/v1', {
-    exclude: [''],
+    exclude: ['', 'privacy-policy', 'terms', 'data-deletion'],
   });
 
   app.useGlobalPipes(

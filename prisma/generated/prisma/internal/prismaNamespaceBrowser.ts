@@ -75,7 +75,8 @@ export const ModelName = {
   Payment: 'Payment',
   Subscription: 'Subscription',
   User: 'User',
-  UserSubscription: 'UserSubscription'
+  UserSubscription: 'UserSubscription',
+  WhatsAppConnection: 'WhatsAppConnection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -100,7 +101,9 @@ export const ChatMessageScalarFieldEnum = {
   companionId: 'companionId',
   message: 'message',
   response: 'response',
+  aiPayload: 'aiPayload',
   aiMessageId: 'aiMessageId',
+  whatsappMessageKey: 'whatsappMessageKey',
   conversationId: 'conversationId',
   usedCredit: 'usedCredit',
   type: 'type',
@@ -141,6 +144,11 @@ export const CompanionsScalarFieldEnum = {
   galleryImages: 'galleryImages',
   status: 'status',
   interests: 'interests',
+  whatsappPhoneNumber: 'whatsappPhoneNumber',
+  whatsappPhoneNumberId: 'whatsappPhoneNumberId',
+  whatsappDisplayName: 'whatsappDisplayName',
+  whatsappEnabled: 'whatsappEnabled',
+  whatsappWelcomeMessage: 'whatsappWelcomeMessage',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -472,6 +480,20 @@ export const UserSubscriptionScalarFieldEnum = {
 export type UserSubscriptionScalarFieldEnum = (typeof UserSubscriptionScalarFieldEnum)[keyof typeof UserSubscriptionScalarFieldEnum]
 
 
+export const WhatsAppConnectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companionId: 'companionId',
+  waId: 'waId',
+  linkTokenHash: 'linkTokenHash',
+  linkExpiresAt: 'linkExpiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WhatsAppConnectionScalarFieldEnum = (typeof WhatsAppConnectionScalarFieldEnum)[keyof typeof WhatsAppConnectionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -480,12 +502,29 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 export const NullsOrder = {
