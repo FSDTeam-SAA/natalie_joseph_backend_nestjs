@@ -75,7 +75,8 @@ export const ModelName = {
   Payment: 'Payment',
   Subscription: 'Subscription',
   User: 'User',
-  UserSubscription: 'UserSubscription'
+  UserSubscription: 'UserSubscription',
+  WhatsAppConnection: 'WhatsAppConnection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -101,6 +102,7 @@ export const ChatMessageScalarFieldEnum = {
   message: 'message',
   response: 'response',
   aiMessageId: 'aiMessageId',
+  whatsappMessageKey: 'whatsappMessageKey',
   conversationId: 'conversationId',
   usedCredit: 'usedCredit',
   type: 'type',
@@ -141,6 +143,11 @@ export const CompanionsScalarFieldEnum = {
   galleryImages: 'galleryImages',
   status: 'status',
   interests: 'interests',
+  whatsappPhoneNumber: 'whatsappPhoneNumber',
+  whatsappPhoneNumberId: 'whatsappPhoneNumberId',
+  whatsappDisplayName: 'whatsappDisplayName',
+  whatsappEnabled: 'whatsappEnabled',
+  whatsappWelcomeMessage: 'whatsappWelcomeMessage',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -470,6 +477,20 @@ export const UserSubscriptionScalarFieldEnum = {
 } as const
 
 export type UserSubscriptionScalarFieldEnum = (typeof UserSubscriptionScalarFieldEnum)[keyof typeof UserSubscriptionScalarFieldEnum]
+
+
+export const WhatsAppConnectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companionId: 'companionId',
+  waId: 'waId',
+  linkTokenHash: 'linkTokenHash',
+  linkExpiresAt: 'linkExpiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WhatsAppConnectionScalarFieldEnum = (typeof WhatsAppConnectionScalarFieldEnum)[keyof typeof WhatsAppConnectionScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -164,3 +164,8 @@ export type User = Prisma.UserModel
  * 
  */
 export type UserSubscription = Prisma.UserSubscriptionModel
+/**
+ * Model WhatsAppConnection
+ * 
+ */
+export type WhatsAppConnection = Prisma.WhatsAppConnectionModel

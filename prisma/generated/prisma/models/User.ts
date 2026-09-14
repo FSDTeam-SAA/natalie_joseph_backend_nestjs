@@ -352,6 +352,7 @@ export type UserWhereInput = {
   creditBalance?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionListRelationFilter
   relationships?: Prisma.RelationshipListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   photoViews?: Prisma.PhotoViewListRelationFilter
@@ -387,6 +388,7 @@ export type UserOrderByWithRelationInput = {
   creditBalance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  whatsappConnections?: Prisma.WhatsAppConnectionOrderByRelationAggregateInput
   relationships?: Prisma.RelationshipOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   photoViews?: Prisma.PhotoViewOrderByRelationAggregateInput
@@ -425,6 +427,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   creditBalance?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionListRelationFilter
   relationships?: Prisma.RelationshipListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   photoViews?: Prisma.PhotoViewListRelationFilter
@@ -518,6 +521,7 @@ export type UserCreateInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
@@ -553,6 +557,7 @@ export type UserUncheckedCreateInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
@@ -588,6 +593,7 @@ export type UserUpdateInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
@@ -623,6 +629,7 @@ export type UserUncheckedUpdateInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
@@ -950,6 +957,20 @@ export type UserUpdateOneRequiredWithoutSubscriptionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSubscriptionsInput, Prisma.UserUpdateWithoutSubscriptionsInput>, Prisma.UserUncheckedUpdateWithoutSubscriptionsInput>
 }
 
+export type UserCreateNestedOneWithoutWhatsappConnectionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWhatsappConnectionsInput, Prisma.UserUncheckedCreateWithoutWhatsappConnectionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWhatsappConnectionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutWhatsappConnectionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWhatsappConnectionsInput, Prisma.UserUncheckedCreateWithoutWhatsappConnectionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWhatsappConnectionsInput
+  upsert?: Prisma.UserUpsertWithoutWhatsappConnectionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWhatsappConnectionsInput, Prisma.UserUpdateWithoutWhatsappConnectionsInput>, Prisma.UserUncheckedUpdateWithoutWhatsappConnectionsInput>
+}
+
 export type UserCreateWithoutChatMessagesInput = {
   id?: string
   email: string
@@ -973,6 +994,7 @@ export type UserCreateWithoutChatMessagesInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
@@ -1007,6 +1029,7 @@ export type UserUncheckedCreateWithoutChatMessagesInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
@@ -1057,6 +1080,7 @@ export type UserUpdateWithoutChatMessagesInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
@@ -1091,6 +1115,7 @@ export type UserUncheckedUpdateWithoutChatMessagesInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
@@ -1125,6 +1150,7 @@ export type UserCreateWithoutChatConversationsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
@@ -1159,6 +1185,7 @@ export type UserUncheckedCreateWithoutChatConversationsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
@@ -1209,6 +1236,7 @@ export type UserUpdateWithoutChatConversationsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
@@ -1243,6 +1271,7 @@ export type UserUncheckedUpdateWithoutChatConversationsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
@@ -1277,6 +1306,7 @@ export type UserCreateWithoutCreditTransactionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
@@ -1311,6 +1341,7 @@ export type UserUncheckedCreateWithoutCreditTransactionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
@@ -1361,6 +1392,7 @@ export type UserUpdateWithoutCreditTransactionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
@@ -1395,6 +1427,7 @@ export type UserUncheckedUpdateWithoutCreditTransactionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
@@ -1429,6 +1462,7 @@ export type UserCreateWithoutPurchasedCreditLotsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
@@ -1463,6 +1497,7 @@ export type UserUncheckedCreateWithoutPurchasedCreditLotsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
@@ -1513,6 +1548,7 @@ export type UserUpdateWithoutPurchasedCreditLotsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
@@ -1547,6 +1583,7 @@ export type UserUncheckedUpdateWithoutPurchasedCreditLotsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
@@ -1581,6 +1618,7 @@ export type UserCreateWithoutRelationshipsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
@@ -1615,6 +1653,7 @@ export type UserUncheckedCreateWithoutRelationshipsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -1665,6 +1704,7 @@ export type UserUpdateWithoutRelationshipsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
@@ -1699,6 +1739,7 @@ export type UserUncheckedUpdateWithoutRelationshipsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -1733,6 +1774,7 @@ export type UserCreateWithoutPhotoViewsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
@@ -1767,6 +1809,7 @@ export type UserUncheckedCreateWithoutPhotoViewsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -1817,6 +1860,7 @@ export type UserUpdateWithoutPhotoViewsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
@@ -1851,6 +1895,7 @@ export type UserUncheckedUpdateWithoutPhotoViewsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -1885,6 +1930,7 @@ export type UserCreateWithoutNotificationsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
@@ -1919,6 +1965,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
@@ -1969,6 +2016,7 @@ export type UserUpdateWithoutNotificationsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
@@ -2003,6 +2051,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
@@ -2037,6 +2086,7 @@ export type UserCreateWithoutGiftTransactionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
@@ -2071,6 +2121,7 @@ export type UserUncheckedCreateWithoutGiftTransactionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
@@ -2121,6 +2172,7 @@ export type UserUpdateWithoutGiftTransactionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
@@ -2155,6 +2207,7 @@ export type UserUncheckedUpdateWithoutGiftTransactionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
@@ -2189,6 +2242,7 @@ export type UserCreateWithoutPaymentsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
@@ -2223,6 +2277,7 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
@@ -2273,6 +2328,7 @@ export type UserUpdateWithoutPaymentsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
@@ -2307,6 +2363,7 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
@@ -2341,6 +2398,7 @@ export type UserCreateWithoutSubscriptionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
@@ -2375,6 +2433,7 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
@@ -2425,6 +2484,7 @@ export type UserUpdateWithoutSubscriptionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
@@ -2459,9 +2519,166 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutWhatsappConnectionsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
+  chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutWhatsappConnectionsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
+  chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutWhatsappConnectionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutWhatsappConnectionsInput, Prisma.UserUncheckedCreateWithoutWhatsappConnectionsInput>
+}
+
+export type UserUpsertWithoutWhatsappConnectionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutWhatsappConnectionsInput, Prisma.UserUncheckedUpdateWithoutWhatsappConnectionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutWhatsappConnectionsInput, Prisma.UserUncheckedCreateWithoutWhatsappConnectionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutWhatsappConnectionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutWhatsappConnectionsInput, Prisma.UserUncheckedUpdateWithoutWhatsappConnectionsInput>
+}
+
+export type UserUpdateWithoutWhatsappConnectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
+  chatConversations?: Prisma.ChatConversationUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutWhatsappConnectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
   chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutUserNestedInput
@@ -2476,6 +2693,7 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
  */
 
 export type UserCountOutputType = {
+  whatsappConnections: number
   relationships: number
   notifications: number
   photoViews: number
@@ -2489,6 +2707,7 @@ export type UserCountOutputType = {
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  whatsappConnections?: boolean | UserCountOutputTypeCountWhatsappConnectionsArgs
   relationships?: boolean | UserCountOutputTypeCountRelationshipsArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   photoViews?: boolean | UserCountOutputTypeCountPhotoViewsArgs
@@ -2509,6 +2728,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountWhatsappConnectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WhatsAppConnectionWhereInput
 }
 
 /**
@@ -2605,6 +2831,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   creditBalance?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  whatsappConnections?: boolean | Prisma.User$whatsappConnectionsArgs<ExtArgs>
   relationships?: boolean | Prisma.User$relationshipsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   photoViews?: boolean | Prisma.User$photoViewsArgs<ExtArgs>
@@ -2695,6 +2922,7 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "phoneNumber" | "profileImage" | "otp" | "otpExpiry" | "status" | "verifiedForgot" | "stripeAccountId" | "billingSubscriptionId" | "billingStatus" | "cancelAtPeriodEnd" | "lowCreditNotified" | "adultEligible" | "isSubscribed" | "isFreeTrialUsed" | "creditBalance" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  whatsappConnections?: boolean | Prisma.User$whatsappConnectionsArgs<ExtArgs>
   relationships?: boolean | Prisma.User$relationshipsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   photoViews?: boolean | Prisma.User$photoViewsArgs<ExtArgs>
@@ -2713,6 +2941,7 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    whatsappConnections: Prisma.$WhatsAppConnectionPayload<ExtArgs>[]
     relationships: Prisma.$RelationshipPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     photoViews: Prisma.$PhotoViewPayload<ExtArgs>[]
@@ -3141,6 +3370,7 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  whatsappConnections<T extends Prisma.User$whatsappConnectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$whatsappConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WhatsAppConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   relationships<T extends Prisma.User$relationshipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$relationshipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RelationshipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   photoViews<T extends Prisma.User$photoViewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$photoViewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PhotoViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3592,6 +3822,30 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
+}
+
+/**
+ * User.whatsappConnections
+ */
+export type User$whatsappConnectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WhatsAppConnection
+   */
+  select?: Prisma.WhatsAppConnectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WhatsAppConnection
+   */
+  omit?: Prisma.WhatsAppConnectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WhatsAppConnectionInclude<ExtArgs> | null
+  where?: Prisma.WhatsAppConnectionWhereInput
+  orderBy?: Prisma.WhatsAppConnectionOrderByWithRelationInput | Prisma.WhatsAppConnectionOrderByWithRelationInput[]
+  cursor?: Prisma.WhatsAppConnectionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WhatsAppConnectionScalarFieldEnum | Prisma.WhatsAppConnectionScalarFieldEnum[]
 }
 
 /**

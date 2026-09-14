@@ -5,6 +5,7 @@ model ChatMessage {
   message        String
   response       String?
   aiMessageId    String?
+  whatsappMessageKey String? @unique
   conversationId String?
   usedCredit     Boolean         @default(false)
   type           ChatMessageType @default(text)

@@ -46,6 +46,11 @@ export type CompanionsMinAggregateOutputType = {
   profileImage: string | null
   coverImage: string | null
   status: boolean | null
+  whatsappPhoneNumber: string | null
+  whatsappPhoneNumberId: string | null
+  whatsappDisplayName: string | null
+  whatsappEnabled: boolean | null
+  whatsappWelcomeMessage: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +65,11 @@ export type CompanionsMaxAggregateOutputType = {
   profileImage: string | null
   coverImage: string | null
   status: boolean | null
+  whatsappPhoneNumber: string | null
+  whatsappPhoneNumberId: string | null
+  whatsappDisplayName: string | null
+  whatsappEnabled: boolean | null
+  whatsappWelcomeMessage: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -77,6 +87,11 @@ export type CompanionsCountAggregateOutputType = {
   galleryImages: number
   status: number
   interests: number
+  whatsappPhoneNumber: number
+  whatsappPhoneNumberId: number
+  whatsappDisplayName: number
+  whatsappEnabled: number
+  whatsappWelcomeMessage: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -103,6 +118,11 @@ export type CompanionsMinAggregateInputType = {
   profileImage?: true
   coverImage?: true
   status?: true
+  whatsappPhoneNumber?: true
+  whatsappPhoneNumberId?: true
+  whatsappDisplayName?: true
+  whatsappEnabled?: true
+  whatsappWelcomeMessage?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -117,6 +137,11 @@ export type CompanionsMaxAggregateInputType = {
   profileImage?: true
   coverImage?: true
   status?: true
+  whatsappPhoneNumber?: true
+  whatsappPhoneNumberId?: true
+  whatsappDisplayName?: true
+  whatsappEnabled?: true
+  whatsappWelcomeMessage?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -134,6 +159,11 @@ export type CompanionsCountAggregateInputType = {
   galleryImages?: true
   status?: true
   interests?: true
+  whatsappPhoneNumber?: true
+  whatsappPhoneNumberId?: true
+  whatsappDisplayName?: true
+  whatsappEnabled?: true
+  whatsappWelcomeMessage?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -238,6 +268,11 @@ export type CompanionsGroupByOutputType = {
   galleryImages: string[]
   status: boolean
   interests: string[]
+  whatsappPhoneNumber: string | null
+  whatsappPhoneNumberId: string | null
+  whatsappDisplayName: string | null
+  whatsappEnabled: boolean
+  whatsappWelcomeMessage: string | null
   createdAt: Date
   updatedAt: Date
   _count: CompanionsCountAggregateOutputType | null
@@ -278,8 +313,14 @@ export type CompanionsWhereInput = {
   galleryImages?: Prisma.StringNullableListFilter<"Companions">
   status?: Prisma.BoolFilter<"Companions"> | boolean
   interests?: Prisma.StringNullableListFilter<"Companions">
+  whatsappPhoneNumber?: Prisma.StringNullableFilter<"Companions"> | string | null
+  whatsappPhoneNumberId?: Prisma.StringNullableFilter<"Companions"> | string | null
+  whatsappDisplayName?: Prisma.StringNullableFilter<"Companions"> | string | null
+  whatsappEnabled?: Prisma.BoolFilter<"Companions"> | boolean
+  whatsappWelcomeMessage?: Prisma.StringNullableFilter<"Companions"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionListRelationFilter
   personality?: Prisma.XOR<Prisma.CompanionPersonalityNullableScalarRelationFilter, Prisma.CompanionPersonalityWhereInput> | null
   communicationStyle?: Prisma.XOR<Prisma.CompanionCommunicationStyleNullableScalarRelationFilter, Prisma.CompanionCommunicationStyleWhereInput> | null
   background?: Prisma.XOR<Prisma.CompanionBackgroundNullableScalarRelationFilter, Prisma.CompanionBackgroundWhereInput> | null
@@ -307,8 +348,14 @@ export type CompanionsOrderByWithRelationInput = {
   galleryImages?: Prisma.SortOrder
   status?: Prisma.SortOrder
   interests?: Prisma.SortOrder
+  whatsappPhoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  whatsappPhoneNumberId?: Prisma.SortOrderInput | Prisma.SortOrder
+  whatsappDisplayName?: Prisma.SortOrderInput | Prisma.SortOrder
+  whatsappEnabled?: Prisma.SortOrder
+  whatsappWelcomeMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  whatsappConnections?: Prisma.WhatsAppConnectionOrderByRelationAggregateInput
   personality?: Prisma.CompanionPersonalityOrderByWithRelationInput
   communicationStyle?: Prisma.CompanionCommunicationStyleOrderByWithRelationInput
   background?: Prisma.CompanionBackgroundOrderByWithRelationInput
@@ -325,6 +372,8 @@ export type CompanionsOrderByWithRelationInput = {
 
 export type CompanionsWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  whatsappPhoneNumber?: string
+  whatsappPhoneNumberId?: string
   AND?: Prisma.CompanionsWhereInput | Prisma.CompanionsWhereInput[]
   OR?: Prisma.CompanionsWhereInput[]
   NOT?: Prisma.CompanionsWhereInput | Prisma.CompanionsWhereInput[]
@@ -339,8 +388,12 @@ export type CompanionsWhereUniqueInput = Prisma.AtLeast<{
   galleryImages?: Prisma.StringNullableListFilter<"Companions">
   status?: Prisma.BoolFilter<"Companions"> | boolean
   interests?: Prisma.StringNullableListFilter<"Companions">
+  whatsappDisplayName?: Prisma.StringNullableFilter<"Companions"> | string | null
+  whatsappEnabled?: Prisma.BoolFilter<"Companions"> | boolean
+  whatsappWelcomeMessage?: Prisma.StringNullableFilter<"Companions"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionListRelationFilter
   personality?: Prisma.XOR<Prisma.CompanionPersonalityNullableScalarRelationFilter, Prisma.CompanionPersonalityWhereInput> | null
   communicationStyle?: Prisma.XOR<Prisma.CompanionCommunicationStyleNullableScalarRelationFilter, Prisma.CompanionCommunicationStyleWhereInput> | null
   background?: Prisma.XOR<Prisma.CompanionBackgroundNullableScalarRelationFilter, Prisma.CompanionBackgroundWhereInput> | null
@@ -353,7 +406,7 @@ export type CompanionsWhereUniqueInput = Prisma.AtLeast<{
   chatConversations?: Prisma.ChatConversationListRelationFilter
   creditTransactions?: Prisma.CreditTransactionListRelationFilter
   giftTransactions?: Prisma.GiftTransactionListRelationFilter
-}, "id">
+}, "id" | "whatsappPhoneNumber" | "whatsappPhoneNumberId">
 
 export type CompanionsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -368,6 +421,11 @@ export type CompanionsOrderByWithAggregationInput = {
   galleryImages?: Prisma.SortOrder
   status?: Prisma.SortOrder
   interests?: Prisma.SortOrder
+  whatsappPhoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  whatsappPhoneNumberId?: Prisma.SortOrderInput | Prisma.SortOrder
+  whatsappDisplayName?: Prisma.SortOrderInput | Prisma.SortOrder
+  whatsappEnabled?: Prisma.SortOrder
+  whatsappWelcomeMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CompanionsCountOrderByAggregateInput
@@ -393,6 +451,11 @@ export type CompanionsScalarWhereWithAggregatesInput = {
   galleryImages?: Prisma.StringNullableListFilter<"Companions">
   status?: Prisma.BoolWithAggregatesFilter<"Companions"> | boolean
   interests?: Prisma.StringNullableListFilter<"Companions">
+  whatsappPhoneNumber?: Prisma.StringNullableWithAggregatesFilter<"Companions"> | string | null
+  whatsappPhoneNumberId?: Prisma.StringNullableWithAggregatesFilter<"Companions"> | string | null
+  whatsappDisplayName?: Prisma.StringNullableWithAggregatesFilter<"Companions"> | string | null
+  whatsappEnabled?: Prisma.BoolWithAggregatesFilter<"Companions"> | boolean
+  whatsappWelcomeMessage?: Prisma.StringNullableWithAggregatesFilter<"Companions"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Companions"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Companions"> | Date | string
 }
@@ -410,8 +473,14 @@ export type CompanionsCreateInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -439,8 +508,14 @@ export type CompanionsUncheckedCreateInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -468,8 +543,14 @@ export type CompanionsUpdateInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -497,8 +578,14 @@ export type CompanionsUncheckedUpdateInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -526,6 +613,11 @@ export type CompanionsCreateManyInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -543,6 +635,11 @@ export type CompanionsUpdateManyMutationInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -560,6 +657,11 @@ export type CompanionsUncheckedUpdateManyInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -590,6 +692,11 @@ export type CompanionsCountOrderByAggregateInput = {
   galleryImages?: Prisma.SortOrder
   status?: Prisma.SortOrder
   interests?: Prisma.SortOrder
+  whatsappPhoneNumber?: Prisma.SortOrder
+  whatsappPhoneNumberId?: Prisma.SortOrder
+  whatsappDisplayName?: Prisma.SortOrder
+  whatsappEnabled?: Prisma.SortOrder
+  whatsappWelcomeMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -609,6 +716,11 @@ export type CompanionsMaxOrderByAggregateInput = {
   profileImage?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  whatsappPhoneNumber?: Prisma.SortOrder
+  whatsappPhoneNumberId?: Prisma.SortOrder
+  whatsappDisplayName?: Prisma.SortOrder
+  whatsappEnabled?: Prisma.SortOrder
+  whatsappWelcomeMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -623,6 +735,11 @@ export type CompanionsMinOrderByAggregateInput = {
   profileImage?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  whatsappPhoneNumber?: Prisma.SortOrder
+  whatsappPhoneNumberId?: Prisma.SortOrder
+  whatsappDisplayName?: Prisma.SortOrder
+  whatsappEnabled?: Prisma.SortOrder
+  whatsappWelcomeMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -842,6 +959,20 @@ export type CompanionsUpdateOneRequiredWithoutGiftTransactionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutGiftTransactionsInput, Prisma.CompanionsUpdateWithoutGiftTransactionsInput>, Prisma.CompanionsUncheckedUpdateWithoutGiftTransactionsInput>
 }
 
+export type CompanionsCreateNestedOneWithoutWhatsappConnectionsInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutWhatsappConnectionsInput, Prisma.CompanionsUncheckedCreateWithoutWhatsappConnectionsInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutWhatsappConnectionsInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+}
+
+export type CompanionsUpdateOneRequiredWithoutWhatsappConnectionsNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutWhatsappConnectionsInput, Prisma.CompanionsUncheckedCreateWithoutWhatsappConnectionsInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutWhatsappConnectionsInput
+  upsert?: Prisma.CompanionsUpsertWithoutWhatsappConnectionsInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutWhatsappConnectionsInput, Prisma.CompanionsUpdateWithoutWhatsappConnectionsInput>, Prisma.CompanionsUncheckedUpdateWithoutWhatsappConnectionsInput>
+}
+
 export type CompanionsCreateWithoutChatMessagesInput = {
   id?: string
   name: string
@@ -855,8 +986,14 @@ export type CompanionsCreateWithoutChatMessagesInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -883,8 +1020,14 @@ export type CompanionsUncheckedCreateWithoutChatMessagesInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -927,8 +1070,14 @@ export type CompanionsUpdateWithoutChatMessagesInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -955,8 +1104,14 @@ export type CompanionsUncheckedUpdateWithoutChatMessagesInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -983,8 +1138,14 @@ export type CompanionsCreateWithoutChatConversationsInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -1011,8 +1172,14 @@ export type CompanionsUncheckedCreateWithoutChatConversationsInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -1055,8 +1222,14 @@ export type CompanionsUpdateWithoutChatConversationsInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -1083,8 +1256,14 @@ export type CompanionsUncheckedUpdateWithoutChatConversationsInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -1111,8 +1290,14 @@ export type CompanionsCreateWithoutPersonalityInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
   visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
@@ -1139,8 +1324,14 @@ export type CompanionsUncheckedCreateWithoutPersonalityInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
   visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
@@ -1183,8 +1374,14 @@ export type CompanionsUpdateWithoutPersonalityInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
   visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
@@ -1211,8 +1408,14 @@ export type CompanionsUncheckedUpdateWithoutPersonalityInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
   visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
@@ -1239,8 +1442,14 @@ export type CompanionsCreateWithoutCommunicationStyleInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
   visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
@@ -1267,8 +1476,14 @@ export type CompanionsUncheckedCreateWithoutCommunicationStyleInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
   visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
@@ -1311,8 +1526,14 @@ export type CompanionsUpdateWithoutCommunicationStyleInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
   visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
@@ -1339,8 +1560,14 @@ export type CompanionsUncheckedUpdateWithoutCommunicationStyleInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
   visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
@@ -1367,8 +1594,14 @@ export type CompanionsCreateWithoutBackgroundInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
@@ -1395,8 +1628,14 @@ export type CompanionsUncheckedCreateWithoutBackgroundInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
@@ -1439,8 +1678,14 @@ export type CompanionsUpdateWithoutBackgroundInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
@@ -1467,8 +1712,14 @@ export type CompanionsUncheckedUpdateWithoutBackgroundInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
@@ -1495,8 +1746,14 @@ export type CompanionsCreateWithoutVisualProfileInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -1523,8 +1780,14 @@ export type CompanionsUncheckedCreateWithoutVisualProfileInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -1567,8 +1830,14 @@ export type CompanionsUpdateWithoutVisualProfileInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -1595,8 +1864,14 @@ export type CompanionsUncheckedUpdateWithoutVisualProfileInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -1623,8 +1898,14 @@ export type CompanionsCreateWithoutVoiceInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -1651,8 +1932,14 @@ export type CompanionsUncheckedCreateWithoutVoiceInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -1695,8 +1982,14 @@ export type CompanionsUpdateWithoutVoiceInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -1723,8 +2016,14 @@ export type CompanionsUncheckedUpdateWithoutVoiceInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -1751,8 +2050,14 @@ export type CompanionsCreateWithoutCreditTransactionsInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -1779,8 +2084,14 @@ export type CompanionsUncheckedCreateWithoutCreditTransactionsInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -1823,8 +2134,14 @@ export type CompanionsUpdateWithoutCreditTransactionsInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -1851,8 +2168,14 @@ export type CompanionsUncheckedUpdateWithoutCreditTransactionsInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -1879,8 +2202,14 @@ export type CompanionsCreateWithoutRelationshipsInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -1907,8 +2236,14 @@ export type CompanionsUncheckedCreateWithoutRelationshipsInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -1951,8 +2286,14 @@ export type CompanionsUpdateWithoutRelationshipsInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -1979,8 +2320,14 @@ export type CompanionsUncheckedUpdateWithoutRelationshipsInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -2007,8 +2354,14 @@ export type CompanionsCreateWithoutStoryEventsInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -2035,8 +2388,14 @@ export type CompanionsUncheckedCreateWithoutStoryEventsInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -2079,8 +2438,14 @@ export type CompanionsUpdateWithoutStoryEventsInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -2107,8 +2472,14 @@ export type CompanionsUncheckedUpdateWithoutStoryEventsInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -2135,8 +2506,14 @@ export type CompanionsCreateWithoutPhotoViewsInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -2163,8 +2540,14 @@ export type CompanionsUncheckedCreateWithoutPhotoViewsInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -2207,8 +2590,14 @@ export type CompanionsUpdateWithoutPhotoViewsInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -2235,8 +2624,14 @@ export type CompanionsUncheckedUpdateWithoutPhotoViewsInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -2263,8 +2658,14 @@ export type CompanionsCreateWithoutGiftTransactionsInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -2291,8 +2692,14 @@ export type CompanionsUncheckedCreateWithoutGiftTransactionsInput = {
   galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
   status?: boolean
   interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -2335,8 +2742,14 @@ export type CompanionsUpdateWithoutGiftTransactionsInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -2363,8 +2776,14 @@ export type CompanionsUncheckedUpdateWithoutGiftTransactionsInput = {
   galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
   interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -2378,12 +2797,165 @@ export type CompanionsUncheckedUpdateWithoutGiftTransactionsInput = {
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
 }
 
+export type CompanionsCreateWithoutWhatsappConnectionsInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsUncheckedCreateWithoutWhatsappConnectionsInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsCreateOrConnectWithoutWhatsappConnectionsInput = {
+  where: Prisma.CompanionsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutWhatsappConnectionsInput, Prisma.CompanionsUncheckedCreateWithoutWhatsappConnectionsInput>
+}
+
+export type CompanionsUpsertWithoutWhatsappConnectionsInput = {
+  update: Prisma.XOR<Prisma.CompanionsUpdateWithoutWhatsappConnectionsInput, Prisma.CompanionsUncheckedUpdateWithoutWhatsappConnectionsInput>
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutWhatsappConnectionsInput, Prisma.CompanionsUncheckedCreateWithoutWhatsappConnectionsInput>
+  where?: Prisma.CompanionsWhereInput
+}
+
+export type CompanionsUpdateToOneWithWhereWithoutWhatsappConnectionsInput = {
+  where?: Prisma.CompanionsWhereInput
+  data: Prisma.XOR<Prisma.CompanionsUpdateWithoutWhatsappConnectionsInput, Prisma.CompanionsUncheckedUpdateWithoutWhatsappConnectionsInput>
+}
+
+export type CompanionsUpdateWithoutWhatsappConnectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsUncheckedUpdateWithoutWhatsappConnectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+}
+
 
 /**
  * Count Type CompanionsCountOutputType
  */
 
 export type CompanionsCountOutputType = {
+  whatsappConnections: number
   relationships: number
   storyEvents: number
   photoViews: number
@@ -2394,6 +2966,7 @@ export type CompanionsCountOutputType = {
 }
 
 export type CompanionsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  whatsappConnections?: boolean | CompanionsCountOutputTypeCountWhatsappConnectionsArgs
   relationships?: boolean | CompanionsCountOutputTypeCountRelationshipsArgs
   storyEvents?: boolean | CompanionsCountOutputTypeCountStoryEventsArgs
   photoViews?: boolean | CompanionsCountOutputTypeCountPhotoViewsArgs
@@ -2411,6 +2984,13 @@ export type CompanionsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.E
    * Select specific fields to fetch from the CompanionsCountOutputType
    */
   select?: Prisma.CompanionsCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * CompanionsCountOutputType without action
+ */
+export type CompanionsCountOutputTypeCountWhatsappConnectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WhatsAppConnectionWhereInput
 }
 
 /**
@@ -2476,8 +3056,14 @@ export type CompanionsSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   galleryImages?: boolean
   status?: boolean
   interests?: boolean
+  whatsappPhoneNumber?: boolean
+  whatsappPhoneNumberId?: boolean
+  whatsappDisplayName?: boolean
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  whatsappConnections?: boolean | Prisma.Companions$whatsappConnectionsArgs<ExtArgs>
   personality?: boolean | Prisma.Companions$personalityArgs<ExtArgs>
   communicationStyle?: boolean | Prisma.Companions$communicationStyleArgs<ExtArgs>
   background?: boolean | Prisma.Companions$backgroundArgs<ExtArgs>
@@ -2506,6 +3092,11 @@ export type CompanionsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   galleryImages?: boolean
   status?: boolean
   interests?: boolean
+  whatsappPhoneNumber?: boolean
+  whatsappPhoneNumberId?: boolean
+  whatsappDisplayName?: boolean
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companions"]>
@@ -2523,6 +3114,11 @@ export type CompanionsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   galleryImages?: boolean
   status?: boolean
   interests?: boolean
+  whatsappPhoneNumber?: boolean
+  whatsappPhoneNumberId?: boolean
+  whatsappDisplayName?: boolean
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companions"]>
@@ -2540,12 +3136,18 @@ export type CompanionsSelectScalar = {
   galleryImages?: boolean
   status?: boolean
   interests?: boolean
+  whatsappPhoneNumber?: boolean
+  whatsappPhoneNumberId?: boolean
+  whatsappDisplayName?: boolean
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CompanionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "version" | "title" | "age" | "backstory" | "voiceDescription" | "profileImage" | "coverImage" | "galleryImages" | "status" | "interests" | "createdAt" | "updatedAt", ExtArgs["result"]["companions"]>
+export type CompanionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "version" | "title" | "age" | "backstory" | "voiceDescription" | "profileImage" | "coverImage" | "galleryImages" | "status" | "interests" | "whatsappPhoneNumber" | "whatsappPhoneNumberId" | "whatsappDisplayName" | "whatsappEnabled" | "whatsappWelcomeMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["companions"]>
 export type CompanionsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  whatsappConnections?: boolean | Prisma.Companions$whatsappConnectionsArgs<ExtArgs>
   personality?: boolean | Prisma.Companions$personalityArgs<ExtArgs>
   communicationStyle?: boolean | Prisma.Companions$communicationStyleArgs<ExtArgs>
   background?: boolean | Prisma.Companions$backgroundArgs<ExtArgs>
@@ -2566,6 +3168,7 @@ export type CompanionsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.E
 export type $CompanionsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Companions"
   objects: {
+    whatsappConnections: Prisma.$WhatsAppConnectionPayload<ExtArgs>[]
     personality: Prisma.$CompanionPersonalityPayload<ExtArgs> | null
     communicationStyle: Prisma.$CompanionCommunicationStylePayload<ExtArgs> | null
     background: Prisma.$CompanionBackgroundPayload<ExtArgs> | null
@@ -2592,6 +3195,11 @@ export type $CompanionsPayload<ExtArgs extends runtime.Types.Extensions.Internal
     galleryImages: string[]
     status: boolean
     interests: string[]
+    whatsappPhoneNumber: string | null
+    whatsappPhoneNumberId: string | null
+    whatsappDisplayName: string | null
+    whatsappEnabled: boolean
+    whatsappWelcomeMessage: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["companions"]>
@@ -2988,6 +3596,7 @@ readonly fields: CompanionsFieldRefs;
  */
 export interface Prisma__CompanionsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  whatsappConnections<T extends Prisma.Companions$whatsappConnectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$whatsappConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WhatsAppConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   personality<T extends Prisma.Companions$personalityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$personalityArgs<ExtArgs>>): Prisma.Prisma__CompanionPersonalityClient<runtime.Types.Result.GetResult<Prisma.$CompanionPersonalityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   communicationStyle<T extends Prisma.Companions$communicationStyleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$communicationStyleArgs<ExtArgs>>): Prisma.Prisma__CompanionCommunicationStyleClient<runtime.Types.Result.GetResult<Prisma.$CompanionCommunicationStylePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   background<T extends Prisma.Companions$backgroundArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$backgroundArgs<ExtArgs>>): Prisma.Prisma__CompanionBackgroundClient<runtime.Types.Result.GetResult<Prisma.$CompanionBackgroundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -3041,6 +3650,11 @@ export interface CompanionsFieldRefs {
   readonly galleryImages: Prisma.FieldRef<"Companions", 'String[]'>
   readonly status: Prisma.FieldRef<"Companions", 'Boolean'>
   readonly interests: Prisma.FieldRef<"Companions", 'String[]'>
+  readonly whatsappPhoneNumber: Prisma.FieldRef<"Companions", 'String'>
+  readonly whatsappPhoneNumberId: Prisma.FieldRef<"Companions", 'String'>
+  readonly whatsappDisplayName: Prisma.FieldRef<"Companions", 'String'>
+  readonly whatsappEnabled: Prisma.FieldRef<"Companions", 'Boolean'>
+  readonly whatsappWelcomeMessage: Prisma.FieldRef<"Companions", 'String'>
   readonly createdAt: Prisma.FieldRef<"Companions", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Companions", 'DateTime'>
 }
@@ -3433,6 +4047,30 @@ export type CompanionsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many Companions to delete.
    */
   limit?: number
+}
+
+/**
+ * Companions.whatsappConnections
+ */
+export type Companions$whatsappConnectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WhatsAppConnection
+   */
+  select?: Prisma.WhatsAppConnectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WhatsAppConnection
+   */
+  omit?: Prisma.WhatsAppConnectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WhatsAppConnectionInclude<ExtArgs> | null
+  where?: Prisma.WhatsAppConnectionWhereInput
+  orderBy?: Prisma.WhatsAppConnectionOrderByWithRelationInput | Prisma.WhatsAppConnectionOrderByWithRelationInput[]
+  cursor?: Prisma.WhatsAppConnectionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WhatsAppConnectionScalarFieldEnum | Prisma.WhatsAppConnectionScalarFieldEnum[]
 }
 
 /**

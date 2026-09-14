@@ -421,7 +421,8 @@ export const ModelName = {
   Payment: 'Payment',
   Subscription: 'Subscription',
   User: 'User',
-  UserSubscription: 'UserSubscription'
+  UserSubscription: 'UserSubscription',
+  WhatsAppConnection: 'WhatsAppConnection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -437,7 +438,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "chatMessage" | "chatConversation" | "companions" | "companionPersonality" | "companionCommunicationStyle" | "companionBackground" | "companionVisualProfile" | "companionVoice" | "companionVoiceSettings" | "creditPackage" | "creditTransaction" | "purchasedCreditLot" | "creditCost" | "relationship" | "storyEvent" | "photoView" | "notification" | "conversationModeEvent" | "gift" | "giftTransaction" | "newsletter" | "payment" | "subscription" | "user" | "userSubscription"
+    modelProps: "chatMessage" | "chatConversation" | "companions" | "companionPersonality" | "companionCommunicationStyle" | "companionBackground" | "companionVisualProfile" | "companionVoice" | "companionVoiceSettings" | "creditPackage" | "creditTransaction" | "purchasedCreditLot" | "creditCost" | "relationship" | "storyEvent" | "photoView" | "notification" | "conversationModeEvent" | "gift" | "giftTransaction" | "newsletter" | "payment" | "subscription" | "user" | "userSubscription" | "whatsAppConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2291,6 +2292,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    WhatsAppConnection: {
+      payload: Prisma.$WhatsAppConnectionPayload<ExtArgs>
+      fields: Prisma.WhatsAppConnectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WhatsAppConnectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppConnectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WhatsAppConnectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppConnectionPayload>
+        }
+        findFirst: {
+          args: Prisma.WhatsAppConnectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppConnectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WhatsAppConnectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppConnectionPayload>
+        }
+        findMany: {
+          args: Prisma.WhatsAppConnectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppConnectionPayload>[]
+        }
+        create: {
+          args: Prisma.WhatsAppConnectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppConnectionPayload>
+        }
+        createMany: {
+          args: Prisma.WhatsAppConnectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WhatsAppConnectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppConnectionPayload>[]
+        }
+        delete: {
+          args: Prisma.WhatsAppConnectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppConnectionPayload>
+        }
+        update: {
+          args: Prisma.WhatsAppConnectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppConnectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.WhatsAppConnectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WhatsAppConnectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WhatsAppConnectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppConnectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.WhatsAppConnectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppConnectionPayload>
+        }
+        aggregate: {
+          args: Prisma.WhatsAppConnectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWhatsAppConnection>
+        }
+        groupBy: {
+          args: Prisma.WhatsAppConnectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WhatsAppConnectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WhatsAppConnectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WhatsAppConnectionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2337,6 +2412,7 @@ export const ChatMessageScalarFieldEnum = {
   message: 'message',
   response: 'response',
   aiMessageId: 'aiMessageId',
+  whatsappMessageKey: 'whatsappMessageKey',
   conversationId: 'conversationId',
   usedCredit: 'usedCredit',
   type: 'type',
@@ -2377,6 +2453,11 @@ export const CompanionsScalarFieldEnum = {
   galleryImages: 'galleryImages',
   status: 'status',
   interests: 'interests',
+  whatsappPhoneNumber: 'whatsappPhoneNumber',
+  whatsappPhoneNumberId: 'whatsappPhoneNumberId',
+  whatsappDisplayName: 'whatsappDisplayName',
+  whatsappEnabled: 'whatsappEnabled',
+  whatsappWelcomeMessage: 'whatsappWelcomeMessage',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2706,6 +2787,20 @@ export const UserSubscriptionScalarFieldEnum = {
 } as const
 
 export type UserSubscriptionScalarFieldEnum = (typeof UserSubscriptionScalarFieldEnum)[keyof typeof UserSubscriptionScalarFieldEnum]
+
+
+export const WhatsAppConnectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companionId: 'companionId',
+  waId: 'waId',
+  linkTokenHash: 'linkTokenHash',
+  linkExpiresAt: 'linkExpiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WhatsAppConnectionScalarFieldEnum = (typeof WhatsAppConnectionScalarFieldEnum)[keyof typeof WhatsAppConnectionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -3074,6 +3169,7 @@ export type GlobalOmitConfig = {
   subscription?: Prisma.SubscriptionOmit
   user?: Prisma.UserOmit
   userSubscription?: Prisma.UserSubscriptionOmit
+  whatsAppConnection?: Prisma.WhatsAppConnectionOmit
 }
 
 /* Types for Logging */

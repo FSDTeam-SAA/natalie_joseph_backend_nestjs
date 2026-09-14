@@ -57,16 +57,12 @@ export class AiApi {
     authorization: string,
     idempotencyKey: string,
   ) {
-    const data = await this.post<AiReply>(
-      '/chat',
-      {
-        conversation_id: conversationId,
-        companion_id: companionId,
-        message,
-        idempotency_key: idempotencyKey,
-      },
-      authorization,
-    );
+    const form = new FormData();
+    form.set('conversation_id', conversationId);
+    form.set('companion_id', companionId);
+    form.set('message', message);
+    form.set('idempotency_key', idempotencyKey);
+    const data = await this.post<AiReply>('/chat', form, authorization);
     if (
       !data?.message_id ||
       typeof data.response !== 'string' ||

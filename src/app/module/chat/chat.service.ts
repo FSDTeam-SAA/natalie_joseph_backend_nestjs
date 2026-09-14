@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import {
   BadRequestException,
   HttpException,
@@ -6,6 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AiApi } from '../../helper/ai/aiapi';
 import { CreditService } from '../credit/credit.service';
@@ -95,6 +95,7 @@ export class ChatService {
     message: string,
     authorization: string,
     type: 'text' | 'voice' = 'text',
+    whatsappMessageKey?: string,
   ) {
     message = message.trim();
     if (!message) throw new BadRequestException('Message must not be blank');
@@ -102,6 +103,23 @@ export class ChatService {
       async (tx) => {
         // Serialize this user's chat charges and conversation creation across instances.
         await tx.$queryRaw`SELECT id FROM users WHERE id = ${userId} FOR UPDATE`;
+        // A Meta retry must reuse the saved AI response without charging again.
+        if (whatsappMessageKey) {
+          const saved = await tx.chatMessage.findUnique({
+            where: { whatsappMessageKey },
+          });
+          if (
+            saved &&
+            saved.userId === userId &&
+            saved.companionId === companionId
+          ) {
+            return {
+              response: saved.response,
+              message: saved,
+              conversationId: saved.conversationId,
+            };
+          }
+        }
         const companion = await tx.companions.findFirst({
           where: { id: companionId, status: true },
         });
@@ -187,6 +205,7 @@ export class ChatService {
         const savedMessage = await tx.chatMessage.create({
           data: {
             id: messageId,
+            whatsappMessageKey,
             type,
             userId,
             companionId,
