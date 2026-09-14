@@ -2,6 +2,11 @@ import type { Prisma } from '../../../../prisma/generated/prisma/client';
 
 // Shared public profile shape; excludes relation IDs and database timestamps.
 export const companionProfileSelect = {
+  whatsappPhoneNumber: true,
+  whatsappPhoneNumberId: true,
+  whatsappDisplayName: true,
+  whatsappEnabled: true,
+  whatsappWelcomeMessage: true,
   id: true,
   name: true,
   version: true,

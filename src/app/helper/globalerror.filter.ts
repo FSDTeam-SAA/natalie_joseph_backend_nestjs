@@ -168,6 +168,7 @@ export class GlobalExceptionFilter<T> implements ExceptionFilter {
       stack: isDev && err instanceof Error ? err.stack : null,
     };
 
+    response.type('application/json');
     httpAdapter.reply(response, body, statusCode);
   }
 }

@@ -1,4 +1,5 @@
 model Companions {
+  whatsappConnections WhatsAppConnection[]
   id          String @id @default(uuid())
   name    String
   version Int    @default(1)
@@ -13,6 +14,13 @@ model Companions {
   status           Boolean  @default(true)
 
   interests String[]
+
+  // Each companion can send from its own Meta WhatsApp number.
+  whatsappPhoneNumber    String? @unique
+  whatsappPhoneNumberId  String? @unique
+  whatsappDisplayName    String?
+  whatsappEnabled        Boolean @default(false)
+  whatsappWelcomeMessage String?
 
   // Nested companion information
   personality        CompanionPersonality?

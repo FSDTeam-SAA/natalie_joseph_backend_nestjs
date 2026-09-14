@@ -11,6 +11,8 @@ import {
   IsString,
   IsNotEmpty,
   Min,
+  Matches,
+  MaxLength,
   ValidateNested,
 } from 'class-validator';
 
@@ -183,6 +185,34 @@ export class CompanionVoiceDto {
 }
 
 export class CreateCompanionDto {
+  @ApiPropertyOptional({ example: '+15551234567', nullable: true })
+  @IsOptional()
+  @Matches(/^\+[1-9]\d{6,14}$/)
+  whatsappPhoneNumber?: string | null;
+
+  @ApiPropertyOptional({ example: '123456789012345', nullable: true })
+  @IsOptional()
+  @Matches(/^\d+$/)
+  whatsappPhoneNumberId?: string | null;
+
+  @ApiPropertyOptional({ example: 'Elena - AI Companion', nullable: true })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  whatsappDisplayName?: string | null;
+
+  @ApiPropertyOptional({ default: false })
+  @ValidateIf((_object, value) => value !== undefined)
+  @Transform(toBoolean)
+  @IsBoolean()
+  whatsappEnabled?: boolean;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  @MaxLength(4096)
+  whatsappWelcomeMessage?: string | null;
+
   @ApiProperty({})
   @IsString()
   @IsNotEmpty()

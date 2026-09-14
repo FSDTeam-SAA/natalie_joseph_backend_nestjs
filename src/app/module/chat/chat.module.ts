@@ -8,5 +8,6 @@ import { AiApi } from '../../helper/ai/aiapi';
   imports: [CreditModule],
   controllers: [ChatController],
   providers: [ChatService, AiApi],
+  exports: [ChatService],
 })
 export class ChatModule {}
