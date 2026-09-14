@@ -157,8 +157,15 @@ export class WhatsAppInboundService {
         ? `You said: ${text}`
         : await this.ai.reply(companionId, to, text, key);
     // Human takeover returns no automatic reply.
-    if (reply)
+    if (typeof reply === 'string' && reply)
       await this.whatsapp.sendText(phoneNumberId, to, reply.slice(0, 4096));
+    else if (reply && typeof reply === 'object')
+      await this.whatsapp.sendImage(
+        phoneNumberId,
+        to,
+        reply.media.url,
+        reply.response,
+      );
     this.logger.log(
       reply
         ? 'WhatsApp reply accepted by Meta'

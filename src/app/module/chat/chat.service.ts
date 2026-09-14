@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AiApi } from '../../helper/ai/aiapi';
+import { AiApi, AiReply } from '../../helper/ai/aiapi';
 import { CreditService } from '../credit/credit.service';
 
 @Injectable()
@@ -114,6 +114,14 @@ export class ChatService {
             saved.companionId === companionId
           ) {
             return {
+              message_type:
+                (saved.aiPayload as unknown as AiReply | null)?.message_type ??
+                'text',
+              media:
+                (saved.aiPayload as unknown as AiReply | null)?.media ?? null,
+              transcript:
+                (saved.aiPayload as unknown as AiReply | null)?.transcript ??
+                null,
               response: saved.response,
               message: saved,
               conversationId: saved.conversationId,
@@ -195,7 +203,7 @@ export class ChatService {
                 aiCompanionId,
                 message,
                 authorization,
-                messageId,
+                whatsappMessageKey || messageId,
               );
         await tx.chatConversation.update({
           where: { id: conversation.id },
@@ -213,6 +221,7 @@ export class ChatService {
             usedCredit,
             creditCost,
             response: reply?.response ?? null,
+            ...(reply ? { aiPayload: JSON.parse(JSON.stringify(reply)) } : {}),
             aiMessageId: reply?.message_id,
             conversationId: conversation.id,
           },
@@ -240,6 +249,9 @@ export class ChatService {
         });
 
         return {
+          message_type: reply?.message_type ?? 'text',
+          media: reply?.media ?? null,
+          transcript: reply?.transcript ?? null,
           mode: conversation.mode,
           message: savedMessage,
           response: reply?.response ?? null,
@@ -264,7 +276,10 @@ export class ChatService {
           },
         };
       },
-      { maxWait: 5000, timeout: 75000 },
+      {
+        maxWait: 5000,
+        timeout: 2 * (this.aiApi.requestTimeoutMs || 60000) + 15000,
+      },
     );
   }
 }

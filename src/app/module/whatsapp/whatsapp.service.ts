@@ -16,6 +16,13 @@ export class WhatsAppService {
     });
   }
 
+  sendImage(phoneNumberId: string, to: string, url: string, caption: string) {
+    return this.send(phoneNumberId, to, {
+      type: 'image',
+      image: { link: url, caption: caption.slice(0, 1024) },
+    });
+  }
+
   sendTestTemplate(phoneNumberId: string, to: string) {
     return this.send(phoneNumberId, to, {
       type: 'template',

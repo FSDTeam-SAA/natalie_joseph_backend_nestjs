@@ -5,17 +5,27 @@ import { WhatsAppInboundService } from './whatsapp-inbound.service';
 import { WhatsAppService } from './whatsapp.service';
 
 describe('WhatsApp reply modes', () => {
-  it.each(['echo', 'ai'])(
+  it.each(['echo', 'ai', 'image'])(
     'routes %s replies correctly without duplicate sends',
     async (mode) => {
       const sendText = jest.fn().mockResolvedValue({});
-      const reply = jest.fn().mockResolvedValue('AI answer');
+      const sendImage = jest.fn().mockResolvedValue({});
+      const reply = jest
+        .fn()
+        .mockResolvedValue(
+          mode === 'image'
+            ? {
+                response: 'An image',
+                media: { url: 'https://example.com/image.jpg' },
+              }
+            : 'AI answer',
+        );
       const service = new WhatsAppInboundService(
         new ConfigService({
           WHATSAPP_AUTO_REPLY_ENABLED: 'true',
-          WHATSAPP_REPLY_MODE: mode,
+          WHATSAPP_REPLY_MODE: mode === 'image' ? 'ai' : mode,
         }),
-        { sendText } as unknown as WhatsAppService,
+        { sendText, sendImage } as unknown as WhatsAppService,
         {
           companions: {
             findFirst: jest.fn().mockResolvedValue({ id: 'elena' }),
@@ -47,6 +57,17 @@ describe('WhatsApp reply modes', () => {
       };
       await service.receive(payload);
       await service.receive(payload);
+      if (mode === 'image') {
+        expect(sendText).not.toHaveBeenCalled();
+        expect(sendImage).toHaveBeenCalledTimes(1);
+        expect(sendImage).toHaveBeenCalledWith(
+          '123',
+          '8801518643073',
+          'https://example.com/image.jpg',
+          'An image',
+        );
+        return;
+      }
       expect(sendText).toHaveBeenCalledTimes(1);
       expect(sendText).toHaveBeenCalledWith(
         '123',

@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { createHash, randomBytes } from 'crypto';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { ChatService } from '../chat/chat.service';
+import type { AiReply } from '../../helper/ai/aiapi';
 
 @Injectable()
 export class WhatsAppAiService {
@@ -46,7 +47,9 @@ export class WhatsAppAiService {
     waId: string,
     text: string,
     messageKey: string,
-  ): Promise<string | null> {
+  ): Promise<
+    string | { response: string; media: NonNullable<AiReply['media']> } | null
+  > {
     if (text.trim().startsWith('START ')) {
       return this.link(companionId, waId, text.trim().slice(6).trim());
     }
@@ -80,6 +83,9 @@ export class WhatsAppAiService {
         'text',
         messageKey,
       );
+      if (result.media && result.message_type === 'image') {
+        return { response: result.response || '', media: result.media };
+      }
       return result.response;
     } catch (error) {
       if (

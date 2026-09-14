@@ -10,6 +10,10 @@ describe('WhatsApp chat retries', () => {
       companionId: 'c',
       response: 'Saved AI reply',
       conversationId: 'conversation',
+      aiPayload: {
+        message_type: 'image',
+        media: { url: 'https://example.com/image.jpg', kind: 'image' },
+      },
     };
     const tx = {
       $queryRaw: jest.fn(),
@@ -32,7 +36,11 @@ describe('WhatsApp chat retries', () => {
         'text',
         'phone:message',
       ),
-    ).toMatchObject({ response: 'Saved AI reply' });
+    ).toMatchObject({
+      response: 'Saved AI reply',
+      message_type: 'image',
+      media: saved.aiPayload.media,
+    });
     expect(credit.consumeCredits).not.toHaveBeenCalled();
     expect(ai.sendMessage).not.toHaveBeenCalled();
   });
