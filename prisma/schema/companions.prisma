@@ -132,6 +132,8 @@ model CompanionVoiceSettings {
   id      String @id @default(uuid())
   voiceId String @unique
 
+  
+
   stability       Float
   similarityBoost Float
   style           Float
