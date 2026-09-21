@@ -1,5 +1,6 @@
 model User {
   whatsappConnections WhatsAppConnection[]
+  telegramConnections TelegramConnection[]
   id                    String               @id @default(uuid())
   email                 String               @unique
   name                  String?

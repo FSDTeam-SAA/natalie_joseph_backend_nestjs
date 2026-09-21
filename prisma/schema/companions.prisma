@@ -1,5 +1,6 @@
 model Companions {
   whatsappConnections WhatsAppConnection[]
+  telegramConnections TelegramConnection[]
   id          String @id @default(uuid())
   name    String
   version Int    @default(1)

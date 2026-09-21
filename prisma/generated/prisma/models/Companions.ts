@@ -321,6 +321,7 @@ export type CompanionsWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionListRelationFilter
+  telegramConnections?: Prisma.TelegramConnectionListRelationFilter
   personality?: Prisma.XOR<Prisma.CompanionPersonalityNullableScalarRelationFilter, Prisma.CompanionPersonalityWhereInput> | null
   communicationStyle?: Prisma.XOR<Prisma.CompanionCommunicationStyleNullableScalarRelationFilter, Prisma.CompanionCommunicationStyleWhereInput> | null
   background?: Prisma.XOR<Prisma.CompanionBackgroundNullableScalarRelationFilter, Prisma.CompanionBackgroundWhereInput> | null
@@ -356,6 +357,7 @@ export type CompanionsOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   whatsappConnections?: Prisma.WhatsAppConnectionOrderByRelationAggregateInput
+  telegramConnections?: Prisma.TelegramConnectionOrderByRelationAggregateInput
   personality?: Prisma.CompanionPersonalityOrderByWithRelationInput
   communicationStyle?: Prisma.CompanionCommunicationStyleOrderByWithRelationInput
   background?: Prisma.CompanionBackgroundOrderByWithRelationInput
@@ -394,6 +396,7 @@ export type CompanionsWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Companions"> | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionListRelationFilter
+  telegramConnections?: Prisma.TelegramConnectionListRelationFilter
   personality?: Prisma.XOR<Prisma.CompanionPersonalityNullableScalarRelationFilter, Prisma.CompanionPersonalityWhereInput> | null
   communicationStyle?: Prisma.XOR<Prisma.CompanionCommunicationStyleNullableScalarRelationFilter, Prisma.CompanionCommunicationStyleWhereInput> | null
   background?: Prisma.XOR<Prisma.CompanionBackgroundNullableScalarRelationFilter, Prisma.CompanionBackgroundWhereInput> | null
@@ -481,6 +484,7 @@ export type CompanionsCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -516,6 +520,7 @@ export type CompanionsUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -551,6 +556,7 @@ export type CompanionsUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -586,6 +592,7 @@ export type CompanionsUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -959,6 +966,20 @@ export type CompanionsUpdateOneRequiredWithoutGiftTransactionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutGiftTransactionsInput, Prisma.CompanionsUpdateWithoutGiftTransactionsInput>, Prisma.CompanionsUncheckedUpdateWithoutGiftTransactionsInput>
 }
 
+export type CompanionsCreateNestedOneWithoutTelegramConnectionsInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutTelegramConnectionsInput, Prisma.CompanionsUncheckedCreateWithoutTelegramConnectionsInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutTelegramConnectionsInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+}
+
+export type CompanionsUpdateOneRequiredWithoutTelegramConnectionsNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanionsCreateWithoutTelegramConnectionsInput, Prisma.CompanionsUncheckedCreateWithoutTelegramConnectionsInput>
+  connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutTelegramConnectionsInput
+  upsert?: Prisma.CompanionsUpsertWithoutTelegramConnectionsInput
+  connect?: Prisma.CompanionsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompanionsUpdateToOneWithWhereWithoutTelegramConnectionsInput, Prisma.CompanionsUpdateWithoutTelegramConnectionsInput>, Prisma.CompanionsUncheckedUpdateWithoutTelegramConnectionsInput>
+}
+
 export type CompanionsCreateNestedOneWithoutWhatsappConnectionsInput = {
   create?: Prisma.XOR<Prisma.CompanionsCreateWithoutWhatsappConnectionsInput, Prisma.CompanionsUncheckedCreateWithoutWhatsappConnectionsInput>
   connectOrCreate?: Prisma.CompanionsCreateOrConnectWithoutWhatsappConnectionsInput
@@ -994,6 +1015,7 @@ export type CompanionsCreateWithoutChatMessagesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -1028,6 +1050,7 @@ export type CompanionsUncheckedCreateWithoutChatMessagesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -1078,6 +1101,7 @@ export type CompanionsUpdateWithoutChatMessagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -1112,6 +1136,7 @@ export type CompanionsUncheckedUpdateWithoutChatMessagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -1146,6 +1171,7 @@ export type CompanionsCreateWithoutChatConversationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -1180,6 +1206,7 @@ export type CompanionsUncheckedCreateWithoutChatConversationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -1230,6 +1257,7 @@ export type CompanionsUpdateWithoutChatConversationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -1264,6 +1292,7 @@ export type CompanionsUncheckedUpdateWithoutChatConversationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -1298,6 +1327,7 @@ export type CompanionsCreateWithoutPersonalityInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
   visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
@@ -1332,6 +1362,7 @@ export type CompanionsUncheckedCreateWithoutPersonalityInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
   visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
@@ -1382,6 +1413,7 @@ export type CompanionsUpdateWithoutPersonalityInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
   visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
@@ -1416,6 +1448,7 @@ export type CompanionsUncheckedUpdateWithoutPersonalityInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
   visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
@@ -1450,6 +1483,7 @@ export type CompanionsCreateWithoutCommunicationStyleInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
   visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
@@ -1484,6 +1518,7 @@ export type CompanionsUncheckedCreateWithoutCommunicationStyleInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
   visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
@@ -1534,6 +1569,7 @@ export type CompanionsUpdateWithoutCommunicationStyleInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
   visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
@@ -1568,6 +1604,7 @@ export type CompanionsUncheckedUpdateWithoutCommunicationStyleInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
   visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
@@ -1602,6 +1639,7 @@ export type CompanionsCreateWithoutBackgroundInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
@@ -1636,6 +1674,7 @@ export type CompanionsUncheckedCreateWithoutBackgroundInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
@@ -1686,6 +1725,7 @@ export type CompanionsUpdateWithoutBackgroundInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
@@ -1720,6 +1760,7 @@ export type CompanionsUncheckedUpdateWithoutBackgroundInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
@@ -1754,6 +1795,7 @@ export type CompanionsCreateWithoutVisualProfileInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -1788,6 +1830,7 @@ export type CompanionsUncheckedCreateWithoutVisualProfileInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -1838,6 +1881,7 @@ export type CompanionsUpdateWithoutVisualProfileInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -1872,6 +1916,7 @@ export type CompanionsUncheckedUpdateWithoutVisualProfileInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -1906,6 +1951,7 @@ export type CompanionsCreateWithoutVoiceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -1940,6 +1986,7 @@ export type CompanionsUncheckedCreateWithoutVoiceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -1990,6 +2037,7 @@ export type CompanionsUpdateWithoutVoiceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -2024,6 +2072,7 @@ export type CompanionsUncheckedUpdateWithoutVoiceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -2058,6 +2107,7 @@ export type CompanionsCreateWithoutCreditTransactionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -2092,6 +2142,7 @@ export type CompanionsUncheckedCreateWithoutCreditTransactionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -2142,6 +2193,7 @@ export type CompanionsUpdateWithoutCreditTransactionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -2176,6 +2228,7 @@ export type CompanionsUncheckedUpdateWithoutCreditTransactionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -2210,6 +2263,7 @@ export type CompanionsCreateWithoutRelationshipsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -2244,6 +2298,7 @@ export type CompanionsUncheckedCreateWithoutRelationshipsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -2294,6 +2349,7 @@ export type CompanionsUpdateWithoutRelationshipsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -2328,6 +2384,7 @@ export type CompanionsUncheckedUpdateWithoutRelationshipsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -2362,6 +2419,7 @@ export type CompanionsCreateWithoutStoryEventsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -2396,6 +2454,7 @@ export type CompanionsUncheckedCreateWithoutStoryEventsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -2446,6 +2505,7 @@ export type CompanionsUpdateWithoutStoryEventsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -2480,6 +2540,7 @@ export type CompanionsUncheckedUpdateWithoutStoryEventsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -2514,6 +2575,7 @@ export type CompanionsCreateWithoutPhotoViewsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -2548,6 +2610,7 @@ export type CompanionsUncheckedCreateWithoutPhotoViewsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -2598,6 +2661,7 @@ export type CompanionsUpdateWithoutPhotoViewsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -2632,6 +2696,7 @@ export type CompanionsUncheckedUpdateWithoutPhotoViewsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -2666,6 +2731,7 @@ export type CompanionsCreateWithoutGiftTransactionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -2700,6 +2766,7 @@ export type CompanionsUncheckedCreateWithoutGiftTransactionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -2750,6 +2817,7 @@ export type CompanionsUpdateWithoutGiftTransactionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -2784,6 +2852,7 @@ export type CompanionsUncheckedUpdateWithoutGiftTransactionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -2795,6 +2864,162 @@ export type CompanionsUncheckedUpdateWithoutGiftTransactionsInput = {
   chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
   chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutCompanionNestedInput
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsCreateWithoutTelegramConnectionsInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutCompanionInput
+  personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsUncheckedCreateWithoutTelegramConnectionsInput = {
+  id?: string
+  name: string
+  version?: number
+  title: string
+  age?: number | null
+  backstory?: string | null
+  voiceDescription?: Prisma.CompanionsCreatevoiceDescriptionInput | string[]
+  profileImage?: string | null
+  coverImage?: string | null
+  galleryImages?: Prisma.CompanionsCreategalleryImagesInput | string[]
+  status?: boolean
+  interests?: Prisma.CompanionsCreateinterestsInput | string[]
+  whatsappPhoneNumber?: string | null
+  whatsappPhoneNumberId?: string | null
+  whatsappDisplayName?: string | null
+  whatsappEnabled?: boolean
+  whatsappWelcomeMessage?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutCompanionInput
+  personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
+  background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedCreateNestedOneWithoutCompanionInput
+  voice?: Prisma.CompanionVoiceUncheckedCreateNestedOneWithoutCompanionInput
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutCompanionInput
+  storyEvents?: Prisma.StoryEventUncheckedCreateNestedManyWithoutCompanionInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutCompanionInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutCompanionInput
+  chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutCompanionInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutCompanionInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutCompanionInput
+}
+
+export type CompanionsCreateOrConnectWithoutTelegramConnectionsInput = {
+  where: Prisma.CompanionsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutTelegramConnectionsInput, Prisma.CompanionsUncheckedCreateWithoutTelegramConnectionsInput>
+}
+
+export type CompanionsUpsertWithoutTelegramConnectionsInput = {
+  update: Prisma.XOR<Prisma.CompanionsUpdateWithoutTelegramConnectionsInput, Prisma.CompanionsUncheckedUpdateWithoutTelegramConnectionsInput>
+  create: Prisma.XOR<Prisma.CompanionsCreateWithoutTelegramConnectionsInput, Prisma.CompanionsUncheckedCreateWithoutTelegramConnectionsInput>
+  where?: Prisma.CompanionsWhereInput
+}
+
+export type CompanionsUpdateToOneWithWhereWithoutTelegramConnectionsInput = {
+  where?: Prisma.CompanionsWhereInput
+  data: Prisma.XOR<Prisma.CompanionsUpdateWithoutTelegramConnectionsInput, Prisma.CompanionsUncheckedUpdateWithoutTelegramConnectionsInput>
+}
+
+export type CompanionsUpdateWithoutTelegramConnectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutCompanionNestedInput
+  personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutCompanionNestedInput
+}
+
+export type CompanionsUncheckedUpdateWithoutTelegramConnectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  backstory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voiceDescription?: Prisma.CompanionsUpdatevoiceDescriptionInput | string[]
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryImages?: Prisma.CompanionsUpdategalleryImagesInput | string[]
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  interests?: Prisma.CompanionsUpdateinterestsInput | string[]
+  whatsappPhoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappPhoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappDisplayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutCompanionNestedInput
+  personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
+  communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
+  background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
+  visualProfile?: Prisma.CompanionVisualProfileUncheckedUpdateOneWithoutCompanionNestedInput
+  voice?: Prisma.CompanionVoiceUncheckedUpdateOneWithoutCompanionNestedInput
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutCompanionNestedInput
+  storyEvents?: Prisma.StoryEventUncheckedUpdateManyWithoutCompanionNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutCompanionNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutCompanionNestedInput
+  chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutCompanionNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutCompanionNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutCompanionNestedInput
 }
 
 export type CompanionsCreateWithoutWhatsappConnectionsInput = {
@@ -2817,6 +3042,7 @@ export type CompanionsCreateWithoutWhatsappConnectionsInput = {
   whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundCreateNestedOneWithoutCompanionInput
@@ -2851,6 +3077,7 @@ export type CompanionsUncheckedCreateWithoutWhatsappConnectionsInput = {
   whatsappWelcomeMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutCompanionInput
   personality?: Prisma.CompanionPersonalityUncheckedCreateNestedOneWithoutCompanionInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedCreateNestedOneWithoutCompanionInput
   background?: Prisma.CompanionBackgroundUncheckedCreateNestedOneWithoutCompanionInput
@@ -2901,6 +3128,7 @@ export type CompanionsUpdateWithoutWhatsappConnectionsInput = {
   whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUpdateOneWithoutCompanionNestedInput
@@ -2935,6 +3163,7 @@ export type CompanionsUncheckedUpdateWithoutWhatsappConnectionsInput = {
   whatsappWelcomeMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutCompanionNestedInput
   personality?: Prisma.CompanionPersonalityUncheckedUpdateOneWithoutCompanionNestedInput
   communicationStyle?: Prisma.CompanionCommunicationStyleUncheckedUpdateOneWithoutCompanionNestedInput
   background?: Prisma.CompanionBackgroundUncheckedUpdateOneWithoutCompanionNestedInput
@@ -2956,6 +3185,7 @@ export type CompanionsUncheckedUpdateWithoutWhatsappConnectionsInput = {
 
 export type CompanionsCountOutputType = {
   whatsappConnections: number
+  telegramConnections: number
   relationships: number
   storyEvents: number
   photoViews: number
@@ -2967,6 +3197,7 @@ export type CompanionsCountOutputType = {
 
 export type CompanionsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   whatsappConnections?: boolean | CompanionsCountOutputTypeCountWhatsappConnectionsArgs
+  telegramConnections?: boolean | CompanionsCountOutputTypeCountTelegramConnectionsArgs
   relationships?: boolean | CompanionsCountOutputTypeCountRelationshipsArgs
   storyEvents?: boolean | CompanionsCountOutputTypeCountStoryEventsArgs
   photoViews?: boolean | CompanionsCountOutputTypeCountPhotoViewsArgs
@@ -2991,6 +3222,13 @@ export type CompanionsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.E
  */
 export type CompanionsCountOutputTypeCountWhatsappConnectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.WhatsAppConnectionWhereInput
+}
+
+/**
+ * CompanionsCountOutputType without action
+ */
+export type CompanionsCountOutputTypeCountTelegramConnectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TelegramConnectionWhereInput
 }
 
 /**
@@ -3064,6 +3302,7 @@ export type CompanionsSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   createdAt?: boolean
   updatedAt?: boolean
   whatsappConnections?: boolean | Prisma.Companions$whatsappConnectionsArgs<ExtArgs>
+  telegramConnections?: boolean | Prisma.Companions$telegramConnectionsArgs<ExtArgs>
   personality?: boolean | Prisma.Companions$personalityArgs<ExtArgs>
   communicationStyle?: boolean | Prisma.Companions$communicationStyleArgs<ExtArgs>
   background?: boolean | Prisma.Companions$backgroundArgs<ExtArgs>
@@ -3148,6 +3387,7 @@ export type CompanionsSelectScalar = {
 export type CompanionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "version" | "title" | "age" | "backstory" | "voiceDescription" | "profileImage" | "coverImage" | "galleryImages" | "status" | "interests" | "whatsappPhoneNumber" | "whatsappPhoneNumberId" | "whatsappDisplayName" | "whatsappEnabled" | "whatsappWelcomeMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["companions"]>
 export type CompanionsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   whatsappConnections?: boolean | Prisma.Companions$whatsappConnectionsArgs<ExtArgs>
+  telegramConnections?: boolean | Prisma.Companions$telegramConnectionsArgs<ExtArgs>
   personality?: boolean | Prisma.Companions$personalityArgs<ExtArgs>
   communicationStyle?: boolean | Prisma.Companions$communicationStyleArgs<ExtArgs>
   background?: boolean | Prisma.Companions$backgroundArgs<ExtArgs>
@@ -3169,6 +3409,7 @@ export type $CompanionsPayload<ExtArgs extends runtime.Types.Extensions.Internal
   name: "Companions"
   objects: {
     whatsappConnections: Prisma.$WhatsAppConnectionPayload<ExtArgs>[]
+    telegramConnections: Prisma.$TelegramConnectionPayload<ExtArgs>[]
     personality: Prisma.$CompanionPersonalityPayload<ExtArgs> | null
     communicationStyle: Prisma.$CompanionCommunicationStylePayload<ExtArgs> | null
     background: Prisma.$CompanionBackgroundPayload<ExtArgs> | null
@@ -3597,6 +3838,7 @@ readonly fields: CompanionsFieldRefs;
 export interface Prisma__CompanionsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   whatsappConnections<T extends Prisma.Companions$whatsappConnectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$whatsappConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WhatsAppConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  telegramConnections<T extends Prisma.Companions$telegramConnectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$telegramConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TelegramConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   personality<T extends Prisma.Companions$personalityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$personalityArgs<ExtArgs>>): Prisma.Prisma__CompanionPersonalityClient<runtime.Types.Result.GetResult<Prisma.$CompanionPersonalityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   communicationStyle<T extends Prisma.Companions$communicationStyleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$communicationStyleArgs<ExtArgs>>): Prisma.Prisma__CompanionCommunicationStyleClient<runtime.Types.Result.GetResult<Prisma.$CompanionCommunicationStylePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   background<T extends Prisma.Companions$backgroundArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Companions$backgroundArgs<ExtArgs>>): Prisma.Prisma__CompanionBackgroundClient<runtime.Types.Result.GetResult<Prisma.$CompanionBackgroundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -4071,6 +4313,30 @@ export type Companions$whatsappConnectionsArgs<ExtArgs extends runtime.Types.Ext
   take?: number
   skip?: number
   distinct?: Prisma.WhatsAppConnectionScalarFieldEnum | Prisma.WhatsAppConnectionScalarFieldEnum[]
+}
+
+/**
+ * Companions.telegramConnections
+ */
+export type Companions$telegramConnectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TelegramConnection
+   */
+  select?: Prisma.TelegramConnectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TelegramConnection
+   */
+  omit?: Prisma.TelegramConnectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TelegramConnectionInclude<ExtArgs> | null
+  where?: Prisma.TelegramConnectionWhereInput
+  orderBy?: Prisma.TelegramConnectionOrderByWithRelationInput | Prisma.TelegramConnectionOrderByWithRelationInput[]
+  cursor?: Prisma.TelegramConnectionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TelegramConnectionScalarFieldEnum | Prisma.TelegramConnectionScalarFieldEnum[]
 }
 
 /**
