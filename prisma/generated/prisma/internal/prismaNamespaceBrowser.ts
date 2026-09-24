@@ -74,6 +74,7 @@ export const ModelName = {
   Newsletter: 'Newsletter',
   Payment: 'Payment',
   Subscription: 'Subscription',
+  TelegramConnection: 'TelegramConnection',
   User: 'User',
   UserSubscription: 'UserSubscription',
   WhatsAppConnection: 'WhatsAppConnection'
@@ -430,6 +431,20 @@ export const SubscriptionScalarFieldEnum = {
 } as const
 
 export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
+
+
+export const TelegramConnectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companionId: 'companionId',
+  telegramId: 'telegramId',
+  linkTokenHash: 'linkTokenHash',
+  linkExpiresAt: 'linkExpiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TelegramConnectionScalarFieldEnum = (typeof TelegramConnectionScalarFieldEnum)[keyof typeof TelegramConnectionScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

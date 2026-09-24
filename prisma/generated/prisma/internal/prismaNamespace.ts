@@ -420,6 +420,7 @@ export const ModelName = {
   Newsletter: 'Newsletter',
   Payment: 'Payment',
   Subscription: 'Subscription',
+  TelegramConnection: 'TelegramConnection',
   User: 'User',
   UserSubscription: 'UserSubscription',
   WhatsAppConnection: 'WhatsAppConnection'
@@ -438,7 +439,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "chatMessage" | "chatConversation" | "companions" | "companionPersonality" | "companionCommunicationStyle" | "companionBackground" | "companionVisualProfile" | "companionVoice" | "companionVoiceSettings" | "creditPackage" | "creditTransaction" | "purchasedCreditLot" | "creditCost" | "relationship" | "storyEvent" | "photoView" | "notification" | "conversationModeEvent" | "gift" | "giftTransaction" | "newsletter" | "payment" | "subscription" | "user" | "userSubscription" | "whatsAppConnection"
+    modelProps: "chatMessage" | "chatConversation" | "companions" | "companionPersonality" | "companionCommunicationStyle" | "companionBackground" | "companionVisualProfile" | "companionVoice" | "companionVoiceSettings" | "creditPackage" | "creditTransaction" | "purchasedCreditLot" | "creditCost" | "relationship" | "storyEvent" | "photoView" | "notification" | "conversationModeEvent" | "gift" | "giftTransaction" | "newsletter" | "payment" | "subscription" | "telegramConnection" | "user" | "userSubscription" | "whatsAppConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2144,6 +2145,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TelegramConnection: {
+      payload: Prisma.$TelegramConnectionPayload<ExtArgs>
+      fields: Prisma.TelegramConnectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TelegramConnectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConnectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TelegramConnectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConnectionPayload>
+        }
+        findFirst: {
+          args: Prisma.TelegramConnectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConnectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TelegramConnectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConnectionPayload>
+        }
+        findMany: {
+          args: Prisma.TelegramConnectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConnectionPayload>[]
+        }
+        create: {
+          args: Prisma.TelegramConnectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConnectionPayload>
+        }
+        createMany: {
+          args: Prisma.TelegramConnectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TelegramConnectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConnectionPayload>[]
+        }
+        delete: {
+          args: Prisma.TelegramConnectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConnectionPayload>
+        }
+        update: {
+          args: Prisma.TelegramConnectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConnectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.TelegramConnectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TelegramConnectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TelegramConnectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConnectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.TelegramConnectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConnectionPayload>
+        }
+        aggregate: {
+          args: Prisma.TelegramConnectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTelegramConnection>
+        }
+        groupBy: {
+          args: Prisma.TelegramConnectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramConnectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TelegramConnectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramConnectionCountAggregateOutputType> | number
+        }
+      }
+    }
     User: {
       payload: Prisma.$UserPayload<ExtArgs>
       fields: Prisma.UserFieldRefs
@@ -2742,6 +2817,20 @@ export const SubscriptionScalarFieldEnum = {
 export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
 
 
+export const TelegramConnectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  companionId: 'companionId',
+  telegramId: 'telegramId',
+  linkTokenHash: 'linkTokenHash',
+  linkExpiresAt: 'linkExpiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TelegramConnectionScalarFieldEnum = (typeof TelegramConnectionScalarFieldEnum)[keyof typeof TelegramConnectionScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -3199,6 +3288,7 @@ export type GlobalOmitConfig = {
   newsletter?: Prisma.NewsletterOmit
   payment?: Prisma.PaymentOmit
   subscription?: Prisma.SubscriptionOmit
+  telegramConnection?: Prisma.TelegramConnectionOmit
   user?: Prisma.UserOmit
   userSubscription?: Prisma.UserSubscriptionOmit
   whatsAppConnection?: Prisma.WhatsAppConnectionOmit
