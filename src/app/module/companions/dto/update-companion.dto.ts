@@ -1,13 +1,24 @@
-import { ApiPropertyOptional, OmitType, PartialType } from '@nestjs/swagger';
-import { IsOptional, IsObject, ValidateNested } from 'class-validator';
 import {
-  CreateCompanionDto,
-  CompanionPersonalityDto,
-  CompanionCommunicationStyleDto,
+  ApiProperty,
+  ApiPropertyOptional,
+  OmitType,
+  PartialType,
+} from '@nestjs/swagger';
+import {
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import {
   CompanionBackgroundDto,
+  CompanionCommunicationStyleDto,
+  CompanionPersonalityDto,
   CompanionVisualProfileDto,
   CompanionVoiceDto,
   CompanionVoiceSettingsDto,
+  CreateCompanionDto,
   nested,
 } from './create-companion.dto';
 export class UpdateCompanionPersonalityDto extends PartialType(
@@ -81,4 +92,11 @@ export class UpdateCompanionDto extends PartialType(
   @ValidateNested()
   @nested(UpdateCompanionVoiceDto)
   voice?: UpdateCompanionVoiceDto;
+}
+
+export class UpdateVoiceDto {
+  @ApiProperty({ example: 'your-provider-voice-id' })
+  @IsString()
+  @IsNotEmpty()
+  voiceId: string;
 }

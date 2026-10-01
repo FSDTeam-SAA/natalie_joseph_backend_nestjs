@@ -1,20 +1,20 @@
-import { companionProfileSelect } from './companion-profile';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import type { Prisma } from '../../../../prisma/generated/prisma/client';
+import { plainToInstance } from 'class-transformer';
+import { validateSync } from 'class-validator';
 import { fileUpload } from 'src/app/helper/fileUploder';
 import paginationHelper, { IOptions } from 'src/app/helper/pagenation';
 import { IFilterParams } from 'src/app/helper/pick';
 import { PrismaService } from 'src/prisma/prisma.service';
+import type { Prisma } from '../../../../prisma/generated/prisma/client';
+import { companionProfileSelect } from './companion-profile';
 import {
-  CreateCompanionDto,
-  CompanionPersonalityDto,
-  CompanionCommunicationStyleDto,
   CompanionBackgroundDto,
+  CompanionCommunicationStyleDto,
+  CompanionPersonalityDto,
   CompanionVisualProfileDto,
   CompanionVoiceDto,
+  CreateCompanionDto,
 } from './dto/create-companion.dto';
-import { plainToInstance } from 'class-transformer';
-import { validateSync } from 'class-validator';
 import { UpdateCompanionDto } from './dto/update-companion.dto';
 
 @Injectable()
@@ -355,5 +355,25 @@ export class CompanionsService {
           : { [field]: urls[0] },
       select: companionProfileSelect,
     });
+  }
+
+  async updateVoiceSettings(id: string, voiceId: string) {
+    const voice = await this.prisma.companionVoice.findUnique({
+      where: { companionId: id },
+    });
+
+    if (!voice) {
+      throw new HttpException(
+        'Companion voice not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const result = await this.prisma.companionVoice.update({
+      where: { companionId: id },
+      data: { voiceId },
+    });
+
+    return result;
   }
 }
