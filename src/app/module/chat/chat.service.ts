@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AiApi, AiReply } from '../../helper/ai/aiapi';
+import { AiApi, AiReply, AiAudio } from '../../helper/ai/aiapi';
 import { CreditService } from '../credit/credit.service';
 
 @Injectable()
@@ -17,6 +17,10 @@ export class ChatService {
     private readonly creditService: CreditService,
     private readonly aiApi: AiApi,
   ) {}
+
+  getAudio(media: NonNullable<AiReply['media']>, authorization: string) {
+    return this.aiApi.getAudio(media, authorization);
+  }
 
   async getUsage(userId: string) {
     return this.prisma.$transaction(async (tx) => {
@@ -96,9 +100,11 @@ export class ChatService {
     authorization: string,
     type: 'text' | 'voice' = 'text',
     whatsappMessageKey?: string,
+    audio?: () => Promise<AiAudio>,
   ) {
     message = message.trim();
-    if (!message) throw new BadRequestException('Message must not be blank');
+    if (!message && !audio)
+      throw new BadRequestException('Message must not be blank');
     return this.prisma.$transaction(
       async (tx) => {
         // Serialize this user's chat charges and conversation creation across instances.
@@ -204,6 +210,7 @@ export class ChatService {
                 message,
                 authorization,
                 whatsappMessageKey || messageId,
+                ...(audio ? [await audio()] : []),
               );
         await tx.chatConversation.update({
           where: { id: conversation.id },
@@ -217,7 +224,9 @@ export class ChatService {
             type,
             userId,
             companionId,
-            message,
+            message: audio
+              ? reply?.transcript || message || '[Voice message]'
+              : message,
             usedCredit,
             creditCost,
             response: reply?.response ?? null,

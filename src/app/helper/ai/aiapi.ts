@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import axios from 'axios';
 import { createHash } from 'crypto';
+import { classifyVoiceFailure } from './ai-failure';
 
 export function aiIdempotencyKey(key: string): string {
   if (/^[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}$/i.test(key))
@@ -20,11 +21,17 @@ export function aiIdempotencyKey(key: string): string {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
+export interface AiAudio {
+  bytes: Uint8Array;
+  mimeType: string;
+  filename: string;
+}
+
 export interface AiReply {
-  message_type?: 'text' | 'image';
+  message_type?: 'text' | 'image' | 'audio';
   media?: {
     id: string;
-    kind: 'image';
+    kind: 'image' | 'audio';
     url: string;
     mime_type: string;
     byte_size: number;
@@ -41,6 +48,11 @@ export interface AiReply {
 @Injectable()
 export class AiApi {
   private readonly logger = new Logger(AiApi.name);
+  private get baseUrl(): string {
+    return (
+      process.env.AI_API_BASE_URL || 'http://187.77.187.56:8000/api/v1'
+    ).replace(/\/$/, '');
+  }
   get requestTimeoutMs(): number {
     const value = Number(process.env.AI_API_TIMEOUT_MS || 60000);
     return Number.isInteger(value) && value >= 1000 && value <= 120000
@@ -56,18 +68,22 @@ export class AiApi {
       throw new UnauthorizedException();
     const startedAt = Date.now();
     try {
-      const { data } = await axios.post<T>(
-        `${(process.env.AI_API_BASE_URL || 'http://187.77.187.56:8000/api/v1').replace(/\/$/, '')}${path}`,
-        body,
-        {
-          headers: { Authorization: authorization },
-          timeout: this.requestTimeoutMs,
-        },
-      );
+      const { data } = await axios.post<T>(`${this.baseUrl}${path}`, body, {
+        headers: { Authorization: authorization },
+        timeout: this.requestTimeoutMs,
+      });
+      if (process.env.AI_API_LOG_TIMING === 'true')
+        this.logger.log(
+          `AI request completed: endpoint=${path}, elapsedMs=${Date.now() - startedAt}`,
+        );
       return data;
     } catch (error: unknown) {
       const upstream = axios.isAxiosError(error) ? error : undefined;
       const status = upstream?.response?.status;
+      const voiceFailure = classifyVoiceFailure(
+        status,
+        upstream?.response?.data,
+      );
       const safeCodes = [
         'ECONNABORTED',
         'ETIMEDOUT',
@@ -84,12 +100,59 @@ export class AiApi {
           ? upstream.code
           : 'UNKNOWN';
       this.logger.error(
-        `AI request failed: endpoint=${path}, status=${Number.isInteger(status) ? status : 'none'}, code=${code}, elapsedMs=${Date.now() - startedAt}`,
+        `AI request failed: endpoint=${path}, status=${Number.isInteger(status) ? status : 'none'}, code=${code}, reason=${voiceFailure?.reason || 'unclassified'}, elapsedMs=${Date.now() - startedAt}`,
       );
+      if (voiceFailure) throw voiceFailure;
       // Never expose upstream errors: they can contain the user's bearer token.
       throw new BadGatewayException(
         'AI service unavailable. Please try again later',
       );
+    }
+  }
+
+  async getAudio(
+    media: NonNullable<AiReply['media']>,
+    authorization: string,
+  ): Promise<AiAudio> {
+    if (!authorization.startsWith('Bearer ')) throw new UnauthorizedException();
+    if (
+      !/^[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}$/i.test(
+        media.id,
+      )
+    )
+      throw new BadGatewayException('Invalid AI audio ID');
+    try {
+      // The AI archive serves private media by ID, protected by the same user JWT.
+      // Never attach the JWT to a provider-supplied URL or follow redirects.
+      const result = await axios.get<ArrayBuffer>(
+        `${this.baseUrl}/media/${media.id}`,
+        {
+          headers: { Authorization: authorization },
+          responseType: 'arraybuffer',
+          timeout: 20000,
+          maxContentLength: 20 * 1024 * 1024,
+          maxRedirects: 0,
+        },
+      );
+      const bytes = new Uint8Array(result.data);
+      if (!bytes.byteLength || bytes.byteLength > 20 * 1024 * 1024)
+        throw new Error();
+      const mimeType = media.mime_type;
+      const extension =
+        mimeType === 'audio/mpeg'
+          ? 'mp3'
+          : ['audio/mp4', 'audio/m4a'].includes(mimeType)
+            ? 'm4a'
+            : 'ogg';
+      if (
+        !['audio/mpeg', 'audio/mp4', 'audio/m4a', 'audio/ogg'].includes(
+          mimeType,
+        )
+      )
+        throw new Error();
+      return { bytes, mimeType, filename: `reply.${extension}` };
+    } catch {
+      throw new BadGatewayException('AI voice media could not be retrieved');
     }
   }
 
@@ -111,12 +174,19 @@ export class AiApi {
     message: string,
     authorization: string,
     idempotencyKey: string,
+    audio?: AiAudio,
   ) {
     const form = new FormData();
     form.set('conversation_id', conversationId);
     form.set('companion_id', companionId);
     form.set('message', message);
     form.set('idempotency_key', aiIdempotencyKey(idempotencyKey));
+    if (audio)
+      form.set(
+        'audio',
+        new Blob([new Uint8Array(audio.bytes)], { type: audio.mimeType }),
+        audio.filename,
+      );
     const data = await this.post<AiReply>('/chat', form, authorization);
     if (
       !data?.message_id ||
@@ -127,6 +197,19 @@ export class AiApi {
     ) {
       throw new BadGatewayException('Invalid AI chat response');
     }
+    if (data.message_type === 'audio') {
+      if (
+        data.media?.kind !== 'audio' ||
+        !/^[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}$/i.test(
+          data.media.id,
+        ) ||
+        !['audio/mpeg', 'audio/mp4', 'audio/m4a', 'audio/ogg'].includes(
+          data.media.mime_type,
+        )
+      ) {
+        throw new BadGatewayException('Invalid AI audio response');
+      }
+    }
     if (data.message_type === 'image') {
       let valid = false;
       try {
@@ -135,11 +218,14 @@ export class AiApi {
           url.protocol === 'https:' &&
           !url.username &&
           !url.password &&
-          data.media?.kind === 'image';
+          data.media?.kind === data.message_type;
       } catch {
         /* Invalid media must not be forwarded. */
       }
-      if (!valid) throw new BadGatewayException('Invalid AI image response');
+      if (!valid)
+        throw new BadGatewayException(
+          `Invalid AI ${data.message_type} response`,
+        );
     }
     return data;
   }

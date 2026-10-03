@@ -1,4 +1,11 @@
 import {
+  BotKey,
+  botKeyForCompanion,
+  botValue,
+  websiteUrl,
+  TelegramAction,
+} from './telegram-config';
+import {
   ForbiddenException,
   HttpException,
   Injectable,
@@ -9,7 +16,8 @@ import { JwtService } from '@nestjs/jwt';
 import { createHash, randomBytes } from 'crypto';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { ChatService } from '../chat/chat.service';
-import type { AiReply } from '../../helper/ai/aiapi';
+import type { AiReply, AiAudio } from '../../helper/ai/aiapi';
+import { AiVoiceFailure } from '../../helper/ai/ai-failure';
 
 @Injectable()
 export class TelegramAiService {
@@ -20,14 +28,44 @@ export class TelegramAiService {
     private readonly config: ConfigService,
   ) {}
 
-  async connect(userId: string, companionId: string) {
-    const companion = await this.getCompanion();
-    if (companion.id !== companionId)
-      throw new NotFoundException('This bot is configured for Elena only');
-    const username = this.config
-      .getOrThrow<string>('TELEGRAM_ELENA_BOT_USERNAME')
-      .replace(/^@/, '');
+  async status(userId: string, companionId: string) {
+    const key = botKeyForCompanion(this.config, companionId);
     await this.getEligibleUser(userId);
+    const companion = await this.getCompanion(key);
+    const connection = await this.prisma.telegramConnection.findUnique({
+      where: { userId_companionId: { userId, companionId } },
+      select: { telegramId: true },
+    });
+    const active = Boolean(await this.hasSubscription(userId));
+    return {
+      companionId,
+      companionName: companion.name,
+      linked: Boolean(connection?.telegramId),
+      hasActiveSubscription: active,
+      telegramUrl:
+        connection?.telegramId && active
+          ? `https://t.me/${botValue(this.config, key, 'BOT_USERNAME').replace(/^@/, '')}`
+          : null,
+      creditsUrl: websiteUrl(this.config, 'credits', companionId),
+      subscriptionUrl: websiteUrl(this.config, 'subscription', companionId),
+    };
+  }
+
+  async connect(userId: string, companionId: string) {
+    const key = botKeyForCompanion(this.config, companionId);
+    await this.getCompanion(key);
+    const username = botValue(this.config, key, 'BOT_USERNAME').replace(
+      /^@/,
+      '',
+    );
+    botValue(this.config, key, 'BOT_TOKEN');
+    await this.getEligibleUser(userId);
+    if (!(await this.hasSubscription(userId))) {
+      throw new HttpException(
+        'An active subscription is required. Subscribe on the website to connect Telegram.',
+        402,
+      );
+    }
     const token = randomBytes(32).toString('hex');
     const linkExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
     const data = { linkTokenHash: this.hash(token), linkExpiresAt };
@@ -46,11 +84,22 @@ export class TelegramAiService {
     telegramId: string,
     text: string,
     messageKey: string,
+    key: BotKey = 'ELENA',
+    audio?: () => Promise<AiAudio>,
   ): Promise<
-    string | { response: string; media: NonNullable<AiReply['media']> } | null
+    | string
+    | TelegramAction
+    | {
+        response: string;
+        media: NonNullable<AiReply['media']>;
+        audio?: AiAudio;
+      }
+    | null
   > {
-    const { id: companionId } = await this.getCompanion();
+    const companionId = botValue(this.config, key, 'COMPANION_ID');
+    botKeyForCompanion(this.config, companionId);
     if (/^\/start(?:@\w+)?\s+/.test(text.trim())) {
+      await this.getCompanion(key);
       return this.link(
         companionId,
         telegramId,
@@ -61,9 +110,19 @@ export class TelegramAiService {
       where: { telegramId_companionId: { telegramId, companionId } },
     });
     if (!connection)
-      return 'Please sign in on the website and connect your Telegram account first.';
-    if (/^\/start(?:@\w+)?$/.test(text.trim()))
-      return 'Telegram is connected. Send a message to chat with Elena.';
+      return {
+        text: 'Please sign in on the website and connect your Telegram account first.',
+        buttons: [
+          {
+            text: 'Connect account',
+            url: websiteUrl(this.config, 'connect', companionId),
+          },
+        ],
+      };
+    if (/^\/start(?:@\w+)?$/.test(text.trim())) {
+      const { name } = await this.getCompanion(key);
+      return `Telegram is connected. Send a message to chat with ${name}.`;
+    }
 
     try {
       const user = await this.getEligibleUser(connection.userId);
@@ -86,40 +145,81 @@ export class TelegramAiService {
         companionId,
         text,
         `Bearer ${token}`,
-        'text',
+        audio ? 'voice' : 'text',
         messageKey,
+        ...(audio ? [audio] : []),
       );
-      if (result.media && result.message_type === 'image') {
-        return { response: result.response || '', media: result.media };
+      if (
+        result.media &&
+        (result.message_type === 'image' || result.message_type === 'audio')
+      ) {
+        return {
+          response: result.response || '',
+          media: result.media,
+          ...(result.media.kind === 'audio'
+            ? {
+                audio: await this.chat.getAudio(
+                  result.media,
+                  `Bearer ${token}`,
+                ),
+              }
+            : {}),
+        };
       }
       return result.response;
     } catch (error) {
+      // The upstream has persisted this failed attempt and explicitly rejects
+      // retries with the same key. Acknowledge it instead of blocking the bot queue.
+      if (error instanceof AiVoiceFailure) return error.message;
       if (
         error instanceof HttpException &&
         [400, 402, 403, 404].includes(error.getStatus())
       ) {
+        if (error.getStatus() === 402) {
+          const active = await this.hasSubscription(connection.userId);
+          return {
+            text: active
+              ? 'Your credits have run out. Buy credits to continue chatting.'
+              : 'An active subscription is required. Subscribe or renew to continue chatting.',
+            buttons: [
+              {
+                text: active ? 'Buy Credits' : 'Subscribe / Renew',
+                url: websiteUrl(
+                  this.config,
+                  active ? 'credits' : 'subscription',
+                  companionId,
+                ),
+              },
+            ],
+          };
+        }
         return error.message;
       }
       throw error;
     }
   }
 
-  private async getCompanion() {
-    const id = this.config.get<string>('TELEGRAM_ELENA_COMPANION_ID');
-    const companions = await this.prisma.companions.findMany({
+  private async hasSubscription(userId: string) {
+    const now = new Date();
+    return this.prisma.userSubscription.findFirst({
       where: {
-        status: true,
-        ...(id
-          ? { id }
-          : { name: { equals: 'Elena', mode: 'insensitive' as const } }),
+        userId,
+        isActive: true,
+        startsAt: { lte: now },
+        endsAt: { gt: now },
       },
-      take: 2,
+      select: { id: true },
     });
-    if (companions.length !== 1)
-      throw new NotFoundException(
-        'Set TELEGRAM_ELENA_COMPANION_ID to an active Elena companion',
-      );
-    return companions[0];
+  }
+
+  private async getCompanion(key: BotKey) {
+    const id = botValue(this.config, key, 'COMPANION_ID');
+    botKeyForCompanion(this.config, id);
+    const companion = await this.prisma.companions.findFirst({
+      where: { id, status: true },
+    });
+    if (!companion) throw new NotFoundException('Active companion not found');
+    return companion;
   }
 
   private async link(companionId: string, telegramId: string, token: string) {
