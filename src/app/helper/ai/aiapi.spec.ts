@@ -2,6 +2,76 @@ import axios from 'axios';
 import { AiApi, aiIdempotencyKey } from './aiapi';
 
 describe('AI chat request format', () => {
+  it('fetches private audio by ID using the user token only on the configured AI origin', async () => {
+    const get = jest
+      .spyOn(axios, 'get')
+      .mockResolvedValue({ data: new Uint8Array([1, 2]).buffer });
+    try {
+      const audio = await new AiApi().getAudio(
+        {
+          id: '11111111-1111-4111-8111-111111111111',
+          kind: 'audio',
+          url: 'https://untrusted.example/collect',
+          mime_type: 'audio/mpeg',
+          byte_size: 2,
+        },
+        'Bearer test',
+      );
+      expect(get.mock.calls[0][0]).toMatch(
+        /\/api\/v1\/media\/11111111-1111-4111-8111-111111111111$/,
+      );
+      expect(get.mock.calls[0][0]).not.toContain('untrusted.example');
+      expect(get.mock.calls[0][1]).toMatchObject({
+        headers: { Authorization: 'Bearer test' },
+        maxRedirects: 0,
+      });
+      expect(audio.filename).toBe('reply.mp3');
+    } finally {
+      get.mockRestore();
+    }
+  });
+  it('uploads actual voice bytes as multipart audio and preserves the spoken reply', async () => {
+    const reply = {
+      message_id: 'm',
+      conversation_id: 'c',
+      companion_id: 'p',
+      response: 'Hello',
+      message_type: 'audio',
+      transcript: 'Hi',
+      media: {
+        id: '11111111-1111-4111-8111-111111111111',
+        kind: 'audio',
+        url: 'https://example.com/reply.mp3',
+        mime_type: 'audio/mpeg',
+      },
+    };
+    const post = jest.spyOn(axios, 'post').mockResolvedValue({ data: reply });
+    try {
+      const result = await new AiApi().sendMessage(
+        'c',
+        'p',
+        '',
+        'Bearer test',
+        'voice-key',
+        {
+          bytes: new Uint8Array([1, 2, 3]),
+          mimeType: 'audio/ogg',
+          filename: 'voice.ogg',
+        },
+      );
+      const form = post.mock.calls[0][1] as FormData;
+      const file = form.get('audio') as File;
+      expect(file.name).toBe('voice.ogg');
+      expect(file.type).toBe('audio/ogg');
+      expect(new Uint8Array(await file.arrayBuffer())).toEqual(
+        new Uint8Array([1, 2, 3]),
+      );
+      expect(form.get('message')).toBe('');
+      expect(result).toEqual(reply);
+    } finally {
+      post.mockRestore();
+    }
+  });
   it('uses stable UUID keys for webhook retries and preserves existing UUIDs', () => {
     const key = aiIdempotencyKey('phone:wamid.test');
     expect(key).toMatch(

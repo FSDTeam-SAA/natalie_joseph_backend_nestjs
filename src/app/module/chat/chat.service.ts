@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AiApi, AiReply } from '../../helper/ai/aiapi';
+import { AiApi, AiReply, AiAudio } from '../../helper/ai/aiapi';
 import { CreditService } from '../credit/credit.service';
 
 @Injectable()
@@ -18,54 +18,74 @@ export class ChatService {
     private readonly aiApi: AiApi,
   ) {}
 
+  getAudio(media: NonNullable<AiReply['media']>, authorization: string) {
+    return this.aiApi.getAudio(media, authorization);
+  }
+
   async getUsage(userId: string) {
-    return this.prisma.$transaction(async (tx) => {
-      await this.creditService.expirePurchasedCredits(tx, userId);
-      const now = new Date();
-      const [subscription, user] = await Promise.all([
-        tx.userSubscription.findFirst({
-          where: {
-            userId,
-            isActive: true,
-            startsAt: { lte: now },
-            endsAt: { gt: now },
+    const now = new Date();
+    // A balance read must not acquire the wallet lock or hold an interactive
+    // transaction while another request is waiting for an AI response.
+    const [user, costs] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          creditBalance: true,
+          purchasedCreditLots: {
+            where: { expiresAt: { lte: now }, remainingAmount: { gt: 0 } },
+            select: { remainingAmount: true },
           },
-          orderBy: { endsAt: 'desc' },
-          include: { subscription: { select: { id: true, name: true } } },
-        }),
-        tx.user.findUnique({
-          where: { id: userId },
-          select: { creditBalance: true },
-        }),
-      ]);
-
-      if (!user) throw new NotFoundException('User not found');
-
-      return {
-        subscription: subscription
-          ? {
-              id: subscription.subscription.id,
-              name: subscription.subscription.name,
-              messagesUsed: subscription.messagesUsed,
-              messageLimit: subscription.messageLimit,
-              messagesRemaining: Math.max(
-                subscription.messageLimit - subscription.messagesUsed,
-                0,
-              ),
-              creditAllowance: subscription.creditAllowance,
-              creditsUsed: subscription.creditsUsed,
-              subscriptionCreditsRemaining: Math.max(
-                subscription.creditAllowance - subscription.creditsUsed,
-                0,
-              ),
-              endsAt: subscription.endsAt,
-            }
-          : null,
-        purchasedCredits: user.creditBalance,
-        ...(await this.creditService.checkLowCredit(tx, userId)),
-        creditBalance: user.creditBalance,
-      };
-    });
+          subscriptions: {
+            where: {
+              isActive: true,
+              startsAt: { lte: now },
+              endsAt: { gt: now },
+            },
+            orderBy: { endsAt: 'desc' },
+            take: 1,
+            include: { subscription: { select: { id: true, name: true } } },
+          },
+        },
+      }),
+      this.creditService.getCosts(),
+    ]);
+    if (!user) throw new NotFoundException('User not found');
+    const subscription = user.subscriptions[0];
+    const expiredCredits = user.purchasedCreditLots.reduce(
+      (sum, lot) => sum + lot.remainingAmount,
+      0,
+    );
+    const purchasedCredits = Math.max(0, user.creditBalance - expiredCredits);
+    const subscriptionCreditsRemaining = Math.max(
+      0,
+      (subscription?.creditAllowance ?? 0) - (subscription?.creditsUsed ?? 0),
+    );
+    const totalCredits = purchasedCredits + subscriptionCreditsRemaining;
+    return {
+      subscription: subscription
+        ? {
+            id: subscription.subscription.id,
+            name: subscription.subscription.name,
+            messagesUsed: subscription.messagesUsed,
+            messageLimit: subscription.messageLimit,
+            messagesRemaining: Math.max(
+              subscription.messageLimit - subscription.messagesUsed,
+              0,
+            ),
+            creditAllowance: subscription.creditAllowance,
+            creditsUsed: subscription.creditsUsed,
+            subscriptionCreditsRemaining,
+            startsAt: subscription.startsAt,
+            endsAt: subscription.endsAt,
+            createdAt: subscription.createdAt,
+          }
+        : null,
+      purchasedCredits,
+      creditBalance: purchasedCredits,
+      totalCredits,
+      lowCredit: totalCredits <= costs.low_credit_threshold,
+      threshold: costs.low_credit_threshold,
+    };
   }
 
   async getMessages(userId: string, companionId: string, page = 1) {
@@ -96,9 +116,11 @@ export class ChatService {
     authorization: string,
     type: 'text' | 'voice' = 'text',
     whatsappMessageKey?: string,
+    audio?: () => Promise<AiAudio>,
   ) {
     message = message.trim();
-    if (!message) throw new BadRequestException('Message must not be blank');
+    if (!message && !audio)
+      throw new BadRequestException('Message must not be blank');
     return this.prisma.$transaction(
       async (tx) => {
         // Serialize this user's chat charges and conversation creation across instances.
@@ -130,6 +152,7 @@ export class ChatService {
         }
         const companion = await tx.companions.findFirst({
           where: { id: companionId, status: true },
+          select: { id: true },
         });
         if (!companion) throw new NotFoundException('Companion not found');
 
@@ -204,6 +227,7 @@ export class ChatService {
                 message,
                 authorization,
                 whatsappMessageKey || messageId,
+                ...(audio ? [await audio()] : []),
               );
         await tx.chatConversation.update({
           where: { id: conversation.id },
@@ -217,7 +241,9 @@ export class ChatService {
             type,
             userId,
             companionId,
-            message,
+            message: audio
+              ? reply?.transcript || message || '[Voice message]'
+              : message,
             usedCredit,
             creditCost,
             response: reply?.response ?? null,

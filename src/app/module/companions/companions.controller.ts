@@ -28,7 +28,7 @@ import pick from 'src/app/helper/pick';
 import { AuthGuard } from 'src/app/middlewares/auth.guard';
 import { CompanionsService } from './companions.service';
 import { CreateCompanionDto } from './dto/create-companion.dto';
-import { UpdateCompanionDto } from './dto/update-companion.dto';
+import { UpdateCompanionDto, UpdateVoiceDto } from './dto/update-companion.dto';
 
 @ApiTags('Companions')
 @Controller('companions')
@@ -254,5 +254,18 @@ export class CompanionsController {
   async deleteCompanion(@Param('id') id: string) {
     const data = await this.companionsService.deleteCompanion(id);
     return { message: 'Companion deleted successfully', data };
+  }
+  @Put(':id/voice')
+  @ApiOperation({ summary: 'Update companion voice ID' })
+  @ApiBearerAuth('access-token')
+  @ApiBody({ type: UpdateVoiceDto })
+  @UseGuards(AuthGuard('admin'))
+  async updateVoice(@Param('id') id: string, @Body() payload: UpdateVoiceDto) {
+    const data = await this.companionsService.updateVoiceSettings(
+      id,
+      payload.voiceId,
+    );
+
+    return { message: 'Voice ID updated successfully', data };
   }
 }
