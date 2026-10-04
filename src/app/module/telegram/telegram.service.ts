@@ -9,6 +9,7 @@ import {
 import {
   ForbiddenException,
   Injectable,
+  Logger,
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -26,6 +27,7 @@ const MAX_AUDIO_BYTES = 10 * 1024 * 1024;
 
 @Injectable()
 export class TelegramService {
+  private readonly logger = new Logger(TelegramService.name);
   // Bounded, process-local retry protection; shared durable storage is needed for multiple replicas.
   private readonly completed = new Map<string, number>();
   private readonly pending = new Map<string, Promise<void>>();
@@ -147,6 +149,9 @@ export class TelegramService {
       mode === 'ai'
         ? this.startTyping(chatId, key, audio ? 'record_voice' : 'typing')
         : () => {};
+    const started = Date.now();
+    let generatedAt: number | undefined;
+    let delivered = false;
     try {
       const reply =
         mode === 'echo'
@@ -160,6 +165,7 @@ export class TelegramService {
               key,
               ...(audio ? [() => this.downloadAudio(audio, key)] : []),
             );
+      generatedAt = Date.now();
       if (typeof reply === 'string' && reply)
         await this.sendMessage(chatId, reply, key);
       else if (reply && typeof reply === 'object' && 'buttons' in reply) {
@@ -180,8 +186,14 @@ export class TelegramService {
           key,
         );
       }
+      delivered = true;
     } finally {
       stopTyping();
+      if (this.config.get<string>('AI_API_LOG_TIMING') === 'true') {
+        this.logger.log(
+          `bot=${key}, prepareMs=${(generatedAt ?? Date.now()) - started}, deliveryMs=${generatedAt ? Date.now() - generatedAt : 0}, totalMs=${Date.now() - started}, completed=${delivered}`,
+        );
+      }
     }
   }
 

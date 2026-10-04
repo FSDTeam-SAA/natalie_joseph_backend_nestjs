@@ -18,6 +18,20 @@ export function handlePrismaError(
   // ── 1. Known Request Errors (P2xxx / P1xxx) ──────────────────────────────
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     switch (err.code) {
+      case 'P2028':
+      case 'P2024': {
+        return {
+          statusCode: HttpStatus.SERVICE_UNAVAILABLE,
+          message: 'Database temporarily unavailable',
+          errorSources: [
+            {
+              path: '',
+              message:
+                'Database transaction or connection timed out. Please try again shortly.',
+            },
+          ],
+        };
+      }
       // Unique constraint violation
       case 'P2002': {
         const fields = (err.meta?.target as string[]) ?? [];

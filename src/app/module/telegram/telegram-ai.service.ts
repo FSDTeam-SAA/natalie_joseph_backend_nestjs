@@ -30,13 +30,16 @@ export class TelegramAiService {
 
   async status(userId: string, companionId: string) {
     const key = botKeyForCompanion(this.config, companionId);
-    await this.getEligibleUser(userId);
-    const companion = await this.getCompanion(key);
-    const connection = await this.prisma.telegramConnection.findUnique({
-      where: { userId_companionId: { userId, companionId } },
-      select: { telegramId: true },
-    });
-    const active = Boolean(await this.hasSubscription(userId));
+    const [, companion, connection, subscription] = await Promise.all([
+      this.getEligibleUser(userId),
+      this.getCompanion(key),
+      this.prisma.telegramConnection.findUnique({
+        where: { userId_companionId: { userId, companionId } },
+        select: { telegramId: true },
+      }),
+      this.hasSubscription(userId),
+    ]);
+    const active = Boolean(subscription);
     return {
       companionId,
       companionName: companion.name,
@@ -53,14 +56,18 @@ export class TelegramAiService {
 
   async connect(userId: string, companionId: string) {
     const key = botKeyForCompanion(this.config, companionId);
-    await this.getCompanion(key);
     const username = botValue(this.config, key, 'BOT_USERNAME').replace(
       /^@/,
       '',
     );
     botValue(this.config, key, 'BOT_TOKEN');
-    await this.getEligibleUser(userId);
-    if (!(await this.hasSubscription(userId))) {
+    // Independent reads can overlap; never persist a link before all checks pass.
+    const [, , subscription] = await Promise.all([
+      this.getEligibleUser(userId),
+      this.getCompanion(key),
+      this.hasSubscription(userId),
+    ]);
+    if (!subscription) {
       throw new HttpException(
         'An active subscription is required. Subscribe on the website to connect Telegram.',
         402,
@@ -108,6 +115,7 @@ export class TelegramAiService {
     }
     const connection = await this.prisma.telegramConnection.findUnique({
       where: { telegramId_companionId: { telegramId, companionId } },
+      select: { userId: true },
     });
     if (!connection)
       return {
@@ -217,6 +225,7 @@ export class TelegramAiService {
     botKeyForCompanion(this.config, id);
     const companion = await this.prisma.companions.findFirst({
       where: { id, status: true },
+      select: { id: true, name: true },
     });
     if (!companion) throw new NotFoundException('Active companion not found');
     return companion;
@@ -246,7 +255,17 @@ export class TelegramAiService {
   }
 
   private async getEligibleUser(userId: string) {
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        status: true,
+        adultEligible: true,
+        isSubscribed: true,
+      },
+    });
     if (
       !user ||
       user.status !== 'approved' ||

@@ -45,29 +45,60 @@ export class CreditService {
   }
 
   async getWallet(userId: string) {
-    return this.prisma.$transaction(async (tx) => {
-      await this.expirePurchasedCredits(tx, userId);
-      const user = await tx.user.findUnique({
+    const now = new Date();
+    // Reads never perform expiry writes or take the wallet's FOR UPDATE lock.
+    // Charging and the scheduled expiry job retain those transactional duties.
+    const [user, costs] = await Promise.all([
+      this.prisma.user.findUnique({
         where: { id: userId },
         select: {
           creditBalance: true,
           creditTransactions: {
-            orderBy: { createdAt: 'desc' },
+            orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
             take: 50,
           },
           purchasedCreditLots: {
-            where: {
-              remainingAmount: { gt: 0 },
-              expiresAt: { gt: new Date() },
-            },
+            where: { remainingAmount: { gt: 0 } },
             orderBy: { expiresAt: 'asc' },
             select: { id: true, remainingAmount: true, expiresAt: true },
           },
+          subscriptions: {
+            where: {
+              isActive: true,
+              startsAt: { lte: now },
+              endsAt: { gt: now },
+            },
+            orderBy: { endsAt: 'desc' },
+            take: 1,
+            select: { creditAllowance: true, creditsUsed: true },
+          },
         },
-      });
-      if (!user) throw new NotFoundException('User not found');
-      return { ...user, ...(await this.checkLowCredit(tx, userId)) };
-    });
+      }),
+      this.getCosts(),
+    ]);
+    if (!user) throw new NotFoundException('User not found');
+    const expiredAmount = user.purchasedCreditLots.reduce(
+      (sum, lot) => sum + (lot.expiresAt <= now ? lot.remainingAmount : 0),
+      0,
+    );
+    const creditBalance = Math.max(0, user.creditBalance - expiredAmount);
+    const subscription = user.subscriptions[0];
+    const totalCredits =
+      creditBalance +
+      Math.max(
+        0,
+        (subscription?.creditAllowance ?? 0) - (subscription?.creditsUsed ?? 0),
+      );
+    return {
+      creditBalance,
+      creditTransactions: user.creditTransactions,
+      purchasedCreditLots: user.purchasedCreditLots.filter(
+        (lot) => lot.expiresAt > now,
+      ),
+      totalCredits,
+      lowCredit: totalCredits <= costs.low_credit_threshold,
+      threshold: costs.low_credit_threshold,
+    };
   }
 
   async expirePurchasedCredits(tx: Prisma.TransactionClient, userId: string) {
@@ -156,13 +187,8 @@ export class CreditService {
     const fromSubscription = Math.min(subscriptionAvailable, amount);
     const fromPurchased = amount - fromSubscription;
 
-    if (fromPurchased > 0) {
-      const user = await tx.user.findUniqueOrThrow({
-        where: { id: userId },
-        select: { creditBalance: true },
-      });
-      if (user.creditBalance < fromPurchased) return null;
-    }
+    // The wallet was just read under the same transaction's user lock.
+    if (fromPurchased > 0 && wallet.creditBalance < fromPurchased) return null;
 
     if (fromSubscription > 0) {
       const updated = await tx.userSubscription.updateMany({
