@@ -159,6 +159,7 @@ export class CreditService {
       companionId?: string;
       referenceId?: string;
       message?: boolean;
+      lowCreditThreshold?: number;
     } = { reason: 'extra_message' },
   ) {
     if (!Number.isSafeInteger(amount) || amount < 0)
@@ -177,7 +178,7 @@ export class CreditService {
     if (!subscription) return null;
     const wallet = await tx.user.findUniqueOrThrow({
       where: { id: userId },
-      select: { creditBalance: true },
+      select: { creditBalance: true, lowCreditNotified: true },
     });
 
     const subscriptionAvailable = Math.max(
@@ -195,6 +196,7 @@ export class CreditService {
         where: { id: subscription.id, creditsUsed: subscription.creditsUsed },
         data: {
           creditsUsed: { increment: fromSubscription },
+          ...(context.message ? { messagesUsed: { increment: 1 } } : {}),
         },
       });
       if (updated.count === 0) return null;
@@ -227,7 +229,7 @@ export class CreditService {
         throw new ConflictException('Credit wallet changed; retry');
     }
 
-    if (context.message)
+    if (context.message && fromSubscription === 0)
       await tx.userSubscription.update({
         where: { id: subscription.id },
         data: { messagesUsed: { increment: 1 } },
@@ -251,8 +253,30 @@ export class CreditService {
           },
         });
     }
-    await this.checkLowCredit(tx, userId);
-    return { subscription, fromSubscription, fromPurchased };
+    const creditBalance = wallet.creditBalance - fromPurchased;
+    const creditsUsed = subscription.creditsUsed + fromSubscription;
+    const totalCredits =
+      creditBalance + Math.max(0, subscription.creditAllowance - creditsUsed);
+    // These balances are already protected by the wallet lock. Do not re-read
+    // them (or acquire that same lock again) to check the notification threshold.
+    await this.updateLowCreditNotice(
+      tx,
+      userId,
+      wallet.lowCreditNotified,
+      totalCredits,
+      context.lowCreditThreshold ??
+        (await this.getCosts(tx)).low_credit_threshold,
+    );
+    return {
+      subscription,
+      fromSubscription,
+      fromPurchased,
+      balanceAfter: {
+        creditBalance,
+        creditsUsed,
+        creditAllowance: subscription.creditAllowance,
+      },
+    };
   }
 
   async getCosts(tx: Prisma.TransactionClient = this.prisma) {
@@ -283,8 +307,24 @@ export class CreditService {
         (subscription?.creditAllowance ?? 0) - (subscription?.creditsUsed ?? 0),
       );
     const threshold = (await this.getCosts(tx)).low_credit_threshold;
+    return this.updateLowCreditNotice(
+      tx,
+      userId,
+      user.lowCreditNotified,
+      totalCredits,
+      threshold,
+    );
+  }
+
+  private async updateLowCreditNotice(
+    tx: Prisma.TransactionClient,
+    userId: string,
+    alreadyNotified: boolean,
+    totalCredits: number,
+    threshold: number,
+  ) {
     const lowCredit = totalCredits <= threshold;
-    if (lowCredit && !user.lowCreditNotified)
+    if (lowCredit && !alreadyNotified)
       await tx.notification.create({
         data: {
           userId,
@@ -293,7 +333,7 @@ export class CreditService {
           body: `You have ${totalCredits} credits remaining.`,
         },
       });
-    if (lowCredit !== user.lowCreditNotified)
+    if (lowCredit !== alreadyNotified)
       await tx.user.update({
         where: { id: userId },
         data: { lowCreditNotified: lowCredit },
