@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
@@ -12,6 +13,7 @@ import { CreditService } from '../credit/credit.service';
 
 @Injectable()
 export class ChatService {
+  private readonly logger = new Logger(ChatService.name);
   constructor(
     private readonly prisma: PrismaService,
     private readonly creditService: CreditService,
@@ -121,191 +123,202 @@ export class ChatService {
     message = message.trim();
     if (!message && !audio)
       throw new BadRequestException('Message must not be blank');
-    return this.prisma.$transaction(
-      async (tx) => {
-        // Serialize this user's chat charges and conversation creation across instances.
-        await tx.$queryRaw`SELECT id FROM users WHERE id = ${userId} FOR UPDATE`;
-        // A Meta retry must reuse the saved AI response without charging again.
-        if (whatsappMessageKey) {
-          const saved = await tx.chatMessage.findUnique({
-            where: { whatsappMessageKey },
-          });
-          if (
-            saved &&
-            saved.userId === userId &&
-            saved.companionId === companionId
-          ) {
-            return {
-              message_type:
-                (saved.aiPayload as unknown as AiReply | null)?.message_type ??
-                'text',
-              media:
-                (saved.aiPayload as unknown as AiReply | null)?.media ?? null,
-              transcript:
-                (saved.aiPayload as unknown as AiReply | null)?.transcript ??
-                null,
-              response: saved.response,
-              message: saved,
-              conversationId: saved.conversationId,
-            };
+    const started = Date.now();
+    let lockedAt: number | undefined;
+    let aiStartedAt: number | undefined;
+    let aiFinishedAt: number | undefined;
+    try {
+      return await this.prisma.$transaction(
+        async (tx) => {
+          // Serialize this user's chat charges and conversation creation across instances.
+          await tx.$queryRaw`SELECT id FROM users WHERE id = ${userId} FOR UPDATE`;
+          lockedAt = Date.now();
+          // A Meta retry must reuse the saved AI response without charging again.
+          if (whatsappMessageKey) {
+            const saved = await tx.chatMessage.findUnique({
+              where: { whatsappMessageKey },
+            });
+            if (
+              saved &&
+              saved.userId === userId &&
+              saved.companionId === companionId
+            ) {
+              return {
+                message_type:
+                  (saved.aiPayload as unknown as AiReply | null)
+                    ?.message_type ?? 'text',
+                media:
+                  (saved.aiPayload as unknown as AiReply | null)?.media ?? null,
+                transcript:
+                  (saved.aiPayload as unknown as AiReply | null)?.transcript ??
+                  null,
+                response: saved.response,
+                message: saved,
+                conversationId: saved.conversationId,
+              };
+            }
           }
-        }
-        const companion = await tx.companions.findFirst({
-          where: { id: companionId, status: true },
-          select: { id: true },
-        });
-        if (!companion) throw new NotFoundException('Companion not found');
-
-        const now = new Date();
-        const activeSubscription = await tx.userSubscription.findFirst({
-          where: {
-            userId,
-            isActive: true,
-            startsAt: { lte: now },
-            endsAt: { gt: now },
-          },
-          orderBy: { endsAt: 'desc' },
-        });
-        if (!activeSubscription) {
-          throw new HttpException(
-            'An active subscription is required to chat',
-            HttpStatus.PAYMENT_REQUIRED,
-          );
-        }
-
-        const messageId = randomUUID();
-        const costs = await this.creditService.getCosts(tx);
-        const creditCost = type === 'voice' ? costs.voice : costs.message;
-        const charge = await this.creditService.consumeCredits(
-          tx,
-          userId,
-          creditCost,
-          {
-            reason: type === 'voice' ? 'voice' : 'extra_message',
-            companionId,
-            referenceId: messageId,
-            message: true,
-          },
-        );
-        if (!charge) {
-          throw new HttpException(
-            'Not enough credits. Buy credits to continue',
-            HttpStatus.PAYMENT_REQUIRED,
-          );
-        }
-        const usedCredit = charge.fromPurchased > 0;
-
-        const aiCompanionId = companion.id;
-        let conversation = await tx.chatConversation.findUnique({
-          where: { userId_companionId: { userId, companionId } },
-        });
-        if (!conversation) {
-          const remote = await this.aiApi.createConversation(
-            aiCompanionId,
-            authorization,
-          );
-          conversation = await tx.chatConversation.create({
-            data: { userId, companionId, aiConversationId: remote.id },
+          const companion = await tx.companions.findFirst({
+            where: { id: companionId, status: true },
+            select: { id: true },
           });
-        }
-        if (conversation.mode === 'ai' && !conversation.aiConversationId) {
-          const remote = await this.aiApi.createConversation(
-            aiCompanionId,
-            authorization,
-          );
-          conversation = await tx.chatConversation.update({
-            where: { id: conversation.id },
-            data: { aiConversationId: remote.id },
-          });
-        }
-        const reply =
-          conversation.mode === 'human'
-            ? null
-            : await this.aiApi.sendMessage(
-                conversation.aiConversationId!,
-                aiCompanionId,
-                message,
-                authorization,
-                whatsappMessageKey || messageId,
-                ...(audio ? [await audio()] : []),
-              );
-        await tx.chatConversation.update({
-          where: { id: conversation.id },
-          data: { updatedAt: new Date() },
-        });
+          if (!companion) throw new NotFoundException('Companion not found');
 
-        const savedMessage = await tx.chatMessage.create({
-          data: {
-            id: messageId,
-            whatsappMessageKey,
-            type,
+          const now = new Date();
+          const activeSubscription = await tx.userSubscription.findFirst({
+            where: {
+              userId,
+              isActive: true,
+              startsAt: { lte: now },
+              endsAt: { gt: now },
+            },
+            orderBy: { endsAt: 'desc' },
+          });
+          if (!activeSubscription) {
+            throw new HttpException(
+              'An active subscription is required to chat',
+              HttpStatus.PAYMENT_REQUIRED,
+            );
+          }
+
+          const messageId = randomUUID();
+          const costs = await this.creditService.getCosts(tx);
+          const creditCost = type === 'voice' ? costs.voice : costs.message;
+          const charge = await this.creditService.consumeCredits(
+            tx,
             userId,
-            companionId,
-            message: audio
-              ? reply?.transcript || message || '[Voice message]'
-              : message,
-            usedCredit,
             creditCost,
+            {
+              reason: type === 'voice' ? 'voice' : 'extra_message',
+              companionId,
+              referenceId: messageId,
+              message: true,
+              lowCreditThreshold: costs.low_credit_threshold,
+            },
+          );
+          if (!charge) {
+            throw new HttpException(
+              'Not enough credits. Buy credits to continue',
+              HttpStatus.PAYMENT_REQUIRED,
+            );
+          }
+          const usedCredit = charge.fromPurchased > 0;
+
+          const aiCompanionId = companion.id;
+          let conversation = await tx.chatConversation.findUnique({
+            where: { userId_companionId: { userId, companionId } },
+          });
+          if (!conversation) {
+            const remote = await this.aiApi.createConversation(
+              aiCompanionId,
+              authorization,
+            );
+            conversation = await tx.chatConversation.create({
+              data: { userId, companionId, aiConversationId: remote.id },
+            });
+          }
+          if (conversation.mode === 'ai' && !conversation.aiConversationId) {
+            const remote = await this.aiApi.createConversation(
+              aiCompanionId,
+              authorization,
+            );
+            conversation = await tx.chatConversation.update({
+              where: { id: conversation.id },
+              data: { aiConversationId: remote.id },
+            });
+          }
+          const inputAudio =
+            audio && conversation.mode !== 'human' ? await audio() : undefined;
+          aiStartedAt = Date.now();
+          const reply =
+            conversation.mode === 'human'
+              ? null
+              : await this.aiApi.sendMessage(
+                  conversation.aiConversationId!,
+                  aiCompanionId,
+                  message,
+                  authorization,
+                  whatsappMessageKey || messageId,
+                  ...(inputAudio ? [inputAudio] : []),
+                );
+          aiFinishedAt = Date.now();
+          await tx.chatConversation.update({
+            where: { id: conversation.id },
+            data: { updatedAt: new Date() },
+          });
+
+          const savedMessage = await tx.chatMessage.create({
+            data: {
+              id: messageId,
+              whatsappMessageKey,
+              type,
+              userId,
+              companionId,
+              message: audio
+                ? reply?.transcript || message || '[Voice message]'
+                : message,
+              usedCredit,
+              creditCost,
+              response: reply?.response ?? null,
+              ...(reply
+                ? { aiPayload: JSON.parse(JSON.stringify(reply)) }
+                : {}),
+              aiMessageId: reply?.message_id,
+              conversationId: conversation.id,
+            },
+          });
+
+          const balance = charge.balanceAfter;
+
+          await tx.relationship.upsert({
+            where: { userId_companionId: { userId, companionId } },
+            create: {
+              userId,
+              companionId,
+              interactions: 1,
+              lastInteractionAt: now,
+            },
+            update: { interactions: { increment: 1 }, lastInteractionAt: now },
+          });
+
+          return {
+            message_type: reply?.message_type ?? 'text',
+            media: reply?.media ?? null,
+            transcript: reply?.transcript ?? null,
+            mode: conversation.mode,
+            message: savedMessage,
             response: reply?.response ?? null,
-            ...(reply ? { aiPayload: JSON.parse(JSON.stringify(reply)) } : {}),
-            aiMessageId: reply?.message_id,
             conversationId: conversation.id,
-          },
-        });
-
-        const [subscription, user] = await Promise.all([
-          tx.userSubscription.findUnique({
-            where: { id: activeSubscription.id },
-          }),
-          tx.user.findUnique({
-            where: { id: userId },
-            select: { creditBalance: true },
-          }),
-        ]);
-
-        await tx.relationship.upsert({
-          where: { userId_companionId: { userId, companionId } },
-          create: {
-            userId,
-            companionId,
-            interactions: 1,
-            lastInteractionAt: now,
-          },
-          update: { interactions: { increment: 1 }, lastInteractionAt: now },
-        });
-
-        return {
-          message_type: reply?.message_type ?? 'text',
-          media: reply?.media ?? null,
-          transcript: reply?.transcript ?? null,
-          mode: conversation.mode,
-          message: savedMessage,
-          response: reply?.response ?? null,
-          conversationId: conversation.id,
-          usage: {
-            creditsUsed: subscription?.creditsUsed,
-            creditAllowance: subscription?.creditAllowance,
-            subscriptionCreditsRemaining: subscription
-              ? Math.max(
-                  subscription.creditAllowance - subscription.creditsUsed,
-                  0,
-                )
-              : 0,
-            purchasedCredits: user?.creditBalance,
-            creditBalance: user?.creditBalance,
-            chargedFrom:
-              charge.fromSubscription > 0 && charge.fromPurchased > 0
-                ? 'subscription_and_purchased'
-                : usedCredit
-                  ? 'purchased'
-                  : 'subscription',
-          },
-        };
-      },
-      {
-        maxWait: 5000,
-        timeout: 2 * (this.aiApi.requestTimeoutMs || 60000) + 15000,
-      },
-    );
+            usage: {
+              creditsUsed: balance.creditsUsed,
+              creditAllowance: balance.creditAllowance,
+              subscriptionCreditsRemaining: Math.max(
+                balance.creditAllowance - balance.creditsUsed,
+                0,
+              ),
+              purchasedCredits: balance.creditBalance,
+              creditBalance: balance.creditBalance,
+              chargedFrom:
+                charge.fromSubscription > 0 && charge.fromPurchased > 0
+                  ? 'subscription_and_purchased'
+                  : usedCredit
+                    ? 'purchased'
+                    : 'subscription',
+            },
+          };
+        },
+        {
+          maxWait: 5000,
+          timeout: 2 * (this.aiApi.requestTimeoutMs || 60000) + 15000,
+        },
+      );
+    } finally {
+      if (process.env.AI_API_LOG_TIMING === 'true') {
+        const ended = Date.now();
+        this.logger.log(
+          `type=${type}, lockWaitMs=${(lockedAt ?? ended) - started}, prepareMs=${lockedAt ? (aiStartedAt ?? ended) - lockedAt : 0}, aiMs=${aiStartedAt ? (aiFinishedAt ?? ended) - aiStartedAt : 0}, saveMs=${aiFinishedAt ? ended - aiFinishedAt : 0}, totalMs=${ended - started}`,
+        );
+      }
+    }
   }
 }

@@ -348,10 +348,75 @@ export class TelegramService {
         { timeout: 10000 },
       );
       if (!response.data.ok) throw new Error('Telegram API rejected reply');
-    } catch {
-      // Never expose Axios errors: their request URLs contain the bot token.
+    } catch (error: unknown) {
+      // Only retry a rejected URL fetch, never an ambiguous timeout (which may
+      // already have delivered). Download only our known public image host.
+      const rejected = axios.isAxiosError(error) ? error : undefined;
+      const reason = rejected?.response?.data?.description;
+      if (
+        method === 'sendPhoto' &&
+        payload.photo &&
+        rejected?.response?.status === 400 &&
+        typeof reason === 'string' &&
+        /failed to get HTTP URL content|wrong file identifier\/HTTP URL specified|WEBPAGE_CURL_FAILED|IMAGE_PROCESS_FAILED/i.test(
+          reason,
+        )
+      ) {
+        const url = new URL(payload.photo);
+        if (
+          url.protocol === 'https:' &&
+          url.hostname === 'res.cloudinary.com' &&
+          !url.username &&
+          !url.password &&
+          (!url.port || url.port === '443')
+        ) {
+          try {
+            const photo = await axios.get<ArrayBuffer>(url.href, {
+              responseType: 'arraybuffer',
+              timeout: 15000,
+              maxContentLength: 10 * 1024 * 1024,
+              maxRedirects: 0,
+            });
+            const mime = String(photo.headers['content-type'] || '').split(
+              ';',
+            )[0];
+            if (!['image/jpeg', 'image/png'].includes(mime))
+              throw new Error('Unsupported photo');
+            const form = new FormData();
+            form.set('chat_id', String(payload.chat_id));
+            form.set(
+              'photo',
+              new Blob([new Uint8Array(photo.data)], { type: mime }),
+              mime === 'image/png' ? 'photo.png' : 'photo.jpg',
+            );
+            const sent = await axios.post<{ ok: boolean }>(
+              `https://api.telegram.org/bot${token}/sendPhoto`,
+              form,
+              { timeout: 20000 },
+            );
+            if (sent.data.ok) return;
+          } catch {
+            this.logger.warn(
+              'Telegram photo upload fallback failed; original update remains retryable',
+            );
+          }
+        }
+      }
+      // Log only Telegram's response description, never request URLs/headers.
+      const failure = axios.isAxiosError(error) ? error : undefined;
+      const description = failure?.response?.data?.description;
+      const safeDescription =
+        typeof description === 'string'
+          ? description
+              .replace(/https?:\/\/\S+/g, '[url]')
+              .replace(/\d{6,}:[A-Za-z0-9_-]+/g, '[token]')
+              .slice(0, 200)
+          : 'unavailable';
+      this.logger.warn(
+        `Telegram delivery failed: method=${method}, status=${failure?.response?.status ?? 'none'}, code=${failure?.code ?? 'unknown'}, reason=${safeDescription}`,
+      );
       throw new ServiceUnavailableException(
-        'Telegram reply failed; delivery may be retried',
+        `Telegram reply failed (${failure?.response?.status ?? failure?.code ?? 'unknown'}); delivery may be retried`,
       );
     }
   }

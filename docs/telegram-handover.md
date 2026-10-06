@@ -151,6 +151,16 @@ ElevenLabs account/configuration cause cannot be established from Nest's 502 alo
 Do not expose API keys or raw upstream request headers in diagnostic logs.
 
 `AI_API_LOG_TIMING=true` reports successful AI request duration without user content.
+
+Chat timing also separates `lockWaitMs` (transaction/another message waiting),
+`prepareMs` (validation, charging, conversation setup and input audio download),
+`aiMs` (AI chat generation), and `saveMs` (saving and committing). Telegram logs
+separate preparation from delivery. Compare fresh text, image and voice messages
+after restarting the backend; do not use duplicate updates as speed benchmarks
+because they reuse saved responses. Credit charging reuses locked balances and
+combines subscription debit/message counting, removing seven database operations
+from the usual subscription-funded chat path. This does not shorten upstream
+model generation itself; no end-to-end latency target has been verified.
 The ordinary Telegram message path no longer fetches the companion twice; ChatService
 still validates the active record. `TELEGRAM_WEBHOOK_MAX_CONNECTIONS=4` permits several
 users' webhook requests concurrently (range 1–40). Run the setup script again to apply
