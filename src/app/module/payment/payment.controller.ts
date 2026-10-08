@@ -32,6 +32,17 @@ export class PaymentController {
     return this.billing.status(request.user!.id);
   }
 
+  @Post('subscription/sync')
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('user', 'admin'))
+  @ApiOperation({
+    summary:
+      'Verify Stripe payment and synchronize subscription access without charging again',
+  })
+  async sync(@Req() request: Request) {
+    return { data: await this.billing.sync(request.user!.id) };
+  }
+
   @Post('billing-portal')
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('user', 'admin'))
