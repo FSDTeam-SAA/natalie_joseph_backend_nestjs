@@ -170,7 +170,7 @@ describe('Mini App account linking', () => {
     connection.findUnique.mockResolvedValue({ telegramId: '999' });
     await expect(
       service.login('companion', signed(), 'user@example.com', 'password'),
-    ).rejects.toThrow('another Telegram');
+    ).resolves.toEqual({ linked: false, transferRequired: true });
     expect(connection.upsert).not.toHaveBeenCalled();
   });
   it('handles the unique-index race without overwriting another account', async () => {
@@ -178,6 +178,49 @@ describe('Mini App account linking', () => {
     connection.upsert.mockRejectedValue({ code: 'P2002' });
     await expect(
       service.login('companion', signed(), 'user@example.com', 'password'),
+    ).rejects.toThrow('different Meet Elysia');
+  });
+  it('transfers only after password authentication and explicit confirmation', async () => {
+    const { service, connection, auth } = setup();
+    connection.findUnique.mockResolvedValue({ telegramId: '999' });
+    await service.login(
+      'companion',
+      signed(),
+      'user@example.com',
+      'password',
+      true,
+    );
+    expect(auth.authenticate).toHaveBeenCalled();
+    expect(connection.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        update: {
+          telegramId: '12345',
+          linkTokenHash: null,
+          linkExpiresAt: null,
+        },
+      }),
+    );
+  });
+  it('does not transfer with a bad password even when confirmation is set', async () => {
+    const { service, connection, auth } = setup();
+    auth.authenticate.mockRejectedValue(new Error('Invalid email or password'));
+    await expect(
+      service.login('companion', signed(), 'user@example.com', 'bad', true),
+    ).rejects.toThrow();
+    expect(connection.upsert).not.toHaveBeenCalled();
+  });
+  it('cannot transfer onto a Telegram account owned by another website user', async () => {
+    const { service, connection } = setup();
+    connection.findUnique.mockResolvedValue({ telegramId: '999' });
+    connection.upsert.mockRejectedValue({ code: 'P2002' });
+    await expect(
+      service.login(
+        'companion',
+        signed(),
+        'user@example.com',
+        'password',
+        true,
+      ),
     ).rejects.toThrow('different Meet Elysia');
   });
   it.each([

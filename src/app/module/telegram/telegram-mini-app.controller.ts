@@ -10,7 +10,14 @@ import {
   Res,
   SetMetadata,
 } from '@nestjs/common';
-import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsOptional,
+  IsEmail,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { ApiTags } from '@nestjs/swagger';
 import { randomBytes } from 'node:crypto';
 import type { Response } from 'express';
@@ -21,6 +28,7 @@ class TelegramSessionDto {
   @IsString() @MinLength(1) @MaxLength(8192) initData!: string;
 }
 class TelegramLoginDto extends TelegramSessionDto {
+  @IsOptional() @IsBoolean() confirmTransfer?: boolean;
   @IsEmail() @MaxLength(254) email!: string;
   @IsString() @MinLength(1) @MaxLength(256) password!: string;
 }
@@ -59,7 +67,13 @@ export class TelegramMiniAppController {
     @Body() body: TelegramLoginDto,
   ) {
     return {
-      data: await this.app.login(id, body.initData, body.email, body.password),
+      data: await this.app.login(
+        id,
+        body.initData,
+        body.email,
+        body.password,
+        body.confirmTransfer,
+      ),
     };
   }
 

@@ -145,6 +145,7 @@ export class TelegramMiniAppService {
     initData: string,
     email: string,
     password: string,
+    confirmTransfer = false,
   ) {
     const telegramId = this.identity(companionId, initData);
     // Process-local limits. Production proxies must also rate-limit this endpoint across replicas.
@@ -161,23 +162,27 @@ export class TelegramMiniAppService {
       );
     await this.settings(companionId);
     try {
-      await this.prisma.$transaction(async (tx) => {
+      const transferRequired = await this.prisma.$transaction(async (tx) => {
         // Serializes competing links for this website user; the unique Telegram index
         // also prevents two website users claiming the same Telegram account.
         await tx.$queryRaw`SELECT id FROM users WHERE id = ${user.id} FOR UPDATE`;
         const existing = await tx.telegramConnection.findUnique({
           where: { userId_companionId: { userId: user.id, companionId } },
         });
-        if (existing?.telegramId && existing.telegramId !== telegramId)
-          throw new ConflictException(
-            'This Meet Elysia account is connected to another Telegram account. Please contact support.',
-          );
+        if (
+          existing?.telegramId &&
+          existing.telegramId !== telegramId &&
+          !confirmTransfer
+        )
+          return true;
         await tx.telegramConnection.upsert({
           where: { userId_companionId: { userId: user.id, companionId } },
           create: { userId: user.id, companionId, telegramId },
           update: { telegramId, linkTokenHash: null, linkExpiresAt: null },
         });
+        return false;
       });
+      if (transferRequired) return { linked: false, transferRequired: true };
     } catch (error) {
       if ((error as { code?: string }).code === 'P2002')
         throw new ConflictException(
