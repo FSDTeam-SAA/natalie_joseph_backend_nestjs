@@ -27,7 +27,7 @@ WhatsApp remains registered separately. Telegram private chats use the same Chat
 
 5. Open `/api/docs`, authorize with your website user access token, then call `POST /api/v1/telegram/connect/{companionId}` using Elena’s UUID. Open the returned `data.telegramUrl` and press Start within 10 minutes. The link is single-use. After “Telegram connected”, send `hello` for an AI response. Your account must be approved and adult-eligible, with an active subscription and sufficient credits. A plain Start without the generated link cannot identify your website account.
 
-The frontend can use this endpoint for a Connect Telegram button; this backend change does not add frontend UI. Set `TELEGRAM_REPLY_MODE=echo` only for delivery testing. Image replies are sent as Telegram photos, without a caption or visible image URL.
+The frontend can use this endpoint for a Connect Telegram button. Users can also sign in inside Telegram using the new `/login` Mini App flow; see [Mini App setup and acceptance checks](telegram-mini-app.md). Set `TELEGRAM_REPLY_MODE=echo` only for delivery testing. Image replies are sent as Telegram photos, without a caption or visible image URL.
 
 Endpoint: `POST /api/v1/webhooks/telegram`. Telegram supplies `X-Telegram-Bot-Api-Secret-Token`; missing or incorrect values return 403. Outbound failures return 503 so Telegram can retry. Inspect the status command for pending updates and delivery errors. A local server alone cannot receive Telegram webhooks.
 

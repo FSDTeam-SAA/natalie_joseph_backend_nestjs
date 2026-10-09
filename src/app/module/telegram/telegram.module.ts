@@ -7,10 +7,23 @@ import { TelegramConnectController } from './telegram-connect.controller';
 import { PrismaModule } from '../../../prisma/prisma.module';
 import { ChatModule } from '../chat/chat.module';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from '../auth/auth.module';
+import { TelegramMiniAppController } from './telegram-mini-app.controller';
+import { TelegramMiniAppService } from './telegram-mini-app.service';
 
 @Module({
-  imports: [ConfigModule, PrismaModule, ChatModule, JwtModule.register({})],
-  controllers: [TelegramWebhookController, TelegramConnectController],
-  providers: [TelegramService, TelegramAiService],
+  imports: [
+    ConfigModule,
+    PrismaModule,
+    ChatModule,
+    AuthModule,
+    JwtModule.register({}),
+  ],
+  controllers: [
+    TelegramWebhookController,
+    TelegramConnectController,
+    TelegramMiniAppController,
+  ],
+  providers: [TelegramService, TelegramAiService, TelegramMiniAppService],
 })
 export class TelegramModule {}

@@ -40,22 +40,34 @@ export class AuthService {
     return result;
   }
 
-  async login(loginAuthDto: LoginAuthDto, res: Response) {
+  async authenticate(loginAuthDto: LoginAuthDto) {
     const user = await this.prisma.user.findUnique({
       where: {
         email: loginAuthDto.email,
       },
     });
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Invalid email or password',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     const isPasswordValid = await bcrypt.compare(
       loginAuthDto.password,
       user.password,
     );
     if (!isPasswordValid) {
-      throw new HttpException('Invalid password', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Invalid email or password',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
+
+    return user;
+  }
+
+  async login(loginAuthDto: LoginAuthDto, res: Response) {
+    const user = await this.authenticate(loginAuthDto);
 
     const accessToken = this.jwtService.sign(
       {
