@@ -50,6 +50,36 @@ export class BillingService {
     return user;
   }
 
+  async sync(userId: string) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { billingSubscriptionId: true, stripeAccountId: true },
+    });
+    if (user.billingSubscriptionId) {
+      const stripe = this.gateway();
+      const subscription = await stripe.subscriptions.retrieve(
+        user.billingSubscriptionId,
+      );
+      if (
+        subscription.metadata.userId !== userId ||
+        remoteId(subscription.customer) !== user.stripeAccountId
+      )
+        throw new BadRequestException('Subscription ownership mismatch');
+      const invoiceId = remoteId(subscription.latest_invoice);
+      if (subscription.status === 'active' && invoiceId) {
+        const invoice = await stripe.invoices.retrieve(invoiceId);
+        if (
+          invoice.status === 'paid' &&
+          remoteId(invoice.parent?.subscription_details?.subscription) ===
+            subscription.id
+        )
+          await this.invoicePaid(invoice);
+      }
+      await this.subscriptionChanged(subscription);
+    }
+    return this.status(userId);
+  }
+
   async portal(userId: string) {
     if (!config.frontendUrl)
       throw new ServiceUnavailableException(
@@ -69,6 +99,7 @@ export class BillingService {
 
   async start(userId: string, planId: string) {
     const stripe = this.gateway();
+    await this.sync(userId);
     return this.prisma.$transaction(
       async (tx) => {
         await tx.$queryRaw`SELECT id FROM users WHERE id = ${userId} FOR UPDATE`;
@@ -86,6 +117,22 @@ export class BillingService {
             { expand: ['latest_invoice.confirmation_secret'] },
           );
           if (!['canceled', 'incomplete_expired'].includes(existing.status)) {
+            if (
+              existing.status === 'active' &&
+              existing.items.data[0]?.price.metadata.planId === planId
+            ) {
+              if (!user.isSubscribed)
+                throw new ServiceUnavailableException(
+                  'Payment confirmed; subscription activation is still pending. Please refresh subscription status.',
+                );
+              return {
+                stripeSubscriptionId: existing.id,
+                status: String(existing.status),
+                activated: true,
+                alreadySubscribed: true,
+                clientSecret: null,
+              };
+            }
             if (
               existing.status === 'incomplete' &&
               existing.items.data[0]?.price.metadata.planId === planId

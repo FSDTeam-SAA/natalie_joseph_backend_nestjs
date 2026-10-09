@@ -128,9 +128,19 @@
       }
       $('check').onclick = async () => {
         try {
+          const c = config();
+          if (!c.token) throw new Error('User JWT is required');
+          $('check').disabled = true;
+          status('Verifying subscription with Stripe…');
+          await jsonFetch(`${c.api}/payment/subscription/sync`, {
+            method: 'POST', headers: { Authorization: `Bearer ${c.token}` },
+          });
           await checkUsage();
+          status('Subscription status refreshed.', 'success');
         } catch (e) {
           status(e.message, 'error');
+        } finally {
+          $('check').disabled = false;
         }
       };
       ['api', 'pk', 'token'].forEach((id) =>
@@ -223,7 +233,7 @@
           const data = body.data;
           if (data.activated && !data.clientSecret) {
             $('payment-box').classList.add('hidden');
-            status('Free subscription activated successfully.', 'success');
+            status(data.alreadySubscribed ? 'This subscription is already active. No new payment is needed.' : 'Subscription activated successfully.', 'success');
             await checkUsage(c);
             return;
           }
@@ -242,7 +252,7 @@
           state.paymentElement.mount('#payment-element');
           $('payment-box').classList.remove('hidden');
           status(
-            `Payment created (${data.payment.id}). Enter test card details.`,
+            `Payment created (${data.stripeSubscriptionId || data.payment?.id || 'pending'}). Enter test card details.`,
           );
         } catch (e) {
           status(e.message, 'error');
