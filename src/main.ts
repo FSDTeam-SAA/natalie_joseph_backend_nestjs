@@ -6,17 +6,23 @@ import dotenv from 'dotenv';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './app/helper/globalerror.filter';
 import { UtilsInterceptor } from './app/utils/utils.interceptor';
+import { deploymentSettings } from './app/config/deployment';
 dotenv.config();
 
 async function bootstrap() {
+  const deployment = deploymentSettings(process.env);
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'log'],
     rawBody: true,
   });
 
   app.use(cookieParser());
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.disable('x-powered-by');
+  expressApp.set('trust proxy', deployment.hops);
+  app.enableShutdownHooks();
   app.enableCors({
-    origin: '*',
+    origin: deployment.origins,
     credentials: true,
   });
 
@@ -52,10 +58,12 @@ async function bootstrap() {
     )
     .build();
 
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api/docs', app, document, {
-    swaggerOptions: { persistAuthorization: true },
-  });
+  if (deployment.swagger) {
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api/docs', app, document, {
+      swaggerOptions: { persistAuthorization: true },
+    });
+  }
 
   await app.listen(process.env.PORT ?? 3000, '0.0.0.0', () => {
     console.log(
@@ -66,4 +74,9 @@ async function bootstrap() {
     );
   });
 }
-bootstrap().catch(console.error);
+bootstrap().catch((error: unknown) => {
+  console.error(
+    error instanceof Error ? error.message : 'Backend startup failed',
+  );
+  process.exitCode = 1;
+});

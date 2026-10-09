@@ -160,6 +160,13 @@ export class GlobalExceptionFilter<T> implements ExceptionFilter {
       errorSources = [{ path: '', message: err.message }];
     }
 
+    if (!isDev && statusCode >= HttpStatus.INTERNAL_SERVER_ERROR) {
+      message =
+        statusCode === HttpStatus.SERVICE_UNAVAILABLE
+          ? 'Service temporarily unavailable. Please try again shortly.'
+          : 'Unable to complete the request. Please try again.';
+      errorSources = [];
+    }
     const body: TErrorResponse = {
       success: false,
       statusCode,

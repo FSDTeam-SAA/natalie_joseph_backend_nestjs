@@ -73,6 +73,8 @@ export const ModelName = {
   GiftTransaction: 'GiftTransaction',
   Newsletter: 'Newsletter',
   Payment: 'Payment',
+  RequestLimit: 'RequestLimit',
+  TelegramJob: 'TelegramJob',
   Subscription: 'Subscription',
   TelegramConnection: 'TelegramConnection',
   User: 'User',
@@ -416,6 +418,32 @@ export const PaymentScalarFieldEnum = {
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
 
 
+export const RequestLimitScalarFieldEnum = {
+  key: 'key',
+  count: 'count',
+  expiresAt: 'expiresAt'
+} as const
+
+export type RequestLimitScalarFieldEnum = (typeof RequestLimitScalarFieldEnum)[keyof typeof RequestLimitScalarFieldEnum]
+
+
+export const TelegramJobScalarFieldEnum = {
+  id: 'id',
+  bot: 'bot',
+  chatId: 'chatId',
+  payload: 'payload',
+  status: 'status',
+  attempts: 'attempts',
+  availableAt: 'availableAt',
+  leaseUntil: 'leaseUntil',
+  leaseToken: 'leaseToken',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TelegramJobScalarFieldEnum = (typeof TelegramJobScalarFieldEnum)[keyof typeof TelegramJobScalarFieldEnum]
+
+
 export const SubscriptionScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -523,6 +551,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

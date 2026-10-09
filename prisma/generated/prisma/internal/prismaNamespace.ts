@@ -419,6 +419,8 @@ export const ModelName = {
   GiftTransaction: 'GiftTransaction',
   Newsletter: 'Newsletter',
   Payment: 'Payment',
+  RequestLimit: 'RequestLimit',
+  TelegramJob: 'TelegramJob',
   Subscription: 'Subscription',
   TelegramConnection: 'TelegramConnection',
   User: 'User',
@@ -439,7 +441,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "chatMessage" | "chatConversation" | "companions" | "companionPersonality" | "companionCommunicationStyle" | "companionBackground" | "companionVisualProfile" | "companionVoice" | "companionVoiceSettings" | "creditPackage" | "creditTransaction" | "purchasedCreditLot" | "creditCost" | "relationship" | "storyEvent" | "photoView" | "notification" | "conversationModeEvent" | "gift" | "giftTransaction" | "newsletter" | "payment" | "subscription" | "telegramConnection" | "user" | "userSubscription" | "whatsAppConnection"
+    modelProps: "chatMessage" | "chatConversation" | "companions" | "companionPersonality" | "companionCommunicationStyle" | "companionBackground" | "companionVisualProfile" | "companionVoice" | "companionVoiceSettings" | "creditPackage" | "creditTransaction" | "purchasedCreditLot" | "creditCost" | "relationship" | "storyEvent" | "photoView" | "notification" | "conversationModeEvent" | "gift" | "giftTransaction" | "newsletter" | "payment" | "requestLimit" | "telegramJob" | "subscription" | "telegramConnection" | "user" | "userSubscription" | "whatsAppConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2071,6 +2073,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    RequestLimit: {
+      payload: Prisma.$RequestLimitPayload<ExtArgs>
+      fields: Prisma.RequestLimitFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RequestLimitFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RequestLimitPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RequestLimitFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RequestLimitPayload>
+        }
+        findFirst: {
+          args: Prisma.RequestLimitFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RequestLimitPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RequestLimitFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RequestLimitPayload>
+        }
+        findMany: {
+          args: Prisma.RequestLimitFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RequestLimitPayload>[]
+        }
+        create: {
+          args: Prisma.RequestLimitCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RequestLimitPayload>
+        }
+        createMany: {
+          args: Prisma.RequestLimitCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RequestLimitCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RequestLimitPayload>[]
+        }
+        delete: {
+          args: Prisma.RequestLimitDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RequestLimitPayload>
+        }
+        update: {
+          args: Prisma.RequestLimitUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RequestLimitPayload>
+        }
+        deleteMany: {
+          args: Prisma.RequestLimitDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RequestLimitUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RequestLimitUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RequestLimitPayload>[]
+        }
+        upsert: {
+          args: Prisma.RequestLimitUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RequestLimitPayload>
+        }
+        aggregate: {
+          args: Prisma.RequestLimitAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRequestLimit>
+        }
+        groupBy: {
+          args: Prisma.RequestLimitGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RequestLimitGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RequestLimitCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RequestLimitCountAggregateOutputType> | number
+        }
+      }
+    }
+    TelegramJob: {
+      payload: Prisma.$TelegramJobPayload<ExtArgs>
+      fields: Prisma.TelegramJobFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TelegramJobFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramJobPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TelegramJobFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramJobPayload>
+        }
+        findFirst: {
+          args: Prisma.TelegramJobFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramJobPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TelegramJobFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramJobPayload>
+        }
+        findMany: {
+          args: Prisma.TelegramJobFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramJobPayload>[]
+        }
+        create: {
+          args: Prisma.TelegramJobCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramJobPayload>
+        }
+        createMany: {
+          args: Prisma.TelegramJobCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TelegramJobCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramJobPayload>[]
+        }
+        delete: {
+          args: Prisma.TelegramJobDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramJobPayload>
+        }
+        update: {
+          args: Prisma.TelegramJobUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramJobPayload>
+        }
+        deleteMany: {
+          args: Prisma.TelegramJobDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TelegramJobUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TelegramJobUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramJobPayload>[]
+        }
+        upsert: {
+          args: Prisma.TelegramJobUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramJobPayload>
+        }
+        aggregate: {
+          args: Prisma.TelegramJobAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTelegramJob>
+        }
+        groupBy: {
+          args: Prisma.TelegramJobGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramJobGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TelegramJobCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramJobCountAggregateOutputType> | number
+        }
+      }
+    }
     Subscription: {
       payload: Prisma.$SubscriptionPayload<ExtArgs>
       fields: Prisma.SubscriptionFieldRefs
@@ -2800,6 +2950,32 @@ export const PaymentScalarFieldEnum = {
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
 
 
+export const RequestLimitScalarFieldEnum = {
+  key: 'key',
+  count: 'count',
+  expiresAt: 'expiresAt'
+} as const
+
+export type RequestLimitScalarFieldEnum = (typeof RequestLimitScalarFieldEnum)[keyof typeof RequestLimitScalarFieldEnum]
+
+
+export const TelegramJobScalarFieldEnum = {
+  id: 'id',
+  bot: 'bot',
+  chatId: 'chatId',
+  payload: 'payload',
+  status: 'status',
+  attempts: 'attempts',
+  availableAt: 'availableAt',
+  leaseUntil: 'leaseUntil',
+  leaseToken: 'leaseToken',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TelegramJobScalarFieldEnum = (typeof TelegramJobScalarFieldEnum)[keyof typeof TelegramJobScalarFieldEnum]
+
+
 export const SubscriptionScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -2907,6 +3083,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -3287,6 +3470,8 @@ export type GlobalOmitConfig = {
   giftTransaction?: Prisma.GiftTransactionOmit
   newsletter?: Prisma.NewsletterOmit
   payment?: Prisma.PaymentOmit
+  requestLimit?: Prisma.RequestLimitOmit
+  telegramJob?: Prisma.TelegramJobOmit
   subscription?: Prisma.SubscriptionOmit
   telegramConnection?: Prisma.TelegramConnectionOmit
   user?: Prisma.UserOmit

@@ -7,6 +7,7 @@ import {
 import { Response } from 'express';
 import { Reflector } from '@nestjs/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
+import { redactCredentials } from '../helper/public-user';
 
 @Injectable()
 export class UtilsInterceptor implements NestInterceptor {
@@ -22,6 +23,7 @@ export class UtilsInterceptor implements NestInterceptor {
     const res = context.switchToHttp().getResponse<Response>();
     return next.handle().pipe(
       map((response) => {
+        response = redactCredentials(response);
         if (
           response &&
           typeof response === 'object' &&

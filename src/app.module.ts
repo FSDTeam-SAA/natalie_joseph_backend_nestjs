@@ -20,6 +20,9 @@ import { GiftModule } from './app/module/gift/gift.module';
 import { DashboardModule } from './app/module/dashboard/dashboard.module';
 import { WhatsAppModule } from './app/module/whatsapp/whatsapp.module';
 import { TelegramModule } from './app/module/telegram/telegram.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RequestLimitGuard } from './app/middlewares/request-limit.guard';
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
@@ -41,7 +44,11 @@ import { TelegramModule } from './app/module/telegram/telegram.module';
     GiftModule,
     DashboardModule,
   ],
-  controllers: [AppController, LegalPagesController],
-  providers: [AppService, SubscribePaymentCronService],
+  controllers: [AppController, LegalPagesController, HealthController],
+  providers: [
+    AppService,
+    SubscribePaymentCronService,
+    { provide: APP_GUARD, useClass: RequestLimitGuard },
+  ],
 })
 export class AppModule {}

@@ -6,6 +6,9 @@ import config from 'src/app/config';
 import sendMailer from 'src/app/helper/sendMailer';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAuthDto, LoginAuthDto } from './dto/create-auth.dto';
+import { createHash, randomBytes, randomInt } from 'node:crypto';
+import { publicUser } from '../../helper/public-user';
+import { sessionVersion } from '../../helper/session-version';
 
 @Injectable()
 export class AuthService {
@@ -37,7 +40,7 @@ export class AuthService {
     if (!result) {
       throw new HttpException('User not created', HttpStatus.BAD_REQUEST);
     }
-    return result;
+    return publicUser(result);
   }
 
   async authenticate(loginAuthDto: LoginAuthDto) {
@@ -76,6 +79,7 @@ export class AuthService {
         email: user.email,
         adultEligible: user.adultEligible,
         isSubscribed: user.isSubscribed,
+        sessionVersion: sessionVersion(user.password),
       },
       {
         secret: config.jwt.accessTokenSecret,
@@ -90,6 +94,7 @@ export class AuthService {
         email: user.email,
         adultEligible: user.adultEligible,
         isSubscribed: user.isSubscribed,
+        sessionVersion: sessionVersion(user.password),
       },
       {
         secret: config.jwt.refreshTokenSecret,
@@ -103,7 +108,7 @@ export class AuthService {
       sameSite: 'strict',
     });
 
-    return { accessToken, user };
+    return { accessToken, user: publicUser(user) };
   }
 
   async refreshToken(req: Request) {
@@ -119,17 +124,25 @@ export class AuthService {
         id: decodedToken.id,
       },
     });
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    if (
+      !user ||
+      decodedToken.sessionVersion !== sessionVersion(user.password)
+    ) {
+      throw new HttpException('Please log in again', HttpStatus.UNAUTHORIZED);
     }
     const accessToken = this.jwtService.sign(
-      { id: user.id, role: user.role, email: user.email },
+      {
+        id: user.id,
+        role: user.role,
+        email: user.email,
+        sessionVersion: sessionVersion(user.password),
+      },
       {
         secret: config.jwt.accessTokenSecret,
         expiresIn: config.jwt.accessTokenExpires as any,
       } as jwt.JwtSignOptions,
     );
-    return { accessToken, user };
+    return { accessToken, user: publicUser(user) };
   }
 
   async forgotPassword(email: string) {
@@ -141,17 +154,16 @@ export class AuthService {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
-    const generateOtpNumber = Math.floor(
-      100000 + Math.random() * 900000,
-    ).toString(); // Random 6 digit otp
+    const generateOtpNumber = randomInt(100000, 1000000).toString();
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // OTP valid for 10 minutes
     await this.prisma.user.update({
       where: {
         id: user.id,
       },
       data: {
-        otp: generateOtpNumber,
+        otp: this.resetHash('otp:' + generateOtpNumber),
         otpExpiry,
+        verifiedForgot: false,
       },
     });
     const html = `
@@ -159,7 +171,7 @@ export class AuthService {
       <h2 style="color:#4f46e5;">Password Reset OTP</h2>
       <p>Your OTP code is:</p>
       <h1 style="letter-spacing:4px;">${generateOtpNumber}</h1>
-      <p>This code will expire in 1 hour.</p>
+      <p>This code will expire in 10 minutes.</p>
     </div>
   `;
     await sendMailer(user.email, 'Password Reset OTP', html);
@@ -175,50 +187,54 @@ export class AuthService {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
-    if (!user.otp || user.otp !== otp) {
+    if (!user.otp || user.otp !== this.resetHash('otp:' + otp)) {
       throw new HttpException('Invalid OTP', HttpStatus.BAD_REQUEST);
     }
     if (!user.otpExpiry || user.otpExpiry < new Date()) {
       throw new HttpException('OTP expired', HttpStatus.BAD_REQUEST);
     }
-    await this.prisma.user.update({
+    const resetToken = randomBytes(32).toString('hex');
+    const result = await this.prisma.user.updateMany({
       where: {
         id: user.id,
+        otp: user.otp,
+        otpExpiry: { gt: new Date() },
+        verifiedForgot: false,
       },
       data: {
-        otp: null,
-        otpExpiry: null,
+        otp: this.resetHash('reset:' + resetToken),
+        otpExpiry: new Date(Date.now() + 10 * 60 * 1000),
         verifiedForgot: true,
       },
     });
-    return { message: 'OTP verified successfully' };
+    if (!result.count) throw new HttpException('Invalid or expired OTP', 400);
+    return { message: 'OTP verified successfully', resetToken };
   }
 
-  async resetPassword(email: string, password: string) {
-    const user = await this.prisma.user.findUnique({
+  private resetHash(value: string) {
+    return createHash('sha256').update(value).digest('hex');
+  }
+
+  async resetPassword(email: string, password: string, resetToken: string) {
+    if (!/^[a-f0-9]{64}$/.test(resetToken || ''))
+      throw new HttpException('Verify OTP again to reset your password', 400);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const result = await this.prisma.user.updateMany({
       where: {
         email,
-      },
-    });
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
-    }
-    if (!user.verifiedForgot) {
-      throw new HttpException(
-        'Please verify OTP first',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await this.prisma.user.update({
-      where: {
-        id: user.id,
+        verifiedForgot: true,
+        otp: this.resetHash('reset:' + resetToken),
+        otpExpiry: { gt: new Date() },
       },
       data: {
         password: hashedPassword,
         verifiedForgot: false,
+        otp: null,
+        otpExpiry: null,
       },
     });
+    if (!result.count)
+      throw new HttpException('Invalid or expired reset token', 400);
     return { message: 'Password reset successfully' };
   }
 

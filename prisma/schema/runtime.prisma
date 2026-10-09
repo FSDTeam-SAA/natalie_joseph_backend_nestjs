@@ -1,0 +1,24 @@
+model RequestLimit {
+  key String @id
+  count Int
+  expiresAt DateTime @db.Timestamptz()
+  @@index([expiresAt], map: "request_limits_expiry_idx")
+  @@map("request_limits")
+}
+
+model TelegramJob {
+  id String @id
+  bot String
+  chatId String
+  payload Json
+  status String @default("pending")
+  attempts Int @default(0)
+  availableAt DateTime @default(now()) @db.Timestamptz()
+  leaseUntil DateTime? @db.Timestamptz()
+  leaseToken String?
+  createdAt DateTime @default(now()) @db.Timestamptz()
+  updatedAt DateTime @default(now()) @db.Timestamptz()
+  @@index([status, availableAt], map: "telegram_jobs_pending_idx")
+  @@index([bot, chatId, status], map: "telegram_jobs_chat_idx")
+  @@map("telegram_jobs")
+}
