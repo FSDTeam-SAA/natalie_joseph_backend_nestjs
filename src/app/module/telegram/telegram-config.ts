@@ -73,5 +73,22 @@ export function websiteUrl(
 
 export type TelegramAction = {
   text: string;
-  buttons: { text: string; url: string }[];
+  buttons: (
+    { text: string; url: string } | { text: string; web_app: { url: string } }
+  )[];
 };
+
+export function miniAppUrl(config: ConfigService, companionId: string) {
+  const base = config.get<string>('TELEGRAM_PUBLIC_BASE_URL');
+  if (!base)
+    throw new ServiceUnavailableException(
+      'TELEGRAM_PUBLIC_BASE_URL is required',
+    );
+  const url = new URL('/api/v1/telegram/app', base);
+  if (url.protocol !== 'https:' || url.username || url.password)
+    throw new ServiceUnavailableException(
+      'Telegram login requires a public HTTPS backend',
+    );
+  url.searchParams.set('companionId', companionId);
+  return url.toString();
+}

@@ -4,6 +4,7 @@ import {
   botValue,
   websiteUrl,
   TelegramAction,
+  miniAppUrl,
 } from './telegram-config';
 import {
   ForbiddenException,
@@ -117,13 +118,13 @@ export class TelegramAiService {
       where: { telegramId_companionId: { telegramId, companionId } },
       select: { userId: true },
     });
-    if (!connection)
+    if (!connection || /^\/login(?:@\w+)?$/.test(text.trim()))
       return {
-        text: 'Please sign in on the website and connect your Telegram account first.',
+        text: 'Connect your Meet Elysia account to start chatting. Log in below, or choose Create Account in the login window.',
         buttons: [
           {
-            text: 'Connect account',
-            url: websiteUrl(this.config, 'connect', companionId),
+            text: 'Log In / Connect Account',
+            web_app: { url: miniAppUrl(this.config, companionId) },
           },
         ],
       };
