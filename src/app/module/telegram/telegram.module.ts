@@ -11,9 +11,11 @@ import { AuthModule } from '../auth/auth.module';
 import { TelegramMiniAppController } from './telegram-mini-app.controller';
 import { TelegramMiniAppService } from './telegram-mini-app.service';
 import { TelegramQueueService } from './telegram-queue.service';
+import { PublishingModule } from '../publishing/publishing.module';
 
 @Module({
   imports: [
+    PublishingModule,
     ConfigModule,
     PrismaModule,
     ChatModule,

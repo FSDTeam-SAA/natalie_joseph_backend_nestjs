@@ -17,6 +17,7 @@ import { JwtService } from '@nestjs/jwt';
 import { createHash, randomBytes } from 'crypto';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { ChatService } from '../chat/chat.service';
+import { MediaStoryService } from '../publishing/media-story.service';
 import type { AiReply, AiAudio } from '../../helper/ai/aiapi';
 import { AiVoiceFailure } from '../../helper/ai/ai-failure';
 
@@ -26,6 +27,7 @@ export class TelegramAiService {
     private readonly prisma: PrismaService,
     private readonly chat: ChatService,
     private readonly jwt: JwtService,
+    private readonly stories: MediaStoryService,
     private readonly config: ConfigService,
   ) {}
 
@@ -130,7 +132,30 @@ export class TelegramAiService {
       };
     if (/^\/start(?:@\w+)?$/.test(text.trim())) {
       const { name } = await this.getCompanion(key);
+      if (this.stories.enabled())
+        return {
+          text: `Telegram is connected. Send a message to chat with ${name}, or view the latest stories.`,
+          buttons: [
+            {
+              text: `View ${name}'s Stories`,
+              web_app: { url: this.stories.viewerUrl(companionId) },
+            },
+          ],
+        };
       return `Telegram is connected. Send a message to chat with ${name}.`;
+    }
+    if (/^\/stories(?:@\w+)?$/.test(text.trim())) {
+      if (!this.stories.enabled()) return 'Stories are not available yet.';
+      const { name } = await this.getCompanion(key);
+      return {
+        text: `See ${name}'s latest stories. Each story is available for 24 hours.`,
+        buttons: [
+          {
+            text: `View ${name}'s Stories`,
+            web_app: { url: this.stories.viewerUrl(companionId) },
+          },
+        ],
+      };
     }
 
     try {

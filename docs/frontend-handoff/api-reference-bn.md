@@ -2,7 +2,7 @@
 
 তারিখ: ১০ অক্টোবর ২০২৬। Controller ও DTO থেকে সরাসরি তৈরি; live API test নয়। মূল নির্দেশনা পড়ুন: [বাংলা integration guide](./frontend-integration-bn.md)।
 
-মোট **95টি route**, **52টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।
+মোট **107টি route**, **55টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।
 
 ## সব endpoint এক নজরে
 
@@ -72,6 +72,18 @@
 | POST | `/api/v1/payment/subscription/:subscriptionId/upgrade` | UseGuards(AuthGuard('user', 'admin')) | upgrade |
 | POST | `/api/v1/payment/subscription/:subscriptionId` | UseGuards(AuthGuard('admin', 'user')) | paySubscriber |
 | POST | `/api/v1/payment/credits` | UseGuards(AuthGuard('user')) | buyCredits |
+| GET | `/api/v1/admin/companions/:companionId/telegram-profile` | UseGuards(AuthGuard('admin')) | status |
+| PUT | `/api/v1/admin/companions/:companionId/telegram-profile` | UseGuards(AuthGuard('admin')) | profile |
+| POST | `/api/v1/admin/companions/:companionId/telegram-profile/retry` | UseGuards(AuthGuard('admin')) | retry |
+| GET | `/api/v1/admin/companions/:companionId/media-stories` | UseGuards(AuthGuard('admin')) | list |
+| POST | `/api/v1/admin/companions/:companionId/media-stories` | UseGuards(AuthGuard('admin')) | publish |
+| DELETE | `/api/v1/admin/companions/:companionId/media-stories/:storyId` | UseGuards(AuthGuard('admin')) | remove |
+| GET | `/api/v1/media-stories/summary` | UseGuards(AuthGuard('user', 'admin')) | summary |
+| GET | `/api/v1/media-stories/companions/:companionId` | UseGuards(AuthGuard('user', 'admin')) | feed |
+| GET | `/api/v1/media-stories/:storyId/media` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | media |
+| GET | `/api/v1/telegram/stories` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | page |
+| POST | `/api/v1/telegram/stories/:companionId/feed` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | feed |
+| GET | `/api/v1/publishing/admin` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | page |
 | POST | `/api/v1/subscription` | UseGuards(AuthGuard('admin')) | createSubscription |
 | GET | `/api/v1/subscription` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getAllSubscription |
 | GET | `/api/v1/subscription/:id` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getSubscriptionById |
@@ -2355,6 +2367,414 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
+### GET /api/v1/admin/companions/:companionId/telegram-profile
+
+Source: `src/app/module/publishing/publishing.controller.ts:47` • Handler: `PublishingAdminController.status`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('telegram-profile')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    await this.stories.companion(id);
+    return { data: await this.profiles.status(id) };
+  }
+```
+
+### PUT /api/v1/admin/companions/:companionId/telegram-profile
+
+Source: `src/app/module/publishing/publishing.controller.ts:52` • Handler: `PublishingAdminController.profile`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Body() dto: TelegramProfileDto
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Put('telegram-profile')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    await this.stories.companion(id);
+    return { data: await this.profiles.save(id, dto) };
+  }
+```
+
+### POST /api/v1/admin/companions/:companionId/telegram-profile/retry
+
+Source: `src/app/module/publishing/publishing.controller.ts:60` • Handler: `PublishingAdminController.retry`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Post('telegram-profile/retry')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.profiles.retry(id) };
+  }
+```
+
+### GET /api/v1/admin/companions/:companionId/media-stories
+
+Source: `src/app/module/publishing/publishing.controller.ts:64` • Handler: `PublishingAdminController.list`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('media-stories')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.stories.adminList(id) };
+  }
+```
+
+### POST /api/v1/admin/companions/:companionId/media-stories
+
+Source: `src/app/module/publishing/publishing.controller.ts:68` • Handler: `PublishingAdminController.publish`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Body() dto: PublishMediaStoryDto
+@UploadedFile() file?: Express.Multer.File
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Post('media-stories')
+@ApiConsumes('multipart/form-data')
+@ApiBody({
+    schema: {
+      type: 'object',
+      required: ['media'],
+      properties: {
+        caption: { type: 'string', maxLength: 2048 },
+        media: { type: 'string', format: 'binary' },
+      },
+    },
+  })
+@UseInterceptors(
+    FileInterceptor('media', {
+      storage: memoryStorage(),
+      limits: { fileSize: 20 * 1024 * 1024 },
+    }),
+  )
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.stories.publish(id, dto.caption || '', file) };
+  }
+```
+
+### DELETE /api/v1/admin/companions/:companionId/media-stories/:storyId
+
+Source: `src/app/module/publishing/publishing.controller.ts:93` • Handler: `PublishingAdminController.remove`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Param('storyId', ParseUUIDPipe) storyId: string
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Delete('media-stories/:storyId')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.stories.remove(id, storyId) };
+  }
+```
+
+### GET /api/v1/media-stories/summary
+
+Source: `src/app/module/publishing/publishing.controller.ts:108` • Handler: `MediaStoryController.summary`
+
+Access: `UseGuards(AuthGuard('user', 'admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Req() req: Request
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('summary')
+@Header('Cache-Control', 'no-store')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.stories.summary(req.user!.id) };
+  }
+```
+
+### GET /api/v1/media-stories/companions/:companionId
+
+Source: `src/app/module/publishing/publishing.controller.ts:113` • Handler: `MediaStoryController.feed`
+
+Access: `UseGuards(AuthGuard('user', 'admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Req() req: Request
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('companions/:companionId')
+@Header('Cache-Control', 'no-store')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.stories.list(id, req.user!.id) };
+  }
+```
+
+### GET /api/v1/media-stories/:storyId/media
+
+Source: `src/app/module/publishing/publishing.controller.ts:127` • Handler: `StoryMediaController.media`
+
+Access: `Controller JWT guard নেই`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('storyId', ParseUUIDPipe) id: string
+@Query('ticket') ticket: string | undefined
+@Headers('range') range: string | undefined
+@Res() res: Response
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get(':storyId/media')
+@SetMetadata('rawResponse', true)
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    const row = await this.stories.media(id, ticket || '');
+    const bytes = Buffer.from(row.media);
+    const length = bytes.length;
+    res.set({
+      'Content-Type': row.mimeType,
+      'Cache-Control': 'private, no-store',
+      'Referrer-Policy': 'no-referrer',
+      'X-Content-Type-Options': 'nosniff',
+      'Accept-Ranges': 'bytes',
+    });
+    if (range) {
+      const match = /^bytes=(\d*)-(\d*)$/.exec(range);
+      if (!match || (!match[1] && !match[2]))
+        return res.status(416).set('Content-Range', `bytes */${length}`).end();
+      const start = match[1]
+        ? Number(match[1])
+        : Math.max(0, length - Number(match[2]));
+      const end = match[1]
+        ? match[2]
+          ? Math.min(Number(match[2]), length - 1)
+          : length - 1
+        : length - 1;
+      if (
+        !Number.isSafeInteger(start) ||
+        !Number.isSafeInteger(end) ||
+        start > end ||
+        start >= length
+      )
+        return res.status(416).set('Content-Range', `bytes */${length}`).end();
+      return res
+        .status(206)
+        .set({
+          'Content-Range': `bytes ${start}-${end}/${length}`,
+          'Content-Length': String(end - start + 1),
+        })
+        .send(bytes.subarray(start, end + 1));
+    }
+    return res.set('Content-Length', String(length)).send(bytes);
+  }
+```
+
+### GET /api/v1/telegram/stories
+
+Source: `src/app/module/publishing/publishing.controller.ts:180` • Handler: `TelegramStoryController.page`
+
+Access: `Controller JWT guard নেই`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Res() res: Response
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get()
+@SetMetadata('rawResponse', true)
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    const nonce = randomBytes(18).toString('base64');
+    return res
+      .set({
+        'Cache-Control': 'no-store',
+        'Referrer-Policy': 'no-referrer',
+        'X-Content-Type-Options': 'nosniff',
+        'Content-Security-Policy': `default-src 'none'; script-src 'nonce-${nonce}' https://telegram.org; style-src 'nonce-${nonce}'; img-src 'self'; media-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors https://web.telegram.org https://*.telegram.org`,
+      })
+      .type('html')
+      .send(storyViewer.replaceAll('__NONCE__', nonce));
+  }
+```
+
+### POST /api/v1/telegram/stories/:companionId/feed
+
+Source: `src/app/module/publishing/publishing.controller.ts:194` • Handler: `TelegramStoryController.feed`
+
+Access: `Controller JWT guard নেই`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Body() dto: StorySessionDto
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Post(':companionId/feed')
+@Header('Cache-Control', 'no-store')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return {
+      data: await this.stories.list(
+        id,
+        await this.stories.telegramUser(id, dto.initData),
+      ),
+    };
+  }
+```
+
+### GET /api/v1/publishing/admin
+
+Source: `src/app/module/publishing/publishing.controller.ts:212` • Handler: `PublishingConsoleController.page`
+
+Access: `Controller JWT guard নেই`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Res() res: Response
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('admin')
+@SetMetadata('rawResponse', true)
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    if (this.config.get('PUBLISHING_ADMIN_CONSOLE_ENABLED') !== 'true')
+      throw new NotFoundException();
+    const nonce = randomBytes(18).toString('base64');
+    return res
+      .set({
+        'Cache-Control': 'no-store',
+        'Referrer-Policy': 'no-referrer',
+        'X-Content-Type-Options': 'nosniff',
+        'Content-Security-Policy': `default-src 'none'; script-src 'nonce-${nonce}'; style-src 'nonce-${nonce}'; connect-src 'self'; img-src 'self' blob:; media-src 'self' blob:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'`,
+      })
+      .type('html')
+      .send(publishingConsole.replaceAll('__NONCE__', nonce));
+  }
+```
+
 ### POST /api/v1/subscription
 
 Source: `src/app/module/subscription/subscription.controller.ts:26` • Handler: `SubscriptionController.createSubscription`
@@ -4588,6 +5008,61 @@ Source: `src/app/module/payment/dto/update-payment.dto.ts`
 
 ```typescript
 export class UpdatePaymentDto extends PartialType(CreatePaymentDto) {}
+```
+
+### TelegramProfileDto
+
+Source: `src/app/module/publishing/publishing.dto.ts`
+
+```typescript
+export class TelegramProfileDto {
+  @ApiPropertyOptional({ maxLength: 64 })
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(64)
+  displayName?: string;
+
+  @ApiPropertyOptional({ maxLength: 120 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(120)
+  about?: string;
+
+  @ApiPropertyOptional({ maxLength: 512 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(512)
+  description?: string;
+}
+```
+
+### PublishMediaStoryDto
+
+Source: `src/app/module/publishing/publishing.dto.ts`
+
+```typescript
+export class PublishMediaStoryDto {
+  @ApiPropertyOptional({ maxLength: 2048 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(2048)
+  caption?: string;
+}
+```
+
+### StorySessionDto
+
+Source: `src/app/module/publishing/publishing.dto.ts`
+
+```typescript
+export class StorySessionDto {
+  @ApiProperty()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(8192)
+  initData!: string;
+}
 ```
 
 ### CreateSubscriptionDto

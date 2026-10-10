@@ -365,6 +365,23 @@ export type EnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumPaymentStatusFilter<$PrismaModel>
 }
 
+export type BytesFilter<$PrismaModel = never> = {
+  equals?: runtime.Bytes | Prisma.BytesFieldRefInput<$PrismaModel>
+  in?: runtime.Bytes[] | Prisma.ListBytesFieldRefInput<$PrismaModel>
+  notIn?: runtime.Bytes[] | Prisma.ListBytesFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBytesFilter<$PrismaModel> | runtime.Bytes
+}
+
+export type BytesWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: runtime.Bytes | Prisma.BytesFieldRefInput<$PrismaModel>
+  in?: runtime.Bytes[] | Prisma.ListBytesFieldRefInput<$PrismaModel>
+  notIn?: runtime.Bytes[] | Prisma.ListBytesFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBytesWithAggregatesFilter<$PrismaModel> | runtime.Bytes
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedBytesFilter<$PrismaModel>
+  _max?: Prisma.NestedBytesFilter<$PrismaModel>
+}
+
 export type JsonFilter<$PrismaModel = never> =
 | Prisma.PatchUndefined<
     Prisma.Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -787,6 +804,23 @@ export type NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPaymentStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPaymentStatusFilter<$PrismaModel>
+}
+
+export type NestedBytesFilter<$PrismaModel = never> = {
+  equals?: runtime.Bytes | Prisma.BytesFieldRefInput<$PrismaModel>
+  in?: runtime.Bytes[] | Prisma.ListBytesFieldRefInput<$PrismaModel>
+  notIn?: runtime.Bytes[] | Prisma.ListBytesFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBytesFilter<$PrismaModel> | runtime.Bytes
+}
+
+export type NestedBytesWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: runtime.Bytes | Prisma.BytesFieldRefInput<$PrismaModel>
+  in?: runtime.Bytes[] | Prisma.ListBytesFieldRefInput<$PrismaModel>
+  notIn?: runtime.Bytes[] | Prisma.ListBytesFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBytesWithAggregatesFilter<$PrismaModel> | runtime.Bytes
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedBytesFilter<$PrismaModel>
+  _max?: Prisma.NestedBytesFilter<$PrismaModel>
 }
 
 export type NestedJsonFilter<$PrismaModel = never> =

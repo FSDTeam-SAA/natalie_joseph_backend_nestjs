@@ -1,4 +1,6 @@
 model Companions {
+  telegramProfileSync TelegramProfileSync?
+  mediaStories CompanionMediaStory[]
   whatsappConnections WhatsAppConnection[]
   telegramConnections TelegramConnection[]
   id          String @id @default(uuid())

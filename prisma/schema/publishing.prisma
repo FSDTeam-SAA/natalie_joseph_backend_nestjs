@@ -1,0 +1,33 @@
+model TelegramProfileSync {
+  companionId String @id
+  companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+  displayName String?
+  about String?
+  description String?
+  photoUrl String?
+  version Int @default(1)
+  syncedVersion Int @default(0)
+  status String @default("pending")
+  attempts Int @default(0)
+  nextAttemptAt DateTime @default(now())
+  lockedUntil DateTime?
+  leaseToken String?
+  lastError String?
+  syncedAt DateTime?
+  updatedAt DateTime @updatedAt
+  @@map("telegram_profile_sync")
+}
+
+model CompanionMediaStory {
+  id String @id @default(uuid())
+  companionId String
+  companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+  caption String @default("")
+  media Bytes
+  mimeType String
+  publishedAt DateTime @default(now())
+  expiresAt DateTime
+  deletedAt DateTime?
+  @@index([companionId, expiresAt])
+  @@map("companion_media_stories")
+}

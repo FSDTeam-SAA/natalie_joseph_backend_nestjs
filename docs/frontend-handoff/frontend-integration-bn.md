@@ -7,7 +7,7 @@
 ## ১. সঙ্গে দেওয়া ফাইল
 
 - `frontend-integration-bn.md`: screen, business flow, request example, response ব্যবহার ও release checklist।
-- `api-reference-bn.md`: সব ৯৫টি endpoint, access guard, query/body/upload parameter, controller response mapping এবং ৫২টি DTO class-এর exact field/validation। কোনো controller বাদ দেওয়া হয়নি।
+- `api-reference-bn.md`: সব ১০৭টি endpoint, access guard, query/body/upload parameter, controller response mapping এবং ৫৫টি DTO class-এর exact field/validation। কোনো controller বাদ দেওয়া হয়নি।
 - `api-contract.json`: একই route/DTO inventory machine-readable format; এটি OpenAPI নয়।
 - `frontend-integration-bn.html`: browser-এ পড়ার জন্য guide ও সম্পূর্ণ reference একসঙ্গে।
 
@@ -368,3 +368,9 @@ window.location.assign(connected.data.telegramUrl);
 ```
 
 এটি minimal example; production API client-এ abort/loading, একবার refresh, form field error mapping এবং safe redirect allowlist যোগ করুন। PATCH/PUT/DELETE/upload-এর জন্য method-aware wrapper লাগবে।
+
+
+## নতুন publishing feature
+
+Profile sync ও photo/video Story integration-এর সম্পূর্ণ নির্দেশনা: [companion-publishing-bn.md](companion-publishing-bn.md)। Backend API ও Telegram viewer তৈরি; website Story ring frontend team-কে integrate করতে হবে।
+
