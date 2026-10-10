@@ -1,7 +1,9 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Header,
   Headers,
@@ -128,11 +130,14 @@ export class StoryMediaController {
   @SetMetadata('rawResponse', true)
   async media(
     @Param('storyId', ParseUUIDPipe) id: string,
-    @Query('ticket') ticket: string | undefined,
+    @Query('ticket') ticket: string | string[] | undefined,
     @Headers('range') range: string | undefined,
     @Res() res: Response,
   ) {
-    const row = await this.stories.media(id, ticket || '');
+    if (ticket !== undefined && typeof ticket !== 'string')
+      throw new ForbiddenException('Invalid media link');
+    const safeTicket = ticket ?? '';
+    const row = await this.stories.media(id, safeTicket);
     const bytes = Buffer.from(row.media);
     const length = bytes.length;
     res.set({
