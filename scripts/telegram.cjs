@@ -5,11 +5,11 @@ const keys = ['ELENA', 'CHLOE', 'LINA', 'LUNA', 'THALIA'];
 
 async function main() {
   const command = process.argv[2] || 'status';
-  if (!['check', 'status', 'setup'].includes(command))
+  if (!['check', 'status', 'setup', 'menu'].includes(command))
     throw new Error(
-      'Use: node scripts/telegram.cjs check|status|setup [https://public-host] [ELENA|CHLOE|LINA|LUNA|THALIA|all]',
+      'Use: node scripts/telegram.cjs check|status|setup [https://public-host] [ELENA|CHLOE|LINA|LUNA|THALIA|all], or menu [ELENA|CHLOE|LINA|LUNA|THALIA|all]',
     );
-  const selected = (process.argv[4] || 'all').toUpperCase();
+  const selected = ((command === 'menu' ? process.argv[3] : process.argv[4]) || 'all').toUpperCase();
   if (selected !== 'ALL' && !keys.includes(selected))
     throw new Error('Unknown bot key');
   const targets = selected === 'ALL' ? keys : [selected];
@@ -46,13 +46,13 @@ async function main() {
     const secret =
       process.env[`TELEGRAM_${key}_WEBHOOK_SECRET`] ||
       (master ? createHmac('sha256', master).update(key).digest('hex') : '');
-    if (!/^[A-Za-z0-9_-]{1,256}$/.test(secret))
+    if (command !== 'menu' && !/^[A-Za-z0-9_-]{1,256}$/.test(secret))
       throw new Error(
         `${key}: configure a valid webhook secret or TELEGRAM_WEBHOOK_SECRET`,
       );
     return { key, token, username, companionId, secret };
   });
-  if (command !== 'status') {
+  if (command === 'check' || command === 'setup') {
     for (const key of [
       'TELEGRAM_CREDITS_URL',
       'TELEGRAM_SUBSCRIPTION_URL',
@@ -132,6 +132,29 @@ async function main() {
       throw new Error(`${bot.key}: token belongs to a different bot username`);
   }
   for (const bot of bots) {
+    if (command === 'menu' || command === 'setup') {
+      const scope = { type: 'all_private_chats' };
+      const existing = await call(bot, 'getMyCommands', { scope });
+      const defaults = await call(bot, 'getMyCommands');
+      const preferred = [
+        { command: 'stories', description: '📸 Stories — view the latest photos and videos' },
+        { command: 'login', description: 'Log in or connect your Meet Elysia account' },
+        { command: 'start', description: 'Start chatting with your companion' },
+      ];
+      const commands = [...preferred];
+      for (const item of [...existing, ...defaults]) {
+        if (!commands.some((c) => c.command === item.command)) commands.push(item);
+      }
+      if (commands.length > 100) throw new Error(`${bot.key}: too many existing menu commands`);
+      await call(bot, 'setMyCommands', { scope, commands });
+      await call(bot, 'setChatMenuButton', { menu_button: { type: 'commands' } });
+      const verified = await call(bot, 'getMyCommands', { scope });
+      const menu = await call(bot, 'getChatMenuButton');
+      if (!verified.some((c) => c.command === 'stories') || menu.type !== 'commands')
+        throw new Error(`${bot.key}: menu verification failed`);
+      console.log(`${bot.key}: Stories, Login and Start menu configured and verified`);
+      if (command === 'menu') continue;
+    }
     if (command === 'setup') {
       await call(bot, 'setWebhook', {
         url: `${base.origin}/api/v1/webhooks/telegram/${bot.companionId}`,

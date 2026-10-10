@@ -8,6 +8,8 @@ Photo/video Story প্রকাশের সময় থেকে ঠিক ২�
 
 ## প্রথমবার পরীক্ষা
 
+Telegram chat-এর Menu-তে **Stories**, **Login**, **Start** যোগ করা হয়েছে। User Menu → Stories → View Stories চাপবে; command লিখতে হবে না। Bot বা account বদলালে project folder থেকে `node scripts/telegram.cjs menu` চালিয়ে পাঁচটি bot-এর menu configure ও verify করুন। শুধু একটি bot-এর জন্য `node scripts/telegram.cjs menu ELENA`। এটি webhook পরিবর্তন বা user-কে message পাঠায় না। Existing custom commands রাখা হয়; private-chat command menu ব্যবহার করে। আগে থেকে নির্দিষ্ট chat/language-এর আলাদা override থাকলে সেটি Telegram-এ অগ্রাধিকার পেতে পারে। Menu পুরোনো দেখালে chat বন্ধ করে আবার খুলুন।
+
 1. Backend restart করুন। এই workspace-এর database-এ নতুন migration apply করা হয়েছে।
 2. Browser-এ `http://localhost:8080/api/v1/publishing/admin` খুলুন। Existing **admin** account দিয়ে login করুন।
 3. Elena বা অন্য companion নির্বাচন করুন। Display name, About, Description লিখে **Save profile & queue sync** চাপুন।
