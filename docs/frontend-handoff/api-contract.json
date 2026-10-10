@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-10T04:03:43.901Z",
+  "generatedAt": "2026-10-10T08:12:33.566Z",
   "note": "Source inventory, not OpenAPI. Controller guards are shown; service validation still applies.",
   "routes": [
     {
@@ -1343,6 +1343,232 @@
       "handlerSource": "{\r\n    if (!request.user) throw new UnauthorizedException();\r\n    const result = await this.paymentService.buyCredits(\r\n      request.user.id,\r\n      payload.packageId,\r\n    );\r\n    return { message: 'Credit payment initiated successfully', data: result };\r\n  }"
     },
     {
+      "method": "GET",
+      "path": "/api/v1/admin/companions/:companionId/telegram-profile",
+      "controller": "PublishingAdminController",
+      "handler": "status",
+      "file": "src/app/module/publishing/publishing.controller.ts",
+      "line": 47,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) id: string"
+      ],
+      "decorators": [
+        "@Get('telegram-profile')"
+      ],
+      "handlerSource": "{\n    await this.stories.companion(id);\n    return { data: await this.profiles.status(id) };\n  }"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/admin/companions/:companionId/telegram-profile",
+      "controller": "PublishingAdminController",
+      "handler": "profile",
+      "file": "src/app/module/publishing/publishing.controller.ts",
+      "line": 52,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) id: string",
+        "@Body() dto: TelegramProfileDto"
+      ],
+      "decorators": [
+        "@Put('telegram-profile')"
+      ],
+      "handlerSource": "{\n    await this.stories.companion(id);\n    return { data: await this.profiles.save(id, dto) };\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/admin/companions/:companionId/telegram-profile/retry",
+      "controller": "PublishingAdminController",
+      "handler": "retry",
+      "file": "src/app/module/publishing/publishing.controller.ts",
+      "line": 60,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) id: string"
+      ],
+      "decorators": [
+        "@Post('telegram-profile/retry')"
+      ],
+      "handlerSource": "{\n    return { data: await this.profiles.retry(id) };\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/companions/:companionId/media-stories",
+      "controller": "PublishingAdminController",
+      "handler": "list",
+      "file": "src/app/module/publishing/publishing.controller.ts",
+      "line": 64,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) id: string"
+      ],
+      "decorators": [
+        "@Get('media-stories')"
+      ],
+      "handlerSource": "{\n    return { data: await this.stories.adminList(id) };\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/admin/companions/:companionId/media-stories",
+      "controller": "PublishingAdminController",
+      "handler": "publish",
+      "file": "src/app/module/publishing/publishing.controller.ts",
+      "line": 68,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) id: string",
+        "@Body() dto: PublishMediaStoryDto",
+        "@UploadedFile() file?: Express.Multer.File"
+      ],
+      "decorators": [
+        "@Post('media-stories')",
+        "@ApiConsumes('multipart/form-data')",
+        "@ApiBody({\n    schema: {\n      type: 'object',\n      required: ['media'],\n      properties: {\n        caption: { type: 'string', maxLength: 2048 },\n        media: { type: 'string', format: 'binary' },\n      },\n    },\n  })",
+        "@UseInterceptors(\n    FileInterceptor('media', {\n      storage: memoryStorage(),\n      limits: { fileSize: 20 * 1024 * 1024 },\n    }),\n  )"
+      ],
+      "handlerSource": "{\n    return { data: await this.stories.publish(id, dto.caption || '', file) };\n  }"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/admin/companions/:companionId/media-stories/:storyId",
+      "controller": "PublishingAdminController",
+      "handler": "remove",
+      "file": "src/app/module/publishing/publishing.controller.ts",
+      "line": 93,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) id: string",
+        "@Param('storyId', ParseUUIDPipe) storyId: string"
+      ],
+      "decorators": [
+        "@Delete('media-stories/:storyId')"
+      ],
+      "handlerSource": "{\n    return { data: await this.stories.remove(id, storyId) };\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/media-stories/summary",
+      "controller": "MediaStoryController",
+      "handler": "summary",
+      "file": "src/app/module/publishing/publishing.controller.ts",
+      "line": 108,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request"
+      ],
+      "decorators": [
+        "@Get('summary')",
+        "@Header('Cache-Control', 'no-store')"
+      ],
+      "handlerSource": "{\n    return { data: await this.stories.summary(req.user!.id) };\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/media-stories/companions/:companionId",
+      "controller": "MediaStoryController",
+      "handler": "feed",
+      "file": "src/app/module/publishing/publishing.controller.ts",
+      "line": 113,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) id: string",
+        "@Req() req: Request"
+      ],
+      "decorators": [
+        "@Get('companions/:companionId')",
+        "@Header('Cache-Control', 'no-store')"
+      ],
+      "handlerSource": "{\n    return { data: await this.stories.list(id, req.user!.id) };\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/media-stories/:storyId/media",
+      "controller": "StoryMediaController",
+      "handler": "media",
+      "file": "src/app/module/publishing/publishing.controller.ts",
+      "line": 127,
+      "guards": [],
+      "parameters": [
+        "@Param('storyId', ParseUUIDPipe) id: string",
+        "@Query('ticket') ticket: string | undefined",
+        "@Headers('range') range: string | undefined",
+        "@Res() res: Response"
+      ],
+      "decorators": [
+        "@Get(':storyId/media')",
+        "@SetMetadata('rawResponse', true)"
+      ],
+      "handlerSource": "{\n    const row = await this.stories.media(id, ticket || '');\n    const bytes = Buffer.from(row.media);\n    const length = bytes.length;\n    res.set({\n      'Content-Type': row.mimeType,\n      'Cache-Control': 'private, no-store',\n      'Referrer-Policy': 'no-referrer',\n      'X-Content-Type-Options': 'nosniff',\n      'Accept-Ranges': 'bytes',\n    });\n    if (range) {\n      const match = /^bytes=(\\d*)-(\\d*)$/.exec(range);\n      if (!match || (!match[1] && !match[2]))\n        return res.status(416).set('Content-Range', `bytes */${length}`).end();\n      const start = match[1]\n        ? Number(match[1])\n        : Math.max(0, length - Number(match[2]));\n      const end = match[1]\n        ? match[2]\n          ? Math.min(Number(match[2]), length - 1)\n          : length - 1\n        : length - 1;\n      if (\n        !Number.isSafeInteger(start) ||\n        !Number.isSafeInteger(end) ||\n        start > end ||\n        start >= length\n      )\n        return res.status(416).set('Content-Range', `bytes */${length}`).end();\n      return res\n        .status(206)\n        .set({\n          'Content-Range': `bytes ${start}-${end}/${length}`,\n          'Content-Length': String(end - start + 1),\n        })\n        .send(bytes.subarray(start, end + 1));\n    }\n    return res.set('Content-Length', String(length)).send(bytes);\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/telegram/stories",
+      "controller": "TelegramStoryController",
+      "handler": "page",
+      "file": "src/app/module/publishing/publishing.controller.ts",
+      "line": 180,
+      "guards": [],
+      "parameters": [
+        "@Res() res: Response"
+      ],
+      "decorators": [
+        "@Get()",
+        "@SetMetadata('rawResponse', true)"
+      ],
+      "handlerSource": "{\n    const nonce = randomBytes(18).toString('base64');\n    return res\n      .set({\n        'Cache-Control': 'no-store',\n        'Referrer-Policy': 'no-referrer',\n        'X-Content-Type-Options': 'nosniff',\n        'Content-Security-Policy': `default-src 'none'; script-src 'nonce-${nonce}' https://telegram.org; style-src 'nonce-${nonce}'; img-src 'self'; media-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors https://web.telegram.org https://*.telegram.org`,\n      })\n      .type('html')\n      .send(storyViewer.replaceAll('__NONCE__', nonce));\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/telegram/stories/:companionId/feed",
+      "controller": "TelegramStoryController",
+      "handler": "feed",
+      "file": "src/app/module/publishing/publishing.controller.ts",
+      "line": 194,
+      "guards": [],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) id: string",
+        "@Body() dto: StorySessionDto"
+      ],
+      "decorators": [
+        "@Post(':companionId/feed')",
+        "@Header('Cache-Control', 'no-store')"
+      ],
+      "handlerSource": "{\n    return {\n      data: await this.stories.list(\n        id,\n        await this.stories.telegramUser(id, dto.initData),\n      ),\n    };\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/publishing/admin",
+      "controller": "PublishingConsoleController",
+      "handler": "page",
+      "file": "src/app/module/publishing/publishing.controller.ts",
+      "line": 212,
+      "guards": [],
+      "parameters": [
+        "@Res() res: Response"
+      ],
+      "decorators": [
+        "@Get('admin')",
+        "@SetMetadata('rawResponse', true)"
+      ],
+      "handlerSource": "{\n    if (this.config.get('PUBLISHING_ADMIN_CONSOLE_ENABLED') !== 'true')\n      throw new NotFoundException();\n    const nonce = randomBytes(18).toString('base64');\n    return res\n      .set({\n        'Cache-Control': 'no-store',\n        'Referrer-Policy': 'no-referrer',\n        'X-Content-Type-Options': 'nosniff',\n        'Content-Security-Policy': `default-src 'none'; script-src 'nonce-${nonce}'; style-src 'nonce-${nonce}'; connect-src 'self'; img-src 'self' blob:; media-src 'self' blob:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'`,\n      })\n      .type('html')\n      .send(publishingConsole.replaceAll('__NONCE__', nonce));\n  }"
+    },
+    {
       "method": "POST",
       "path": "/api/v1/subscription",
       "controller": "SubscriptionController",
@@ -2180,6 +2406,21 @@
       "name": "UpdatePaymentDto",
       "file": "src/app/module/payment/dto/update-payment.dto.ts",
       "source": "export class UpdatePaymentDto extends PartialType(CreatePaymentDto) {}"
+    },
+    {
+      "name": "TelegramProfileDto",
+      "file": "src/app/module/publishing/publishing.dto.ts",
+      "source": "export class TelegramProfileDto {\n  @ApiPropertyOptional({ maxLength: 64 })\n  @IsOptional()\n  @IsString()\n  @MinLength(1)\n  @MaxLength(64)\n  displayName?: string;\n\n  @ApiPropertyOptional({ maxLength: 120 })\n  @IsOptional()\n  @IsString()\n  @MaxLength(120)\n  about?: string;\n\n  @ApiPropertyOptional({ maxLength: 512 })\n  @IsOptional()\n  @IsString()\n  @MaxLength(512)\n  description?: string;\n}"
+    },
+    {
+      "name": "PublishMediaStoryDto",
+      "file": "src/app/module/publishing/publishing.dto.ts",
+      "source": "export class PublishMediaStoryDto {\n  @ApiPropertyOptional({ maxLength: 2048 })\n  @IsOptional()\n  @IsString()\n  @MaxLength(2048)\n  caption?: string;\n}"
+    },
+    {
+      "name": "StorySessionDto",
+      "file": "src/app/module/publishing/publishing.dto.ts",
+      "source": "export class StorySessionDto {\n  @ApiProperty()\n  @IsString()\n  @MinLength(1)\n  @MaxLength(8192)\n  initData!: string;\n}"
     },
     {
       "name": "CreateSubscriptionDto",

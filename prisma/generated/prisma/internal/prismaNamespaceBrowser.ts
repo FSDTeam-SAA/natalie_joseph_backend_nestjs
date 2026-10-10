@@ -73,6 +73,8 @@ export const ModelName = {
   GiftTransaction: 'GiftTransaction',
   Newsletter: 'Newsletter',
   Payment: 'Payment',
+  TelegramProfileSync: 'TelegramProfileSync',
+  CompanionMediaStory: 'CompanionMediaStory',
   RequestLimit: 'RequestLimit',
   TelegramJob: 'TelegramJob',
   Subscription: 'Subscription',
@@ -416,6 +418,41 @@ export const PaymentScalarFieldEnum = {
 } as const
 
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+export const TelegramProfileSyncScalarFieldEnum = {
+  companionId: 'companionId',
+  displayName: 'displayName',
+  about: 'about',
+  description: 'description',
+  photoUrl: 'photoUrl',
+  version: 'version',
+  syncedVersion: 'syncedVersion',
+  status: 'status',
+  attempts: 'attempts',
+  nextAttemptAt: 'nextAttemptAt',
+  lockedUntil: 'lockedUntil',
+  leaseToken: 'leaseToken',
+  lastError: 'lastError',
+  syncedAt: 'syncedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TelegramProfileSyncScalarFieldEnum = (typeof TelegramProfileSyncScalarFieldEnum)[keyof typeof TelegramProfileSyncScalarFieldEnum]
+
+
+export const CompanionMediaStoryScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  caption: 'caption',
+  media: 'media',
+  mimeType: 'mimeType',
+  publishedAt: 'publishedAt',
+  expiresAt: 'expiresAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CompanionMediaStoryScalarFieldEnum = (typeof CompanionMediaStoryScalarFieldEnum)[keyof typeof CompanionMediaStoryScalarFieldEnum]
 
 
 export const RequestLimitScalarFieldEnum = {

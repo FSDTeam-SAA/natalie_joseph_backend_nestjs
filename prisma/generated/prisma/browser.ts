@@ -128,6 +128,16 @@ export type Newsletter = Prisma.NewsletterModel
  */
 export type Payment = Prisma.PaymentModel
 /**
+ * Model TelegramProfileSync
+ * 
+ */
+export type TelegramProfileSync = Prisma.TelegramProfileSyncModel
+/**
+ * Model CompanionMediaStory
+ * 
+ */
+export type CompanionMediaStory = Prisma.CompanionMediaStoryModel
+/**
  * Model RequestLimit
  * 
  */

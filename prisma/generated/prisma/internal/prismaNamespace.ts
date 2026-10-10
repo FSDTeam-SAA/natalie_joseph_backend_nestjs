@@ -419,6 +419,8 @@ export const ModelName = {
   GiftTransaction: 'GiftTransaction',
   Newsletter: 'Newsletter',
   Payment: 'Payment',
+  TelegramProfileSync: 'TelegramProfileSync',
+  CompanionMediaStory: 'CompanionMediaStory',
   RequestLimit: 'RequestLimit',
   TelegramJob: 'TelegramJob',
   Subscription: 'Subscription',
@@ -441,7 +443,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "chatMessage" | "chatConversation" | "companions" | "companionPersonality" | "companionCommunicationStyle" | "companionBackground" | "companionVisualProfile" | "companionVoice" | "companionVoiceSettings" | "creditPackage" | "creditTransaction" | "purchasedCreditLot" | "creditCost" | "relationship" | "storyEvent" | "photoView" | "notification" | "conversationModeEvent" | "gift" | "giftTransaction" | "newsletter" | "payment" | "requestLimit" | "telegramJob" | "subscription" | "telegramConnection" | "user" | "userSubscription" | "whatsAppConnection"
+    modelProps: "chatMessage" | "chatConversation" | "companions" | "companionPersonality" | "companionCommunicationStyle" | "companionBackground" | "companionVisualProfile" | "companionVoice" | "companionVoiceSettings" | "creditPackage" | "creditTransaction" | "purchasedCreditLot" | "creditCost" | "relationship" | "storyEvent" | "photoView" | "notification" | "conversationModeEvent" | "gift" | "giftTransaction" | "newsletter" | "payment" | "telegramProfileSync" | "companionMediaStory" | "requestLimit" | "telegramJob" | "subscription" | "telegramConnection" | "user" | "userSubscription" | "whatsAppConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2073,6 +2075,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TelegramProfileSync: {
+      payload: Prisma.$TelegramProfileSyncPayload<ExtArgs>
+      fields: Prisma.TelegramProfileSyncFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TelegramProfileSyncFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramProfileSyncPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TelegramProfileSyncFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramProfileSyncPayload>
+        }
+        findFirst: {
+          args: Prisma.TelegramProfileSyncFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramProfileSyncPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TelegramProfileSyncFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramProfileSyncPayload>
+        }
+        findMany: {
+          args: Prisma.TelegramProfileSyncFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramProfileSyncPayload>[]
+        }
+        create: {
+          args: Prisma.TelegramProfileSyncCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramProfileSyncPayload>
+        }
+        createMany: {
+          args: Prisma.TelegramProfileSyncCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TelegramProfileSyncCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramProfileSyncPayload>[]
+        }
+        delete: {
+          args: Prisma.TelegramProfileSyncDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramProfileSyncPayload>
+        }
+        update: {
+          args: Prisma.TelegramProfileSyncUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramProfileSyncPayload>
+        }
+        deleteMany: {
+          args: Prisma.TelegramProfileSyncDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TelegramProfileSyncUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TelegramProfileSyncUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramProfileSyncPayload>[]
+        }
+        upsert: {
+          args: Prisma.TelegramProfileSyncUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramProfileSyncPayload>
+        }
+        aggregate: {
+          args: Prisma.TelegramProfileSyncAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTelegramProfileSync>
+        }
+        groupBy: {
+          args: Prisma.TelegramProfileSyncGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramProfileSyncGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TelegramProfileSyncCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramProfileSyncCountAggregateOutputType> | number
+        }
+      }
+    }
+    CompanionMediaStory: {
+      payload: Prisma.$CompanionMediaStoryPayload<ExtArgs>
+      fields: Prisma.CompanionMediaStoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CompanionMediaStoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionMediaStoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CompanionMediaStoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionMediaStoryPayload>
+        }
+        findFirst: {
+          args: Prisma.CompanionMediaStoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionMediaStoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CompanionMediaStoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionMediaStoryPayload>
+        }
+        findMany: {
+          args: Prisma.CompanionMediaStoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionMediaStoryPayload>[]
+        }
+        create: {
+          args: Prisma.CompanionMediaStoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionMediaStoryPayload>
+        }
+        createMany: {
+          args: Prisma.CompanionMediaStoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CompanionMediaStoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionMediaStoryPayload>[]
+        }
+        delete: {
+          args: Prisma.CompanionMediaStoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionMediaStoryPayload>
+        }
+        update: {
+          args: Prisma.CompanionMediaStoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionMediaStoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.CompanionMediaStoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CompanionMediaStoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CompanionMediaStoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionMediaStoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.CompanionMediaStoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanionMediaStoryPayload>
+        }
+        aggregate: {
+          args: Prisma.CompanionMediaStoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanionMediaStory>
+        }
+        groupBy: {
+          args: Prisma.CompanionMediaStoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionMediaStoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CompanionMediaStoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanionMediaStoryCountAggregateOutputType> | number
+        }
+      }
+    }
     RequestLimit: {
       payload: Prisma.$RequestLimitPayload<ExtArgs>
       fields: Prisma.RequestLimitFieldRefs
@@ -2950,6 +3100,41 @@ export const PaymentScalarFieldEnum = {
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
 
 
+export const TelegramProfileSyncScalarFieldEnum = {
+  companionId: 'companionId',
+  displayName: 'displayName',
+  about: 'about',
+  description: 'description',
+  photoUrl: 'photoUrl',
+  version: 'version',
+  syncedVersion: 'syncedVersion',
+  status: 'status',
+  attempts: 'attempts',
+  nextAttemptAt: 'nextAttemptAt',
+  lockedUntil: 'lockedUntil',
+  leaseToken: 'leaseToken',
+  lastError: 'lastError',
+  syncedAt: 'syncedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TelegramProfileSyncScalarFieldEnum = (typeof TelegramProfileSyncScalarFieldEnum)[keyof typeof TelegramProfileSyncScalarFieldEnum]
+
+
+export const CompanionMediaStoryScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  caption: 'caption',
+  media: 'media',
+  mimeType: 'mimeType',
+  publishedAt: 'publishedAt',
+  expiresAt: 'expiresAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CompanionMediaStoryScalarFieldEnum = (typeof CompanionMediaStoryScalarFieldEnum)[keyof typeof CompanionMediaStoryScalarFieldEnum]
+
+
 export const RequestLimitScalarFieldEnum = {
   key: 'key',
   count: 'count',
@@ -3271,6 +3456,20 @@ export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'Bytes'
+ */
+export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
+
+
+/**
+ * Reference to a field of type 'Bytes[]'
+ */
+export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
+    
+
+
+/**
  * Reference to a field of type 'UserRole'
  */
 export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
@@ -3470,6 +3669,8 @@ export type GlobalOmitConfig = {
   giftTransaction?: Prisma.GiftTransactionOmit
   newsletter?: Prisma.NewsletterOmit
   payment?: Prisma.PaymentOmit
+  telegramProfileSync?: Prisma.TelegramProfileSyncOmit
+  companionMediaStory?: Prisma.CompanionMediaStoryOmit
   requestLimit?: Prisma.RequestLimitOmit
   telegramJob?: Prisma.TelegramJobOmit
   subscription?: Prisma.SubscriptionOmit

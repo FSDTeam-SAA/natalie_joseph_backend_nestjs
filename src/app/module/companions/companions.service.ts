@@ -16,10 +16,14 @@ import {
   CreateCompanionDto,
 } from './dto/create-companion.dto';
 import { UpdateCompanionDto } from './dto/update-companion.dto';
+import { TelegramProfileService } from '../publishing/telegram-profile.service';
 
 @Injectable()
 export class CompanionsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly profiles: TelegramProfileService,
+  ) {}
 
   private validateWhatsAppSettings(settings: {
     whatsappEnabled?: boolean;
@@ -243,7 +247,7 @@ export class CompanionsService {
         : undefined,
     );
 
-    return this.prisma.companions.update({
+    const updated = await this.prisma.companions.update({
       where: { id },
       data: {
         ...data,
@@ -290,6 +294,10 @@ export class CompanionsService {
       },
       select: companionProfileSelect,
     });
+    const telegramSync = payload.name
+      ? await this.profiles.automatic(id, updated.name)
+      : undefined;
+    return { ...updated, ...(telegramSync ? { telegramSync } : {}) };
   }
 
   async deleteCompanion(id: string) {
@@ -347,7 +355,7 @@ export class CompanionsService {
       files.map((file) => fileUpload.uploadToCloudinary(file)),
     );
     const urls = images.map((image) => image.url);
-    return this.prisma.companions.update({
+    const updated = await this.prisma.companions.update({
       where: { id },
       data:
         field === 'galleryImages'
@@ -355,6 +363,11 @@ export class CompanionsService {
           : { [field]: urls[0] },
       select: companionProfileSelect,
     });
+    const telegramSync =
+      field === 'profileImage'
+        ? await this.profiles.automatic(id, undefined, urls[0])
+        : undefined;
+    return { ...updated, ...(telegramSync ? { telegramSync } : {}) };
   }
 
   async updateVoiceSettings(id: string, voiceId: string) {
