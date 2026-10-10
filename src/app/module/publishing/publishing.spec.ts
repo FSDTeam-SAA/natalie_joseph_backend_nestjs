@@ -228,7 +228,7 @@ describe('Companion publishing boundaries', () => {
   });
   it('ships parseable browser scripts with no stored credentials', () => {
     for (const page of [publishingConsole, storyViewer]) {
-      for (const match of page.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g))
+      for (const match of page.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/gi))
         if (match[1]) expect(() => new Script(match[1])).not.toThrow();
       expect(page).not.toMatch(/localStorage|sessionStorage/);
     }
