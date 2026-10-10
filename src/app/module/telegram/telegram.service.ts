@@ -1,3 +1,4 @@
+import { telegramPost, TelegramDeliveryFailure } from './telegram-http';
 import type { AiAudio } from '../../helper/ai/aiapi';
 import {
   BotKey,
@@ -259,15 +260,16 @@ export class TelegramService {
         audio.filename,
       );
       const token = botValue(this.config, key, 'BOT_TOKEN');
-      const sent = await axios.post<{ ok: boolean }>(
+      const sent = await telegramPost<{ ok: boolean }>(
         `https://api.telegram.org/bot${token}/sendVoice`,
         form,
         { timeout: 20000 },
       );
       if (!sent.data.ok) throw new Error();
-    } catch {
-      throw new ServiceUnavailableException(
+    } catch (error) {
+      throw new TelegramDeliveryFailure(
         'Telegram voice reply failed; delivery may be retried',
+        error,
       );
     }
   }
@@ -342,7 +344,7 @@ export class TelegramService {
     if (!token)
       throw new ServiceUnavailableException('Telegram bot is not configured');
     try {
-      const response = await axios.post<{ ok: boolean }>(
+      const response = await telegramPost<{ ok: boolean }>(
         `https://api.telegram.org/bot${token}/${method}`,
         payload,
         { timeout: 10000 },
@@ -389,7 +391,7 @@ export class TelegramService {
               new Blob([new Uint8Array(photo.data)], { type: mime }),
               mime === 'image/png' ? 'photo.png' : 'photo.jpg',
             );
-            const sent = await axios.post<{ ok: boolean }>(
+            const sent = await telegramPost<{ ok: boolean }>(
               `https://api.telegram.org/bot${token}/sendPhoto`,
               form,
               { timeout: 20000 },
@@ -415,8 +417,9 @@ export class TelegramService {
       this.logger.warn(
         `Telegram delivery failed: method=${method}, status=${failure?.response?.status ?? 'none'}, code=${failure?.code ?? 'unknown'}, reason=${safeDescription}`,
       );
-      throw new ServiceUnavailableException(
+      throw new TelegramDeliveryFailure(
         `Telegram reply failed (${failure?.response?.status ?? failure?.code ?? 'unknown'}); delivery may be retried`,
+        error,
       );
     }
   }

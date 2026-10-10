@@ -9,11 +9,15 @@ import {
   SetMetadata,
 } from '@nestjs/common';
 import { TelegramService } from './telegram.service';
+import { TelegramQueueService } from './telegram-queue.service';
 
 @Controller('webhooks/telegram')
 @SetMetadata('rawResponse', true)
 export class TelegramWebhookController {
-  constructor(private readonly telegram: TelegramService) {}
+  constructor(
+    private readonly telegram: TelegramService,
+    private readonly queue: TelegramQueueService,
+  ) {}
 
   @Post(':companionId')
   @HttpCode(200)
@@ -24,7 +28,7 @@ export class TelegramWebhookController {
   ) {
     const key = this.telegram.botKey(companionId);
     this.telegram.verifySecret(secret, key);
-    await this.telegram.receive(body, key);
+    await this.queue.receive(body, key);
     return { ok: true };
   }
 
@@ -35,7 +39,7 @@ export class TelegramWebhookController {
     @Headers('x-telegram-bot-api-secret-token') secret?: string,
   ) {
     this.telegram.verifySecret(secret);
-    await this.telegram.receive(body);
+    await this.queue.receive(body);
     return { ok: true };
   }
 }

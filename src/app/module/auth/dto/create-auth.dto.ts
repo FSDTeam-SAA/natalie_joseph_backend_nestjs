@@ -106,6 +106,10 @@ export class VerifyOtpAuthDto {
 }
 
 export class ResetPasswordAuthDto {
+  @ApiProperty({ description: 'Single-use resetToken returned by verify-otp' })
+  @IsString()
+  @Matches(/^[a-f0-9]{64}$/)
+  resetToken!: string;
   @ApiProperty({
     example: 'john@example.com',
   })

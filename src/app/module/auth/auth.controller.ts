@@ -177,6 +177,7 @@ export class AuthController {
     const result = await this.authService.resetPassword(
       resetPasswordAuthDto.email,
       resetPasswordAuthDto.password,
+      resetPasswordAuthDto.resetToken,
     );
 
     return {

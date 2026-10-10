@@ -1,0 +1,2364 @@
+<!doctype html><html lang="bn"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Meet Elysia — বাংলা Frontend Handoff</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f3f5fa;color:#18263c;font:17px/1.8 'Nirmala UI','Vrinda',sans-serif}main{max-width:1150px;margin:30px auto;background:white;padding:40px;border-radius:16px}nav{padding:18px;background:#eef2ff;border-radius:8px}a{color:#3449a8}h1{font-size:30px;line-height:1.4}h2{margin-top:45px;border-bottom:2px solid #dce3f3;padding-bottom:9px}h3{margin-top:32px}code{font:14px/1.6 Consolas,monospace;background:#eef2f8;padding:2px 4px;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#13233c;color:#f1f5ff;padding:18px;border-radius:8px}pre code{background:none;color:inherit;padding:0}.table{overflow:auto}table{width:100%;border-collapse:collapse;font-size:15px;margin:16px 0}td,th{text-align:left;vertical-align:top;border:1px solid #d7dfec;padding:10px;overflow-wrap:anywhere}th{background:#eaf0fb}summary{cursor:pointer;font-size:23px;font-weight:700;padding:20px;background:#eaf0fb}li{margin:8px 0}@media(max-width:700px){main{margin:0;padding:18px}h1{font-size:25px}}@media print{body{background:white}main{padding:0;margin:0;max-width:none}pre,table{font-size:11px}nav{display:none}h2,h3{break-after:avoid}}
+</style><main><nav><a href="#guide">Integration guide</a> · <a href="#reference">সব API ও field</a> · <a href="api-contract.json">JSON inventory</a></nav><section id="guide"><h1>Meet Elysia — Frontend ও Admin integration নির্দেশনা</h1><p><strong>প্রস্তুত: ১০ অক্টোবর ২০২৬ • ভাষা: বাংলা • ভিত্তি: বর্তমান NestJS source code</strong></p><p>এই document frontend engineer-এর handoff। Website, admin panel, subscription/credits এবং Telegram return flow একসঙ্গে implement করতে ব্যবহার করুন। এটি live deployment certification নয়। Source-এ যা আছে এবং যে কাজ নতুন করে লাগবে—দুটো আলাদা করে দেওয়া হয়েছে। কোনো secret, real password, customer record বা bot token দেওয়া হয়নি।</p><h2>১. সঙ্গে দেওয়া ফাইল</h2><ul><li><code>frontend-integration-bn.md</code>: screen, business flow, request example, response ব্যবহার ও release checklist।</li><li><code>api-reference-bn.md</code>: সব ৯৫টি endpoint, access guard, query/body/upload parameter, controller response mapping এবং ৫২টি DTO class-এর exact field/validation। কোনো controller বাদ দেওয়া হয়নি।</li><li><code>api-contract.json</code>: একই route/DTO inventory machine-readable format; এটি OpenAPI নয়।</li><li><code>frontend-integration-bn.html</code>: browser-এ পড়ার জন্য guide ও সম্পূর্ণ reference একসঙ্গে।</li></ul><p>Source পরিবর্তন হলে repo root থেকে <code>node scripts/export-frontend-contract.cjs</code> চালিয়ে reference regenerate করুন। মূল flow guide-ও পরিবর্তনের সঙ্গে review করতে হবে।</p><h2>২. API connection ও response</h2><p>Local base: <code>http://localhost:8080/api/v1</code>। Deployed base: <code>https://&lt;backend-domain&gt;/api/v1</code>। Frontend-এ একটি public environment variable-এ base URL রাখুন। Bot token, Stripe secret, database URL, JWT signing secret বা AI credentials frontend-এ যাবে না।</p><p>Protected request:</p><pre><code>Authorization: Bearer &lt;accessToken&gt;
+Content-Type: application/json
+</code></pre><p>Normal JSON response:</p><pre><code>{
+  &quot;statusCode&quot;: 200,
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;...&quot;,
+  &quot;meta&quot;: {&quot;page&quot;: 1, &quot;limit&quot;: 10, &quot;total&quot;: 20},
+  &quot;data&quot;: {}
+}
+</code></pre><p><code>meta</code> সব endpoint-এ থাকে না। <code>data</code> object, array বা null হতে পারে। Response-এর success boolean ও HTTP status দেখুন; শুধু message string দিয়ে success নির্ধারণ করবেন না। Controller সরাসরি object return করলেও interceptor সাধারণত <code>data</code>-তে সেটি রাখে। HTML/legal pages ও raw webhook response আলাদা।</p><p>Request body-তে validation DTO অনুসরণ করুন। Whitelist চালু: অতিরিক্ত field পাঠালে persist হবে ধরে নেবেন না। IDs আলাদা: userId, companionId, conversationId, messageId, subscription plan ID, credit package ID ও Stripe subscription ID এক জিনিস নয়। Payment route-এর <code>subscriptionId</code> সাধারণত local <strong>plan ID</strong>; <code>sub_...</code> নয়।</p><h2>৩. কোন screen-এ কোন API</h2><p>এই guide-এর নিচের path-গুলোর আগে <code>/api/v1</code> যোগ হবে, যদি আলাদা করে না বলা থাকে।</p><div class="table"><table><thead><tr><th>Screen/কাজ</th><th>API</th><th>Frontend-এর কাজ</th></tr></thead><tbody><tr><td>Registration</td><td>POST <code>/auth/register</code></td><td>নাম, email, phoneNumber, password, adultEligible</td></tr><tr><td>Login</td><td>POST <code>/auth/login</code></td><td>accessToken ও sanitized user ব্যবহার</td></tr><tr><td>Session restore</td><td>GET <code>/auth/refresh</code>, GET <code>/user/my-profile</code></td><td>cookie দিয়ে refresh; current role/status দেখুন</td></tr><tr><td>Forgot password</td><td>POST <code>/auth/forgot-password</code>, <code>/auth/verify-otp</code>, <code>/auth/reset-password</code></td><td>৩ ধাপ; resetToken ধরে শেষ request</td></tr><tr><td>Profile</td><td>GET/PUT <code>/user/my-profile</code></td><td>profile form + optional profileImage</td></tr><tr><td>Companion listing</td><td>GET <code>/companions</code></td><td>filters, pagination, profile cards</td></tr><tr><td>Companion details</td><td>GET <code>/companions/:id</code></td><td>bio, personality, gallery, chat/connect CTA</td></tr><tr><td>Plans</td><td>GET <code>/subscription</code>, GET <code>/subscription/:id</code></td><td>active plans, price, allowance, duration</td></tr><tr><td>Subscription payment</td><td>POST <code>/payment/subscription/:subscriptionId</code></td><td>free activation বা Stripe clientSecret flow</td></tr><tr><td>Billing settings</td><td>GET <code>/payment/subscription/status</code>, POST <code>/payment/billing-portal</code></td><td>current plan/status ও manage billing link</td></tr><tr><td>Wallet</td><td>GET <code>/credits/wallet</code>, <code>/chat/usage</code>, <code>/credits/costs</code></td><td>effective balance, expiry, action costs</td></tr><tr><td>Buy credits</td><td>GET <code>/credits/packages</code>, POST <code>/payment/credits</code></td><td>packageId দিয়ে payment শুরু</td></tr><tr><td>Ledger</td><td>GET <code>/credits/ledger</code></td><td>paginated credit transaction history</td></tr><tr><td>Chat list</td><td>GET <code>/chat/conversations</code></td><td>conversation cards</td></tr><tr><td>Chat room</td><td>GET/POST <code>/chat/:companionId/messages</code></td><td>messages, reply, image/audio render</td></tr><tr><td>Relationships</td><td>GET <code>/relationships</code>, PATCH <code>/relationships/:companionId</code></td><td>nickname, notes, interaction data</td></tr><tr><td>Stories</td><td>GET <code>/companions/:companionId/stories</code></td><td>প্রকাশিত current/past story</td></tr><tr><td>Gallery unlock</td><td>POST <code>/companions/:companionId/photos/view</code></td><td>photoUrl পাঠিয়ে unlock/charge ফলাফল</td></tr><tr><td>Photo history</td><td>GET <code>/photos/history</code></td><td>আগে দেখা gallery items</td></tr><tr><td>Gifts</td><td>GET <code>/gifts</code>, POST <code>/gifts/:giftId/send</code></td><td>companionId দিয়ে gift পাঠানো</td></tr><tr><td>Notifications</td><td>GET <code>/notifications</code>, PATCH <code>/notifications/:id/read</code></td><td>list ও read state</td></tr><tr><td>Telegram connection</td><td>POST <code>/telegram/connect/:companionId</code>, GET <code>/telegram/status/:companionId</code></td><td>secure link ও return-to-bot</td></tr><tr><td>WhatsApp connection</td><td>POST <code>/whatsapp/connect/:companionId</code></td><td>returned whatsappUrl খুলুন</td></tr><tr><td>Newsletter</td><td>POST <code>/newsletter</code></td><td>email subscription form</td></tr></tbody></table></div><h2>৪. Registration, login ও password reset</h2><p>Registration example (dummy data):</p><pre><code>{&quot;name&quot;:&quot;Demo User&quot;,&quot;email&quot;:&quot;demo@example.com&quot;,&quot;phoneNumber&quot;:&quot;+8801700000000&quot;,&quot;password&quot;:&quot;ExampleOnly123!&quot;,&quot;adultEligible&quot;:true}
+</code></pre><p><code>adultEligible</code> user-এর confirmation থেকে নিন; silently true করবেন না। Register response-এ account data আসে, accessToken নয়; তারপর login করুন। <code>/user</code>-এও legacy create endpoint আছে; সাধারণ signup-এ <code>/auth/register</code> ব্যবহার করুন।</p><p>Login body:</p><pre><code>{&quot;email&quot;:&quot;demo@example.com&quot;,&quot;password&quot;:&quot;ExampleOnly123!&quot;}
+</code></pre><p><code>data.accessToken</code> API call-এ ব্যবহার করুন; <code>data.user.role</code> অনুযায়ী user/admin navigation দিন। Frontend route guard UX-এর জন্য; backend guard চূড়ান্ত authority। Login/subscription-এর পুরোনো JWT claim দিয়ে balance বা subscription সক্রিয় ধরে রাখবেন না।</p><p>Refresh token HttpOnly cookie-তে আসে। Login ও refresh request-এ <code>credentials: 'include'</code> বা Axios <code>withCredentials: true</code> লাগবে। বর্তমান cookie <code>secure:true</code>, <code>sameSite:'strict'</code>। আলাদা site/domain-এ frontend/backend বসালে refresh cookie block হতে পারে; HTTPS এবং same-site deployment/reverse proxy staging-এ যাচাই করুন। শুধু CORS চালু করলেই cross-site cookie ঠিক হয় না। Access token memory-তে রাখার design ব্যবহার করা যায়; password/OTP/resetToken localStorage-এ রাখবেন না।</p><p>Password reset:</p><ul><li>POST <code>/auth/forgot-password</code>: <code>{&quot;email&quot;:&quot;demo@example.com&quot;}</code>।</li><li>POST <code>/auth/verify-otp</code>: <code>{&quot;email&quot;:&quot;demo@example.com&quot;,&quot;otp&quot;:&quot;123456&quot;}</code>। OTP ছয় অক্ষরের string।</li><li>Response-এর <code>data.resetToken</code> নিয়ে POST <code>/auth/reset-password</code>: <code>{&quot;email&quot;:&quot;demo@example.com&quot;,&quot;password&quot;:&quot;NewExample123!&quot;,&quot;resetToken&quot;:&quot;&lt;returned-token&gt;&quot;}</code>।</li><li>সফল হলে sensitive form state clear করে আবার login। Password পরিবর্তন/reset হলে পুরোনো session invalid হয়।</li></ul><p>Change password: POST <code>/auth/change-password</code>, body <code>email</code>, <code>oldPassword</code>, <code>newPassword</code>। Logout: POST <code>/auth/logout</code>; UI token/state clear করুন।</p><h2>৫. Subscription, payment ও wallet flow</h2><p>Plan list থেকে local plan <code>id</code> নির্বাচন → POST <code>/payment/subscription/:subscriptionId</code>।</p><ul><li>Free plan: <code>data.activated:true</code>, <code>clientSecret:null</code> হলে payment form খুলবেন না। Usage/status refetch করুন। Free trial আবার নেওয়া বা existing subscription replace করা backend আটকায়।</li><li>Paid plan: <code>data.clientSecret</code> দিয়ে Stripe frontend payment UI-তে confirmation সম্পন্ন করুন। Response-এর <code>stripeSubscriptionId</code>, <code>status</code>, <code>activated</code> fields optional/branch-dependent; missing field ধরে crash করবেন না।</li><li>একই active plan থাকলে <code>alreadySubscribed:true</code> আসতে পারে। Existing recurring plan-এর জন্য নতুন subscription creation বারবার করবেন না।</li><li>Plan বদলাতে POST <code>/payment/subscription/:subscriptionId/upgrade</code>; cancellation POST <code>/payment/subscription/cancel</code>। Cancellation-এর effective state response/status থেকে দেখান; সঙ্গে সঙ্গে expiry ধরে নেবেন না।</li><li>Billing portal: POST <code>/payment/billing-portal</code> → <code>data.url</code> খুলুন।</li></ul><p><strong>Payment success screen subscription/credit activation-এর প্রমাণ নয়।</strong> Stripe webhook backend-এ state update করে। Confirmation-এর পরে POST <code>/payment/subscription/sync</code> (subscription-এর জন্য) → GET <code>/payment/subscription/status</code> → GET <code>/chat/usage</code> এবং <code>/credits/wallet</code>। Sync আবার charge করে না; purchased credit payment-এর generic sync API নয়।</p><p>Credit purchase:</p><pre><code>POST /api/v1/payment/credits
+</code></pre><pre><code>{&quot;packageId&quot;:&quot;&lt;credit-package-id&gt;&quot;}
+</code></pre><p><code>data.clientSecret</code> দিয়ে payment confirm করুন। <code>/credits/purchase</code> একই কাজের alternative route; <strong>একই purchase-এর জন্য দুটো endpoint hit করবেন না</strong>। Payment-এর পরে wallet সীমিত সময় poll করুন (যেমন ২–৩ সেকেন্ড interval, সর্বোচ্চ ৩০ সেকেন্ড; এটি frontend প্রস্তাব, backend guarantee নয়)। Pending থাকলে “Payment received; balance update pending” এবং Refresh/Support দেখান; আবার Pay চাপিয়ে duplicate purchase করাবেন না।</p><p>Usage response-এর fields:</p><div class="table"><table><thead><tr><th>Field</th><th>ব্যবহার</th></tr></thead><tbody><tr><td>subscription</td><td>active subscription object; না থাকলে null</td></tr><tr><td>subscription.startsAt/endsAt/createdAt</td><td>শুরু, শেষ ও record creation date</td></tr><tr><td>subscription.creditAllowance/creditsUsed/subscriptionCreditsRemaining</td><td>plan credit progress</td></tr><tr><td>purchasedCredits / creditBalance</td><td>effective purchased credit balance</td></tr><tr><td>totalCredits</td><td>plan remainder + purchased credits</td></tr><tr><td>lowCredit / threshold</td><td>low credit banner</td></tr></tbody></table></div><p><code>messagesRemaining=0</code> দেখেই chat block করবেন না। Active subscription + যথেষ্ট purchased credits থাকলে backend credits ব্যবহার করতে পারে। UI-তে action-specific cost <code>/credits/costs</code> থেকে নিন; image/voice-কে text-এর সমান cost ধরবেন না। Active subscription না থাকলে purchased credits থাকলেও access-এর নিয়ম backend নির্ধারণ করে।</p><p>Wallet-এর <code>creditTransactions</code> recent ৫০টি; সব history চাইলে <code>/credits/ledger?page=1&amp;limit=50</code>। <code>purchasedCreditLots</code>-এ <code>remainingAmount</code>, <code>expiresAt</code> পাওয়া যায়। Date UTC থেকে user timezone-এ format করুন। Amount decimal string আসতে পারে; display-এর জন্য সচেতনভাবে convert করুন। Client পাঠানো price/credit amount দিয়ে payment তৈরি হয় না—package/plan ID পাঠাতে হবে।</p><h2>৬. Website থেকে Telegram—সঠিক end-to-end flow</h2><ul><li>Companion select → companionId ধরে রাখুন।</li><li>Login না থাকলে website login/register → সফল হলে আগের companion-এ ফিরুন।</li><li>GET <code>/chat/usage</code> ও <code>/telegram/status/:companionId</code>।</li><li>Subscription না থাকলে plan/payment flow শেষ করুন, তারপর status refetch।</li><li>Linked এবং active হলে status response-এর <code>data.telegramUrl</code> খুলুন। Credits পর্যাপ্ত কি না wallet/usage-এ আলাদা দেখুন।</li><li>Unlinked হলে POST <code>/telegram/connect/:companionId</code> (empty body)। Response <code>data.telegramUrl</code>, <code>data.expiresAt</code>।</li><li>Returned URL খুলে Telegram-এ Start চাপতে বলুন। Link ১০ মিনিট, single-use; page load-এ বারবার link তৈরি নয়, explicit button click-এ করুন।</li><li>Website-এ ফেরার পরে status refetch করে linked state দেখান। Expired/used link হলে নতুন link দিন।</li></ul><p>Telegram status response fields: <code>companionId</code>, <code>companionName</code>, <code>linked</code>, <code>hasActiveSubscription</code>, <code>telegramUrl</code>, <code>creditsUrl</code>, <code>subscriptionUrl</code>। শুধু URL পাওয়া মানেই linked নয়।</p><p><strong>Automatic redirect-এর অর্থ:</strong> website authentication/payment শেষে user-কে একটি স্পষ্ট “Continue in Telegram” button দিন। ইচ্ছা করলে সফল state-এ navigation চেষ্টা করা যায়, কিন্তু browser/app opening fail হলে button fallback রাখুন। Backend নিজে user-এর browser খুলে দেয় না এবং user-এর Start action bypass করে না।</p><h3>Telegram Mini App থেকে website-এ আসা</h3><p>Existing backend login window: GET <code>/telegram/app?companionId=&lt;uuid&gt;</code>। Telegram-এর button থেকে খোলে। Signed <code>initData</code> ছাড়া সাধারণ browser-এ সেটিকে login page হিসেবে চালাবেন না।</p><ul><li>GET <code>/telegram/app/settings/:companionId</code>: companionName, botUrl, registerUrl, forgotPasswordUrl।</li><li>POST <code>/telegram/app/login/:companionId</code>: <code>initData</code>, <code>email</code>, <code>password</code>, optional <code>confirmTransfer</code>।</li><li>POST <code>/telegram/app/status/:companionId</code>: <code>{&quot;initData&quot;:&quot;&lt;Telegram signed value&gt;&quot;}</code>।</li><li><code>linked:false</code>: login প্রয়োজন। <code>transferRequired:true</code> এলে পুরোনো Telegram binding বদলানোর স্পষ্ট consent এবং password re-entry ছাড়া confirmTransfer পাঠাবেন না।</li><li>Linked হলে state <code>ready</code>, <code>subscription_required</code>, <code>credits_required</code>; <code>totalCredits</code>, <code>endsAt</code>, <code>actionUrl</code> দিয়ে UI দেখান। <code>ready</code> মানে সব ধরনের request-এর পর্যাপ্ত cost আছে এমন guarantee নয়।</li></ul><p>Registration/reset/payment links-এ <code>companionId</code>, <code>source=telegram</code>, <code>returnTo</code> query আসতে পারে। Frontend auth ও payment navigation জুড়ে context ধরে রাখবে। <code>returnTo</code> untrusted input—শুধু নিজস্ব configured HTTPS backend/app URL allowlist করুন; arbitrary redirect করবেন না। Password/token query string-এ দেবেন না। Registration/login শেষে website bearer session তৈরি করে উপরের connect flow শেষ করুন। Telegram Mini App-এর signed session website bearer session-এর বিকল্প নয়।</p><h2>৭. Chat, image, voice ও history</h2><p>Text request:</p><pre><code>{&quot;message&quot;:&quot;Hi, how are you today?&quot;,&quot;type&quot;:&quot;text&quot;}
+</code></pre><p>POST <code>/chat/:companionId/messages</code> response-এর <code>data</code>:</p><pre><code>{
+  &quot;message_type&quot;:&quot;text&quot;,
+  &quot;media&quot;:null,
+  &quot;transcript&quot;:null,
+  &quot;mode&quot;:&quot;ai&quot;,
+  &quot;message&quot;:{&quot;id&quot;:&quot;&lt;saved-message-id&gt;&quot;},
+  &quot;response&quot;:&quot;&lt;companion reply&gt;&quot;,
+  &quot;conversationId&quot;:&quot;&lt;conversation-id&gt;&quot;,
+  &quot;usage&quot;:{&quot;chargedFrom&quot;:&quot;subscription&quot;,&quot;creditBalance&quot;:200}
+}
+</code></pre><p>এটি shape বোঝানোর সংক্ষিপ্ত example; সব saved message/usage field এখানে দেখানো হয়নি। <code>media</code> থাকলে <code>id</code>, <code>kind</code> (<code>image</code>/<code>audio</code>), <code>url</code>, <code>mime_type</code>, <code>byte_size</code> আসে। <code>message_type</code> অনুযায়ী text/image/audio render করুন; response null হতে পারে, বিশেষ করে human mode-এ। History-তে saved row-এর field ব্যবহার করুন; POST response ও history shape এক নয়।</p><ul><li>Image request একই text message endpoint দিয়ে natural-language request; request DTO-তে <code>type:&quot;image&quot;</code> নেই। AI image result না দিলে fake image success দেখাবেন না।</li><li>বর্তমান chat service request-এর <code>type</code> দেখে text-এর জন্য <code>message</code> cost এবং voice-এর জন্য <code>voice</code> cost charge করে। AI image output হলেই আলাদা <code>photo</code> cost charge হয় না; <code>photo</code> cost উপরের gallery-view endpoint-এ ব্যবহৃত হয়। Pricing UI-তে এই পার্থক্য রাখুন।</li><li>Website voice request DTO: <code>type:&quot;voice&quot;</code> এবং <code>message</code>-এ <strong>transcript</strong>। এই route multipart microphone file নেয় না। Website raw-audio upload/transcription-এর আলাদা API বর্তমানে নেই; প্রয়োজন হলে backend/AI integration কাজ লাগবে। Telegram voice pipeline আলাদা।</li><li>Audio media URL যদি protected upstream হয়, browser playback authorization/CORS পরীক্ষা করতে হবে। বর্তমানে website-এর জন্য আলাদা media proxy endpoint controller-এ নেই।</li><li>GET messages: <code>?page=1</code>; <code>data.messages</code>, <code>data.total</code>, <code>data.page</code>, <code>data.limit</code> (৫০)। Page-এর messages chronological order-এ আসে; পুরোনো page prepend করে ID অনুযায়ী dedupe করুন।</li><li>Send চলাকালে button disable/loading দিন। Timeout হলে blind automatic POST retry করবেন না: website route-এ client-supplied idempotency field নেই। History refresh করে message save হয়েছে কি না বুঝে retry দিন।</li><li>WebSocket/SSE controller নেই। New reply/notification চাইলে controlled polling বা নতুন realtime backend কাজ লাগবে। Telegram delivery আর website message save একই বিষয় নয়।</li></ul><h2>৮. Gifts, gallery, stories, relationships, notifications</h2><ul><li>Gift send: POST <code>/gifts/:giftId/send</code>, <code>{&quot;companionId&quot;:&quot;&lt;uuid&gt;&quot;}</code>। Cost ও wallet backend নির্ধারণ করে। Success-এর পরে wallet/history refetch।</li><li>Gallery view/unlock: POST <code>/companions/:companionId/photos/view</code>, <code>{&quot;photoUrl&quot;:&quot;&lt;galleryImages থেকে URL&gt;&quot;}</code>। Arbitrary URL নয়। আগে unlock করা একই photo আবার view করলে দ্বিতীয়বার charge হয় না। শুধু image render করলেই view API call হয় না।</li><li>Gallery URL public response-এ পাওয়া গেলে blur UI-কে secure media paywall হিসেবে দাবি করবেন না; protected media delivery আলাদা কাজ।</li><li>Relationship PATCH body: optional <code>nickname</code>, <code>notes</code>; আলাদা user/companion relationship।</li><li>Stories user list শুধু published এবং current/past day; admin list unpublished/future-ও দেখতে পারে। একই companion/day admin save করলে upsert হয়।</li><li>Notifications: list, mark-read; notification create করা Telegram push পাঠানোর সমান নয়।</li><li>Engagement pagination <code>page</code> &gt;=1, <code>limit</code> 1–100, default50। সব list-এ total/meta নেই; collection ছোট হলে next-page UX accordingly করুন।</li></ul><h2>৯. Admin panel—সম্পূর্ণ screen map</h2><div class="table"><table><thead><tr><th>Admin screen</th><th>Endpoint</th><th>Controls</th></tr></thead><tbody><tr><td>Overview</td><td>GET <code>/dashboard/overview</code></td><td>user, active subscriber, revenue, message ও conversation metrics</td></tr><tr><td>Users</td><td>GET <code>/user</code>, GET <code>/user/:id</code>, PUT <code>/user/:id</code>, DELETE <code>/user/:id</code></td><td>search/filter, details, edit, delete</td></tr><tr><td>User finance/details</td><td>GET <code>/admin/users/:id/details</code>, <code>/admin/users/:id/ledger</code></td><td>wallet, recent payments/subscriptions, relationships, ledger</td></tr><tr><td>Companions</td><td>GET/POST <code>/companions</code>, GET/PUT/DELETE <code>/companions/:id</code></td><td>profile/personality/style/status forms</td></tr><tr><td>Companion images</td><td>PUT <code>.../:id/profile-image</code>, PUT <code>.../:id/cover-image</code>, POST/PUT <code>.../:id/gallery</code></td><td>upload, append বনাম replace</td></tr><tr><td>Voice settings</td><td>PUT <code>/companions/:id/voice</code></td><td><code>voiceId</code></td></tr><tr><td>Plan management</td><td>POST <code>/subscription</code>, PUT/DELETE <code>/subscription/:id</code></td><td>price, allowance, duration, features, active/popular</td></tr><tr><td>Credit packages</td><td>POST <code>/credits/packages</code>, PATCH/DELETE <code>/credits/packages/:id</code></td><td>name, credits, price, currency, active</td></tr><tr><td>Credit costs</td><td>PUT <code>/admin/credit-costs/:action</code></td><td>message/photo/voice/low_credit_threshold</td></tr><tr><td>Gift management</td><td>POST <code>/gifts</code>, PATCH/DELETE <code>/gifts/:id</code></td><td>gift fields, initial image upload, deactivate</td></tr><tr><td>Stories</td><td>GET/PUT <code>/admin/companions/:companionId/stories</code></td><td>day, title, content, published</td></tr><tr><td>Conversations</td><td>GET <code>/admin/conversations</code>, GET <code>/admin/conversations/:id</code></td><td>user/companion context ও messages</td></tr><tr><td>AI/human control</td><td>PATCH <code>/admin/conversations/:id/mode</code></td><td><code>{&quot;mode&quot;:&quot;human&quot;}</code> বা <code>{&quot;mode&quot;:&quot;ai&quot;}</code></td></tr><tr><td>Human reply</td><td>POST <code>/admin/conversations/:id/replies</code></td><td>messageId এবং message</td></tr><tr><td>Notification create</td><td>POST <code>/admin/notifications</code></td><td>userId, title, body</td></tr><tr><td>Newsletter</td><td>GET <code>/newsletter</code>, GET <code>/newsletter/:id</code>, POST <code>/newsletter/broadcast</code></td><td>subscribers ও email broadcast</td></tr></tbody></table></div><p>Overview-তে <code>totalSubscriptionPlans</code>, <code>activeSubscriptions</code>, <code>activeSubscribers</code>, <code>totalMessages</code>, <code>totalConversations</code>, <code>totalRevenue</code>, <code>totalUsers</code> ব্যবহার করুন। Legacy <code>totalConversions</code> আসলে message count; conversion-rate হিসেবে দেখাবেন না।</p><p>Human takeover: প্রথমে mode=human সেট করুন, তারপর নির্বাচিত unanswered user message-এর messageId দিয়ে reply করুন। Reply-কারী admin-এর assignment মিলতে হবে; answered message-এ 409 আসতে পারে। Current <code>humanReply</code> method response database-এ save করে এবং in-app notification তৈরি করে; <strong>Telegram/WhatsApp outbound send করে না</strong>। তাই “Reply delivered to Telegram” success label এখন দেবেন না।</p><p>Plan create example:</p><pre><code>{&quot;name&quot;:&quot;Premium&quot;,&quot;price&quot;:&quot;29.99&quot;,&quot;creditAllowance&quot;:500,&quot;durationDays&quot;:30,&quot;features&quot;:[&quot;Text conversations&quot;,&quot;Voice replies&quot;],&quot;isPopular&quot;:true,&quot;isActive&quot;:true}
+</code></pre><p>Credit package create example:</p><pre><code>{&quot;name&quot;:&quot;Extra Credits&quot;,&quot;credits&quot;:200,&quot;price&quot;:&quot;4.99&quot;,&quot;currency&quot;:&quot;usd&quot;,&quot;isActive&quot;:true}
+</code></pre><p>Credit cost update body: <code>{&quot;credits&quot;:5}</code>। Action path values: <code>message</code>, <code>photo</code>, <code>voice</code>, <code>low_credit_threshold</code>। Arbitrary action তৈরি করা যাবে না। Package ও gift DELETE deactivation করে; user/companion/plan delete-এর জন্য confirmation UI দিন এবং server restriction/error দেখান, cascading effect অনুমান করবেন না।</p><p><strong>DTO-তে থাকা সব field-এর exact spelling ও nested structures reference document-এ আছে।</strong> Companion create-এর nested personality, communication, relationship/style fields বাদ দিয়ে শুধু name পাঠালে পূর্ণ model তৈরি হবে ধরে নেবেন না। API model অনুযায়ী tabbed admin form তৈরি করুন।</p><h2>১০. Upload ও list contract</h2><div class="table"><table><thead><tr><th>কাজ</th><th>Encoding</th><th>File field</th></tr></thead><tbody><tr><td>Own/admin user profile</td><td>multipart/form-data</td><td>profileImage</td></tr><tr><td>Companion create/update metadata</td><td>application/json</td><td>file নয়; আলাদা image endpoints</td></tr><tr><td>Companion profile</td><td>multipart/form-data</td><td>profileImage, ১টি</td></tr><tr><td>Companion cover</td><td>multipart/form-data</td><td>coverImage, ১টি</td></tr><tr><td>Gallery append/replace</td><td>multipart/form-data</td><td>galleryImages, সর্বোচ্চ১০টি</td></tr><tr><td>Gift create</td><td>multipart/form-data</td><td>image</td></tr></tbody></table></div><p>FormData পাঠানোর সময় Content-Type boundary browser-কে বানাতে দিন। Upload helper-এর per-file limit ১০MB; frontend-এও যাচাই করুন। Companion gallery POST append, PUT replace। ভুল করে PUT দিয়ে পুরোনো gallery মুছবেন না। Gift PATCH controller-এ upload interceptor নেই; create upload-এর মতো file PATCH করবেন না।</p><p>Query names exact reference-এ আছে। Common <code>page</code>, <code>limit</code>, <code>sortBy</code>, <code>sortOrder</code> সব route-এ নেই। User list filters: searchTerm/role/email/name। Subscription: searchTerm/name/features/isPopular/isActive। Companion list controller-এর pick allowlist ও ApiQuery metadata দুটো reference-এ দেখুন; unchecked arbitrary sort field দেবেন না।</p><h2>১১. Webhook ও infrastructure route—frontend button নয়</h2><p>সব exact webhook route reference-এর inventory-তে আছে। Stripe POST <code>/webhook</code> raw body ও <code>stripe-signature</code> দিয়ে provider call করবে। Frontend fake webhook বা payment success লিখে subscription/credit grant করতে পারবে না। Telegram webhook-এ bot-specific secret validation হয়; WhatsApp-এ provider verification/signature। Bot secrets browser-এ দেওয়া যাবে না।</p><p>GET <code>/health/live</code> process health; GET <code>/health/ready</code> database/runtime-table readiness। Ready সফল মানে AI, mail, Stripe সব tested নয়। Root <code>/</code>, <code>/privacy-policy</code>, <code>/terms</code>, <code>/data-deletion</code> global API prefix-এর বাইরে। Backend-এ থাকা legal text publish-এর আগে owner review করবেন।</p><p>WhatsApp connect response <code>data.whatsappUrl</code> খুলে prefilled START message user-কে send করতে হবে। <code>/whatsapp/test</code> বর্তমান guard-এ user/admin দুটোই আছে, যদিও এটি operational testing route; সাধারণ user UI-তে expose করবেন না, backend permission review লাগবে।</p><h2>১২. Error ও UX handling</h2><div class="table"><table><thead><tr><th>Status</th><th>UI আচরণ</th></tr></thead><tbody><tr><td>400</td><td>validation/operation message দেখান; field value ঠিক করতে দিন</td></tr><tr><td>401</td><td>refresh একবার চেষ্টা; ব্যর্থ হলে login, redirect loop নয়</td></tr><tr><td>402</td><td>usage refetch; subscription নেই হলে Subscribe, active কিন্তু credit কম হলে Buy Credits</td></tr><tr><td>403</td><td>approved/adult/account permission সমস্যা; আবার payment নয়</td></tr><tr><td>404</td><td>item নেই বা companion unavailable</td></tr><tr><td>409</td><td>account conflict/already answered/takeover conflict; state refetch</td></tr><tr><td>429</td><td>retry-after থাকলে মানুন; cooldown দেখান, loop নয়</td></tr><tr><td>502/503</td><td>upstream/database temporarily unavailable; retry option, raw stack নয়</td></tr></tbody></table></div><p>Error body সাধারণত <code>success:false</code>, <code>statusCode</code>, <code>message</code>, <code>errorSources</code>। Production stack user-কে দেখাবেন না। Rate limits-এর কারণে repeated login retry এড়িয়ে চলুন। Paid POST request auto-retry নয়। UI loading, empty, pending-payment, failed, expired-link, insufficient-credit—সব state design করুন।</p><h2>১৩. Frontend URL ও deployment সমন্বয়</h2><div class="table"><table><thead><tr><th>Backend env</th><th>Frontend engineer কী দেবে</th></tr></thead><tbody><tr><td>FRONTEND_URL</td><td>website HTTPS origin</td></tr><tr><td>CORS_ORIGINS</td><td>user website/admin-এর exact allowed origins</td></tr><tr><td>TELEGRAM_CONNECT_URL</td><td>website login/connect page</td></tr><tr><td>TELEGRAM_REGISTER_URL</td><td>registration page</td></tr><tr><td>TELEGRAM_FORGOT_PASSWORD_URL</td><td>reset flow entry page</td></tr><tr><td>TELEGRAM_SUBSCRIPTION_URL</td><td>plan/checkout page</td></tr><tr><td>TELEGRAM_CREDITS_URL</td><td>credit-package checkout page</td></tr></tbody></table></div><p>Paths design প্রস্তাব: <code>/login</code>, <code>/register</code>, <code>/forgot-password</code>, <code>/subscriptions</code>, <code>/credits</code>, <code>/companions/:id</code>, <code>/chat/:id</code>, <code>/account</code>, <code>/admin</code>। এগুলো API route নয় এবং এখন deploy করা frontend page হিসেবে যাচাই করা হয়নি। Actual route তৈরি করে URL backend engineer-কে দিন। <code>/api/docs</code> কখনো user checkout/register page নয়। Frontend URL changing-এ env update ও backend restart লাগে। Mini App-এ পুরোনো button থাকলে নতুন <code>/login</code> button নিন।</p><p>Production backend rollout/migration/queue/HTTPS নির্দেশনা repo-এর <code>docs/production-deployment.md</code>-এ আছে। Frontend credentials দিয়ে migration বা bot setup করবে না। Telegram-এর digital purchase policy সিদ্ধান্ত backend/payment owner-এর সঙ্গে confirm করতে হবে; website Stripe flow থাকা মানেই Telegram in-app sales release অনুমোদিত ধরে নেবেন না।</p><h2>১৪. জানা সীমাবদ্ধতা ও handoff blockers</h2><ul><li>Website raw voice upload/transcription route নেই; transcript-only chat contract আছে।</li><li>Website realtime socket/SSE route নেই; controlled polling বা নতুন backend কাজ লাগবে।</li><li>Admin human reply Telegram/WhatsApp-এ push হয় না।</li><li>Website admin profile image update Telegram bot-এর BotFather picture/name নিজে বদলায় না। Bot branding আলাদা configuration।</li><li>Bot token/username/env পরিবর্তনের public admin endpoint নেই। Frontend-এ এমন Save button বানাবেন না যার API নেই।</li><li>User self-service Telegram unlink endpoint নেই; transfer flow আলাদা।</li><li>General all-payments export, refund API, manual wallet top-up API এই controller set-এ নেই। Admin user details-এ recent payment data আছে; এর বাইরে feature হলে backend contract লাগবে।</li><li>Newsletter GET list/detail controller-এ JWT guard নেই। Subscriber data public হওয়া launch-এর আগে backend review/fix দরকার; শুধু UI লুকানো protection নয়।</li><li><code>/whatsapp/test</code> user role-ও গ্রহণ করে। Public launch-এর আগে access policy ঠিক করুন।</li><li>Cookie same-site deployment, registration/payment return handling, protected audio playback, real checkout URLs ও mobile test এখনো frontend integration-এর acceptance কাজ।</li><li>Response inventory source-derived; provider-dependent live response ও field nullability staging-এ verify করতে হবে। কোনো route list মানেই feature live-tested নয়।</li><li>User update service বর্তমানে optional password না থাকলেও bcrypt.hash call করে। তাই name/photo-only profile update fail হতে পারে। Frontend থেকে dummy password পাঠিয়ে workaround করবেন না; backend fix প্রয়োজন।</li><li>UpdateUserDto-তে role/status/adultEligible নেই। এই fields দিয়ে admin approve/block/role-change control বর্তমানে কাজ করবে ধরে UI বানাবেন না; আলাদা backend contract লাগবে।</li></ul><h2>১৫. Implementation order ও acceptance checklist</h2><p>প্রথমে shared API client + authentication → companion pages → subscription/wallet/payment → Telegram return flow → website chat/media → user account/history → admin management → device/error-state tests।</p><ul><li>[ ] Registration, login, refresh, logout; wrong password এবং blocked user।</li><li>[ ] OTP → resetToken → password reset; পুরোনো token invalid।</li><li>[ ] User role দিয়ে admin request rejected; admin-কে user-only chat endpoint access ধরে নেওয়া হয়নি।</li><li>[ ] Free trial একবার; paid plan success/cancel/failure/incomplete এবং renew/cancel state।</li><li>[ ] Stripe success কিন্তু webhook pending UI; duplicate Pay prevention।</li><li>[ ] Plan credits শেষ, purchased credits আছে—chat চালু। Subscription expired হলে সঠিক CTA।</li><li>[ ] Credit expiry ও ledger; image/voice/gift costs, no double charge on photo re-view।</li><li>[ ] Website → Telegram fresh link → Start → linked; expired link recovery।</li><li>[ ] Mini App → registration/payment → website session → Continue in Telegram।</li><li>[ ] Wrong Telegram account transfer consent; no silent reassignment।</li><li>[ ] Text/media/history, null response, loading, timeout, retry এবং human mode।</li><li>[ ] Admin companion nested fields, append/replace gallery, plan/package/story/cost update।</li><li>[ ] Newsletter/test-route access blockers owner resolved।</li><li>[ ] Android/iOS/Desktop/Web; website HTTPS cookie ও cross-origin media।</li><li>[ ] Final URLs, production payment mode, webhooks, backups/migrations deployment team verified।</li></ul><h2>১৬. ছোট frontend request example</h2><pre><code>// BASE আপনার public frontend environment থেকে আসবে।
+async function request(path: string, token?: string, body?: unknown) {
+  const response = await fetch(`${BASE}${path}`, {
+    method: body === undefined ? 'GET' : 'POST',
+    credentials: 'include',
+    headers: {
+      ...(body === undefined ? {} : {'Content-Type': 'application/json'}),
+      ...(token ? {Authorization: `Bearer ${token}`} : {}),
+    },
+    ...(body === undefined ? {} : {body: JSON.stringify(body)}),
+  });
+  const result = await response.json();
+  if (!response.ok || result.success === false) {
+    throw Object.assign(new Error(result.message || 'Request failed'), {
+      status: response.status, details: result.errorSources,
+    });
+  }
+  return result; // data ও optional meta caller আলাদাভাবে ব্যবহার করবে।
+}
+
+// Click handler-এ call; page mount-এ বারবার connect token তৈরি করবেন না।
+const connected = await request(`/telegram/connect/${companionId}`, token, {});
+window.location.assign(connected.data.telegramUrl);
+</code></pre><p>এটি minimal example; production API client-এ abort/loading, একবার refresh, form field error mapping এবং safe redirect allowlist যোগ করুন। PATCH/PUT/DELETE/upload-এর জন্য method-aware wrapper লাগবে।</p></section><details id="reference"><summary>সম্পূর্ণ API reference — ৯৫টি endpoint ও ৫২টি DTO (খুলুন)</summary><h1>Meet Elysia — সম্পূর্ণ API ও request field reference</h1><p>তারিখ: ১০ অক্টোবর ২০২৬। Controller ও DTO থেকে সরাসরি তৈরি; live API test নয়। মূল নির্দেশনা পড়ুন: <a href="./frontend-integration-bn.md">বাংলা integration guide</a>।</p><p>মোট <strong>95টি route</strong>, <strong>52টি DTO class</strong>। কোনো real token/password/env value অন্তর্ভুক্ত নেই।</p><h2>সব endpoint এক নজরে</h2><div class="table"><table><thead><tr><th>Method</th><th>সম্পূর্ণ path</th><th>Controller-এ access</th><th>Handler</th></tr></thead><tbody><tr><td>POST</td><td><code>/api/v1/auth/register</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>register</td></tr><tr><td>POST</td><td><code>/api/v1/auth/login</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>login</td></tr><tr><td>GET</td><td><code>/api/v1/auth/refresh</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>refreshToken</td></tr><tr><td>POST</td><td><code>/api/v1/auth/forgot-password</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>forgotPassword</td></tr><tr><td>POST</td><td><code>/api/v1/auth/verify-otp</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>verifyOtp</td></tr><tr><td>POST</td><td><code>/api/v1/auth/reset-password</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>resetPassword</td></tr><tr><td>POST</td><td><code>/api/v1/auth/change-password</code></td><td>UseGuards(AuthGuard('admin', 'user'))</td><td>changePassword</td></tr><tr><td>POST</td><td><code>/api/v1/auth/logout</code></td><td>UseGuards(AuthGuard('admin', 'user'))</td><td>logout</td></tr><tr><td>GET</td><td><code>/api/v1/chat/conversations</code></td><td>UseGuards(AuthGuard('user'))</td><td>getConversations</td></tr><tr><td>GET</td><td><code>/api/v1/chat/:companionId/messages</code></td><td>UseGuards(AuthGuard('user'))</td><td>getMessages</td></tr><tr><td>GET</td><td><code>/api/v1/chat/usage</code></td><td>UseGuards(AuthGuard('user'))</td><td>getUsage</td></tr><tr><td>POST</td><td><code>/api/v1/chat/:companionId/messages</code></td><td>UseGuards(AuthGuard('user'))</td><td>sendMessage</td></tr><tr><td>POST</td><td><code>/api/v1/companions</code></td><td>UseGuards(AuthGuard('admin'))</td><td>createCompanion</td></tr><tr><td>GET</td><td><code>/api/v1/companions</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>getAllCompanions</td></tr><tr><td>GET</td><td><code>/api/v1/companions/:id</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>getCompanionById</td></tr><tr><td>PUT</td><td><code>/api/v1/companions/:id</code></td><td>UseGuards(AuthGuard('admin'))</td><td>updateCompanion</td></tr><tr><td>PUT</td><td><code>/api/v1/companions/:id/profile-image</code></td><td>UseGuards(AuthGuard('admin'))</td><td>updateProfileImage</td></tr><tr><td>PUT</td><td><code>/api/v1/companions/:id/cover-image</code></td><td>UseGuards(AuthGuard('admin'))</td><td>updateCoverImage</td></tr><tr><td>POST</td><td><code>/api/v1/companions/:id/gallery</code></td><td>UseGuards(AuthGuard('admin'))</td><td>addGalleryImages</td></tr><tr><td>PUT</td><td><code>/api/v1/companions/:id/gallery</code></td><td>UseGuards(AuthGuard('admin'))</td><td>updateGalleryImages</td></tr><tr><td>DELETE</td><td><code>/api/v1/companions/:id</code></td><td>UseGuards(AuthGuard('admin'))</td><td>deleteCompanion</td></tr><tr><td>PUT</td><td><code>/api/v1/companions/:id/voice</code></td><td>UseGuards(AuthGuard('admin'))</td><td>updateVoice</td></tr><tr><td>POST</td><td><code>/api/v1/credits/packages</code></td><td>UseGuards(AuthGuard('admin'))</td><td>createPackage</td></tr><tr><td>GET</td><td><code>/api/v1/credits/packages</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>getPackages</td></tr><tr><td>PATCH</td><td><code>/api/v1/credits/packages/:id</code></td><td>UseGuards(AuthGuard('admin'))</td><td>updatePackage</td></tr><tr><td>DELETE</td><td><code>/api/v1/credits/packages/:id</code></td><td>UseGuards(AuthGuard('admin'))</td><td>deactivatePackage</td></tr><tr><td>POST</td><td><code>/api/v1/credits/purchase</code></td><td>UseGuards(AuthGuard('user'))</td><td>purchase</td></tr><tr><td>GET</td><td><code>/api/v1/credits/wallet</code></td><td>UseGuards(AuthGuard('user'))</td><td>getWallet</td></tr><tr><td>GET</td><td><code>/api/v1/dashboard/overview</code></td><td>UseGuards(AuthGuard('admin'))</td><td>dashboardOverview</td></tr><tr><td>GET</td><td><code>/api/v1/relationships</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>relationships</td></tr><tr><td>PATCH</td><td><code>/api/v1/relationships/:companionId</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>relationship</td></tr><tr><td>GET</td><td><code>/api/v1/companions/:companionId/stories</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>stories</td></tr><tr><td>POST</td><td><code>/api/v1/companions/:companionId/photos/view</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>photo</td></tr><tr><td>GET</td><td><code>/api/v1/photos/history</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>photos</td></tr><tr><td>GET</td><td><code>/api/v1/credits/ledger</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>ledger</td></tr><tr><td>GET</td><td><code>/api/v1/credits/costs</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>costs</td></tr><tr><td>GET</td><td><code>/api/v1/notifications</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>notifications</td></tr><tr><td>PATCH</td><td><code>/api/v1/notifications/:id/read</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>read</td></tr><tr><td>PUT</td><td><code>/api/v1/admin/credit-costs/:action</code></td><td>UseGuards(AuthGuard('admin'))</td><td>cost</td></tr><tr><td>PUT</td><td><code>/api/v1/admin/companions/:companionId/stories</code></td><td>UseGuards(AuthGuard('admin'))</td><td>story</td></tr><tr><td>GET</td><td><code>/api/v1/admin/companions/:companionId/stories</code></td><td>UseGuards(AuthGuard('admin'))</td><td>stories</td></tr><tr><td>GET</td><td><code>/api/v1/admin/conversations</code></td><td>UseGuards(AuthGuard('admin'))</td><td>conversations</td></tr><tr><td>GET</td><td><code>/api/v1/admin/conversations/:id</code></td><td>UseGuards(AuthGuard('admin'))</td><td>conversation</td></tr><tr><td>PATCH</td><td><code>/api/v1/admin/conversations/:id/mode</code></td><td>UseGuards(AuthGuard('admin'))</td><td>mode</td></tr><tr><td>POST</td><td><code>/api/v1/admin/conversations/:id/replies</code></td><td>UseGuards(AuthGuard('admin'))</td><td>reply</td></tr><tr><td>GET</td><td><code>/api/v1/admin/users/:id/details</code></td><td>UseGuards(AuthGuard('admin'))</td><td>user</td></tr><tr><td>GET</td><td><code>/api/v1/admin/users/:id/ledger</code></td><td>UseGuards(AuthGuard('admin'))</td><td>ledger</td></tr><tr><td>POST</td><td><code>/api/v1/admin/notifications</code></td><td>UseGuards(AuthGuard('admin'))</td><td>notification</td></tr><tr><td>POST</td><td><code>/api/v1/gifts</code></td><td>UseGuards(AuthGuard('admin'))</td><td>createGift</td></tr><tr><td>GET</td><td><code>/api/v1/gifts</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>getGifts</td></tr><tr><td>PATCH</td><td><code>/api/v1/gifts/:id</code></td><td>UseGuards(AuthGuard('admin'))</td><td>updateGift</td></tr><tr><td>DELETE</td><td><code>/api/v1/gifts/:id</code></td><td>UseGuards(AuthGuard('admin'))</td><td>deactivateGift</td></tr><tr><td>POST</td><td><code>/api/v1/gifts/:giftId/send</code></td><td>UseGuards(AuthGuard('user'))</td><td>sendGift</td></tr><tr><td>POST</td><td><code>/api/v1/newsletter</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>sendMail</td></tr><tr><td>POST</td><td><code>/api/v1/newsletter/broadcast</code></td><td>UseGuards(AuthGuard('admin'))</td><td>broadcastNewsletter</td></tr><tr><td>GET</td><td><code>/api/v1/newsletter</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>getAllNewsletter</td></tr><tr><td>GET</td><td><code>/api/v1/newsletter/:id</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>getNewsletterById</td></tr><tr><td>GET</td><td><code>/api/v1/payment/subscription/status</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>status</td></tr><tr><td>POST</td><td><code>/api/v1/payment/subscription/sync</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>sync</td></tr><tr><td>POST</td><td><code>/api/v1/payment/billing-portal</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>portal</td></tr><tr><td>POST</td><td><code>/api/v1/payment/subscription/cancel</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>cancel</td></tr><tr><td>POST</td><td><code>/api/v1/payment/subscription/:subscriptionId/upgrade</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>upgrade</td></tr><tr><td>POST</td><td><code>/api/v1/payment/subscription/:subscriptionId</code></td><td>UseGuards(AuthGuard('admin', 'user'))</td><td>paySubscriber</td></tr><tr><td>POST</td><td><code>/api/v1/payment/credits</code></td><td>UseGuards(AuthGuard('user'))</td><td>buyCredits</td></tr><tr><td>POST</td><td><code>/api/v1/subscription</code></td><td>UseGuards(AuthGuard('admin'))</td><td>createSubscription</td></tr><tr><td>GET</td><td><code>/api/v1/subscription</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>getAllSubscription</td></tr><tr><td>GET</td><td><code>/api/v1/subscription/:id</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>getSubscriptionById</td></tr><tr><td>PUT</td><td><code>/api/v1/subscription/:id</code></td><td>UseGuards(AuthGuard('admin'))</td><td>updateSubscription</td></tr><tr><td>DELETE</td><td><code>/api/v1/subscription/:id</code></td><td>UseGuards(AuthGuard('admin'))</td><td>deleteSubscription</td></tr><tr><td>GET</td><td><code>/api/v1/telegram/status/:companionId</code></td><td>UseGuards(AuthGuard('user'))</td><td>status</td></tr><tr><td>POST</td><td><code>/api/v1/telegram/connect/:companionId</code></td><td>UseGuards(AuthGuard('user'))</td><td>connect</td></tr><tr><td>GET</td><td><code>/api/v1/telegram/app</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>page</td></tr><tr><td>GET</td><td><code>/api/v1/telegram/app/settings/:companionId</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>settings</td></tr><tr><td>POST</td><td><code>/api/v1/telegram/app/login/:companionId</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>login</td></tr><tr><td>POST</td><td><code>/api/v1/telegram/app/status/:companionId</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>status</td></tr><tr><td>POST</td><td><code>/api/v1/webhooks/telegram/:companionId</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>receiveForCompanion</td></tr><tr><td>POST</td><td><code>/api/v1/webhooks/telegram</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>receive</td></tr><tr><td>POST</td><td><code>/api/v1/user</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>createUser</td></tr><tr><td>GET</td><td><code>/api/v1/user</code></td><td>UseGuards(AuthGuard('admin'))</td><td>getAllUser</td></tr><tr><td>GET</td><td><code>/api/v1/user/my-profile</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>myProfile</td></tr><tr><td>PUT</td><td><code>/api/v1/user/my-profile</code></td><td>UseGuards(AuthGuard('user', 'admin'))</td><td>UpdateMyProfile</td></tr><tr><td>GET</td><td><code>/api/v1/user/:id</code></td><td>UseGuards(AuthGuard('admin'))</td><td>getUserById</td></tr><tr><td>PUT</td><td><code>/api/v1/user/:id</code></td><td>UseGuards(AuthGuard('admin'))</td><td>updateUser</td></tr><tr><td>DELETE</td><td><code>/api/v1/user/:id</code></td><td>UseGuards(AuthGuard('admin'))</td><td>deleteUser</td></tr><tr><td>POST</td><td><code>/api/v1/webhook</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>handleWebhook</td></tr><tr><td>POST</td><td><code>/api/v1/whatsapp/connect/:companionId</code></td><td>UseGuards(AuthGuard('user'))</td><td>connect</td></tr><tr><td>GET</td><td><code>/api/v1/webhooks/whatsapp</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>verifyWebhook</td></tr><tr><td>POST</td><td><code>/api/v1/webhooks/whatsapp</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>receiveWebhook</td></tr><tr><td>POST</td><td><code>/api/v1/whatsapp/test</code></td><td>UseGuards(AuthGuard('admin', 'user'))</td><td>test</td></tr><tr><td>GET</td><td><code>/</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>getHello</td></tr><tr><td>GET</td><td><code>/api/v1/health/live</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>live</td></tr><tr><td>GET</td><td><code>/api/v1/health/ready</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>ready</td></tr><tr><td>GET</td><td><code>/privacy-policy</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>privacyPolicy</td></tr><tr><td>GET</td><td><code>/terms</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>terms</td></tr><tr><td>GET</td><td><code>/data-deletion</code></td><td>JWT guard নেই; নিচের service/webhook নিয়ম দেখুন</td><td>dataDeletion</td></tr></tbody></table></div><h2>প্রতিটি endpoint-এর input ও response mapping</h2><p>JWT guard নেই মানেই external webhook বা Mini App unrestricted নয়। Signature/initData validation service-এ হয়। @Req() query-এর প্রকৃত allowlist handler-এর pick(...) এ দেওয়া আছে। Nest default status POST=201, অন্যগুলো=200, যদি @HttpCode বা raw response override না করে।</p><h3>POST /api/v1/auth/register</h3><p>Source: <code>src/app/module/auth/auth.controller.ts:39</code> • Handler: <code>AuthController.register</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() createAuthDto: CreateAuthDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('register')
+@ApiOperation({
+    summary: 'Register a new user',
+  })
+@ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'User registered successfully',
+  })
+@ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'User already exists',
+  })
+@HttpCode(HttpStatus.CREATED)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.authService.register(createAuthDto);
+
+    return {
+      message: 'User registered successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>POST /api/v1/auth/login</h3><p>Source: <code>src/app/module/auth/auth.controller.ts:62</code> • Handler: <code>AuthController.login</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() loginAuthDto: LoginAuthDto
+@Res({ passthrough: true }) res: Response
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('login')
+@ApiOperation({
+    summary: 'Login user',
+  })
+@ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Login successful',
+  })
+@ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid email or password',
+  })
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.authService.login(loginAuthDto, res);
+
+    return {
+      message: 'Login successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>GET /api/v1/auth/refresh</h3><p>Source: <code>src/app/module/auth/auth.controller.ts:88</code> • Handler: <code>AuthController.refreshToken</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('refresh')
+@ApiOperation({
+    summary: 'Generate new access token using refresh token',
+  })
+@ApiCookieAuth('refreshToken')
+@ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Access token refreshed successfully',
+  })
+@ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Refresh token invalid or missing',
+  })
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.authService.refreshToken(req);
+
+    return {
+      message: 'Token refreshed successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>POST /api/v1/auth/forgot-password</h3><p>Source: <code>src/app/module/auth/auth.controller.ts:112</code> • Handler: <code>AuthController.forgotPassword</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() forgotPasswordAuthDto: ForgotPasswordAuthDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('forgot-password')
+@ApiOperation({
+    summary: 'Send password reset OTP',
+  })
+@ApiResponse({
+    status: HttpStatus.OK,
+    description: 'OTP sent successfully',
+  })
+@ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'User not found',
+  })
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.authService.forgotPassword(
+      forgotPasswordAuthDto.email,
+    );
+
+    return {
+      message: 'OTP sent successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>POST /api/v1/auth/verify-otp</h3><p>Source: <code>src/app/module/auth/auth.controller.ts:137</code> • Handler: <code>AuthController.verifyOtp</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() verifyOtpAuthDto: VerifyOtpAuthDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('verify-otp')
+@ApiOperation({
+    summary: 'Verify password reset OTP',
+  })
+@ApiResponse({
+    status: HttpStatus.OK,
+    description: 'OTP verified successfully',
+  })
+@ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid or expired OTP',
+  })
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.authService.verifyOtp(
+      verifyOtpAuthDto.email,
+      verifyOtpAuthDto.otp,
+    );
+
+    return {
+      message: 'OTP verified successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>POST /api/v1/auth/reset-password</h3><p>Source: <code>src/app/module/auth/auth.controller.ts:163</code> • Handler: <code>AuthController.resetPassword</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() resetPasswordAuthDto: ResetPasswordAuthDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('reset-password')
+@ApiOperation({
+    summary: 'Reset password after OTP verification',
+  })
+@ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Password reset successfully',
+  })
+@ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'OTP verification required',
+  })
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.authService.resetPassword(
+      resetPasswordAuthDto.email,
+      resetPasswordAuthDto.password,
+      resetPasswordAuthDto.resetToken,
+    );
+
+    return {
+      message: 'Password reset successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>POST /api/v1/auth/change-password</h3><p>Source: <code>src/app/module/auth/auth.controller.ts:190</code> • Handler: <code>AuthController.changePassword</code></p><p>Access: <code>UseGuards(AuthGuard('admin', 'user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() changePasswordAuthDto: ChangePasswordAuthDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('change-password')
+@ApiOperation({
+    summary: 'Change logged-in user password',
+  })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin', 'user'))
+@ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Password changed successfully',
+  })
+@ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
+  })
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.authService.changePassword(
+      changePasswordAuthDto.email,
+      changePasswordAuthDto.oldPassword,
+      changePasswordAuthDto.newPassword,
+    );
+
+    return {
+      message: 'Password changed successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>POST /api/v1/auth/logout</h3><p>Source: <code>src/app/module/auth/auth.controller.ts:219</code> • Handler: <code>AuthController.logout</code></p><p>Access: <code>UseGuards(AuthGuard('admin', 'user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+@Res({ passthrough: true }) res: Response
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('logout')
+@ApiOperation({
+    summary: 'Logout logged-in user',
+  })
+@ApiBearerAuth('access-token')
+@ApiCookieAuth('refreshToken')
+@UseGuards(AuthGuard('admin', 'user'))
+@ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Logout successfully',
+  })
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.authService.logout(req, res);
+
+    return {
+      message: 'Logout successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>GET /api/v1/chat/conversations</h3><p>Source: <code>src/app/module/chat/chat.controller.ts:28</code> • Handler: <code>ChatController.getConversations</code></p><p>Access: <code>UseGuards(AuthGuard('user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('conversations')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    if (!request.user) throw new UnauthorizedException();
+    return { data: await this.chatService.getConversations(request.user.id) };
+  }
+</code></pre><h3>GET /api/v1/chat/:companionId/messages</h3><p>Source: <code>src/app/module/chat/chat.controller.ts:36</code> • Handler: <code>ChatController.getMessages</code></p><p>Access: <code>UseGuards(AuthGuard('user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+@Param('companionId') companionId: string
+@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get(':companionId/messages')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    if (!request.user) throw new UnauthorizedException();
+    if (page &lt; 1) throw new BadRequestException('Page must be positive');
+    return {
+      data: await this.chatService.getMessages(
+        request.user.id,
+        companionId,
+        page,
+      ),
+    };
+  }
+</code></pre><h3>GET /api/v1/chat/usage</h3><p>Source: <code>src/app/module/chat/chat.controller.ts:55</code> • Handler: <code>ChatController.getUsage</code></p><p>Access: <code>UseGuards(AuthGuard('user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('usage')
+@ApiOperation({ summary: 'Get subscription usage and credit balance' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    if (!request.user) throw new UnauthorizedException();
+    const data = await this.chatService.getUsage(request.user.id);
+    return { message: 'Chat usage fetched successfully', data };
+  }
+</code></pre><h3>POST /api/v1/chat/:companionId/messages</h3><p>Source: <code>src/app/module/chat/chat.controller.ts:65</code> • Handler: <code>ChatController.sendMessage</code></p><p>Access: <code>UseGuards(AuthGuard('user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+@Param('companionId') companionId: string
+@Body() payload: SendMessageDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post(':companionId/messages')
+@HttpCode(HttpStatus.CREATED)
+@ApiOperation({ summary: 'Send a message to a companion' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    if (!request.user) throw new UnauthorizedException();
+    const data = await this.chatService.sendMessage(
+      request.user.id,
+      companionId,
+      payload.message,
+      request.headers.authorization!,
+      payload.type,
+    );
+    return { message: 'Message sent successfully', data };
+  }
+</code></pre><h3>POST /api/v1/companions</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:38</code> • Handler: <code>CompanionsController.createCompanion</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() payload: CreateCompanionDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post()
+@ApiOperation({ summary: 'Create a companion' })
+@ApiBearerAuth('access-token')
+@ApiConsumes('application/json')
+@ApiBody({ type: CreateCompanionDto })
+@UseGuards(AuthGuard('admin'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.companionsService.createCompanion(payload);
+    return { message: 'Companion created successfully', data };
+  }
+</code></pre><h3>GET /api/v1/companions</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:49</code> • Handler: <code>CompanionsController.getAllCompanions</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get()
+@HttpCode(HttpStatus.OK)
+@ApiOperation({ summary: 'Get all companions' })
+@ApiQuery({ name: 'searchTerm', required: false, type: String })
+@ApiQuery({ name: 'occupation', required: false, type: String })
+@ApiQuery({ name: 'location', required: false, type: String })
+@ApiQuery({ name: 'status', required: false, type: Boolean })
+@ApiQuery({ name: 'interest', required: false, type: String })
+@ApiQuery({ name: 'personalityTrait', required: false, type: String })
+@ApiQuery({ name: 'page', required: false, type: Number })
+@ApiQuery({ name: 'limit', required: false, type: Number })
+@ApiQuery({ name: 'sortBy', required: false, type: String })
+@ApiQuery({ name: 'sortOrder', required: false, enum: ['asc', 'desc'] })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const filters = pick(request.query, [
+      'searchTerm',
+      'name',
+      'title',
+      'backstory',
+      'occupation',
+      'profession',
+      'location',
+      'status',
+      'interest',
+      'personalityTrait',
+    ]);
+    const options = pick(request.query, [
+      'page',
+      'limit',
+      'sortBy',
+      'sortOrder',
+    ]);
+    const result = await this.companionsService.getAllCompanions(
+      filters,
+      options,
+    );
+    return {
+      message: 'Companions fetched successfully',
+      meta: result.meta,
+      data: result.data,
+    };
+  }
+</code></pre><h3>GET /api/v1/companions/:id</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:92</code> • Handler: <code>CompanionsController.getCompanionById</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get(':id')
+@HttpCode(HttpStatus.OK)
+@ApiOperation({ summary: 'Get a companion by ID' })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.companionsService.getCompanionById(id);
+    return { message: 'Companion fetched successfully', data };
+  }
+</code></pre><h3>PUT /api/v1/companions/:id</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:100</code> • Handler: <code>CompanionsController.updateCompanion</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+@Body() payload: UpdateCompanionDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Put(':id')
+@ApiOperation({ summary: 'Update a companion' })
+@ApiBearerAuth('access-token')
+@ApiConsumes('application/json')
+@ApiBody({ type: UpdateCompanionDto })
+@UseGuards(AuthGuard('admin'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.companionsService.updateCompanion(id, payload);
+    return { message: 'Companion updated successfully', data };
+  }
+</code></pre><h3>PUT /api/v1/companions/:id/profile-image</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:114</code> • Handler: <code>CompanionsController.updateProfileImage</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+@UploadedFiles() files: { profileImage?: Express.Multer.File[] } = {}
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Put(':id/profile-image')
+@ApiOperation({ summary: 'Set or replace companion profileImage' })
+@ApiBearerAuth('access-token')
+@ApiConsumes('multipart/form-data')
+@ApiBody({
+    schema: {
+      type: 'object',
+      required: ['profileImage'],
+      properties: { profileImage: { type: 'string', format: 'binary' } },
+    },
+  })
+@UseGuards(AuthGuard('admin'))
+@UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: 'profileImage', maxCount: 1 }],
+      fileUpload.uploadConfig,
+    ),
+  )
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.companionsService.updateImages(
+      id,
+      'profileImage',
+      files.profileImage ?? [],
+      false,
+    );
+    return { message: 'Companion images updated successfully', data };
+  }
+</code></pre><h3>PUT /api/v1/companions/:id/cover-image</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:145</code> • Handler: <code>CompanionsController.updateCoverImage</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+@UploadedFiles() files: { coverImage?: Express.Multer.File[] } = {}
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Put(':id/cover-image')
+@ApiOperation({ summary: 'Set or replace companion coverImage' })
+@ApiBearerAuth('access-token')
+@ApiConsumes('multipart/form-data')
+@ApiBody({
+    schema: {
+      type: 'object',
+      required: ['coverImage'],
+      properties: { coverImage: { type: 'string', format: 'binary' } },
+    },
+  })
+@UseGuards(AuthGuard('admin'))
+@UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: 'coverImage', maxCount: 1 }],
+      fileUpload.uploadConfig,
+    ),
+  )
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.companionsService.updateImages(
+      id,
+      'coverImage',
+      files.coverImage ?? [],
+      false,
+    );
+    return { message: 'Companion images updated successfully', data };
+  }
+</code></pre><h3>POST /api/v1/companions/:id/gallery</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:176</code> • Handler: <code>CompanionsController.addGalleryImages</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+@UploadedFiles() files: { galleryImages?: Express.Multer.File[] } = {}
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post(':id/gallery')
+@ApiOperation({ summary: 'Add to companion galleryImages' })
+@ApiBearerAuth('access-token')
+@ApiConsumes('multipart/form-data')
+@ApiBody({
+    schema: {
+      type: 'object',
+      required: ['galleryImages'],
+      properties: {
+        galleryImages: {
+          type: 'array',
+          items: { type: 'string', format: 'binary' },
+          maxItems: 10,
+        },
+      },
+    },
+  })
+@UseGuards(AuthGuard('admin'))
+@UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: 'galleryImages', maxCount: 10 }],
+      fileUpload.uploadConfig,
+    ),
+  )
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.companionsService.updateImages(
+      id,
+      'galleryImages',
+      files.galleryImages ?? [],
+      true,
+    );
+    return { message: 'Companion images updated successfully', data };
+  }
+</code></pre><h3>PUT /api/v1/companions/:id/gallery</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:213</code> • Handler: <code>CompanionsController.updateGalleryImages</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+@UploadedFiles() files: { galleryImages?: Express.Multer.File[] } = {}
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Put(':id/gallery')
+@ApiOperation({ summary: 'Set or replace companion galleryImages' })
+@ApiBearerAuth('access-token')
+@ApiConsumes('multipart/form-data')
+@ApiBody({
+    schema: {
+      type: 'object',
+      required: ['galleryImages'],
+      properties: {
+        galleryImages: {
+          type: 'array',
+          items: { type: 'string', format: 'binary' },
+          maxItems: 10,
+        },
+      },
+    },
+  })
+@UseGuards(AuthGuard('admin'))
+@UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: 'galleryImages', maxCount: 10 }],
+      fileUpload.uploadConfig,
+    ),
+  )
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.companionsService.updateImages(
+      id,
+      'galleryImages',
+      files.galleryImages ?? [],
+      false,
+    );
+    return { message: 'Companion images updated successfully', data };
+  }
+</code></pre><h3>DELETE /api/v1/companions/:id</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:250</code> • Handler: <code>CompanionsController.deleteCompanion</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Delete(':id')
+@ApiOperation({ summary: 'Delete a companion' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.companionsService.deleteCompanion(id);
+    return { message: 'Companion deleted successfully', data };
+  }
+</code></pre><h3>PUT /api/v1/companions/:id/voice</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:258</code> • Handler: <code>CompanionsController.updateVoice</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+@Body() payload: UpdateVoiceDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Put(':id/voice')
+@ApiOperation({ summary: 'Update companion voice ID' })
+@ApiBearerAuth('access-token')
+@ApiBody({ type: UpdateVoiceDto })
+@UseGuards(AuthGuard('admin'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.companionsService.updateVoiceSettings(
+      id,
+      payload.voiceId,
+    );
+
+    return { message: 'Voice ID updated successfully', data };
+  }
+</code></pre><h3>POST /api/v1/credits/packages</h3><p>Source: <code>src/app/module/credit/credit.controller.ts:32</code> • Handler: <code>CreditController.createPackage</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() payload: CreateCreditPackageDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('packages')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@ApiOperation({ summary: 'Create a credit package (admin)' })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.creditService.createPackage(payload);
+    return { message: 'Credit package created successfully', data };
+  }
+</code></pre><h3>GET /api/v1/credits/packages</h3><p>Source: <code>src/app/module/credit/credit.controller.ts:41</code> • Handler: <code>CreditController.getPackages</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>// কোনো parameter নেই
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('packages')
+@ApiOperation({ summary: 'Get active credit packages' })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.creditService.getActivePackages();
+    return { message: 'Credit packages fetched successfully', data };
+  }
+</code></pre><h3>PATCH /api/v1/credits/packages/:id</h3><p>Source: <code>src/app/module/credit/credit.controller.ts:48</code> • Handler: <code>CreditController.updatePackage</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+@Body() payload: UpdateCreditPackageDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Patch('packages/:id')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@ApiOperation({ summary: 'Update a credit package (admin)' })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.creditService.updatePackage(id, payload);
+    return { message: 'Credit package updated successfully', data };
+  }
+</code></pre><h3>DELETE /api/v1/credits/packages/:id</h3><p>Source: <code>src/app/module/credit/credit.controller.ts:60</code> • Handler: <code>CreditController.deactivatePackage</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Delete('packages/:id')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@ApiOperation({ summary: 'Deactivate a credit package (admin)' })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.creditService.deactivatePackage(id);
+    return { message: 'Credit package deactivated successfully', data };
+  }
+</code></pre><h3>POST /api/v1/credits/purchase</h3><p>Source: <code>src/app/module/credit/credit.controller.ts:69</code> • Handler: <code>CreditController.purchase</code></p><p>Access: <code>UseGuards(AuthGuard('user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+@Body() payload: PurchaseCreditPackageDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('purchase')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user'))
+@ApiOperation({ summary: 'Purchase a credit package' })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    if (!request.user) throw new UnauthorizedException();
+    const data = await this.paymentService.buyCredits(
+      request.user.id,
+      payload.packageId,
+    );
+    return { message: 'Credit payment initiated successfully', data };
+  }
+</code></pre><h3>GET /api/v1/credits/wallet</h3><p>Source: <code>src/app/module/credit/credit.controller.ts:85</code> • Handler: <code>CreditController.getWallet</code></p><p>Access: <code>UseGuards(AuthGuard('user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('wallet')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user'))
+@ApiOperation({ summary: 'Get wallet balance and recent transactions' })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    if (!request.user) throw new UnauthorizedException();
+    const data = await this.creditService.getWallet(request.user.id);
+    return { message: 'Wallet fetched successfully', data };
+  }
+</code></pre><h3>GET /api/v1/dashboard/overview</h3><p>Source: <code>src/app/module/dashboard/dashboard.controller.ts:17</code> • Handler: <code>DashboardController.dashboardOverview</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>// কোনো parameter নেই
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('overview')
+@ApiOperation({ summary: 'Get dashboard overview' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.dashboardService.dashboardOverview();
+
+    return {
+      message: 'Dashboard overview fetched successfully',
+      data,
+    };
+  }
+</code></pre><h3>GET /api/v1/relationships</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:39</code> • Handler: <code>EngagementController.relationships</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+@Query() query: PageDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('relationships')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.relationships(req.user!.id, query) };
+  }
+</code></pre><h3>PATCH /api/v1/relationships/:companionId</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:45</code> • Handler: <code>EngagementController.relationship</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+@Param('companionId') id: string
+@Body() body: RelationshipDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Patch('relationships/:companionId')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return {
+      data: await this.service.updateRelationship(req.user!.id, id, body),
+    };
+  }
+</code></pre><h3>GET /api/v1/companions/:companionId/stories</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:54</code> • Handler: <code>EngagementController.stories</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId') id: string
+@Query() query: PageDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('companions/:companionId/stories')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.stories(id, query) };
+  }
+</code></pre><h3>POST /api/v1/companions/:companionId/photos/view</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:60</code> • Handler: <code>EngagementController.photo</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+@Param('companionId') id: string
+@Body() body: PhotoDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('companions/:companionId/photos/view')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return {
+      data: await this.service.viewPhoto(req.user!.id, id, body.photoUrl),
+    };
+  }
+</code></pre><h3>GET /api/v1/photos/history</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:69</code> • Handler: <code>EngagementController.photos</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+@Query() query: PageDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('photos/history')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.photoHistory(req.user!.id, query) };
+  }
+</code></pre><h3>GET /api/v1/credits/ledger</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:75</code> • Handler: <code>EngagementController.ledger</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+@Query() query: PageDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('credits/ledger')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.ledger(req.user!.id, query) };
+  }
+</code></pre><h3>GET /api/v1/credits/costs</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:81</code> • Handler: <code>EngagementController.costs</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>// কোনো parameter নেই
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('credits/costs')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.credits.getCosts() };
+  }
+</code></pre><h3>GET /api/v1/notifications</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:84</code> • Handler: <code>EngagementController.notifications</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+@Query() query: PageDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('notifications')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.notifications(req.user!.id, query) };
+  }
+</code></pre><h3>PATCH /api/v1/notifications/:id/read</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:90</code> • Handler: <code>EngagementController.read</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+@Param('id') id: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Patch('notifications/:id/read')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.readNotification(req.user!.id, id) };
+  }
+</code></pre><h3>PUT /api/v1/admin/credit-costs/:action</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:107</code> • Handler: <code>EngagementAdminController.cost</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('action') action: string
+@Body() body: CostDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Put('credit-costs/:action')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.setCost(action, body.credits) };
+  }
+</code></pre><h3>PUT /api/v1/admin/companions/:companionId/stories</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:113</code> • Handler: <code>EngagementAdminController.story</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId') id: string
+@Body() body: StoryDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Put('companions/:companionId/stories')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.saveStory(id, body) };
+  }
+</code></pre><h3>GET /api/v1/admin/companions/:companionId/stories</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:119</code> • Handler: <code>EngagementAdminController.stories</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId') id: string
+@Query() query: PageDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('companions/:companionId/stories')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.stories(id, query, true) };
+  }
+</code></pre><h3>GET /api/v1/admin/conversations</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:125</code> • Handler: <code>EngagementAdminController.conversations</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Query() query: PageDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('conversations')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.conversations(query) };
+  }
+</code></pre><h3>GET /api/v1/admin/conversations/:id</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:128</code> • Handler: <code>EngagementAdminController.conversation</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+@Query() query: PageDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('conversations/:id')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.conversation(id, query) };
+  }
+</code></pre><h3>PATCH /api/v1/admin/conversations/:id/mode</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:134</code> • Handler: <code>EngagementAdminController.mode</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+@Param('id') id: string
+@Body() body: ModeDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Patch('conversations/:id/mode')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.setMode(id, req.user!.id, body.mode) };
+  }
+</code></pre><h3>POST /api/v1/admin/conversations/:id/replies</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:141</code> • Handler: <code>EngagementAdminController.reply</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+@Param('id') id: string
+@Body() body: HumanReplyDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('conversations/:id/replies')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.humanReply(id, req.user!.id, body) };
+  }
+</code></pre><h3>GET /api/v1/admin/users/:id/details</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:148</code> • Handler: <code>EngagementAdminController.user</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('users/:id/details')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.userDetails(id) };
+  }
+</code></pre><h3>GET /api/v1/admin/users/:id/ledger</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:151</code> • Handler: <code>EngagementAdminController.ledger</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+@Query() query: PageDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('users/:id/ledger')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.service.ledger(id, query) };
+  }
+</code></pre><h3>POST /api/v1/admin/notifications</h3><p>Source: <code>src/app/module/engagement/engagement.controller.ts:157</code> • Handler: <code>EngagementAdminController.notification</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() body: NotificationDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('notifications')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return {
+      data: await this.prisma.notification.create({
+        data: { ...body, type: 'admin' },
+      }),
+    };
+  }
+</code></pre><h3>POST /api/v1/gifts</h3><p>Source: <code>src/app/module/gift/gift.controller.ts:37</code> • Handler: <code>GiftController.createGift</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() payload: CreateGiftDto
+@UploadedFile() file?: Express.Multer.File
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post()
+@ApiOperation({ summary: 'Create a gift (admin)' })
+@ApiConsumes('multipart/form-data')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@UseInterceptors(FileInterceptor('image', fileUpload.uploadConfig))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.giftService.createGift(payload, file);
+    return { message: 'Gift created successfully', data };
+  }
+</code></pre><h3>GET /api/v1/gifts</h3><p>Source: <code>src/app/module/gift/gift.controller.ts:51</code> • Handler: <code>GiftController.getGifts</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get()
+@ApiOperation({ summary: 'Get active gifts' })
+@ApiQuery({ name: 'searchTerm', required: false, type: String })
+@ApiQuery({ name: 'name', required: false, type: String })
+@ApiQuery({ name: 'sortBy', required: false, type: String })
+@ApiQuery({ name: 'sortOrder', required: false, type: String })
+@ApiQuery({ name: 'limit', required: false, type: Number })
+@ApiQuery({ name: 'page', required: false, type: Number })
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const filters = pick(req.query, ['searchTerm', 'name']);
+    const options = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'page']);
+    const result = await this.giftService.getActiveGifts(filters, options);
+    return {
+      message: 'Gifts fetched successfully',
+      meta: result.meta,
+      data: result.data,
+    };
+  }
+</code></pre><h3>PATCH /api/v1/gifts/:id</h3><p>Source: <code>src/app/module/gift/gift.controller.ts:71</code> • Handler: <code>GiftController.updateGift</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+@Body() payload: UpdateGiftDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Patch(':id')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@ApiOperation({ summary: 'Update a gift (admin)' })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.giftService.updateGift(id, payload);
+    return { message: 'Gift updated successfully', data };
+  }
+</code></pre><h3>DELETE /api/v1/gifts/:id</h3><p>Source: <code>src/app/module/gift/gift.controller.ts:80</code> • Handler: <code>GiftController.deactivateGift</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Delete(':id')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@ApiOperation({ summary: 'Deactivate a gift (admin)' })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.giftService.deactivateGift(id);
+    return { message: 'Gift deactivated successfully', data };
+  }
+</code></pre><h3>POST /api/v1/gifts/:giftId/send</h3><p>Source: <code>src/app/module/gift/gift.controller.ts:89</code> • Handler: <code>GiftController.sendGift</code></p><p>Access: <code>UseGuards(AuthGuard('user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+@Param('giftId') giftId: string
+@Body() payload: SendGiftDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post(':giftId/send')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user'))
+@ApiOperation({ summary: 'Send a gift to a companion using credits' })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    if (!request.user) throw new UnauthorizedException();
+    const data = await this.giftService.sendGift(
+      request.user.id,
+      payload.companionId,
+      giftId,
+    );
+    return { message: 'Gift sent successfully', data };
+  }
+</code></pre><h3>POST /api/v1/newsletter</h3><p>Source: <code>src/app/module/newsletter/newsletter.controller.ts:30</code> • Handler: <code>NewsletterController.sendMail</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() createNewsletterDto: CreateNewsletterDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post()
+@ApiOperation({ summary: 'Subscribe to newsletter' })
+@HttpCode(HttpStatus.CREATED)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.newsletterService.sendMail(createNewsletterDto);
+    return {
+      message: 'Newsletter subscription saved successfully',
+      data,
+    };
+  }
+</code></pre><h3>POST /api/v1/newsletter/broadcast</h3><p>Source: <code>src/app/module/newsletter/newsletter.controller.ts:41</code> • Handler: <code>NewsletterController.broadcastNewsletter</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() dto: BroadcastNewsletterDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('broadcast')
+@ApiOperation({ summary: 'Broadcast an email to all newsletter subscribers' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const data = await this.newsletterService.broadcastNewsletter(dto);
+
+    return {
+      message: 'Newsletter broadcast sent successfully',
+      data,
+    };
+  }
+</code></pre><h3>GET /api/v1/newsletter</h3><p>Source: <code>src/app/module/newsletter/newsletter.controller.ts:55</code> • Handler: <code>NewsletterController.getAllNewsletter</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get()
+@ApiOperation({ summary: 'Get all newsletter' })
+@ApiQuery({
+    name: 'searchTerm',
+    type: String,
+    required: false,
+    description: 'Search term',
+  })
+@ApiQuery({
+    name: 'email',
+    type: String,
+    required: false,
+    description: 'Email',
+  })
+@ApiQuery({
+    name: 'page',
+    type: Number,
+    required: false,
+    description: 'Page number',
+  })
+@ApiQuery({
+    name: 'limit',
+    type: Number,
+    required: false,
+    description: 'Limit number',
+  })
+@ApiQuery({
+    name: 'sortBy',
+    type: String,
+    required: false,
+    description: 'Sort by',
+  })
+@ApiQuery({
+    name: 'sortOrder',
+    type: String,
+    required: false,
+    description: 'Sort order',
+  })
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const params = pick(req.query, ['searchTerm', 'email']);
+    const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
+    const result = await this.newsletterService.getAllNewsletter(
+      params,
+      options,
+    );
+
+    return {
+      message: 'Get all newsletter successfully',
+      meta: result.meta,
+      data: result.data,
+    };
+  }
+</code></pre><h3>GET /api/v1/newsletter/:id</h3><p>Source: <code>src/app/module/newsletter/newsletter.controller.ts:109</code> • Handler: <code>NewsletterController.getNewsletterById</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get(':id')
+@ApiOperation({ summary: 'Get newsletter by id' })
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.newsletterService.getNewsletterById(id);
+
+    return {
+      message: 'Get newsletter by id successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>GET /api/v1/payment/subscription/status</h3><p>Source: <code>src/app/module/payment/payment.controller.ts:28</code> • Handler: <code>PaymentController.status</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('subscription/status')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user', 'admin'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return this.billing.status(request.user!.id);
+  }
+</code></pre><h3>POST /api/v1/payment/subscription/sync</h3><p>Source: <code>src/app/module/payment/payment.controller.ts:35</code> • Handler: <code>PaymentController.sync</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('subscription/sync')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user', 'admin'))
+@ApiOperation({
+    summary:
+      'Verify Stripe payment and synchronize subscription access without charging again',
+  })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.billing.sync(request.user!.id) };
+  }
+</code></pre><h3>POST /api/v1/payment/billing-portal</h3><p>Source: <code>src/app/module/payment/payment.controller.ts:46</code> • Handler: <code>PaymentController.portal</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('billing-portal')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user', 'admin'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return this.billing.portal(request.user!.id);
+  }
+</code></pre><h3>POST /api/v1/payment/subscription/cancel</h3><p>Source: <code>src/app/module/payment/payment.controller.ts:53</code> • Handler: <code>PaymentController.cancel</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('subscription/cancel')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user', 'admin'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return this.billing.cancel(request.user!.id);
+  }
+</code></pre><h3>POST /api/v1/payment/subscription/:subscriptionId/upgrade</h3><p>Source: <code>src/app/module/payment/payment.controller.ts:60</code> • Handler: <code>PaymentController.upgrade</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+@Param('subscriptionId') id: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('subscription/:subscriptionId/upgrade')
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user', 'admin'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return this.billing.upgrade(request.user!.id, id);
+  }
+</code></pre><h3>POST /api/v1/payment/subscription/:subscriptionId</h3><p>Source: <code>src/app/module/payment/payment.controller.ts:67</code> • Handler: <code>PaymentController.paySubscriber</code></p><p>Access: <code>UseGuards(AuthGuard('admin', 'user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+@Param('subscriptionId') subscriptionId: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('subscription/:subscriptionId')
+@HttpCode(HttpStatus.CREATED)
+@ApiOperation({ summary: 'Initiate a subscription payment' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin', 'user'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    if (!request.user) {
+      throw new UnauthorizedException();
+    }
+
+    const result = await this.paymentService.paySubscriber(
+      request.user.id,
+      subscriptionId,
+    );
+
+    return {
+      message: 'Payment initiated successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>POST /api/v1/payment/credits</h3><p>Source: <code>src/app/module/payment/payment.controller.ts:91</code> • Handler: <code>PaymentController.buyCredits</code></p><p>Access: <code>UseGuards(AuthGuard('user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+@Body() payload: BuyCreditsDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('credits')
+@HttpCode(HttpStatus.CREATED)
+@ApiOperation({ summary: 'Buy a credit package by package ID' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    if (!request.user) throw new UnauthorizedException();
+    const result = await this.paymentService.buyCredits(
+      request.user.id,
+      payload.packageId,
+    );
+    return { message: 'Credit payment initiated successfully', data: result };
+  }
+</code></pre><h3>POST /api/v1/subscription</h3><p>Source: <code>src/app/module/subscription/subscription.controller.ts:26</code> • Handler: <code>SubscriptionController.createSubscription</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() createSubscriptionDto: CreateSubscriptionDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post()
+@ApiOperation({ summary: 'Create subscription' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.subscriptionService.createSubscription(
+      createSubscriptionDto,
+    );
+    return {
+      message: 'Subscription created successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>GET /api/v1/subscription</h3><p>Source: <code>src/app/module/subscription/subscription.controller.ts:42</code> • Handler: <code>SubscriptionController.getAllSubscription</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get()
+@ApiOperation({ summary: 'Get all subscription' })
+@ApiQuery({
+    name: 'page',
+    type: 'number',
+    required: false,
+  })
+@ApiQuery({
+    name: 'limit',
+    type: 'number',
+    required: false,
+  })
+@ApiQuery({
+    name: 'sortBy',
+    type: 'string',
+    required: false,
+  })
+@ApiQuery({
+    name: 'sortOrder',
+    type: 'string',
+    required: false,
+  })
+@ApiQuery({
+    name: 'name',
+    type: 'string',
+    required: false,
+  })
+@ApiQuery({
+    name: 'features',
+    type: 'string',
+    required: false,
+  })
+@ApiQuery({
+    name: 'isPopular',
+    type: 'boolean',
+    required: false,
+  })
+@ApiQuery({
+    name: 'isActive',
+    type: 'boolean',
+    required: false,
+  })
+@ApiQuery({
+    name: 'searchTerm',
+    type: 'string',
+    required: false,
+  })
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const filters = pick(req.query, [
+      'searchTerm',
+      'name',
+      'features',
+      'isPopular',
+      'isActive',
+    ]);
+    const params = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
+    const result = await this.subscriptionService.getAllSubscription(
+      filters,
+      params,
+    );
+    return {
+      message: 'Subscription fetched successfully',
+      meta: result.meta,
+      data: result.data,
+    };
+  }
+</code></pre><h3>GET /api/v1/subscription/:id</h3><p>Source: <code>src/app/module/subscription/subscription.controller.ts:110</code> • Handler: <code>SubscriptionController.getSubscriptionById</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get(':id')
+@ApiOperation({ summary: 'Get subscription by id' })
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.subscriptionService.getSubscriptionById(id);
+    return {
+      message: 'Subscription fetched successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>PUT /api/v1/subscription/:id</h3><p>Source: <code>src/app/module/subscription/subscription.controller.ts:121</code> • Handler: <code>SubscriptionController.updateSubscription</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+@Body() updateSubscriptionDto: UpdateSubscriptionDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Put(':id')
+@ApiOperation({ summary: 'Update subscription' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.subscriptionService.updateSubscription(
+      id,
+      updateSubscriptionDto,
+    );
+    return {
+      message: 'Subscription updated successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>DELETE /api/v1/subscription/:id</h3><p>Source: <code>src/app/module/subscription/subscription.controller.ts:139</code> • Handler: <code>SubscriptionController.deleteSubscription</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Delete(':id')
+@ApiOperation({ summary: 'Delete subscription' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.subscriptionService.deleteSubscription(id);
+    return {
+      message: 'Subscription deleted successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>GET /api/v1/telegram/status/:companionId</h3><p>Source: <code>src/app/module/telegram/telegram-connect.controller.ts:28</code> • Handler: <code>TelegramConnectController.status</code></p><p>Access: <code>UseGuards(AuthGuard('user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+@Param('companionId', ParseUUIDPipe) companionId: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('status/:companionId')
+@ApiOperation({
+    summary: 'Get Telegram linking/subscription status and return-to-bot URL',
+    description:
+      'Use after payment confirmation. Credit balance is available from the credit wallet API. This endpoint does not grant credits or activate subscriptions.',
+  })
+@ApiParam({ name: 'companionId', format: 'uuid' })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.ai.status(request.user!.id, companionId) };
+  }
+</code></pre><h3>POST /api/v1/telegram/connect/:companionId</h3><p>Source: <code>src/app/module/telegram/telegram-connect.controller.ts:42</code> • Handler: <code>TelegramConnectController.connect</code></p><p>Access: <code>UseGuards(AuthGuard('user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+@Param('companionId', ParseUUIDPipe) companionId: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('connect/:companionId')
+@ApiOperation({
+    summary: 'Create a 10-minute, single-use Telegram account link',
+    description:
+      'Requires an approved adult user and active subscription. Open data.telegramUrl and press START in Telegram.',
+  })
+@ApiParam({ name: 'companionId', format: 'uuid' })
+@ApiResponse({
+    status: 402,
+    description:
+      'Active subscription required. Subscribe on the website, then retry.',
+  })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.ai.connect(request.user!.id, companionId) };
+  }
+</code></pre><h3>GET /api/v1/telegram/app</h3><p>Source: <code>src/app/module/telegram/telegram-mini-app.controller.ts:41</code> • Handler: <code>TelegramMiniAppController.page</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Res() response: Response
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get()
+@SetMetadata('rawResponse', true)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const nonce = randomBytes(18).toString('base64');
+    response
+      .set({
+        'Cache-Control': 'no-store',
+        'Referrer-Policy': 'no-referrer',
+        'X-Content-Type-Options': 'nosniff',
+        'Content-Security-Policy': `default-src 'none'; script-src 'nonce-${nonce}' https://telegram.org; style-src 'nonce-${nonce}'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors https://web.telegram.org https://*.telegram.org`,
+      })
+      .type('html')
+      .send(telegramLoginPage.replaceAll('__NONCE__', nonce));
+  }
+</code></pre><h3>GET /api/v1/telegram/app/settings/:companionId</h3><p>Source: <code>src/app/module/telegram/telegram-mini-app.controller.ts:56</code> • Handler: <code>TelegramMiniAppController.settings</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) companionId: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('settings/:companionId')
+@Header('Cache-Control', 'no-store')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.app.settings(companionId) };
+  }
+</code></pre><h3>POST /api/v1/telegram/app/login/:companionId</h3><p>Source: <code>src/app/module/telegram/telegram-mini-app.controller.ts:62</code> • Handler: <code>TelegramMiniAppController.login</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
+@Body() body: TelegramLoginDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('login/:companionId')
+@HttpCode(200)
+@Header('Cache-Control', 'no-store')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return {
+      data: await this.app.login(
+        id,
+        body.initData,
+        body.email,
+        body.password,
+        body.confirmTransfer,
+      ),
+    };
+  }
+</code></pre><h3>POST /api/v1/telegram/app/status/:companionId</h3><p>Source: <code>src/app/module/telegram/telegram-mini-app.controller.ts:80</code> • Handler: <code>TelegramMiniAppController.status</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
+@Body() body: TelegramSessionDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('status/:companionId')
+@HttpCode(200)
+@Header('Cache-Control', 'no-store')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.app.status(id, body.initData) };
+  }
+</code></pre><h3>POST /api/v1/webhooks/telegram/:companionId</h3><p>Source: <code>src/app/module/telegram/telegram-webhook.controller.ts:22</code> • Handler: <code>TelegramWebhookController.receiveForCompanion</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) companionId: string
+@Body() body: unknown
+@Headers('x-telegram-bot-api-secret-token') secret?: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post(':companionId')
+@HttpCode(200)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const key = this.telegram.botKey(companionId);
+    this.telegram.verifySecret(secret, key);
+    await this.queue.receive(body, key);
+    return { ok: true };
+  }
+</code></pre><h3>POST /api/v1/webhooks/telegram</h3><p>Source: <code>src/app/module/telegram/telegram-webhook.controller.ts:35</code> • Handler: <code>TelegramWebhookController.receive</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() body: unknown
+@Headers('x-telegram-bot-api-secret-token') secret?: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post()
+@HttpCode(200)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    this.telegram.verifySecret(secret);
+    await this.queue.receive(body);
+    return { ok: true };
+  }
+</code></pre><h3>POST /api/v1/user</h3><p>Source: <code>src/app/module/user/user.controller.ts:38</code> • Handler: <code>UserController.createUser</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() createUserDto: CreateUserDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post()
+@ApiOperation({
+    summary: 'create user',
+  })
+@HttpCode(HttpStatus.CREATED)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.userService.createUser(createUserDto);
+
+    return {
+      message: 'create user successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>GET /api/v1/user</h3><p>Source: <code>src/app/module/user/user.controller.ts:52</code> • Handler: <code>UserController.getAllUser</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get()
+@ApiOperation({
+    summary: 'get all user',
+  })
+@ApiQuery({
+    name: 'searchTerm',
+    type: String,
+    required: false,
+    description: 'search term',
+  })
+@ApiQuery({
+    name: 'role',
+    type: String,
+    required: false,
+    description: 'role',
+  })
+@ApiQuery({
+    name: 'email',
+    type: String,
+    required: false,
+    description: 'email',
+  })
+@ApiQuery({
+    name: 'name',
+    type: String,
+    required: false,
+    description: 'name',
+  })
+@ApiQuery({
+    name: 'page',
+    type: Number,
+    required: false,
+    description: 'page number',
+  })
+@ApiQuery({
+    name: 'limit',
+    type: Number,
+    required: false,
+    description: 'limit number',
+  })
+@ApiQuery({
+    name: 'sortBy',
+    type: String,
+    required: false,
+    description: 'sort by',
+  })
+@ApiQuery({
+    name: 'sortOrder',
+    type: String,
+    required: false,
+    description: 'sort order',
+  })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const filters = pick(req.query, ['searchTerm', 'role', 'email', 'name']);
+    const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
+    const result = await this.userService.getAllUser(filters, options);
+
+    return {
+      message: 'get all user successfully',
+      meta: result.meta,
+      data: result.data,
+    };
+  }
+</code></pre><h3>GET /api/v1/user/my-profile</h3><p>Source: <code>src/app/module/user/user.controller.ts:119</code> • Handler: <code>UserController.myProfile</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('my-profile')
+@ApiOperation({
+    summary: 'get my profile',
+  })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user', 'admin'))
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const id = req.user!.id;
+    const result = await this.userService.myProfile(id);
+
+    return {
+      message: 'get my profile successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>PUT /api/v1/user/my-profile</h3><p>Source: <code>src/app/module/user/user.controller.ts:136</code> • Handler: <code>UserController.UpdateMyProfile</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+@Body() updateUserDto: UpdateUserDto
+@UploadedFile() file?: Express.Multer.File
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Put('my-profile')
+@ApiOperation({
+    summary: 'update my profile',
+  })
+@ApiConsumes('multipart/form-data')
+@ApiBody({ type: UpdateUserDto })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user', 'admin'))
+@UseInterceptors(FileInterceptor('profileImage', fileUpload.uploadConfig))
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const id = req.user!.id;
+    const result = await this.userService.UpdateMyProfile(
+      id,
+      updateUserDto,
+      file,
+    );
+
+    return {
+      message: 'update my profile successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>GET /api/v1/user/:id</h3><p>Source: <code>src/app/module/user/user.controller.ts:164</code> • Handler: <code>UserController.getUserById</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get(':id')
+@ApiOperation({
+    summary: 'get user by id',
+  })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.userService.getUserById(id);
+
+    return {
+      message: 'get user by id successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>PUT /api/v1/user/:id</h3><p>Source: <code>src/app/module/user/user.controller.ts:180</code> • Handler: <code>UserController.updateUser</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+@Body() updateUserDto: UpdateUserDto
+@UploadedFile() file?: Express.Multer.File
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Put(':id')
+@ApiOperation({
+    summary: 'update user',
+  })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@UseInterceptors(FileInterceptor('profileImage', fileUpload.uploadConfig))
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.userService.updateUser(id, updateUserDto, file);
+
+    return {
+      message: 'update user successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>DELETE /api/v1/user/:id</h3><p>Source: <code>src/app/module/user/user.controller.ts:201</code> • Handler: <code>UserController.deleteUser</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Delete(':id')
+@ApiOperation({
+    summary: 'delete user',
+  })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@HttpCode(HttpStatus.OK)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const result = await this.userService.deleteUser(id);
+
+    return {
+      message: 'delete user successfully',
+      data: result,
+    };
+  }
+</code></pre><h3>POST /api/v1/webhook</h3><p>Source: <code>src/app/module/webhook/webhook.controller.ts:12</code> • Handler: <code>WebhookController.handleWebhook</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: RawBodyRequest&lt;Request&gt;
+@Headers('stripe-signature') signature?: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post()
+@HttpCode(200)
+@ApiOperation({ summary: 'Stripe webhook handler' })
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return this.webhookService.handleWebhook(req.rawBody, signature);
+  }
+</code></pre><h3>POST /api/v1/whatsapp/connect/:companionId</h3><p>Source: <code>src/app/module/whatsapp/whatsapp-connect.controller.ts:21</code> • Handler: <code>WhatsAppConnectController.connect</code></p><p>Access: <code>UseGuards(AuthGuard('user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() request: Request
+@Param('companionId', ParseUUIDPipe) companionId: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('connect/:companionId')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { data: await this.ai.connect(request.user!.id, companionId) };
+  }
+</code></pre><h3>GET /api/v1/webhooks/whatsapp</h3><p>Source: <code>src/app/module/whatsapp/whatsapp-webhook.controller.ts:30</code> • Handler: <code>WhatsAppWebhookController.verifyWebhook</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Query('hub.mode') mode: string
+@Query('hub.verify_token') token: string
+@Query('hub.challenge') challenge: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get()
+@Header('Content-Type', 'text/plain')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    const expectedToken = this.configService.get&lt;string&gt;(
+      'WHATSAPP_VERIFY_TOKEN',
+    );
+    if (
+      mode !== 'subscribe' ||
+      !expectedToken ||
+      token !== expectedToken ||
+      typeof challenge !== 'string' ||
+      !challenge
+    ) {
+      throw new ForbiddenException('Invalid webhook verification');
+    }
+
+    return challenge;
+  }
+</code></pre><h3>POST /api/v1/webhooks/whatsapp</h3><p>Source: <code>src/app/module/whatsapp/whatsapp-webhook.controller.ts:53</code> • Handler: <code>WhatsAppWebhookController.receiveWebhook</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() body: Parameters&lt;WhatsAppInboundService['receive']&gt;[0]
+@Req() req: RawBodyRequest&lt;Request&gt;
+@Headers('x-hub-signature-256') signature?: string
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post()
+@HttpCode(200)
+@Header('Content-Type', 'text/plain')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    this.inbound.verifySignature(req.rawBody, signature);
+    this.logger.log('Verified WhatsApp webhook received');
+    await this.inbound.receive(body);
+    return 'EVENT_RECEIVED';
+  }
+</code></pre><h3>POST /api/v1/whatsapp/test</h3><p>Source: <code>src/app/module/whatsapp/whatsapp.controller.ts:66</code> • Handler: <code>WhatsAppController.test</code></p><p>Access: <code>UseGuards(AuthGuard('admin', 'user'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Body() dto: WhatsAppTestDto
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('test')
+@HttpCode(200)
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    // Only the admin test route falls back to the single .env sender.
+    let phoneNumberId =
+      this.config.get&lt;string&gt;('WHATSAPP_PHONE_NUMBER_ID') ?? '';
+    if (dto.companionId) {
+      const companion = await this.prisma.companions.findFirst({
+        where: { id: dto.companionId, status: true, whatsappEnabled: true },
+      });
+      if (!companion?.whatsappPhoneNumberId) {
+        throw new NotFoundException('Active WhatsApp companion not found');
+      }
+      phoneNumberId = companion.whatsappPhoneNumberId;
+    }
+    const data =
+      dto.type === 'text'
+        ? await this.whatsapp.sendText(
+            phoneNumberId,
+            dto.to,
+            dto.message ?? 'Hello from Meet Elysia backend',
+          )
+        : await this.whatsapp.sendTestTemplate(phoneNumberId, dto.to);
+    return { message: 'WhatsApp message accepted by Meta', data };
+  }
+</code></pre><h3>GET /</h3><p>Source: <code>src/app.controller.ts:9</code> • Handler: <code>AppController.getHello</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Res() res: Response
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get()
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return res.type('html').send(this.appService.getHello());
+  }
+</code></pre><h3>GET /api/v1/health/live</h3><p>Source: <code>src/health.controller.ts:12</code> • Handler: <code>HealthController.live</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>// কোনো parameter নেই
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('live')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return { status: 'ok' };
+  }
+</code></pre><h3>GET /api/v1/health/ready</h3><p>Source: <code>src/health.controller.ts:15</code> • Handler: <code>HealthController.ready</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>// কোনো parameter নেই
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('ready')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    try {
+      const rows = await this.prisma.$queryRaw&lt;
+        { ready: boolean }[]
+      &gt;`SELECT (to_regclass('request_limits') IS NOT NULL AND to_regclass('telegram_jobs') IS NOT NULL) AS ready`;
+      if (!rows[0]?.ready) throw new Error();
+      return { status: 'ready' };
+    } catch {
+      throw new ServiceUnavailableException('Service not ready');
+    }
+  }
+</code></pre><h3>GET /privacy-policy</h3><p>Source: <code>src/legal-pages.controller.ts:38</code> • Handler: <code>LegalPagesController.privacyPolicy</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>// কোনো parameter নেই
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('privacy-policy')
+@Header('Content-Type', 'text/html; charset=utf-8')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return page(
+      'Privacy Policy',
+      `
+      &lt;p&gt;This policy describes information processed by Meet Elysia through its website, accounts, AI companion features and WhatsApp integration.&lt;/p&gt;
+      &lt;h2&gt;Information we process&lt;/h2&gt;
+      &lt;ul&gt;
+        &lt;li&gt;Account information such as your email, name, password hash, optional phone number and profile image.&lt;/li&gt;
+        &lt;li&gt;Messages you send, generated responses, conversation identifiers, selected companions and interaction history.&lt;/li&gt;
+        &lt;li&gt;For WhatsApp, your sender number, message identifiers, message content and account-linking information received through Meta.&lt;/li&gt;
+        &lt;li&gt;Subscription status, payment records, payment-provider identifiers, credits and purchases.&lt;/li&gt;
+        &lt;li&gt;Operational information used to investigate errors, secure accounts and process message delivery.&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;h2&gt;How information is used&lt;/h2&gt;
+      &lt;p&gt;We use this information to authenticate accounts, link WhatsApp conversations to users and companions, generate and deliver replies, manage subscriptions and credits, provide support and troubleshoot the service. Authorized administrators can access conversations for support and human takeover.&lt;/p&gt;
+      &lt;h2&gt;Service providers&lt;/h2&gt;
+      &lt;p&gt;Operating the service involves providers for hosting and database storage, AI processing, email, media storage and payments. Relevant message content and conversation context are sent to the configured AI service when AI replies are enabled. Meta processes WhatsApp messages; Stripe handles payment processing; uploaded profile media may be stored through Cloudinary. These providers process information under their own applicable terms and privacy policies.&lt;/p&gt;
+      &lt;h2&gt;Storage and retention&lt;/h2&gt;
+      &lt;p&gt;Account, conversation and transaction information is stored to operate the service. Retention varies by record type and provider; there is no single automatic deletion period for all records. Contact us to request deletion or ask about a particular record. Some records may need to be retained for applicable obligations, dispute resolution or security, and provider backups may follow separate retention schedules.&lt;/p&gt;
+      &lt;h2&gt;Your choices and requests&lt;/h2&gt;
+      &lt;p&gt;You may stop messaging the service and contact ${contactLink} to request access, correction or deletion of your information. Follow our &lt;a href=&quot;/data-deletion&quot;&gt;data deletion instructions&lt;/a&gt; to identify the account or WhatsApp data involved. Deleting a chat in WhatsApp does not itself delete records held by Meet Elysia.&lt;/p&gt;
+      &lt;h2&gt;Security and updates&lt;/h2&gt;
+      &lt;p&gt;Account passwords are stored as hashes. No online system can guarantee absolute security; do not send passwords, payment card details or other unnecessary sensitive information in companion chats. Updates to this policy will be reflected on this page.&lt;/p&gt;
+    `,
+    );
+  }
+</code></pre><h3>GET /terms</h3><p>Source: <code>src/legal-pages.controller.ts:67</code> • Handler: <code>LegalPagesController.terms</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>// কোনো parameter নেই
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('terms')
+@Header('Content-Type', 'text/html; charset=utf-8')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return page(
+      'Terms of Service',
+      `
+      &lt;p&gt;These terms describe use of Meet Elysia's account, companion chat and WhatsApp features. By using the service, you agree to these terms.&lt;/p&gt;
+      &lt;h2&gt;Accounts and responsible use&lt;/h2&gt;
+      &lt;p&gt;Provide accurate account information, use only accounts and phone numbers you are authorized to use, and keep your credentials secure. Do not use the service for unlawful activity, harassment, fraud, unauthorized access or interference with other users or systems.&lt;/p&gt;
+      &lt;h2&gt;Companion conversations&lt;/h2&gt;
+      &lt;p&gt;Companions are AI-powered characters. Generated responses may be inaccurate or inappropriate and should not be relied on as professional advice or emergency assistance. Authorized administrators may participate through human takeover. Availability and response times can vary.&lt;/p&gt;
+      &lt;h2&gt;Subscriptions and credits&lt;/h2&gt;
+      &lt;p&gt;Some features require a subscription or credits. Review the price, renewal terms and purchase details shown at checkout before paying. Contact ${contactLink} for billing, cancellation or refund questions; applicable consumer rights remain unaffected.&lt;/p&gt;
+      &lt;h2&gt;Your content and privacy&lt;/h2&gt;
+      &lt;p&gt;Only submit content you have permission to share. You allow the service and its providers to process that content as needed to deliver the requested features. See our &lt;a href=&quot;/privacy-policy&quot;&gt;Privacy Policy&lt;/a&gt; for data handling and our &lt;a href=&quot;/data-deletion&quot;&gt;Data Deletion&lt;/a&gt; page for removal requests.&lt;/p&gt;
+      &lt;h2&gt;Third-party services and access&lt;/h2&gt;
+      &lt;p&gt;WhatsApp, payment services and other integrated providers have their own terms. Features may change or become unavailable. Access may be restricted to address abuse, security issues or violations of these terms.&lt;/p&gt;
+      &lt;h2&gt;Contact and changes&lt;/h2&gt;
+      &lt;p&gt;Questions or requests to close an account can be sent to ${contactLink}. Revised terms will be posted here with an updated date.&lt;/p&gt;
+    `,
+    );
+  }
+</code></pre><h3>GET /data-deletion</h3><p>Source: <code>src/legal-pages.controller.ts:90</code> • Handler: <code>LegalPagesController.dataDeletion</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>// কোনো parameter নেই
+</code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('data-deletion')
+@Header('Content-Type', 'text/html; charset=utf-8')
+</code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
+    return page(
+      'Data Deletion Instructions',
+      `
+      &lt;p&gt;You can request deletion of your Meet Elysia account or data associated with its WhatsApp integration by email.&lt;/p&gt;
+      &lt;h2&gt;Submit a request&lt;/h2&gt;
+      &lt;ol&gt;
+        &lt;li&gt;Email ${contactLink} with the subject &lt;strong&gt;Meet Elysia Data Deletion Request&lt;/strong&gt;.&lt;/li&gt;
+        &lt;li&gt;Send from your registered email where possible. Include the account email and, for WhatsApp data, your phone number with country code.&lt;/li&gt;
+        &lt;li&gt;Specify whether you want the entire account deleted or only particular data, such as WhatsApp linking information or conversation history.&lt;/li&gt;
+      &lt;/ol&gt;
+      &lt;p&gt;Do not include passwords, one-time codes, access tokens or payment card details.&lt;/p&gt;
+      &lt;h2&gt;What happens next&lt;/h2&gt;
+      &lt;p&gt;The support team handles requests manually and may ask for information needed to verify account ownership before processing deletion. Ask in the same email for confirmation of completion and the status of any retained records.&lt;/p&gt;
+      &lt;h2&gt;Scope and limitations&lt;/h2&gt;
+      &lt;p&gt;A request can cover your profile, stored conversations and WhatsApp account links. Records subject to applicable retention obligations or needed for disputes or security may require separate handling. Copies held in provider backups may follow their retention schedules.&lt;/p&gt;
+      &lt;p&gt;Deleting Meet Elysia data does not delete your Facebook or WhatsApp account or copies held by Meta or message recipients. Deleting a WhatsApp chat alone does not submit a deletion request to Meet Elysia. If you have an active subscription, include a cancellation request so support can address billing separately.&lt;/p&gt;
+      &lt;p&gt;Read our &lt;a href=&quot;/privacy-policy&quot;&gt;Privacy Policy&lt;/a&gt; for an overview of the information processed by the service.&lt;/p&gt;
+    `,
+    );
+  }
+</code></pre><h2>Request DTO: সব field ও validation</h2><p>IsOptional থাকলে optional; PartialType(BaseDto) base-এর field optional করে; nested class-ও নিচে আছে। TypeScript ? একাই runtime validation নয়—decorator-ও অনুসরণ করুন। Update DTO-তে inheritance/OmitType থাকলে বাদ দেওয়া field পাঠাবেন না। ApiProperty example production default নয়।</p><h3>CreateAuthDto</h3><p>Source: <code>src/app/module/auth/dto/create-auth.dto.ts</code></p><pre><code>export class CreateAuthDto {
+  @ApiProperty({
+    example: 'John Doe',
+    description: 'User full name',
+  })
+  @IsString()
+  @IsNotEmpty({ message: 'Name is required' })
+  name!: string;
+
+  @ApiProperty({
+    example: 'john@example.com',
+    description: 'User email address',
+  })
+  @IsEmail({}, { message: 'Please provide a valid email' })
+  @IsNotEmpty({ message: 'Email is required' })
+  email!: string;
+
+  @ApiProperty({
+    example: '01712345678',
+    description: 'User phone number',
+  })
+  @IsString()
+  @IsNotEmpty({ message: 'Phone number is required' })
+  phoneNumber!: string;
+
+  @ApiProperty({
+    example: 'Password123',
+    description: 'User password',
+    minLength: 6,
+  })
+  @IsString()
+  @IsNotEmpty({ message: 'Password is required' })
+  @MinLength(6, {
+    message: 'Password must be at least 6 characters',
+  })
+  password!: string;
+
+  @ApiPropertyOptional({
+    example: true,
+    default: false,
+    description: 'Whether the companion is adult eligible',
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) =&gt;
+    value === 'true' ? true : value === 'false' ? false : value,
+  )
+  adultEligible?: boolean;
+}
+</code></pre><h3>LoginAuthDto</h3><p>Source: <code>src/app/module/auth/dto/create-auth.dto.ts</code></p><pre><code>export class LoginAuthDto {
+  @ApiProperty({
+    example: 'john@example.com',
+  })
+  @IsEmail({}, { message: 'Please provide a valid email' })
+  @IsNotEmpty({ message: 'Email is required' })
+  email!: string;
+
+  @ApiProperty({
+    example: 'Password123',
+  })
+  @IsString()
+  @IsNotEmpty({ message: 'Password is required' })
+  password!: string;
+}
+</code></pre><h3>ForgotPasswordAuthDto</h3><p>Source: <code>src/app/module/auth/dto/create-auth.dto.ts</code></p><pre><code>export class ForgotPasswordAuthDto {
+  @ApiProperty({
+    example: 'john@example.com',
+  })
+  @IsEmail({}, { message: 'Please provide a valid email' })
+  @IsNotEmpty({ message: 'Email is required' })
+  email!: string;
+}
+</code></pre><h3>VerifyOtpAuthDto</h3><p>Source: <code>src/app/module/auth/dto/create-auth.dto.ts</code></p><pre><code>export class VerifyOtpAuthDto {
+  @ApiProperty({
+    example: 'john@example.com',
+  })
+  @IsEmail({}, { message: 'Please provide a valid email' })
+  @IsNotEmpty({ message: 'Email is required' })
+  email!: string;
+
+  @ApiProperty({
+    example: '123456',
+    description: '6 digit OTP',
+  })
+  @IsString()
+  @IsNotEmpty({ message: 'OTP is required' })
+  @Matches(/^\d{6}$/, {
+    message: 'OTP must be exactly 6 digits',
+  })
+  otp!: string;
+}
+</code></pre><h3>ResetPasswordAuthDto</h3><p>Source: <code>src/app/module/auth/dto/create-auth.dto.ts</code></p><pre><code>export class ResetPasswordAuthDto {
+  @ApiProperty({ description: 'Single-use resetToken returned by verify-otp' })
+  @IsString()
+  @Matches(/^[a-f0-9]{64}$/)
+  resetToken!: string;
+  @ApiProperty({
+    example: 'john@example.com',
+  })
+  @IsEmail({}, { message: 'Please provide a valid email' })
+  @IsNotEmpty({ message: 'Email is required' })
+  email!: string;
+
+  @ApiProperty({
+    example: 'NewPassword123',
+    minLength: 6,
+  })
+  @IsString()
+  @IsNotEmpty({ message: 'Password is required' })
+  @MinLength(6, {
+    message: 'Password must be at least 6 characters',
+  })
+  password!: string;
+}
+</code></pre><h3>ChangePasswordAuthDto</h3><p>Source: <code>src/app/module/auth/dto/create-auth.dto.ts</code></p><pre><code>export class ChangePasswordAuthDto {
+  @ApiProperty({
+    example: 'john@example.com',
+  })
+  @IsEmail({}, { message: 'Please provide a valid email' })
+  @IsNotEmpty({ message: 'Email is required' })
+  email!: string;
+
+  @ApiProperty({
+    example: 'OldPassword123',
+  })
+  @IsString()
+  @IsNotEmpty({ message: 'Old password is required' })
+  oldPassword!: string;
+
+  @ApiProperty({
+    example: 'NewPassword123',
+    minLength: 6,
+  })
+  @IsString()
+  @IsNotEmpty({ message: 'New password is required' })
+  @MinLength(6, {
+    message: 'New password must be at least 6 characters',
+  })
+  newPassword!: string;
+}
+</code></pre><h3>UpdateAuthDto</h3><p>Source: <code>src/app/module/auth/dto/update-auth.dto.ts</code></p><pre><code>export class UpdateAuthDto extends PartialType(CreateAuthDto) {}
+</code></pre><h3>SendMessageDto</h3><p>Source: <code>src/app/module/chat/dto/send-message.dto.ts</code></p><pre><code>export class SendMessageDto {
+  @ApiProperty({
+    enum: ['text', 'voice'],
+    required: false,
+    description: 'Voice messages supply their transcript in message.',
+  })
+  @IsOptional()
+  @IsIn(['text', 'voice'])
+  type?: 'text' | 'voice';
+
+  @ApiProperty({ example: 'Hello, how are you?' })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(5000)
+  message!: string;
+}
+</code></pre><h3>CompanionPersonalityDto</h3><p>Source: <code>src/app/module/companions/dto/create-companion.dto.ts</code></p><pre><code>export class CompanionPersonalityDto {
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  traits!: string[];
+
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  about!: string;
+
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  essence!: string;
+
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  sharedTraits!: string[];
+}
+</code></pre><h3>CompanionCommunicationStyleDto</h3><p>Source: <code>src/app/module/companions/dto/create-companion.dto.ts</code></p><pre><code>export class CompanionCommunicationStyleDto {
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  styleTraits!: string[];
+
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  topicsSheEnjoys!: string;
+
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  whatYouExperience!: string[];
+}
+</code></pre><h3>CompanionBackgroundDto</h3><p>Source: <code>src/app/module/companions/dto/create-companion.dto.ts</code></p><pre><code>export class CompanionBackgroundDto {
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  location!: string;
+
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  occupation!: string;
+
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  lifestyle!: string[];
+}
+</code></pre><h3>CompanionVisualProfileDto</h3><p>Source: <code>src/app/module/companions/dto/create-companion.dto.ts</code></p><pre><code>export class CompanionVisualProfileDto {
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  aestheticKeywords!: string[];
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  @IsOptional()
+  @IsString()
+  note?: string | null;
+
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  referenceImages!: string[];
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  @IsOptional()
+  @IsString()
+  physicalIdentity?: string | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  @IsOptional()
+  @IsString()
+  generationInstructions?: string | null;
+}
+</code></pre><h3>CompanionVoiceSettingsDto</h3><p>Source: <code>src/app/module/companions/dto/create-companion.dto.ts</code></p><pre><code>export class CompanionVoiceSettingsDto {
+  @ApiProperty({})
+  @Transform(toNumber)
+  @IsNumber()
+  stability!: number;
+
+  @ApiProperty({})
+  @Transform(toNumber)
+  @IsNumber()
+  similarityBoost!: number;
+
+  @ApiProperty({})
+  @Transform(toNumber)
+  @IsNumber()
+  style!: number;
+
+  @ApiProperty({})
+  @Transform(toBoolean)
+  @IsBoolean()
+  useSpeakerBoost!: boolean;
+
+  @ApiProperty({})
+  @Transform(toNumber)
+  @IsNumber()
+  speed!: number;
+}
+</code></pre><h3>CompanionVoiceDto</h3><p>Source: <code>src/app/module/companions/dto/create-companion.dto.ts</code></p><pre><code>export class CompanionVoiceDto {
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  provider!: string;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  @IsOptional()
+  @IsString()
+  voiceId?: string | null;
+
+  @ApiPropertyOptional({
+    type: () =&gt; CompanionVoiceSettingsDto,
+    description: 'Nested JSON object',
+  })
+  @IsOptional()
+  @nested(CompanionVoiceSettingsDto)
+  @IsObject()
+  @ValidateNested()
+  settings?: CompanionVoiceSettingsDto;
+}
+</code></pre><h3>CreateCompanionDto</h3><p>Source: <code>src/app/module/companions/dto/create-companion.dto.ts</code></p><pre><code>export class CreateCompanionDto {
+  @ApiPropertyOptional({ example: '+15551234567', nullable: true })
+  @IsOptional()
+  @Matches(/^\+[1-9]\d{6,14}$/)
+  whatsappPhoneNumber?: string | null;
+
+  @ApiPropertyOptional({ example: '123456789012345', nullable: true })
+  @IsOptional()
+  @Matches(/^\d+$/)
+  whatsappPhoneNumberId?: string | null;
+
+  @ApiPropertyOptional({ example: 'Elena - AI Companion', nullable: true })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  whatsappDisplayName?: string | null;
+
+  @ApiPropertyOptional({ default: false })
+  @ValidateIf((_object, value) =&gt; value !== undefined)
+  @Transform(toBoolean)
+  @IsBoolean()
+  whatsappEnabled?: boolean;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @IsString()
+  @MaxLength(4096)
+  whatsappWelcomeMessage?: string | null;
+
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @ApiPropertyOptional({})
+  @ValidateIf((_object, value) =&gt; value !== undefined)
+  @Transform(toNumber)
+  @IsInt()
+  @Min(1)
+  version?: number;
+
+  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  title!: string;
+
+  @ApiPropertyOptional({ type: Number, nullable: true })
+  @IsOptional()
+  @Transform(toNumber)
+  @IsInt()
+  @Min(18)
+  age?: number | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  @IsOptional()
+  @IsString()
+  backstory?: string | null;
+
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  voiceDescription!: string[];
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  @IsOptional()
+  @IsString()
+  profileImage?: string | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  @IsOptional()
+  @IsString()
+  coverImage?: string | null;
+
+  @ApiPropertyOptional({ type: [String] })
+  @ValidateIf((_object, value) =&gt; value !== undefined)
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  galleryImages?: string[];
+
+  @ApiPropertyOptional({})
+  @ValidateIf((_object, value) =&gt; value !== undefined)
+  @Transform(toBoolean)
+  @IsBoolean()
+  status?: boolean;
+
+  @ApiProperty({ type: [String] })
+  @Transform(toArray)
+  @IsArray()
+  @IsString({ each: true })
+  interests!: string[];
+
+  @ApiPropertyOptional({
+    type: () =&gt; CompanionPersonalityDto,
+    description: 'Nested JSON object',
+  })
+  @IsOptional()
+  @nested(CompanionPersonalityDto)
+  @IsObject()
+  @ValidateNested()
+  personality?: CompanionPersonalityDto;
+
+  @ApiPropertyOptional({
+    type: () =&gt; CompanionCommunicationStyleDto,
+    description: 'Nested JSON object',
+  })
+  @IsOptional()
+  @nested(CompanionCommunicationStyleDto)
+  @IsObject()
+  @ValidateNested()
+  communicationStyle?: CompanionCommunicationStyleDto;
+
+  @ApiPropertyOptional({
+    type: () =&gt; CompanionBackgroundDto,
+    description: 'Nested JSON object',
+  })
+  @IsOptional()
+  @nested(CompanionBackgroundDto)
+  @IsObject()
+  @ValidateNested()
+  background?: CompanionBackgroundDto;
+
+  @ApiPropertyOptional({
+    type: () =&gt; CompanionVisualProfileDto,
+    description: 'Nested JSON object',
+  })
+  @IsOptional()
+  @nested(CompanionVisualProfileDto)
+  @IsObject()
+  @ValidateNested()
+  visualProfile?: CompanionVisualProfileDto;
+
+  @ApiPropertyOptional({
+    type: () =&gt; CompanionVoiceDto,
+    description: 'Nested JSON object',
+  })
+  @IsOptional()
+  @nested(CompanionVoiceDto)
+  @IsObject()
+  @ValidateNested()
+  voice?: CompanionVoiceDto;
+}
+</code></pre><h3>UpdateCompanionPersonalityDto</h3><p>Source: <code>src/app/module/companions/dto/update-companion.dto.ts</code></p><pre><code>export class UpdateCompanionPersonalityDto extends PartialType(
+  CompanionPersonalityDto,
+  { skipNullProperties: false },
+) {}
+</code></pre><h3>UpdateCompanionCommunicationStyleDto</h3><p>Source: <code>src/app/module/companions/dto/update-companion.dto.ts</code></p><pre><code>export class UpdateCompanionCommunicationStyleDto extends PartialType(
+  CompanionCommunicationStyleDto,
+  { skipNullProperties: false },
+) {}
+</code></pre><h3>UpdateCompanionBackgroundDto</h3><p>Source: <code>src/app/module/companions/dto/update-companion.dto.ts</code></p><pre><code>export class UpdateCompanionBackgroundDto extends PartialType(
+  CompanionBackgroundDto,
+  { skipNullProperties: false },
+) {}
+</code></pre><h3>UpdateCompanionVisualProfileDto</h3><p>Source: <code>src/app/module/companions/dto/update-companion.dto.ts</code></p><pre><code>export class UpdateCompanionVisualProfileDto extends PartialType(
+  CompanionVisualProfileDto,
+  { skipNullProperties: false },
+) {}
+</code></pre><h3>UpdateCompanionVoiceSettingsDto</h3><p>Source: <code>src/app/module/companions/dto/update-companion.dto.ts</code></p><pre><code>export class UpdateCompanionVoiceSettingsDto extends PartialType(
+  CompanionVoiceSettingsDto,
+  { skipNullProperties: false },
+) {}
+</code></pre><h3>UpdateCompanionVoiceDto</h3><p>Source: <code>src/app/module/companions/dto/update-companion.dto.ts</code></p><pre><code>export class UpdateCompanionVoiceDto extends PartialType(
+  OmitType(CompanionVoiceDto, ['settings'] as const),
+  { skipNullProperties: false },
+) {
+  @ApiPropertyOptional({ type: () =&gt; UpdateCompanionVoiceSettingsDto })
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @nested(UpdateCompanionVoiceSettingsDto)
+  settings?: UpdateCompanionVoiceSettingsDto;
+}
+</code></pre><h3>UpdateCompanionDto</h3><p>Source: <code>src/app/module/companions/dto/update-companion.dto.ts</code></p><pre><code>export class UpdateCompanionDto extends PartialType(
+  OmitType(CreateCompanionDto, [
+    'personality',
+    'communicationStyle',
+    'background',
+    'visualProfile',
+    'voice',
+  ] as const),
+  { skipNullProperties: false },
+) {
+  @ApiPropertyOptional({ type: () =&gt; UpdateCompanionPersonalityDto })
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @nested(UpdateCompanionPersonalityDto)
+  personality?: UpdateCompanionPersonalityDto;
+  @ApiPropertyOptional({ type: () =&gt; UpdateCompanionCommunicationStyleDto })
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @nested(UpdateCompanionCommunicationStyleDto)
+  communicationStyle?: UpdateCompanionCommunicationStyleDto;
+  @ApiPropertyOptional({ type: () =&gt; UpdateCompanionBackgroundDto })
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @nested(UpdateCompanionBackgroundDto)
+  background?: UpdateCompanionBackgroundDto;
+  @ApiPropertyOptional({ type: () =&gt; UpdateCompanionVisualProfileDto })
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @nested(UpdateCompanionVisualProfileDto)
+  visualProfile?: UpdateCompanionVisualProfileDto;
+  @ApiPropertyOptional({ type: () =&gt; UpdateCompanionVoiceDto })
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @nested(UpdateCompanionVoiceDto)
+  voice?: UpdateCompanionVoiceDto;
+}
+</code></pre><h3>UpdateVoiceDto</h3><p>Source: <code>src/app/module/companions/dto/update-companion.dto.ts</code></p><pre><code>export class UpdateVoiceDto {
+  @ApiProperty({ example: 'your-provider-voice-id' })
+  @IsString()
+  @IsNotEmpty()
+  voiceId: string;
+}
+</code></pre><h3>CreateCreditPackageDto</h3><p>Source: <code>src/app/module/credit/dto/credit.dto.ts</code></p><pre><code>export class CreateCreditPackageDto {
+  @ApiProperty({ example: 'Starter Credits' })
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @ApiProperty({ example: 100 })
+  @IsInt()
+  @Min(1)
+  credits!: number;
+
+  @ApiProperty({ example: '4.99' })
+  @IsString()
+  @Matches(/^\d+(\.\d{1,2})?$/, { message: 'Price must be a valid amount' })
+  price!: string;
+
+  @ApiPropertyOptional({ example: 'usd', default: 'usd' })
+  @IsOptional()
+  @IsString()
+  currency?: string;
+
+  @ApiPropertyOptional({ default: true })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+}
+</code></pre><h3>UpdateCreditPackageDto</h3><p>Source: <code>src/app/module/credit/dto/credit.dto.ts</code></p><pre><code>export class UpdateCreditPackageDto extends PartialType(
+  CreateCreditPackageDto,
+) {}
+</code></pre><h3>PurchaseCreditPackageDto</h3><p>Source: <code>src/app/module/credit/dto/credit.dto.ts</code></p><pre><code>export class PurchaseCreditPackageDto {
+  @ApiProperty({ example: 'credit-package-id' })
+  @IsString()
+  @IsNotEmpty()
+  packageId!: string;
+}
+</code></pre><h3>CreateDashboardDto</h3><p>Source: <code>src/app/module/dashboard/dto/create-dashboard.dto.ts</code></p><pre><code>export class CreateDashboardDto {}
+</code></pre><h3>UpdateDashboardDto</h3><p>Source: <code>src/app/module/dashboard/dto/update-dashboard.dto.ts</code></p><pre><code>export class UpdateDashboardDto extends PartialType(CreateDashboardDto) {}
+</code></pre><h3>PageDto</h3><p>Source: <code>src/app/module/engagement/engagement.dto.ts</code></p><pre><code>export class PageDto {
+  @ApiPropertyOptional({ default: 1 })
+  @IsOptional()
+  @Type(() =&gt; Number)
+  @IsInt()
+  @Min(1)
+  page = 1;
+  @ApiPropertyOptional({ default: 50 })
+  @IsOptional()
+  @Type(() =&gt; Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  limit = 50;
+}
+</code></pre><h3>RelationshipDto</h3><p>Source: <code>src/app/module/engagement/engagement.dto.ts</code></p><pre><code>export class RelationshipDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  nickname?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(5000)
+  notes?: string;
+}
+</code></pre><h3>CostDto</h3><p>Source: <code>src/app/module/engagement/engagement.dto.ts</code></p><pre><code>export class CostDto {
+  @ApiProperty()
+  @IsInt()
+  @Min(0)
+  @Max(1000000)
+  credits!: number;
+}
+</code></pre><h3>ModeDto</h3><p>Source: <code>src/app/module/engagement/engagement.dto.ts</code></p><pre><code>export class ModeDto {
+  @ApiProperty({ enum: ['ai', 'human'] })
+  @IsIn(['ai', 'human'])
+  mode!: 'ai' | 'human';
+}
+</code></pre><h3>HumanReplyDto</h3><p>Source: <code>src/app/module/engagement/engagement.dto.ts</code></p><pre><code>export class HumanReplyDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  messageId!: string;
+  @ApiProperty()
+  @IsString()
+  @Matches(/\S/)
+  @MaxLength(5000)
+  message!: string;
+}
+</code></pre><h3>StoryDto</h3><p>Source: <code>src/app/module/engagement/engagement.dto.ts</code></p><pre><code>export class StoryDto {
+  @ApiProperty({ example: '2026-09-08' })
+  @IsDateString()
+  @Matches(/^\d{4}-\d{2}-\d{2}$/)
+  day!: string;
+  @ApiProperty()
+  @IsString()
+  @Matches(/\S/)
+  @MaxLength(200)
+  title!: string;
+  @ApiProperty()
+  @IsString()
+  @Matches(/\S/)
+  @MaxLength(20000)
+  content!: string;
+  @ApiProperty()
+  @IsBoolean()
+  published!: boolean;
+}
+</code></pre><h3>PhotoDto</h3><p>Source: <code>src/app/module/engagement/engagement.dto.ts</code></p><pre><code>export class PhotoDto {
+  @ApiProperty({ description: 'URL from this companion’s galleryImages' })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(2048)
+  photoUrl!: string;
+}
+</code></pre><h3>NotificationDto</h3><p>Source: <code>src/app/module/engagement/engagement.dto.ts</code></p><pre><code>export class NotificationDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  userId!: string;
+  @ApiProperty()
+  @IsString()
+  @Matches(/\S/)
+  @MaxLength(200)
+  title!: string;
+  @ApiProperty()
+  @IsString()
+  @Matches(/\S/)
+  @MaxLength(5000)
+  body!: string;
+}
+</code></pre><h3>CreateGiftDto</h3><p>Source: <code>src/app/module/gift/dto/gift.dto.ts</code></p><pre><code>export class CreateGiftDto {
+  @ApiProperty({ example: 'Rose' })
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @ApiPropertyOptional({
+    example: 'https://example.com/rose.png',
+    type: 'string',
+    format: 'binary',
+  })
+  @IsOptional()
+  @IsString()
+  image?: string;
+
+  @ApiPropertyOptional({ example: 10 })
+  @IsInt()
+  @Min(1)
+  @Type(() =&gt; Number)
+  creditCost!: number;
+
+  @ApiPropertyOptional({ default: true })
+  @IsOptional()
+  @IsBoolean()
+  @Type(() =&gt; Boolean)
+  isActive?: boolean;
+}
+</code></pre><h3>UpdateGiftDto</h3><p>Source: <code>src/app/module/gift/dto/gift.dto.ts</code></p><pre><code>export class UpdateGiftDto extends PartialType(CreateGiftDto) {}
+</code></pre><h3>SendGiftDto</h3><p>Source: <code>src/app/module/gift/dto/gift.dto.ts</code></p><pre><code>export class SendGiftDto {
+  @ApiProperty({ example: 'companion-id' })
+  @IsString()
+  @IsNotEmpty()
+  companionId!: string;
+}
+</code></pre><h3>BroadcastNewsletterDto</h3><p>Source: <code>src/app/module/newsletter/dto/broadcast-newsletter.dto.ts</code></p><pre><code>export class BroadcastNewsletterDto {
+  @ApiProperty({ example: 'Latest news from Elysia' })
+  @IsString()
+  @IsNotEmpty()
+  subject: string;
+
+  @ApiProperty({ example: '&lt;h1&gt;Hello!&lt;/h1&gt;&lt;p&gt;Here is our latest update.&lt;/p&gt;' })
+  @IsString()
+  @IsNotEmpty()
+  html: string;
+}
+</code></pre><h3>CreateNewsletterDto</h3><p>Source: <code>src/app/module/newsletter/dto/create-newsletter.dto.ts</code></p><pre><code>export class CreateNewsletterDto {
+  @ApiProperty({
+    example: '[EMAIL_ADDRESS]',
+    description: 'The email of the user',
+  })
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+}
+</code></pre><h3>UpdateNewsletterDto</h3><p>Source: <code>src/app/module/newsletter/dto/update-newsletter.dto.ts</code></p><pre><code>export class UpdateNewsletterDto extends PartialType(CreateNewsletterDto) {}
+</code></pre><h3>BuyCreditsDto</h3><p>Source: <code>src/app/module/payment/dto/buy-credits.dto.ts</code></p><pre><code>export class BuyCreditsDto {
+  @ApiProperty({ example: 'credit-package-id' })
+  @IsString()
+  @IsNotEmpty()
+  packageId!: string;
+}
+</code></pre><h3>CreatePaymentDto</h3><p>Source: <code>src/app/module/payment/dto/create-payment.dto.ts</code></p><pre><code>export class CreatePaymentDto {}
+</code></pre><h3>UpdatePaymentDto</h3><p>Source: <code>src/app/module/payment/dto/update-payment.dto.ts</code></p><pre><code>export class UpdatePaymentDto extends PartialType(CreatePaymentDto) {}
+</code></pre><h3>CreateSubscriptionDto</h3><p>Source: <code>src/app/module/subscription/dto/create-subscription.dto.ts</code></p><pre><code>export class CreateSubscriptionDto {
+  @ApiProperty({
+    example: 'Premium Plan',
+    description: 'Subscription plan name',
+  })
+  @IsString()
+  @IsNotEmpty({ message: 'Name is required' })
+  name: string;
+
+  @ApiProperty({
+    example: '29.99',
+    description: 'Subscription plan price',
+  })
+  @IsString()
+  @IsNotEmpty({ message: 'Price is required' })
+  price: string;
+
+  @ApiPropertyOptional({
+    example: 1000,
+    description: 'Deprecated: use creditAllowance',
+  })
+  @IsOptional()
+  @IsInt({ message: 'Message limit must be an integer' })
+  @Min(0, {
+    message: 'Message limit cannot be negative',
+  })
+  messageLimit?: number;
+
+  @ApiPropertyOptional({
+    example: 500,
+    description: 'Credits granted for each subscription period',
+  })
+  @IsOptional()
+  @IsInt({ message: 'Credit allowance must be an integer' })
+  @Min(0, { message: 'Credit allowance cannot be negative' })
+  creditAllowance?: number;
+
+  @ApiProperty({ example: 30, required: false, default: 30 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  durationDays?: number;
+
+  @ApiProperty({
+    example: [
+      '1000 messages per month',
+      'Priority support',
+      'Advanced AI features',
+    ],
+    description: 'List of subscription features',
+    type: [String],
+  })
+  @IsArray({
+    message: 'Features must be an array',
+  })
+  @IsString({
+    each: true,
+    message: 'Each feature must be a string',
+  })
+  features: string[];
+
+  @ApiPropertyOptional({
+    example: true,
+    default: false,
+    description: 'Whether this plan is popular',
+  })
+  @IsOptional()
+  @IsBoolean({
+    message: 'isPopular must be a boolean',
+  })
+  isPopular?: boolean;
+
+  @ApiPropertyOptional({
+    example: true,
+    default: true,
+    description: 'Whether this subscription plan is active',
+  })
+  @IsOptional()
+  @IsBoolean({
+    message: 'isActive must be a boolean',
+  })
+  isActive?: boolean;
+}
+</code></pre><h3>UpdateSubscriptionDto</h3><p>Source: <code>src/app/module/subscription/dto/update-subscription.dto.ts</code></p><pre><code>export class UpdateSubscriptionDto extends PartialType(CreateSubscriptionDto) {}
+</code></pre><h3>TelegramSessionDto</h3><p>Source: <code>src/app/module/telegram/telegram-mini-app.controller.ts</code></p><pre><code>class TelegramSessionDto {
+  @IsString() @MinLength(1) @MaxLength(8192) initData!: string;
+}
+</code></pre><h3>TelegramLoginDto</h3><p>Source: <code>src/app/module/telegram/telegram-mini-app.controller.ts</code></p><pre><code>class TelegramLoginDto extends TelegramSessionDto {
+  @IsOptional() @IsBoolean() confirmTransfer?: boolean;
+  @IsEmail() @MaxLength(254) email!: string;
+  @IsString() @MinLength(1) @MaxLength(256) password!: string;
+}
+</code></pre><h3>CreateUserDto</h3><p>Source: <code>src/app/module/user/dto/create-user.dto.ts</code></p><pre><code>export class CreateUserDto {
+  @ApiPropertyOptional({ example: '' })
+  @IsString()
+  @IsNotEmpty({ message: 'Name is requried' })
+  name!: string;
+
+  @ApiPropertyOptional({ example: '' })
+  @IsEmail()
+  @IsNotEmpty({ message: 'Email is requried' })
+  email!: string;
+
+  @ApiPropertyOptional({ example: '' })
+  @IsString()
+  @IsNotEmpty({ message: 'Password is requried' })
+  password!: string;
+
+  @ApiPropertyOptional({ example: '' })
+  @IsString()
+  @IsNotEmpty({ message: 'Phone number is requried' })
+  phoneNumber!: string;
+
+  @ApiPropertyOptional({ type: 'string', format: 'binary' })
+  @IsString()
+  @IsOptional()
+  profileImage?: string;
+}
+</code></pre><h3>UpdateUserDto</h3><p>Source: <code>src/app/module/user/dto/update-user.dto.ts</code></p><pre><code>export class UpdateUserDto extends PartialType(CreateUserDto) {}
+</code></pre><h3>WhatsAppTestDto</h3><p>Source: <code>src/app/module/whatsapp/whatsapp.controller.ts</code></p><pre><code>export class WhatsAppTestDto {
+  @ApiPropertyOptional({
+    description:
+      'Use this companion sender. Omit to use the Meta test sender from .env.',
+  })
+  @IsOptional()
+  @IsUUID()
+  companionId?: string;
+
+  @ApiProperty({ example: '8801712345678' })
+  @Matches(/^[1-9]\d{6,14}$/)
+  to!: string;
+
+  @ApiPropertyOptional({ enum: ['template', 'text'], default: 'template' })
+  @IsOptional()
+  @IsIn(['template', 'text'])
+  type?: 'template' | 'text';
+
+  @ApiPropertyOptional({ example: 'Hello from Meet Elysia backend' })
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(4096)
+  message?: string;
+}
+</code></pre></details></main></html>

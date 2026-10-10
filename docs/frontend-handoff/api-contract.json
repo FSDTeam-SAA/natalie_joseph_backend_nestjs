@@ -1,0 +1,2220 @@
+{
+  "generatedAt": "2026-10-10T04:03:43.901Z",
+  "note": "Source inventory, not OpenAPI. Controller guards are shown; service validation still applies.",
+  "routes": [
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/register",
+      "controller": "AuthController",
+      "handler": "register",
+      "file": "src/app/module/auth/auth.controller.ts",
+      "line": 39,
+      "guards": [],
+      "parameters": [
+        "@Body() createAuthDto: CreateAuthDto"
+      ],
+      "decorators": [
+        "@Post('register')",
+        "@ApiOperation({\r\n    summary: 'Register a new user',\r\n  })",
+        "@ApiResponse({\r\n    status: HttpStatus.CREATED,\r\n    description: 'User registered successfully',\r\n  })",
+        "@ApiResponse({\r\n    status: HttpStatus.BAD_REQUEST,\r\n    description: 'User already exists',\r\n  })",
+        "@HttpCode(HttpStatus.CREATED)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.authService.register(createAuthDto);\r\n\r\n    return {\r\n      message: 'User registered successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "controller": "AuthController",
+      "handler": "login",
+      "file": "src/app/module/auth/auth.controller.ts",
+      "line": 62,
+      "guards": [],
+      "parameters": [
+        "@Body() loginAuthDto: LoginAuthDto",
+        "@Res({ passthrough: true }) res: Response"
+      ],
+      "decorators": [
+        "@Post('login')",
+        "@ApiOperation({\r\n    summary: 'Login user',\r\n  })",
+        "@ApiResponse({\r\n    status: HttpStatus.OK,\r\n    description: 'Login successful',\r\n  })",
+        "@ApiResponse({\r\n    status: HttpStatus.BAD_REQUEST,\r\n    description: 'Invalid email or password',\r\n  })",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.authService.login(loginAuthDto, res);\r\n\r\n    return {\r\n      message: 'Login successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/refresh",
+      "controller": "AuthController",
+      "handler": "refreshToken",
+      "file": "src/app/module/auth/auth.controller.ts",
+      "line": 88,
+      "guards": [],
+      "parameters": [
+        "@Req() req: Request"
+      ],
+      "decorators": [
+        "@Get('refresh')",
+        "@ApiOperation({\r\n    summary: 'Generate new access token using refresh token',\r\n  })",
+        "@ApiCookieAuth('refreshToken')",
+        "@ApiResponse({\r\n    status: HttpStatus.OK,\r\n    description: 'Access token refreshed successfully',\r\n  })",
+        "@ApiResponse({\r\n    status: HttpStatus.UNAUTHORIZED,\r\n    description: 'Refresh token invalid or missing',\r\n  })",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.authService.refreshToken(req);\r\n\r\n    return {\r\n      message: 'Token refreshed successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/forgot-password",
+      "controller": "AuthController",
+      "handler": "forgotPassword",
+      "file": "src/app/module/auth/auth.controller.ts",
+      "line": 112,
+      "guards": [],
+      "parameters": [
+        "@Body() forgotPasswordAuthDto: ForgotPasswordAuthDto"
+      ],
+      "decorators": [
+        "@Post('forgot-password')",
+        "@ApiOperation({\r\n    summary: 'Send password reset OTP',\r\n  })",
+        "@ApiResponse({\r\n    status: HttpStatus.OK,\r\n    description: 'OTP sent successfully',\r\n  })",
+        "@ApiResponse({\r\n    status: HttpStatus.BAD_REQUEST,\r\n    description: 'User not found',\r\n  })",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.authService.forgotPassword(\r\n      forgotPasswordAuthDto.email,\r\n    );\r\n\r\n    return {\r\n      message: 'OTP sent successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/verify-otp",
+      "controller": "AuthController",
+      "handler": "verifyOtp",
+      "file": "src/app/module/auth/auth.controller.ts",
+      "line": 137,
+      "guards": [],
+      "parameters": [
+        "@Body() verifyOtpAuthDto: VerifyOtpAuthDto"
+      ],
+      "decorators": [
+        "@Post('verify-otp')",
+        "@ApiOperation({\r\n    summary: 'Verify password reset OTP',\r\n  })",
+        "@ApiResponse({\r\n    status: HttpStatus.OK,\r\n    description: 'OTP verified successfully',\r\n  })",
+        "@ApiResponse({\r\n    status: HttpStatus.BAD_REQUEST,\r\n    description: 'Invalid or expired OTP',\r\n  })",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.authService.verifyOtp(\r\n      verifyOtpAuthDto.email,\r\n      verifyOtpAuthDto.otp,\r\n    );\r\n\r\n    return {\r\n      message: 'OTP verified successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/reset-password",
+      "controller": "AuthController",
+      "handler": "resetPassword",
+      "file": "src/app/module/auth/auth.controller.ts",
+      "line": 163,
+      "guards": [],
+      "parameters": [
+        "@Body() resetPasswordAuthDto: ResetPasswordAuthDto"
+      ],
+      "decorators": [
+        "@Post('reset-password')",
+        "@ApiOperation({\r\n    summary: 'Reset password after OTP verification',\r\n  })",
+        "@ApiResponse({\r\n    status: HttpStatus.OK,\r\n    description: 'Password reset successfully',\r\n  })",
+        "@ApiResponse({\r\n    status: HttpStatus.BAD_REQUEST,\r\n    description: 'OTP verification required',\r\n  })",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.authService.resetPassword(\r\n      resetPasswordAuthDto.email,\r\n      resetPasswordAuthDto.password,\r\n      resetPasswordAuthDto.resetToken,\r\n    );\r\n\r\n    return {\r\n      message: 'Password reset successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/change-password",
+      "controller": "AuthController",
+      "handler": "changePassword",
+      "file": "src/app/module/auth/auth.controller.ts",
+      "line": 190,
+      "guards": [
+        "UseGuards(AuthGuard('admin', 'user'))"
+      ],
+      "parameters": [
+        "@Body() changePasswordAuthDto: ChangePasswordAuthDto"
+      ],
+      "decorators": [
+        "@Post('change-password')",
+        "@ApiOperation({\r\n    summary: 'Change logged-in user password',\r\n  })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin', 'user'))",
+        "@ApiResponse({\r\n    status: HttpStatus.OK,\r\n    description: 'Password changed successfully',\r\n  })",
+        "@ApiResponse({\r\n    status: HttpStatus.UNAUTHORIZED,\r\n    description: 'Unauthorized',\r\n  })",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.authService.changePassword(\r\n      changePasswordAuthDto.email,\r\n      changePasswordAuthDto.oldPassword,\r\n      changePasswordAuthDto.newPassword,\r\n    );\r\n\r\n    return {\r\n      message: 'Password changed successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "controller": "AuthController",
+      "handler": "logout",
+      "file": "src/app/module/auth/auth.controller.ts",
+      "line": 219,
+      "guards": [
+        "UseGuards(AuthGuard('admin', 'user'))"
+      ],
+      "parameters": [
+        "@Req() req: Request",
+        "@Res({ passthrough: true }) res: Response"
+      ],
+      "decorators": [
+        "@Post('logout')",
+        "@ApiOperation({\r\n    summary: 'Logout logged-in user',\r\n  })",
+        "@ApiBearerAuth('access-token')",
+        "@ApiCookieAuth('refreshToken')",
+        "@UseGuards(AuthGuard('admin', 'user'))",
+        "@ApiResponse({\r\n    status: HttpStatus.OK,\r\n    description: 'Logout successfully',\r\n  })",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.authService.logout(req, res);\r\n\r\n    return {\r\n      message: 'Logout successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chat/conversations",
+      "controller": "ChatController",
+      "handler": "getConversations",
+      "file": "src/app/module/chat/chat.controller.ts",
+      "line": 28,
+      "guards": [
+        "UseGuards(AuthGuard('user'))"
+      ],
+      "parameters": [
+        "@Req() request: Request"
+      ],
+      "decorators": [
+        "@Get('conversations')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user'))"
+      ],
+      "handlerSource": "{\r\n    if (!request.user) throw new UnauthorizedException();\r\n    return { data: await this.chatService.getConversations(request.user.id) };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chat/:companionId/messages",
+      "controller": "ChatController",
+      "handler": "getMessages",
+      "file": "src/app/module/chat/chat.controller.ts",
+      "line": 36,
+      "guards": [
+        "UseGuards(AuthGuard('user'))"
+      ],
+      "parameters": [
+        "@Req() request: Request",
+        "@Param('companionId') companionId: string",
+        "@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number"
+      ],
+      "decorators": [
+        "@Get(':companionId/messages')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user'))"
+      ],
+      "handlerSource": "{\r\n    if (!request.user) throw new UnauthorizedException();\r\n    if (page < 1) throw new BadRequestException('Page must be positive');\r\n    return {\r\n      data: await this.chatService.getMessages(\r\n        request.user.id,\r\n        companionId,\r\n        page,\r\n      ),\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chat/usage",
+      "controller": "ChatController",
+      "handler": "getUsage",
+      "file": "src/app/module/chat/chat.controller.ts",
+      "line": 55,
+      "guards": [
+        "UseGuards(AuthGuard('user'))"
+      ],
+      "parameters": [
+        "@Req() request: Request"
+      ],
+      "decorators": [
+        "@Get('usage')",
+        "@ApiOperation({ summary: 'Get subscription usage and credit balance' })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user'))"
+      ],
+      "handlerSource": "{\r\n    if (!request.user) throw new UnauthorizedException();\r\n    const data = await this.chatService.getUsage(request.user.id);\r\n    return { message: 'Chat usage fetched successfully', data };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/chat/:companionId/messages",
+      "controller": "ChatController",
+      "handler": "sendMessage",
+      "file": "src/app/module/chat/chat.controller.ts",
+      "line": 65,
+      "guards": [
+        "UseGuards(AuthGuard('user'))"
+      ],
+      "parameters": [
+        "@Req() request: Request",
+        "@Param('companionId') companionId: string",
+        "@Body() payload: SendMessageDto"
+      ],
+      "decorators": [
+        "@Post(':companionId/messages')",
+        "@HttpCode(HttpStatus.CREATED)",
+        "@ApiOperation({ summary: 'Send a message to a companion' })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user'))"
+      ],
+      "handlerSource": "{\r\n    if (!request.user) throw new UnauthorizedException();\r\n    const data = await this.chatService.sendMessage(\r\n      request.user.id,\r\n      companionId,\r\n      payload.message,\r\n      request.headers.authorization!,\r\n      payload.type,\r\n    );\r\n    return { message: 'Message sent successfully', data };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/companions",
+      "controller": "CompanionsController",
+      "handler": "createCompanion",
+      "file": "src/app/module/companions/companions.controller.ts",
+      "line": 38,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Body() payload: CreateCompanionDto"
+      ],
+      "decorators": [
+        "@Post()",
+        "@ApiOperation({ summary: 'Create a companion' })",
+        "@ApiBearerAuth('access-token')",
+        "@ApiConsumes('application/json')",
+        "@ApiBody({ type: CreateCompanionDto })",
+        "@UseGuards(AuthGuard('admin'))"
+      ],
+      "handlerSource": "{\r\n    const data = await this.companionsService.createCompanion(payload);\r\n    return { message: 'Companion created successfully', data };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/companions",
+      "controller": "CompanionsController",
+      "handler": "getAllCompanions",
+      "file": "src/app/module/companions/companions.controller.ts",
+      "line": 49,
+      "guards": [],
+      "parameters": [
+        "@Req() request: Request"
+      ],
+      "decorators": [
+        "@Get()",
+        "@HttpCode(HttpStatus.OK)",
+        "@ApiOperation({ summary: 'Get all companions' })",
+        "@ApiQuery({ name: 'searchTerm', required: false, type: String })",
+        "@ApiQuery({ name: 'occupation', required: false, type: String })",
+        "@ApiQuery({ name: 'location', required: false, type: String })",
+        "@ApiQuery({ name: 'status', required: false, type: Boolean })",
+        "@ApiQuery({ name: 'interest', required: false, type: String })",
+        "@ApiQuery({ name: 'personalityTrait', required: false, type: String })",
+        "@ApiQuery({ name: 'page', required: false, type: Number })",
+        "@ApiQuery({ name: 'limit', required: false, type: Number })",
+        "@ApiQuery({ name: 'sortBy', required: false, type: String })",
+        "@ApiQuery({ name: 'sortOrder', required: false, enum: ['asc', 'desc'] })"
+      ],
+      "handlerSource": "{\r\n    const filters = pick(request.query, [\r\n      'searchTerm',\r\n      'name',\r\n      'title',\r\n      'backstory',\r\n      'occupation',\r\n      'profession',\r\n      'location',\r\n      'status',\r\n      'interest',\r\n      'personalityTrait',\r\n    ]);\r\n    const options = pick(request.query, [\r\n      'page',\r\n      'limit',\r\n      'sortBy',\r\n      'sortOrder',\r\n    ]);\r\n    const result = await this.companionsService.getAllCompanions(\r\n      filters,\r\n      options,\r\n    );\r\n    return {\r\n      message: 'Companions fetched successfully',\r\n      meta: result.meta,\r\n      data: result.data,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/companions/:id",
+      "controller": "CompanionsController",
+      "handler": "getCompanionById",
+      "file": "src/app/module/companions/companions.controller.ts",
+      "line": 92,
+      "guards": [],
+      "parameters": [
+        "@Param('id') id: string"
+      ],
+      "decorators": [
+        "@Get(':id')",
+        "@HttpCode(HttpStatus.OK)",
+        "@ApiOperation({ summary: 'Get a companion by ID' })"
+      ],
+      "handlerSource": "{\r\n    const data = await this.companionsService.getCompanionById(id);\r\n    return { message: 'Companion fetched successfully', data };\r\n  }"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/companions/:id",
+      "controller": "CompanionsController",
+      "handler": "updateCompanion",
+      "file": "src/app/module/companions/companions.controller.ts",
+      "line": 100,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string",
+        "@Body() payload: UpdateCompanionDto"
+      ],
+      "decorators": [
+        "@Put(':id')",
+        "@ApiOperation({ summary: 'Update a companion' })",
+        "@ApiBearerAuth('access-token')",
+        "@ApiConsumes('application/json')",
+        "@ApiBody({ type: UpdateCompanionDto })",
+        "@UseGuards(AuthGuard('admin'))"
+      ],
+      "handlerSource": "{\r\n    const data = await this.companionsService.updateCompanion(id, payload);\r\n    return { message: 'Companion updated successfully', data };\r\n  }"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/companions/:id/profile-image",
+      "controller": "CompanionsController",
+      "handler": "updateProfileImage",
+      "file": "src/app/module/companions/companions.controller.ts",
+      "line": 114,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string",
+        "@UploadedFiles() files: { profileImage?: Express.Multer.File[] } = {}"
+      ],
+      "decorators": [
+        "@Put(':id/profile-image')",
+        "@ApiOperation({ summary: 'Set or replace companion profileImage' })",
+        "@ApiBearerAuth('access-token')",
+        "@ApiConsumes('multipart/form-data')",
+        "@ApiBody({\r\n    schema: {\r\n      type: 'object',\r\n      required: ['profileImage'],\r\n      properties: { profileImage: { type: 'string', format: 'binary' } },\r\n    },\r\n  })",
+        "@UseGuards(AuthGuard('admin'))",
+        "@UseInterceptors(\r\n    FileFieldsInterceptor(\r\n      [{ name: 'profileImage', maxCount: 1 }],\r\n      fileUpload.uploadConfig,\r\n    ),\r\n  )"
+      ],
+      "handlerSource": "{\r\n    const data = await this.companionsService.updateImages(\r\n      id,\r\n      'profileImage',\r\n      files.profileImage ?? [],\r\n      false,\r\n    );\r\n    return { message: 'Companion images updated successfully', data };\r\n  }"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/companions/:id/cover-image",
+      "controller": "CompanionsController",
+      "handler": "updateCoverImage",
+      "file": "src/app/module/companions/companions.controller.ts",
+      "line": 145,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string",
+        "@UploadedFiles() files: { coverImage?: Express.Multer.File[] } = {}"
+      ],
+      "decorators": [
+        "@Put(':id/cover-image')",
+        "@ApiOperation({ summary: 'Set or replace companion coverImage' })",
+        "@ApiBearerAuth('access-token')",
+        "@ApiConsumes('multipart/form-data')",
+        "@ApiBody({\r\n    schema: {\r\n      type: 'object',\r\n      required: ['coverImage'],\r\n      properties: { coverImage: { type: 'string', format: 'binary' } },\r\n    },\r\n  })",
+        "@UseGuards(AuthGuard('admin'))",
+        "@UseInterceptors(\r\n    FileFieldsInterceptor(\r\n      [{ name: 'coverImage', maxCount: 1 }],\r\n      fileUpload.uploadConfig,\r\n    ),\r\n  )"
+      ],
+      "handlerSource": "{\r\n    const data = await this.companionsService.updateImages(\r\n      id,\r\n      'coverImage',\r\n      files.coverImage ?? [],\r\n      false,\r\n    );\r\n    return { message: 'Companion images updated successfully', data };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/companions/:id/gallery",
+      "controller": "CompanionsController",
+      "handler": "addGalleryImages",
+      "file": "src/app/module/companions/companions.controller.ts",
+      "line": 176,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string",
+        "@UploadedFiles() files: { galleryImages?: Express.Multer.File[] } = {}"
+      ],
+      "decorators": [
+        "@Post(':id/gallery')",
+        "@ApiOperation({ summary: 'Add to companion galleryImages' })",
+        "@ApiBearerAuth('access-token')",
+        "@ApiConsumes('multipart/form-data')",
+        "@ApiBody({\r\n    schema: {\r\n      type: 'object',\r\n      required: ['galleryImages'],\r\n      properties: {\r\n        galleryImages: {\r\n          type: 'array',\r\n          items: { type: 'string', format: 'binary' },\r\n          maxItems: 10,\r\n        },\r\n      },\r\n    },\r\n  })",
+        "@UseGuards(AuthGuard('admin'))",
+        "@UseInterceptors(\r\n    FileFieldsInterceptor(\r\n      [{ name: 'galleryImages', maxCount: 10 }],\r\n      fileUpload.uploadConfig,\r\n    ),\r\n  )"
+      ],
+      "handlerSource": "{\r\n    const data = await this.companionsService.updateImages(\r\n      id,\r\n      'galleryImages',\r\n      files.galleryImages ?? [],\r\n      true,\r\n    );\r\n    return { message: 'Companion images updated successfully', data };\r\n  }"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/companions/:id/gallery",
+      "controller": "CompanionsController",
+      "handler": "updateGalleryImages",
+      "file": "src/app/module/companions/companions.controller.ts",
+      "line": 213,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string",
+        "@UploadedFiles() files: { galleryImages?: Express.Multer.File[] } = {}"
+      ],
+      "decorators": [
+        "@Put(':id/gallery')",
+        "@ApiOperation({ summary: 'Set or replace companion galleryImages' })",
+        "@ApiBearerAuth('access-token')",
+        "@ApiConsumes('multipart/form-data')",
+        "@ApiBody({\r\n    schema: {\r\n      type: 'object',\r\n      required: ['galleryImages'],\r\n      properties: {\r\n        galleryImages: {\r\n          type: 'array',\r\n          items: { type: 'string', format: 'binary' },\r\n          maxItems: 10,\r\n        },\r\n      },\r\n    },\r\n  })",
+        "@UseGuards(AuthGuard('admin'))",
+        "@UseInterceptors(\r\n    FileFieldsInterceptor(\r\n      [{ name: 'galleryImages', maxCount: 10 }],\r\n      fileUpload.uploadConfig,\r\n    ),\r\n  )"
+      ],
+      "handlerSource": "{\r\n    const data = await this.companionsService.updateImages(\r\n      id,\r\n      'galleryImages',\r\n      files.galleryImages ?? [],\r\n      false,\r\n    );\r\n    return { message: 'Companion images updated successfully', data };\r\n  }"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/companions/:id",
+      "controller": "CompanionsController",
+      "handler": "deleteCompanion",
+      "file": "src/app/module/companions/companions.controller.ts",
+      "line": 250,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string"
+      ],
+      "decorators": [
+        "@Delete(':id')",
+        "@ApiOperation({ summary: 'Delete a companion' })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))"
+      ],
+      "handlerSource": "{\r\n    const data = await this.companionsService.deleteCompanion(id);\r\n    return { message: 'Companion deleted successfully', data };\r\n  }"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/companions/:id/voice",
+      "controller": "CompanionsController",
+      "handler": "updateVoice",
+      "file": "src/app/module/companions/companions.controller.ts",
+      "line": 258,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string",
+        "@Body() payload: UpdateVoiceDto"
+      ],
+      "decorators": [
+        "@Put(':id/voice')",
+        "@ApiOperation({ summary: 'Update companion voice ID' })",
+        "@ApiBearerAuth('access-token')",
+        "@ApiBody({ type: UpdateVoiceDto })",
+        "@UseGuards(AuthGuard('admin'))"
+      ],
+      "handlerSource": "{\r\n    const data = await this.companionsService.updateVoiceSettings(\r\n      id,\r\n      payload.voiceId,\r\n    );\r\n\r\n    return { message: 'Voice ID updated successfully', data };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/credits/packages",
+      "controller": "CreditController",
+      "handler": "createPackage",
+      "file": "src/app/module/credit/credit.controller.ts",
+      "line": 32,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Body() payload: CreateCreditPackageDto"
+      ],
+      "decorators": [
+        "@Post('packages')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@ApiOperation({ summary: 'Create a credit package (admin)' })"
+      ],
+      "handlerSource": "{\r\n    const data = await this.creditService.createPackage(payload);\r\n    return { message: 'Credit package created successfully', data };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/credits/packages",
+      "controller": "CreditController",
+      "handler": "getPackages",
+      "file": "src/app/module/credit/credit.controller.ts",
+      "line": 41,
+      "guards": [],
+      "parameters": [],
+      "decorators": [
+        "@Get('packages')",
+        "@ApiOperation({ summary: 'Get active credit packages' })"
+      ],
+      "handlerSource": "{\r\n    const data = await this.creditService.getActivePackages();\r\n    return { message: 'Credit packages fetched successfully', data };\r\n  }"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/credits/packages/:id",
+      "controller": "CreditController",
+      "handler": "updatePackage",
+      "file": "src/app/module/credit/credit.controller.ts",
+      "line": 48,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string",
+        "@Body() payload: UpdateCreditPackageDto"
+      ],
+      "decorators": [
+        "@Patch('packages/:id')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@ApiOperation({ summary: 'Update a credit package (admin)' })"
+      ],
+      "handlerSource": "{\r\n    const data = await this.creditService.updatePackage(id, payload);\r\n    return { message: 'Credit package updated successfully', data };\r\n  }"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/credits/packages/:id",
+      "controller": "CreditController",
+      "handler": "deactivatePackage",
+      "file": "src/app/module/credit/credit.controller.ts",
+      "line": 60,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string"
+      ],
+      "decorators": [
+        "@Delete('packages/:id')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@ApiOperation({ summary: 'Deactivate a credit package (admin)' })"
+      ],
+      "handlerSource": "{\r\n    const data = await this.creditService.deactivatePackage(id);\r\n    return { message: 'Credit package deactivated successfully', data };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/credits/purchase",
+      "controller": "CreditController",
+      "handler": "purchase",
+      "file": "src/app/module/credit/credit.controller.ts",
+      "line": 69,
+      "guards": [
+        "UseGuards(AuthGuard('user'))"
+      ],
+      "parameters": [
+        "@Req() request: Request",
+        "@Body() payload: PurchaseCreditPackageDto"
+      ],
+      "decorators": [
+        "@Post('purchase')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user'))",
+        "@ApiOperation({ summary: 'Purchase a credit package' })"
+      ],
+      "handlerSource": "{\r\n    if (!request.user) throw new UnauthorizedException();\r\n    const data = await this.paymentService.buyCredits(\r\n      request.user.id,\r\n      payload.packageId,\r\n    );\r\n    return { message: 'Credit payment initiated successfully', data };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/credits/wallet",
+      "controller": "CreditController",
+      "handler": "getWallet",
+      "file": "src/app/module/credit/credit.controller.ts",
+      "line": 85,
+      "guards": [
+        "UseGuards(AuthGuard('user'))"
+      ],
+      "parameters": [
+        "@Req() request: Request"
+      ],
+      "decorators": [
+        "@Get('wallet')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user'))",
+        "@ApiOperation({ summary: 'Get wallet balance and recent transactions' })"
+      ],
+      "handlerSource": "{\r\n    if (!request.user) throw new UnauthorizedException();\r\n    const data = await this.creditService.getWallet(request.user.id);\r\n    return { message: 'Wallet fetched successfully', data };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/dashboard/overview",
+      "controller": "DashboardController",
+      "handler": "dashboardOverview",
+      "file": "src/app/module/dashboard/dashboard.controller.ts",
+      "line": 17,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [],
+      "decorators": [
+        "@Get('overview')",
+        "@ApiOperation({ summary: 'Get dashboard overview' })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const data = await this.dashboardService.dashboardOverview();\r\n\r\n    return {\r\n      message: 'Dashboard overview fetched successfully',\r\n      data,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/relationships",
+      "controller": "EngagementController",
+      "handler": "relationships",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 39,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request",
+        "@Query() query: PageDto"
+      ],
+      "decorators": [
+        "@Get('relationships')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.relationships(req.user!.id, query) };\r\n  }"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/relationships/:companionId",
+      "controller": "EngagementController",
+      "handler": "relationship",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 45,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request",
+        "@Param('companionId') id: string",
+        "@Body() body: RelationshipDto"
+      ],
+      "decorators": [
+        "@Patch('relationships/:companionId')"
+      ],
+      "handlerSource": "{\r\n    return {\r\n      data: await this.service.updateRelationship(req.user!.id, id, body),\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/companions/:companionId/stories",
+      "controller": "EngagementController",
+      "handler": "stories",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 54,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Param('companionId') id: string",
+        "@Query() query: PageDto"
+      ],
+      "decorators": [
+        "@Get('companions/:companionId/stories')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.stories(id, query) };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/companions/:companionId/photos/view",
+      "controller": "EngagementController",
+      "handler": "photo",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 60,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request",
+        "@Param('companionId') id: string",
+        "@Body() body: PhotoDto"
+      ],
+      "decorators": [
+        "@Post('companions/:companionId/photos/view')"
+      ],
+      "handlerSource": "{\r\n    return {\r\n      data: await this.service.viewPhoto(req.user!.id, id, body.photoUrl),\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/photos/history",
+      "controller": "EngagementController",
+      "handler": "photos",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 69,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request",
+        "@Query() query: PageDto"
+      ],
+      "decorators": [
+        "@Get('photos/history')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.photoHistory(req.user!.id, query) };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/credits/ledger",
+      "controller": "EngagementController",
+      "handler": "ledger",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 75,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request",
+        "@Query() query: PageDto"
+      ],
+      "decorators": [
+        "@Get('credits/ledger')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.ledger(req.user!.id, query) };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/credits/costs",
+      "controller": "EngagementController",
+      "handler": "costs",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 81,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [],
+      "decorators": [
+        "@Get('credits/costs')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.credits.getCosts() };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/notifications",
+      "controller": "EngagementController",
+      "handler": "notifications",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 84,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request",
+        "@Query() query: PageDto"
+      ],
+      "decorators": [
+        "@Get('notifications')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.notifications(req.user!.id, query) };\r\n  }"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/notifications/:id/read",
+      "controller": "EngagementController",
+      "handler": "read",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 90,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request",
+        "@Param('id') id: string"
+      ],
+      "decorators": [
+        "@Patch('notifications/:id/read')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.readNotification(req.user!.id, id) };\r\n  }"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/admin/credit-costs/:action",
+      "controller": "EngagementAdminController",
+      "handler": "cost",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 107,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('action') action: string",
+        "@Body() body: CostDto"
+      ],
+      "decorators": [
+        "@Put('credit-costs/:action')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.setCost(action, body.credits) };\r\n  }"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/admin/companions/:companionId/stories",
+      "controller": "EngagementAdminController",
+      "handler": "story",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 113,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('companionId') id: string",
+        "@Body() body: StoryDto"
+      ],
+      "decorators": [
+        "@Put('companions/:companionId/stories')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.saveStory(id, body) };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/companions/:companionId/stories",
+      "controller": "EngagementAdminController",
+      "handler": "stories",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 119,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('companionId') id: string",
+        "@Query() query: PageDto"
+      ],
+      "decorators": [
+        "@Get('companions/:companionId/stories')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.stories(id, query, true) };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/conversations",
+      "controller": "EngagementAdminController",
+      "handler": "conversations",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 125,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Query() query: PageDto"
+      ],
+      "decorators": [
+        "@Get('conversations')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.conversations(query) };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/conversations/:id",
+      "controller": "EngagementAdminController",
+      "handler": "conversation",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 128,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string",
+        "@Query() query: PageDto"
+      ],
+      "decorators": [
+        "@Get('conversations/:id')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.conversation(id, query) };\r\n  }"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/admin/conversations/:id/mode",
+      "controller": "EngagementAdminController",
+      "handler": "mode",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 134,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request",
+        "@Param('id') id: string",
+        "@Body() body: ModeDto"
+      ],
+      "decorators": [
+        "@Patch('conversations/:id/mode')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.setMode(id, req.user!.id, body.mode) };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/admin/conversations/:id/replies",
+      "controller": "EngagementAdminController",
+      "handler": "reply",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 141,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request",
+        "@Param('id') id: string",
+        "@Body() body: HumanReplyDto"
+      ],
+      "decorators": [
+        "@Post('conversations/:id/replies')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.humanReply(id, req.user!.id, body) };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/users/:id/details",
+      "controller": "EngagementAdminController",
+      "handler": "user",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 148,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string"
+      ],
+      "decorators": [
+        "@Get('users/:id/details')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.userDetails(id) };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/users/:id/ledger",
+      "controller": "EngagementAdminController",
+      "handler": "ledger",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 151,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string",
+        "@Query() query: PageDto"
+      ],
+      "decorators": [
+        "@Get('users/:id/ledger')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.service.ledger(id, query) };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/admin/notifications",
+      "controller": "EngagementAdminController",
+      "handler": "notification",
+      "file": "src/app/module/engagement/engagement.controller.ts",
+      "line": 157,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Body() body: NotificationDto"
+      ],
+      "decorators": [
+        "@Post('notifications')"
+      ],
+      "handlerSource": "{\r\n    return {\r\n      data: await this.prisma.notification.create({\r\n        data: { ...body, type: 'admin' },\r\n      }),\r\n    };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/gifts",
+      "controller": "GiftController",
+      "handler": "createGift",
+      "file": "src/app/module/gift/gift.controller.ts",
+      "line": 37,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Body() payload: CreateGiftDto",
+        "@UploadedFile() file?: Express.Multer.File"
+      ],
+      "decorators": [
+        "@Post()",
+        "@ApiOperation({ summary: 'Create a gift (admin)' })",
+        "@ApiConsumes('multipart/form-data')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@UseInterceptors(FileInterceptor('image', fileUpload.uploadConfig))"
+      ],
+      "handlerSource": "{\r\n    const data = await this.giftService.createGift(payload, file);\r\n    return { message: 'Gift created successfully', data };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/gifts",
+      "controller": "GiftController",
+      "handler": "getGifts",
+      "file": "src/app/module/gift/gift.controller.ts",
+      "line": 51,
+      "guards": [],
+      "parameters": [
+        "@Req() req: Request"
+      ],
+      "decorators": [
+        "@Get()",
+        "@ApiOperation({ summary: 'Get active gifts' })",
+        "@ApiQuery({ name: 'searchTerm', required: false, type: String })",
+        "@ApiQuery({ name: 'name', required: false, type: String })",
+        "@ApiQuery({ name: 'sortBy', required: false, type: String })",
+        "@ApiQuery({ name: 'sortOrder', required: false, type: String })",
+        "@ApiQuery({ name: 'limit', required: false, type: Number })",
+        "@ApiQuery({ name: 'page', required: false, type: Number })",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const filters = pick(req.query, ['searchTerm', 'name']);\r\n    const options = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'page']);\r\n    const result = await this.giftService.getActiveGifts(filters, options);\r\n    return {\r\n      message: 'Gifts fetched successfully',\r\n      meta: result.meta,\r\n      data: result.data,\r\n    };\r\n  }"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/gifts/:id",
+      "controller": "GiftController",
+      "handler": "updateGift",
+      "file": "src/app/module/gift/gift.controller.ts",
+      "line": 71,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string",
+        "@Body() payload: UpdateGiftDto"
+      ],
+      "decorators": [
+        "@Patch(':id')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@ApiOperation({ summary: 'Update a gift (admin)' })"
+      ],
+      "handlerSource": "{\r\n    const data = await this.giftService.updateGift(id, payload);\r\n    return { message: 'Gift updated successfully', data };\r\n  }"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/gifts/:id",
+      "controller": "GiftController",
+      "handler": "deactivateGift",
+      "file": "src/app/module/gift/gift.controller.ts",
+      "line": 80,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string"
+      ],
+      "decorators": [
+        "@Delete(':id')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@ApiOperation({ summary: 'Deactivate a gift (admin)' })"
+      ],
+      "handlerSource": "{\r\n    const data = await this.giftService.deactivateGift(id);\r\n    return { message: 'Gift deactivated successfully', data };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/gifts/:giftId/send",
+      "controller": "GiftController",
+      "handler": "sendGift",
+      "file": "src/app/module/gift/gift.controller.ts",
+      "line": 89,
+      "guards": [
+        "UseGuards(AuthGuard('user'))"
+      ],
+      "parameters": [
+        "@Req() request: Request",
+        "@Param('giftId') giftId: string",
+        "@Body() payload: SendGiftDto"
+      ],
+      "decorators": [
+        "@Post(':giftId/send')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user'))",
+        "@ApiOperation({ summary: 'Send a gift to a companion using credits' })"
+      ],
+      "handlerSource": "{\r\n    if (!request.user) throw new UnauthorizedException();\r\n    const data = await this.giftService.sendGift(\r\n      request.user.id,\r\n      payload.companionId,\r\n      giftId,\r\n    );\r\n    return { message: 'Gift sent successfully', data };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/newsletter",
+      "controller": "NewsletterController",
+      "handler": "sendMail",
+      "file": "src/app/module/newsletter/newsletter.controller.ts",
+      "line": 30,
+      "guards": [],
+      "parameters": [
+        "@Body() createNewsletterDto: CreateNewsletterDto"
+      ],
+      "decorators": [
+        "@Post()",
+        "@ApiOperation({ summary: 'Subscribe to newsletter' })",
+        "@HttpCode(HttpStatus.CREATED)"
+      ],
+      "handlerSource": "{\r\n    const data = await this.newsletterService.sendMail(createNewsletterDto);\r\n    return {\r\n      message: 'Newsletter subscription saved successfully',\r\n      data,\r\n    };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/newsletter/broadcast",
+      "controller": "NewsletterController",
+      "handler": "broadcastNewsletter",
+      "file": "src/app/module/newsletter/newsletter.controller.ts",
+      "line": 41,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Body() dto: BroadcastNewsletterDto"
+      ],
+      "decorators": [
+        "@Post('broadcast')",
+        "@ApiOperation({ summary: 'Broadcast an email to all newsletter subscribers' })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const data = await this.newsletterService.broadcastNewsletter(dto);\r\n\r\n    return {\r\n      message: 'Newsletter broadcast sent successfully',\r\n      data,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/newsletter",
+      "controller": "NewsletterController",
+      "handler": "getAllNewsletter",
+      "file": "src/app/module/newsletter/newsletter.controller.ts",
+      "line": 55,
+      "guards": [],
+      "parameters": [
+        "@Req() req: Request"
+      ],
+      "decorators": [
+        "@Get()",
+        "@ApiOperation({ summary: 'Get all newsletter' })",
+        "@ApiQuery({\r\n    name: 'searchTerm',\r\n    type: String,\r\n    required: false,\r\n    description: 'Search term',\r\n  })",
+        "@ApiQuery({\r\n    name: 'email',\r\n    type: String,\r\n    required: false,\r\n    description: 'Email',\r\n  })",
+        "@ApiQuery({\r\n    name: 'page',\r\n    type: Number,\r\n    required: false,\r\n    description: 'Page number',\r\n  })",
+        "@ApiQuery({\r\n    name: 'limit',\r\n    type: Number,\r\n    required: false,\r\n    description: 'Limit number',\r\n  })",
+        "@ApiQuery({\r\n    name: 'sortBy',\r\n    type: String,\r\n    required: false,\r\n    description: 'Sort by',\r\n  })",
+        "@ApiQuery({\r\n    name: 'sortOrder',\r\n    type: String,\r\n    required: false,\r\n    description: 'Sort order',\r\n  })",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const params = pick(req.query, ['searchTerm', 'email']);\r\n    const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);\r\n    const result = await this.newsletterService.getAllNewsletter(\r\n      params,\r\n      options,\r\n    );\r\n\r\n    return {\r\n      message: 'Get all newsletter successfully',\r\n      meta: result.meta,\r\n      data: result.data,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/newsletter/:id",
+      "controller": "NewsletterController",
+      "handler": "getNewsletterById",
+      "file": "src/app/module/newsletter/newsletter.controller.ts",
+      "line": 109,
+      "guards": [],
+      "parameters": [
+        "@Param('id') id: string"
+      ],
+      "decorators": [
+        "@Get(':id')",
+        "@ApiOperation({ summary: 'Get newsletter by id' })",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.newsletterService.getNewsletterById(id);\r\n\r\n    return {\r\n      message: 'Get newsletter by id successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/payment/subscription/status",
+      "controller": "PaymentController",
+      "handler": "status",
+      "file": "src/app/module/payment/payment.controller.ts",
+      "line": 28,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() request: Request"
+      ],
+      "decorators": [
+        "@Get('subscription/status')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "handlerSource": "{\r\n    return this.billing.status(request.user!.id);\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/payment/subscription/sync",
+      "controller": "PaymentController",
+      "handler": "sync",
+      "file": "src/app/module/payment/payment.controller.ts",
+      "line": 35,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() request: Request"
+      ],
+      "decorators": [
+        "@Post('subscription/sync')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user', 'admin'))",
+        "@ApiOperation({\r\n    summary:\r\n      'Verify Stripe payment and synchronize subscription access without charging again',\r\n  })"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.billing.sync(request.user!.id) };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/payment/billing-portal",
+      "controller": "PaymentController",
+      "handler": "portal",
+      "file": "src/app/module/payment/payment.controller.ts",
+      "line": 46,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() request: Request"
+      ],
+      "decorators": [
+        "@Post('billing-portal')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "handlerSource": "{\r\n    return this.billing.portal(request.user!.id);\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/payment/subscription/cancel",
+      "controller": "PaymentController",
+      "handler": "cancel",
+      "file": "src/app/module/payment/payment.controller.ts",
+      "line": 53,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() request: Request"
+      ],
+      "decorators": [
+        "@Post('subscription/cancel')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "handlerSource": "{\r\n    return this.billing.cancel(request.user!.id);\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/payment/subscription/:subscriptionId/upgrade",
+      "controller": "PaymentController",
+      "handler": "upgrade",
+      "file": "src/app/module/payment/payment.controller.ts",
+      "line": 60,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() request: Request",
+        "@Param('subscriptionId') id: string"
+      ],
+      "decorators": [
+        "@Post('subscription/:subscriptionId/upgrade')",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "handlerSource": "{\r\n    return this.billing.upgrade(request.user!.id, id);\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/payment/subscription/:subscriptionId",
+      "controller": "PaymentController",
+      "handler": "paySubscriber",
+      "file": "src/app/module/payment/payment.controller.ts",
+      "line": 67,
+      "guards": [
+        "UseGuards(AuthGuard('admin', 'user'))"
+      ],
+      "parameters": [
+        "@Req() request: Request",
+        "@Param('subscriptionId') subscriptionId: string"
+      ],
+      "decorators": [
+        "@Post('subscription/:subscriptionId')",
+        "@HttpCode(HttpStatus.CREATED)",
+        "@ApiOperation({ summary: 'Initiate a subscription payment' })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin', 'user'))"
+      ],
+      "handlerSource": "{\r\n    if (!request.user) {\r\n      throw new UnauthorizedException();\r\n    }\r\n\r\n    const result = await this.paymentService.paySubscriber(\r\n      request.user.id,\r\n      subscriptionId,\r\n    );\r\n\r\n    return {\r\n      message: 'Payment initiated successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/payment/credits",
+      "controller": "PaymentController",
+      "handler": "buyCredits",
+      "file": "src/app/module/payment/payment.controller.ts",
+      "line": 91,
+      "guards": [
+        "UseGuards(AuthGuard('user'))"
+      ],
+      "parameters": [
+        "@Req() request: Request",
+        "@Body() payload: BuyCreditsDto"
+      ],
+      "decorators": [
+        "@Post('credits')",
+        "@HttpCode(HttpStatus.CREATED)",
+        "@ApiOperation({ summary: 'Buy a credit package by package ID' })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user'))"
+      ],
+      "handlerSource": "{\r\n    if (!request.user) throw new UnauthorizedException();\r\n    const result = await this.paymentService.buyCredits(\r\n      request.user.id,\r\n      payload.packageId,\r\n    );\r\n    return { message: 'Credit payment initiated successfully', data: result };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/subscription",
+      "controller": "SubscriptionController",
+      "handler": "createSubscription",
+      "file": "src/app/module/subscription/subscription.controller.ts",
+      "line": 26,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Body() createSubscriptionDto: CreateSubscriptionDto"
+      ],
+      "decorators": [
+        "@Post()",
+        "@ApiOperation({ summary: 'Create subscription' })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))"
+      ],
+      "handlerSource": "{\r\n    const result = await this.subscriptionService.createSubscription(\r\n      createSubscriptionDto,\r\n    );\r\n    return {\r\n      message: 'Subscription created successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/subscription",
+      "controller": "SubscriptionController",
+      "handler": "getAllSubscription",
+      "file": "src/app/module/subscription/subscription.controller.ts",
+      "line": 42,
+      "guards": [],
+      "parameters": [
+        "@Req() req: Request"
+      ],
+      "decorators": [
+        "@Get()",
+        "@ApiOperation({ summary: 'Get all subscription' })",
+        "@ApiQuery({\r\n    name: 'page',\r\n    type: 'number',\r\n    required: false,\r\n  })",
+        "@ApiQuery({\r\n    name: 'limit',\r\n    type: 'number',\r\n    required: false,\r\n  })",
+        "@ApiQuery({\r\n    name: 'sortBy',\r\n    type: 'string',\r\n    required: false,\r\n  })",
+        "@ApiQuery({\r\n    name: 'sortOrder',\r\n    type: 'string',\r\n    required: false,\r\n  })",
+        "@ApiQuery({\r\n    name: 'name',\r\n    type: 'string',\r\n    required: false,\r\n  })",
+        "@ApiQuery({\r\n    name: 'features',\r\n    type: 'string',\r\n    required: false,\r\n  })",
+        "@ApiQuery({\r\n    name: 'isPopular',\r\n    type: 'boolean',\r\n    required: false,\r\n  })",
+        "@ApiQuery({\r\n    name: 'isActive',\r\n    type: 'boolean',\r\n    required: false,\r\n  })",
+        "@ApiQuery({\r\n    name: 'searchTerm',\r\n    type: 'string',\r\n    required: false,\r\n  })",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const filters = pick(req.query, [\r\n      'searchTerm',\r\n      'name',\r\n      'features',\r\n      'isPopular',\r\n      'isActive',\r\n    ]);\r\n    const params = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);\r\n    const result = await this.subscriptionService.getAllSubscription(\r\n      filters,\r\n      params,\r\n    );\r\n    return {\r\n      message: 'Subscription fetched successfully',\r\n      meta: result.meta,\r\n      data: result.data,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/subscription/:id",
+      "controller": "SubscriptionController",
+      "handler": "getSubscriptionById",
+      "file": "src/app/module/subscription/subscription.controller.ts",
+      "line": 110,
+      "guards": [],
+      "parameters": [
+        "@Param('id') id: string"
+      ],
+      "decorators": [
+        "@Get(':id')",
+        "@ApiOperation({ summary: 'Get subscription by id' })",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.subscriptionService.getSubscriptionById(id);\r\n    return {\r\n      message: 'Subscription fetched successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/subscription/:id",
+      "controller": "SubscriptionController",
+      "handler": "updateSubscription",
+      "file": "src/app/module/subscription/subscription.controller.ts",
+      "line": 121,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string",
+        "@Body() updateSubscriptionDto: UpdateSubscriptionDto"
+      ],
+      "decorators": [
+        "@Put(':id')",
+        "@ApiOperation({ summary: 'Update subscription' })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))"
+      ],
+      "handlerSource": "{\r\n    const result = await this.subscriptionService.updateSubscription(\r\n      id,\r\n      updateSubscriptionDto,\r\n    );\r\n    return {\r\n      message: 'Subscription updated successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/subscription/:id",
+      "controller": "SubscriptionController",
+      "handler": "deleteSubscription",
+      "file": "src/app/module/subscription/subscription.controller.ts",
+      "line": 139,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string"
+      ],
+      "decorators": [
+        "@Delete(':id')",
+        "@ApiOperation({ summary: 'Delete subscription' })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))"
+      ],
+      "handlerSource": "{\r\n    const result = await this.subscriptionService.deleteSubscription(id);\r\n    return {\r\n      message: 'Subscription deleted successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/telegram/status/:companionId",
+      "controller": "TelegramConnectController",
+      "handler": "status",
+      "file": "src/app/module/telegram/telegram-connect.controller.ts",
+      "line": 28,
+      "guards": [
+        "UseGuards(AuthGuard('user'))"
+      ],
+      "parameters": [
+        "@Req() request: Request",
+        "@Param('companionId', ParseUUIDPipe) companionId: string"
+      ],
+      "decorators": [
+        "@Get('status/:companionId')",
+        "@ApiOperation({\n    summary: 'Get Telegram linking/subscription status and return-to-bot URL',\n    description:\n      'Use after payment confirmation. Credit balance is available from the credit wallet API. This endpoint does not grant credits or activate subscriptions.',\n  })",
+        "@ApiParam({ name: 'companionId', format: 'uuid' })"
+      ],
+      "handlerSource": "{\n    return { data: await this.ai.status(request.user!.id, companionId) };\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/telegram/connect/:companionId",
+      "controller": "TelegramConnectController",
+      "handler": "connect",
+      "file": "src/app/module/telegram/telegram-connect.controller.ts",
+      "line": 42,
+      "guards": [
+        "UseGuards(AuthGuard('user'))"
+      ],
+      "parameters": [
+        "@Req() request: Request",
+        "@Param('companionId', ParseUUIDPipe) companionId: string"
+      ],
+      "decorators": [
+        "@Post('connect/:companionId')",
+        "@ApiOperation({\n    summary: 'Create a 10-minute, single-use Telegram account link',\n    description:\n      'Requires an approved adult user and active subscription. Open data.telegramUrl and press START in Telegram.',\n  })",
+        "@ApiParam({ name: 'companionId', format: 'uuid' })",
+        "@ApiResponse({\n    status: 402,\n    description:\n      'Active subscription required. Subscribe on the website, then retry.',\n  })"
+      ],
+      "handlerSource": "{\n    return { data: await this.ai.connect(request.user!.id, companionId) };\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/telegram/app",
+      "controller": "TelegramMiniAppController",
+      "handler": "page",
+      "file": "src/app/module/telegram/telegram-mini-app.controller.ts",
+      "line": 41,
+      "guards": [],
+      "parameters": [
+        "@Res() response: Response"
+      ],
+      "decorators": [
+        "@Get()",
+        "@SetMetadata('rawResponse', true)"
+      ],
+      "handlerSource": "{\n    const nonce = randomBytes(18).toString('base64');\n    response\n      .set({\n        'Cache-Control': 'no-store',\n        'Referrer-Policy': 'no-referrer',\n        'X-Content-Type-Options': 'nosniff',\n        'Content-Security-Policy': `default-src 'none'; script-src 'nonce-${nonce}' https://telegram.org; style-src 'nonce-${nonce}'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors https://web.telegram.org https://*.telegram.org`,\n      })\n      .type('html')\n      .send(telegramLoginPage.replaceAll('__NONCE__', nonce));\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/telegram/app/settings/:companionId",
+      "controller": "TelegramMiniAppController",
+      "handler": "settings",
+      "file": "src/app/module/telegram/telegram-mini-app.controller.ts",
+      "line": 56,
+      "guards": [],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) companionId: string"
+      ],
+      "decorators": [
+        "@Get('settings/:companionId')",
+        "@Header('Cache-Control', 'no-store')"
+      ],
+      "handlerSource": "{\n    return { data: await this.app.settings(companionId) };\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/telegram/app/login/:companionId",
+      "controller": "TelegramMiniAppController",
+      "handler": "login",
+      "file": "src/app/module/telegram/telegram-mini-app.controller.ts",
+      "line": 62,
+      "guards": [],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) id: string",
+        "@Body() body: TelegramLoginDto"
+      ],
+      "decorators": [
+        "@Post('login/:companionId')",
+        "@HttpCode(200)",
+        "@Header('Cache-Control', 'no-store')"
+      ],
+      "handlerSource": "{\n    return {\n      data: await this.app.login(\n        id,\n        body.initData,\n        body.email,\n        body.password,\n        body.confirmTransfer,\n      ),\n    };\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/telegram/app/status/:companionId",
+      "controller": "TelegramMiniAppController",
+      "handler": "status",
+      "file": "src/app/module/telegram/telegram-mini-app.controller.ts",
+      "line": 80,
+      "guards": [],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) id: string",
+        "@Body() body: TelegramSessionDto"
+      ],
+      "decorators": [
+        "@Post('status/:companionId')",
+        "@HttpCode(200)",
+        "@Header('Cache-Control', 'no-store')"
+      ],
+      "handlerSource": "{\n    return { data: await this.app.status(id, body.initData) };\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/webhooks/telegram/:companionId",
+      "controller": "TelegramWebhookController",
+      "handler": "receiveForCompanion",
+      "file": "src/app/module/telegram/telegram-webhook.controller.ts",
+      "line": 22,
+      "guards": [],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) companionId: string",
+        "@Body() body: unknown",
+        "@Headers('x-telegram-bot-api-secret-token') secret?: string"
+      ],
+      "decorators": [
+        "@Post(':companionId')",
+        "@HttpCode(200)"
+      ],
+      "handlerSource": "{\n    const key = this.telegram.botKey(companionId);\n    this.telegram.verifySecret(secret, key);\n    await this.queue.receive(body, key);\n    return { ok: true };\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/webhooks/telegram",
+      "controller": "TelegramWebhookController",
+      "handler": "receive",
+      "file": "src/app/module/telegram/telegram-webhook.controller.ts",
+      "line": 35,
+      "guards": [],
+      "parameters": [
+        "@Body() body: unknown",
+        "@Headers('x-telegram-bot-api-secret-token') secret?: string"
+      ],
+      "decorators": [
+        "@Post()",
+        "@HttpCode(200)"
+      ],
+      "handlerSource": "{\n    this.telegram.verifySecret(secret);\n    await this.queue.receive(body);\n    return { ok: true };\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/user",
+      "controller": "UserController",
+      "handler": "createUser",
+      "file": "src/app/module/user/user.controller.ts",
+      "line": 38,
+      "guards": [],
+      "parameters": [
+        "@Body() createUserDto: CreateUserDto"
+      ],
+      "decorators": [
+        "@Post()",
+        "@ApiOperation({\r\n    summary: 'create user',\r\n  })",
+        "@HttpCode(HttpStatus.CREATED)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.userService.createUser(createUserDto);\r\n\r\n    return {\r\n      message: 'create user successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/user",
+      "controller": "UserController",
+      "handler": "getAllUser",
+      "file": "src/app/module/user/user.controller.ts",
+      "line": 52,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request"
+      ],
+      "decorators": [
+        "@Get()",
+        "@ApiOperation({\r\n    summary: 'get all user',\r\n  })",
+        "@ApiQuery({\r\n    name: 'searchTerm',\r\n    type: String,\r\n    required: false,\r\n    description: 'search term',\r\n  })",
+        "@ApiQuery({\r\n    name: 'role',\r\n    type: String,\r\n    required: false,\r\n    description: 'role',\r\n  })",
+        "@ApiQuery({\r\n    name: 'email',\r\n    type: String,\r\n    required: false,\r\n    description: 'email',\r\n  })",
+        "@ApiQuery({\r\n    name: 'name',\r\n    type: String,\r\n    required: false,\r\n    description: 'name',\r\n  })",
+        "@ApiQuery({\r\n    name: 'page',\r\n    type: Number,\r\n    required: false,\r\n    description: 'page number',\r\n  })",
+        "@ApiQuery({\r\n    name: 'limit',\r\n    type: Number,\r\n    required: false,\r\n    description: 'limit number',\r\n  })",
+        "@ApiQuery({\r\n    name: 'sortBy',\r\n    type: String,\r\n    required: false,\r\n    description: 'sort by',\r\n  })",
+        "@ApiQuery({\r\n    name: 'sortOrder',\r\n    type: String,\r\n    required: false,\r\n    description: 'sort order',\r\n  })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const filters = pick(req.query, ['searchTerm', 'role', 'email', 'name']);\r\n    const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);\r\n    const result = await this.userService.getAllUser(filters, options);\r\n\r\n    return {\r\n      message: 'get all user successfully',\r\n      meta: result.meta,\r\n      data: result.data,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/user/my-profile",
+      "controller": "UserController",
+      "handler": "myProfile",
+      "file": "src/app/module/user/user.controller.ts",
+      "line": 119,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request"
+      ],
+      "decorators": [
+        "@Get('my-profile')",
+        "@ApiOperation({\r\n    summary: 'get my profile',\r\n  })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user', 'admin'))",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const id = req.user!.id;\r\n    const result = await this.userService.myProfile(id);\r\n\r\n    return {\r\n      message: 'get my profile successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/user/my-profile",
+      "controller": "UserController",
+      "handler": "UpdateMyProfile",
+      "file": "src/app/module/user/user.controller.ts",
+      "line": 136,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request",
+        "@Body() updateUserDto: UpdateUserDto",
+        "@UploadedFile() file?: Express.Multer.File"
+      ],
+      "decorators": [
+        "@Put('my-profile')",
+        "@ApiOperation({\r\n    summary: 'update my profile',\r\n  })",
+        "@ApiConsumes('multipart/form-data')",
+        "@ApiBody({ type: UpdateUserDto })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user', 'admin'))",
+        "@UseInterceptors(FileInterceptor('profileImage', fileUpload.uploadConfig))",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const id = req.user!.id;\r\n    const result = await this.userService.UpdateMyProfile(\r\n      id,\r\n      updateUserDto,\r\n      file,\r\n    );\r\n\r\n    return {\r\n      message: 'update my profile successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/user/:id",
+      "controller": "UserController",
+      "handler": "getUserById",
+      "file": "src/app/module/user/user.controller.ts",
+      "line": 164,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string"
+      ],
+      "decorators": [
+        "@Get(':id')",
+        "@ApiOperation({\r\n    summary: 'get user by id',\r\n  })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.userService.getUserById(id);\r\n\r\n    return {\r\n      message: 'get user by id successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/user/:id",
+      "controller": "UserController",
+      "handler": "updateUser",
+      "file": "src/app/module/user/user.controller.ts",
+      "line": 180,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string",
+        "@Body() updateUserDto: UpdateUserDto",
+        "@UploadedFile() file?: Express.Multer.File"
+      ],
+      "decorators": [
+        "@Put(':id')",
+        "@ApiOperation({\r\n    summary: 'update user',\r\n  })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@UseInterceptors(FileInterceptor('profileImage', fileUpload.uploadConfig))",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.userService.updateUser(id, updateUserDto, file);\r\n\r\n    return {\r\n      message: 'update user successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/user/:id",
+      "controller": "UserController",
+      "handler": "deleteUser",
+      "file": "src/app/module/user/user.controller.ts",
+      "line": 201,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string"
+      ],
+      "decorators": [
+        "@Delete(':id')",
+        "@ApiOperation({\r\n    summary: 'delete user',\r\n  })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.userService.deleteUser(id);\r\n\r\n    return {\r\n      message: 'delete user successfully',\r\n      data: result,\r\n    };\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/webhook",
+      "controller": "WebhookController",
+      "handler": "handleWebhook",
+      "file": "src/app/module/webhook/webhook.controller.ts",
+      "line": 12,
+      "guards": [],
+      "parameters": [
+        "@Req() req: RawBodyRequest<Request>",
+        "@Headers('stripe-signature') signature?: string"
+      ],
+      "decorators": [
+        "@Post()",
+        "@HttpCode(200)",
+        "@ApiOperation({ summary: 'Stripe webhook handler' })"
+      ],
+      "handlerSource": "{\r\n    return this.webhookService.handleWebhook(req.rawBody, signature);\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/whatsapp/connect/:companionId",
+      "controller": "WhatsAppConnectController",
+      "handler": "connect",
+      "file": "src/app/module/whatsapp/whatsapp-connect.controller.ts",
+      "line": 21,
+      "guards": [
+        "UseGuards(AuthGuard('user'))"
+      ],
+      "parameters": [
+        "@Req() request: Request",
+        "@Param('companionId', ParseUUIDPipe) companionId: string"
+      ],
+      "decorators": [
+        "@Post('connect/:companionId')"
+      ],
+      "handlerSource": "{\r\n    return { data: await this.ai.connect(request.user!.id, companionId) };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/webhooks/whatsapp",
+      "controller": "WhatsAppWebhookController",
+      "handler": "verifyWebhook",
+      "file": "src/app/module/whatsapp/whatsapp-webhook.controller.ts",
+      "line": 30,
+      "guards": [],
+      "parameters": [
+        "@Query('hub.mode') mode: string",
+        "@Query('hub.verify_token') token: string",
+        "@Query('hub.challenge') challenge: string"
+      ],
+      "decorators": [
+        "@Get()",
+        "@Header('Content-Type', 'text/plain')"
+      ],
+      "handlerSource": "{\r\n    const expectedToken = this.configService.get<string>(\r\n      'WHATSAPP_VERIFY_TOKEN',\r\n    );\r\n    if (\r\n      mode !== 'subscribe' ||\r\n      !expectedToken ||\r\n      token !== expectedToken ||\r\n      typeof challenge !== 'string' ||\r\n      !challenge\r\n    ) {\r\n      throw new ForbiddenException('Invalid webhook verification');\r\n    }\r\n\r\n    return challenge;\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/webhooks/whatsapp",
+      "controller": "WhatsAppWebhookController",
+      "handler": "receiveWebhook",
+      "file": "src/app/module/whatsapp/whatsapp-webhook.controller.ts",
+      "line": 53,
+      "guards": [],
+      "parameters": [
+        "@Body() body: Parameters<WhatsAppInboundService['receive']>[0]",
+        "@Req() req: RawBodyRequest<Request>",
+        "@Headers('x-hub-signature-256') signature?: string"
+      ],
+      "decorators": [
+        "@Post()",
+        "@HttpCode(200)",
+        "@Header('Content-Type', 'text/plain')"
+      ],
+      "handlerSource": "{\r\n    this.inbound.verifySignature(req.rawBody, signature);\r\n    this.logger.log('Verified WhatsApp webhook received');\r\n    await this.inbound.receive(body);\r\n    return 'EVENT_RECEIVED';\r\n  }"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/whatsapp/test",
+      "controller": "WhatsAppController",
+      "handler": "test",
+      "file": "src/app/module/whatsapp/whatsapp.controller.ts",
+      "line": 66,
+      "guards": [
+        "UseGuards(AuthGuard('admin', 'user'))"
+      ],
+      "parameters": [
+        "@Body() dto: WhatsAppTestDto"
+      ],
+      "decorators": [
+        "@Post('test')",
+        "@HttpCode(200)"
+      ],
+      "handlerSource": "{\r\n    // Only the admin test route falls back to the single .env sender.\r\n    let phoneNumberId =\r\n      this.config.get<string>('WHATSAPP_PHONE_NUMBER_ID') ?? '';\r\n    if (dto.companionId) {\r\n      const companion = await this.prisma.companions.findFirst({\r\n        where: { id: dto.companionId, status: true, whatsappEnabled: true },\r\n      });\r\n      if (!companion?.whatsappPhoneNumberId) {\r\n        throw new NotFoundException('Active WhatsApp companion not found');\r\n      }\r\n      phoneNumberId = companion.whatsappPhoneNumberId;\r\n    }\r\n    const data =\r\n      dto.type === 'text'\r\n        ? await this.whatsapp.sendText(\r\n            phoneNumberId,\r\n            dto.to,\r\n            dto.message ?? 'Hello from Meet Elysia backend',\r\n          )\r\n        : await this.whatsapp.sendTestTemplate(phoneNumberId, dto.to);\r\n    return { message: 'WhatsApp message accepted by Meta', data };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "controller": "AppController",
+      "handler": "getHello",
+      "file": "src/app.controller.ts",
+      "line": 9,
+      "guards": [],
+      "parameters": [
+        "@Res() res: Response"
+      ],
+      "decorators": [
+        "@Get()"
+      ],
+      "handlerSource": "{\r\n    return res.type('html').send(this.appService.getHello());\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/health/live",
+      "controller": "HealthController",
+      "handler": "live",
+      "file": "src/health.controller.ts",
+      "line": 12,
+      "guards": [],
+      "parameters": [],
+      "decorators": [
+        "@Get('live')"
+      ],
+      "handlerSource": "{\n    return { status: 'ok' };\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/health/ready",
+      "controller": "HealthController",
+      "handler": "ready",
+      "file": "src/health.controller.ts",
+      "line": 15,
+      "guards": [],
+      "parameters": [],
+      "decorators": [
+        "@Get('ready')"
+      ],
+      "handlerSource": "{\n    try {\n      const rows = await this.prisma.$queryRaw<\n        { ready: boolean }[]\n      >`SELECT (to_regclass('request_limits') IS NOT NULL AND to_regclass('telegram_jobs') IS NOT NULL) AS ready`;\n      if (!rows[0]?.ready) throw new Error();\n      return { status: 'ready' };\n    } catch {\n      throw new ServiceUnavailableException('Service not ready');\n    }\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/privacy-policy",
+      "controller": "LegalPagesController",
+      "handler": "privacyPolicy",
+      "file": "src/legal-pages.controller.ts",
+      "line": 38,
+      "guards": [],
+      "parameters": [],
+      "decorators": [
+        "@Get('privacy-policy')",
+        "@Header('Content-Type', 'text/html; charset=utf-8')"
+      ],
+      "handlerSource": "{\r\n    return page(\r\n      'Privacy Policy',\r\n      `\r\n      <p>This policy describes information processed by Meet Elysia through its website, accounts, AI companion features and WhatsApp integration.</p>\r\n      <h2>Information we process</h2>\r\n      <ul>\r\n        <li>Account information such as your email, name, password hash, optional phone number and profile image.</li>\r\n        <li>Messages you send, generated responses, conversation identifiers, selected companions and interaction history.</li>\r\n        <li>For WhatsApp, your sender number, message identifiers, message content and account-linking information received through Meta.</li>\r\n        <li>Subscription status, payment records, payment-provider identifiers, credits and purchases.</li>\r\n        <li>Operational information used to investigate errors, secure accounts and process message delivery.</li>\r\n      </ul>\r\n      <h2>How information is used</h2>\r\n      <p>We use this information to authenticate accounts, link WhatsApp conversations to users and companions, generate and deliver replies, manage subscriptions and credits, provide support and troubleshoot the service. Authorized administrators can access conversations for support and human takeover.</p>\r\n      <h2>Service providers</h2>\r\n      <p>Operating the service involves providers for hosting and database storage, AI processing, email, media storage and payments. Relevant message content and conversation context are sent to the configured AI service when AI replies are enabled. Meta processes WhatsApp messages; Stripe handles payment processing; uploaded profile media may be stored through Cloudinary. These providers process information under their own applicable terms and privacy policies.</p>\r\n      <h2>Storage and retention</h2>\r\n      <p>Account, conversation and transaction information is stored to operate the service. Retention varies by record type and provider; there is no single automatic deletion period for all records. Contact us to request deletion or ask about a particular record. Some records may need to be retained for applicable obligations, dispute resolution or security, and provider backups may follow separate retention schedules.</p>\r\n      <h2>Your choices and requests</h2>\r\n      <p>You may stop messaging the service and contact ${contactLink} to request access, correction or deletion of your information. Follow our <a href=\"/data-deletion\">data deletion instructions</a> to identify the account or WhatsApp data involved. Deleting a chat in WhatsApp does not itself delete records held by Meet Elysia.</p>\r\n      <h2>Security and updates</h2>\r\n      <p>Account passwords are stored as hashes. No online system can guarantee absolute security; do not send passwords, payment card details or other unnecessary sensitive information in companion chats. Updates to this policy will be reflected on this page.</p>\r\n    `,\r\n    );\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/terms",
+      "controller": "LegalPagesController",
+      "handler": "terms",
+      "file": "src/legal-pages.controller.ts",
+      "line": 67,
+      "guards": [],
+      "parameters": [],
+      "decorators": [
+        "@Get('terms')",
+        "@Header('Content-Type', 'text/html; charset=utf-8')"
+      ],
+      "handlerSource": "{\r\n    return page(\r\n      'Terms of Service',\r\n      `\r\n      <p>These terms describe use of Meet Elysia's account, companion chat and WhatsApp features. By using the service, you agree to these terms.</p>\r\n      <h2>Accounts and responsible use</h2>\r\n      <p>Provide accurate account information, use only accounts and phone numbers you are authorized to use, and keep your credentials secure. Do not use the service for unlawful activity, harassment, fraud, unauthorized access or interference with other users or systems.</p>\r\n      <h2>Companion conversations</h2>\r\n      <p>Companions are AI-powered characters. Generated responses may be inaccurate or inappropriate and should not be relied on as professional advice or emergency assistance. Authorized administrators may participate through human takeover. Availability and response times can vary.</p>\r\n      <h2>Subscriptions and credits</h2>\r\n      <p>Some features require a subscription or credits. Review the price, renewal terms and purchase details shown at checkout before paying. Contact ${contactLink} for billing, cancellation or refund questions; applicable consumer rights remain unaffected.</p>\r\n      <h2>Your content and privacy</h2>\r\n      <p>Only submit content you have permission to share. You allow the service and its providers to process that content as needed to deliver the requested features. See our <a href=\"/privacy-policy\">Privacy Policy</a> for data handling and our <a href=\"/data-deletion\">Data Deletion</a> page for removal requests.</p>\r\n      <h2>Third-party services and access</h2>\r\n      <p>WhatsApp, payment services and other integrated providers have their own terms. Features may change or become unavailable. Access may be restricted to address abuse, security issues or violations of these terms.</p>\r\n      <h2>Contact and changes</h2>\r\n      <p>Questions or requests to close an account can be sent to ${contactLink}. Revised terms will be posted here with an updated date.</p>\r\n    `,\r\n    );\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/data-deletion",
+      "controller": "LegalPagesController",
+      "handler": "dataDeletion",
+      "file": "src/legal-pages.controller.ts",
+      "line": 90,
+      "guards": [],
+      "parameters": [],
+      "decorators": [
+        "@Get('data-deletion')",
+        "@Header('Content-Type', 'text/html; charset=utf-8')"
+      ],
+      "handlerSource": "{\r\n    return page(\r\n      'Data Deletion Instructions',\r\n      `\r\n      <p>You can request deletion of your Meet Elysia account or data associated with its WhatsApp integration by email.</p>\r\n      <h2>Submit a request</h2>\r\n      <ol>\r\n        <li>Email ${contactLink} with the subject <strong>Meet Elysia Data Deletion Request</strong>.</li>\r\n        <li>Send from your registered email where possible. Include the account email and, for WhatsApp data, your phone number with country code.</li>\r\n        <li>Specify whether you want the entire account deleted or only particular data, such as WhatsApp linking information or conversation history.</li>\r\n      </ol>\r\n      <p>Do not include passwords, one-time codes, access tokens or payment card details.</p>\r\n      <h2>What happens next</h2>\r\n      <p>The support team handles requests manually and may ask for information needed to verify account ownership before processing deletion. Ask in the same email for confirmation of completion and the status of any retained records.</p>\r\n      <h2>Scope and limitations</h2>\r\n      <p>A request can cover your profile, stored conversations and WhatsApp account links. Records subject to applicable retention obligations or needed for disputes or security may require separate handling. Copies held in provider backups may follow their retention schedules.</p>\r\n      <p>Deleting Meet Elysia data does not delete your Facebook or WhatsApp account or copies held by Meta or message recipients. Deleting a WhatsApp chat alone does not submit a deletion request to Meet Elysia. If you have an active subscription, include a cancellation request so support can address billing separately.</p>\r\n      <p>Read our <a href=\"/privacy-policy\">Privacy Policy</a> for an overview of the information processed by the service.</p>\r\n    `,\r\n    );\r\n  }"
+    }
+  ],
+  "dtos": [
+    {
+      "name": "CreateAuthDto",
+      "file": "src/app/module/auth/dto/create-auth.dto.ts",
+      "source": "export class CreateAuthDto {\r\n  @ApiProperty({\r\n    example: 'John Doe',\r\n    description: 'User full name',\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Name is required' })\r\n  name!: string;\r\n\r\n  @ApiProperty({\r\n    example: 'john@example.com',\r\n    description: 'User email address',\r\n  })\r\n  @IsEmail({}, { message: 'Please provide a valid email' })\r\n  @IsNotEmpty({ message: 'Email is required' })\r\n  email!: string;\r\n\r\n  @ApiProperty({\r\n    example: '01712345678',\r\n    description: 'User phone number',\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Phone number is required' })\r\n  phoneNumber!: string;\r\n\r\n  @ApiProperty({\r\n    example: 'Password123',\r\n    description: 'User password',\r\n    minLength: 6,\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Password is required' })\r\n  @MinLength(6, {\r\n    message: 'Password must be at least 6 characters',\r\n  })\r\n  password!: string;\r\n\r\n  @ApiPropertyOptional({\r\n    example: true,\r\n    default: false,\r\n    description: 'Whether the companion is adult eligible',\r\n  })\r\n  @IsOptional()\r\n  @IsBoolean()\r\n  @Transform(({ value }) =>\r\n    value === 'true' ? true : value === 'false' ? false : value,\r\n  )\r\n  adultEligible?: boolean;\r\n}"
+    },
+    {
+      "name": "LoginAuthDto",
+      "file": "src/app/module/auth/dto/create-auth.dto.ts",
+      "source": "export class LoginAuthDto {\r\n  @ApiProperty({\r\n    example: 'john@example.com',\r\n  })\r\n  @IsEmail({}, { message: 'Please provide a valid email' })\r\n  @IsNotEmpty({ message: 'Email is required' })\r\n  email!: string;\r\n\r\n  @ApiProperty({\r\n    example: 'Password123',\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Password is required' })\r\n  password!: string;\r\n}"
+    },
+    {
+      "name": "ForgotPasswordAuthDto",
+      "file": "src/app/module/auth/dto/create-auth.dto.ts",
+      "source": "export class ForgotPasswordAuthDto {\r\n  @ApiProperty({\r\n    example: 'john@example.com',\r\n  })\r\n  @IsEmail({}, { message: 'Please provide a valid email' })\r\n  @IsNotEmpty({ message: 'Email is required' })\r\n  email!: string;\r\n}"
+    },
+    {
+      "name": "VerifyOtpAuthDto",
+      "file": "src/app/module/auth/dto/create-auth.dto.ts",
+      "source": "export class VerifyOtpAuthDto {\r\n  @ApiProperty({\r\n    example: 'john@example.com',\r\n  })\r\n  @IsEmail({}, { message: 'Please provide a valid email' })\r\n  @IsNotEmpty({ message: 'Email is required' })\r\n  email!: string;\r\n\r\n  @ApiProperty({\r\n    example: '123456',\r\n    description: '6 digit OTP',\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'OTP is required' })\r\n  @Matches(/^\\d{6}$/, {\r\n    message: 'OTP must be exactly 6 digits',\r\n  })\r\n  otp!: string;\r\n}"
+    },
+    {
+      "name": "ResetPasswordAuthDto",
+      "file": "src/app/module/auth/dto/create-auth.dto.ts",
+      "source": "export class ResetPasswordAuthDto {\r\n  @ApiProperty({ description: 'Single-use resetToken returned by verify-otp' })\r\n  @IsString()\r\n  @Matches(/^[a-f0-9]{64}$/)\r\n  resetToken!: string;\r\n  @ApiProperty({\r\n    example: 'john@example.com',\r\n  })\r\n  @IsEmail({}, { message: 'Please provide a valid email' })\r\n  @IsNotEmpty({ message: 'Email is required' })\r\n  email!: string;\r\n\r\n  @ApiProperty({\r\n    example: 'NewPassword123',\r\n    minLength: 6,\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Password is required' })\r\n  @MinLength(6, {\r\n    message: 'Password must be at least 6 characters',\r\n  })\r\n  password!: string;\r\n}"
+    },
+    {
+      "name": "ChangePasswordAuthDto",
+      "file": "src/app/module/auth/dto/create-auth.dto.ts",
+      "source": "export class ChangePasswordAuthDto {\r\n  @ApiProperty({\r\n    example: 'john@example.com',\r\n  })\r\n  @IsEmail({}, { message: 'Please provide a valid email' })\r\n  @IsNotEmpty({ message: 'Email is required' })\r\n  email!: string;\r\n\r\n  @ApiProperty({\r\n    example: 'OldPassword123',\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Old password is required' })\r\n  oldPassword!: string;\r\n\r\n  @ApiProperty({\r\n    example: 'NewPassword123',\r\n    minLength: 6,\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'New password is required' })\r\n  @MinLength(6, {\r\n    message: 'New password must be at least 6 characters',\r\n  })\r\n  newPassword!: string;\r\n}"
+    },
+    {
+      "name": "UpdateAuthDto",
+      "file": "src/app/module/auth/dto/update-auth.dto.ts",
+      "source": "export class UpdateAuthDto extends PartialType(CreateAuthDto) {}"
+    },
+    {
+      "name": "SendMessageDto",
+      "file": "src/app/module/chat/dto/send-message.dto.ts",
+      "source": "export class SendMessageDto {\r\n  @ApiProperty({\r\n    enum: ['text', 'voice'],\r\n    required: false,\r\n    description: 'Voice messages supply their transcript in message.',\r\n  })\r\n  @IsOptional()\r\n  @IsIn(['text', 'voice'])\r\n  type?: 'text' | 'voice';\r\n\r\n  @ApiProperty({ example: 'Hello, how are you?' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  @MaxLength(5000)\r\n  message!: string;\r\n}"
+    },
+    {
+      "name": "CompanionPersonalityDto",
+      "file": "src/app/module/companions/dto/create-companion.dto.ts",
+      "source": "export class CompanionPersonalityDto {\r\n  @ApiProperty({ type: [String] })\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  traits!: string[];\r\n\r\n  @ApiProperty({})\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  about!: string;\r\n\r\n  @ApiProperty({})\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  essence!: string;\r\n\r\n  @ApiProperty({ type: [String] })\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  sharedTraits!: string[];\r\n}"
+    },
+    {
+      "name": "CompanionCommunicationStyleDto",
+      "file": "src/app/module/companions/dto/create-companion.dto.ts",
+      "source": "export class CompanionCommunicationStyleDto {\r\n  @ApiProperty({ type: [String] })\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  styleTraits!: string[];\r\n\r\n  @ApiProperty({})\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  topicsSheEnjoys!: string;\r\n\r\n  @ApiProperty({ type: [String] })\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  whatYouExperience!: string[];\r\n}"
+    },
+    {
+      "name": "CompanionBackgroundDto",
+      "file": "src/app/module/companions/dto/create-companion.dto.ts",
+      "source": "export class CompanionBackgroundDto {\r\n  @ApiProperty({})\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  location!: string;\r\n\r\n  @ApiProperty({})\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  occupation!: string;\r\n\r\n  @ApiProperty({ type: [String] })\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  lifestyle!: string[];\r\n}"
+    },
+    {
+      "name": "CompanionVisualProfileDto",
+      "file": "src/app/module/companions/dto/create-companion.dto.ts",
+      "source": "export class CompanionVisualProfileDto {\r\n  @ApiProperty({ type: [String] })\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  aestheticKeywords!: string[];\r\n\r\n  @ApiPropertyOptional({ type: String, nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  note?: string | null;\r\n\r\n  @ApiProperty({ type: [String] })\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  referenceImages!: string[];\r\n\r\n  @ApiPropertyOptional({ type: String, nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  physicalIdentity?: string | null;\r\n\r\n  @ApiPropertyOptional({ type: String, nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  generationInstructions?: string | null;\r\n}"
+    },
+    {
+      "name": "CompanionVoiceSettingsDto",
+      "file": "src/app/module/companions/dto/create-companion.dto.ts",
+      "source": "export class CompanionVoiceSettingsDto {\r\n  @ApiProperty({})\r\n  @Transform(toNumber)\r\n  @IsNumber()\r\n  stability!: number;\r\n\r\n  @ApiProperty({})\r\n  @Transform(toNumber)\r\n  @IsNumber()\r\n  similarityBoost!: number;\r\n\r\n  @ApiProperty({})\r\n  @Transform(toNumber)\r\n  @IsNumber()\r\n  style!: number;\r\n\r\n  @ApiProperty({})\r\n  @Transform(toBoolean)\r\n  @IsBoolean()\r\n  useSpeakerBoost!: boolean;\r\n\r\n  @ApiProperty({})\r\n  @Transform(toNumber)\r\n  @IsNumber()\r\n  speed!: number;\r\n}"
+    },
+    {
+      "name": "CompanionVoiceDto",
+      "file": "src/app/module/companions/dto/create-companion.dto.ts",
+      "source": "export class CompanionVoiceDto {\r\n  @ApiProperty({})\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  provider!: string;\r\n\r\n  @ApiPropertyOptional({ type: String, nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  voiceId?: string | null;\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionVoiceSettingsDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionVoiceSettingsDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  settings?: CompanionVoiceSettingsDto;\r\n}"
+    },
+    {
+      "name": "CreateCompanionDto",
+      "file": "src/app/module/companions/dto/create-companion.dto.ts",
+      "source": "export class CreateCompanionDto {\r\n  @ApiPropertyOptional({ example: '+15551234567', nullable: true })\r\n  @IsOptional()\r\n  @Matches(/^\\+[1-9]\\d{6,14}$/)\r\n  whatsappPhoneNumber?: string | null;\r\n\r\n  @ApiPropertyOptional({ example: '123456789012345', nullable: true })\r\n  @IsOptional()\r\n  @Matches(/^\\d+$/)\r\n  whatsappPhoneNumberId?: string | null;\r\n\r\n  @ApiPropertyOptional({ example: 'Elena - AI Companion', nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  @MaxLength(200)\r\n  whatsappDisplayName?: string | null;\r\n\r\n  @ApiPropertyOptional({ default: false })\r\n  @ValidateIf((_object, value) => value !== undefined)\r\n  @Transform(toBoolean)\r\n  @IsBoolean()\r\n  whatsappEnabled?: boolean;\r\n\r\n  @ApiPropertyOptional({ nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  @MaxLength(4096)\r\n  whatsappWelcomeMessage?: string | null;\r\n\r\n  @ApiProperty({})\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  name!: string;\r\n\r\n  @ApiPropertyOptional({})\r\n  @ValidateIf((_object, value) => value !== undefined)\r\n  @Transform(toNumber)\r\n  @IsInt()\r\n  @Min(1)\r\n  version?: number;\r\n\r\n  @ApiProperty({})\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  title!: string;\r\n\r\n  @ApiPropertyOptional({ type: Number, nullable: true })\r\n  @IsOptional()\r\n  @Transform(toNumber)\r\n  @IsInt()\r\n  @Min(18)\r\n  age?: number | null;\r\n\r\n  @ApiPropertyOptional({ type: String, nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  backstory?: string | null;\r\n\r\n  @ApiProperty({ type: [String] })\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  voiceDescription!: string[];\r\n\r\n  @ApiPropertyOptional({ type: String, nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  profileImage?: string | null;\r\n\r\n  @ApiPropertyOptional({ type: String, nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  coverImage?: string | null;\r\n\r\n  @ApiPropertyOptional({ type: [String] })\r\n  @ValidateIf((_object, value) => value !== undefined)\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  galleryImages?: string[];\r\n\r\n  @ApiPropertyOptional({})\r\n  @ValidateIf((_object, value) => value !== undefined)\r\n  @Transform(toBoolean)\r\n  @IsBoolean()\r\n  status?: boolean;\r\n\r\n  @ApiProperty({ type: [String] })\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  interests!: string[];\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionPersonalityDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionPersonalityDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  personality?: CompanionPersonalityDto;\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionCommunicationStyleDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionCommunicationStyleDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  communicationStyle?: CompanionCommunicationStyleDto;\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionBackgroundDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionBackgroundDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  background?: CompanionBackgroundDto;\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionVisualProfileDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionVisualProfileDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  visualProfile?: CompanionVisualProfileDto;\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionVoiceDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionVoiceDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  voice?: CompanionVoiceDto;\r\n}"
+    },
+    {
+      "name": "UpdateCompanionPersonalityDto",
+      "file": "src/app/module/companions/dto/update-companion.dto.ts",
+      "source": "export class UpdateCompanionPersonalityDto extends PartialType(\r\n  CompanionPersonalityDto,\r\n  { skipNullProperties: false },\r\n) {}"
+    },
+    {
+      "name": "UpdateCompanionCommunicationStyleDto",
+      "file": "src/app/module/companions/dto/update-companion.dto.ts",
+      "source": "export class UpdateCompanionCommunicationStyleDto extends PartialType(\r\n  CompanionCommunicationStyleDto,\r\n  { skipNullProperties: false },\r\n) {}"
+    },
+    {
+      "name": "UpdateCompanionBackgroundDto",
+      "file": "src/app/module/companions/dto/update-companion.dto.ts",
+      "source": "export class UpdateCompanionBackgroundDto extends PartialType(\r\n  CompanionBackgroundDto,\r\n  { skipNullProperties: false },\r\n) {}"
+    },
+    {
+      "name": "UpdateCompanionVisualProfileDto",
+      "file": "src/app/module/companions/dto/update-companion.dto.ts",
+      "source": "export class UpdateCompanionVisualProfileDto extends PartialType(\r\n  CompanionVisualProfileDto,\r\n  { skipNullProperties: false },\r\n) {}"
+    },
+    {
+      "name": "UpdateCompanionVoiceSettingsDto",
+      "file": "src/app/module/companions/dto/update-companion.dto.ts",
+      "source": "export class UpdateCompanionVoiceSettingsDto extends PartialType(\r\n  CompanionVoiceSettingsDto,\r\n  { skipNullProperties: false },\r\n) {}"
+    },
+    {
+      "name": "UpdateCompanionVoiceDto",
+      "file": "src/app/module/companions/dto/update-companion.dto.ts",
+      "source": "export class UpdateCompanionVoiceDto extends PartialType(\r\n  OmitType(CompanionVoiceDto, ['settings'] as const),\r\n  { skipNullProperties: false },\r\n) {\r\n  @ApiPropertyOptional({ type: () => UpdateCompanionVoiceSettingsDto })\r\n  @IsOptional()\r\n  @IsObject()\r\n  @ValidateNested()\r\n  @nested(UpdateCompanionVoiceSettingsDto)\r\n  settings?: UpdateCompanionVoiceSettingsDto;\r\n}"
+    },
+    {
+      "name": "UpdateCompanionDto",
+      "file": "src/app/module/companions/dto/update-companion.dto.ts",
+      "source": "export class UpdateCompanionDto extends PartialType(\r\n  OmitType(CreateCompanionDto, [\r\n    'personality',\r\n    'communicationStyle',\r\n    'background',\r\n    'visualProfile',\r\n    'voice',\r\n  ] as const),\r\n  { skipNullProperties: false },\r\n) {\r\n  @ApiPropertyOptional({ type: () => UpdateCompanionPersonalityDto })\r\n  @IsOptional()\r\n  @IsObject()\r\n  @ValidateNested()\r\n  @nested(UpdateCompanionPersonalityDto)\r\n  personality?: UpdateCompanionPersonalityDto;\r\n  @ApiPropertyOptional({ type: () => UpdateCompanionCommunicationStyleDto })\r\n  @IsOptional()\r\n  @IsObject()\r\n  @ValidateNested()\r\n  @nested(UpdateCompanionCommunicationStyleDto)\r\n  communicationStyle?: UpdateCompanionCommunicationStyleDto;\r\n  @ApiPropertyOptional({ type: () => UpdateCompanionBackgroundDto })\r\n  @IsOptional()\r\n  @IsObject()\r\n  @ValidateNested()\r\n  @nested(UpdateCompanionBackgroundDto)\r\n  background?: UpdateCompanionBackgroundDto;\r\n  @ApiPropertyOptional({ type: () => UpdateCompanionVisualProfileDto })\r\n  @IsOptional()\r\n  @IsObject()\r\n  @ValidateNested()\r\n  @nested(UpdateCompanionVisualProfileDto)\r\n  visualProfile?: UpdateCompanionVisualProfileDto;\r\n  @ApiPropertyOptional({ type: () => UpdateCompanionVoiceDto })\r\n  @IsOptional()\r\n  @IsObject()\r\n  @ValidateNested()\r\n  @nested(UpdateCompanionVoiceDto)\r\n  voice?: UpdateCompanionVoiceDto;\r\n}"
+    },
+    {
+      "name": "UpdateVoiceDto",
+      "file": "src/app/module/companions/dto/update-companion.dto.ts",
+      "source": "export class UpdateVoiceDto {\r\n  @ApiProperty({ example: 'your-provider-voice-id' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  voiceId: string;\r\n}"
+    },
+    {
+      "name": "CreateCreditPackageDto",
+      "file": "src/app/module/credit/dto/credit.dto.ts",
+      "source": "export class CreateCreditPackageDto {\r\n  @ApiProperty({ example: 'Starter Credits' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  name!: string;\r\n\r\n  @ApiProperty({ example: 100 })\r\n  @IsInt()\r\n  @Min(1)\r\n  credits!: number;\r\n\r\n  @ApiProperty({ example: '4.99' })\r\n  @IsString()\r\n  @Matches(/^\\d+(\\.\\d{1,2})?$/, { message: 'Price must be a valid amount' })\r\n  price!: string;\r\n\r\n  @ApiPropertyOptional({ example: 'usd', default: 'usd' })\r\n  @IsOptional()\r\n  @IsString()\r\n  currency?: string;\r\n\r\n  @ApiPropertyOptional({ default: true })\r\n  @IsOptional()\r\n  @IsBoolean()\r\n  isActive?: boolean;\r\n}"
+    },
+    {
+      "name": "UpdateCreditPackageDto",
+      "file": "src/app/module/credit/dto/credit.dto.ts",
+      "source": "export class UpdateCreditPackageDto extends PartialType(\r\n  CreateCreditPackageDto,\r\n) {}"
+    },
+    {
+      "name": "PurchaseCreditPackageDto",
+      "file": "src/app/module/credit/dto/credit.dto.ts",
+      "source": "export class PurchaseCreditPackageDto {\r\n  @ApiProperty({ example: 'credit-package-id' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  packageId!: string;\r\n}"
+    },
+    {
+      "name": "CreateDashboardDto",
+      "file": "src/app/module/dashboard/dto/create-dashboard.dto.ts",
+      "source": "export class CreateDashboardDto {}"
+    },
+    {
+      "name": "UpdateDashboardDto",
+      "file": "src/app/module/dashboard/dto/update-dashboard.dto.ts",
+      "source": "export class UpdateDashboardDto extends PartialType(CreateDashboardDto) {}"
+    },
+    {
+      "name": "PageDto",
+      "file": "src/app/module/engagement/engagement.dto.ts",
+      "source": "export class PageDto {\r\n  @ApiPropertyOptional({ default: 1 })\r\n  @IsOptional()\r\n  @Type(() => Number)\r\n  @IsInt()\r\n  @Min(1)\r\n  page = 1;\r\n  @ApiPropertyOptional({ default: 50 })\r\n  @IsOptional()\r\n  @Type(() => Number)\r\n  @IsInt()\r\n  @Min(1)\r\n  @Max(100)\r\n  limit = 50;\r\n}"
+    },
+    {
+      "name": "RelationshipDto",
+      "file": "src/app/module/engagement/engagement.dto.ts",
+      "source": "export class RelationshipDto {\r\n  @ApiPropertyOptional()\r\n  @IsOptional()\r\n  @IsString()\r\n  @MaxLength(100)\r\n  nickname?: string;\r\n  @ApiPropertyOptional()\r\n  @IsOptional()\r\n  @IsString()\r\n  @MaxLength(5000)\r\n  notes?: string;\r\n}"
+    },
+    {
+      "name": "CostDto",
+      "file": "src/app/module/engagement/engagement.dto.ts",
+      "source": "export class CostDto {\r\n  @ApiProperty()\r\n  @IsInt()\r\n  @Min(0)\r\n  @Max(1000000)\r\n  credits!: number;\r\n}"
+    },
+    {
+      "name": "ModeDto",
+      "file": "src/app/module/engagement/engagement.dto.ts",
+      "source": "export class ModeDto {\r\n  @ApiProperty({ enum: ['ai', 'human'] })\r\n  @IsIn(['ai', 'human'])\r\n  mode!: 'ai' | 'human';\r\n}"
+    },
+    {
+      "name": "HumanReplyDto",
+      "file": "src/app/module/engagement/engagement.dto.ts",
+      "source": "export class HumanReplyDto {\r\n  @ApiProperty()\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  messageId!: string;\r\n  @ApiProperty()\r\n  @IsString()\r\n  @Matches(/\\S/)\r\n  @MaxLength(5000)\r\n  message!: string;\r\n}"
+    },
+    {
+      "name": "StoryDto",
+      "file": "src/app/module/engagement/engagement.dto.ts",
+      "source": "export class StoryDto {\r\n  @ApiProperty({ example: '2026-09-08' })\r\n  @IsDateString()\r\n  @Matches(/^\\d{4}-\\d{2}-\\d{2}$/)\r\n  day!: string;\r\n  @ApiProperty()\r\n  @IsString()\r\n  @Matches(/\\S/)\r\n  @MaxLength(200)\r\n  title!: string;\r\n  @ApiProperty()\r\n  @IsString()\r\n  @Matches(/\\S/)\r\n  @MaxLength(20000)\r\n  content!: string;\r\n  @ApiProperty()\r\n  @IsBoolean()\r\n  published!: boolean;\r\n}"
+    },
+    {
+      "name": "PhotoDto",
+      "file": "src/app/module/engagement/engagement.dto.ts",
+      "source": "export class PhotoDto {\r\n  @ApiProperty({ description: 'URL from this companion’s galleryImages' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  @MaxLength(2048)\r\n  photoUrl!: string;\r\n}"
+    },
+    {
+      "name": "NotificationDto",
+      "file": "src/app/module/engagement/engagement.dto.ts",
+      "source": "export class NotificationDto {\r\n  @ApiProperty()\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  userId!: string;\r\n  @ApiProperty()\r\n  @IsString()\r\n  @Matches(/\\S/)\r\n  @MaxLength(200)\r\n  title!: string;\r\n  @ApiProperty()\r\n  @IsString()\r\n  @Matches(/\\S/)\r\n  @MaxLength(5000)\r\n  body!: string;\r\n}"
+    },
+    {
+      "name": "CreateGiftDto",
+      "file": "src/app/module/gift/dto/gift.dto.ts",
+      "source": "export class CreateGiftDto {\r\n  @ApiProperty({ example: 'Rose' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  name!: string;\r\n\r\n  @ApiPropertyOptional({\r\n    example: 'https://example.com/rose.png',\r\n    type: 'string',\r\n    format: 'binary',\r\n  })\r\n  @IsOptional()\r\n  @IsString()\r\n  image?: string;\r\n\r\n  @ApiPropertyOptional({ example: 10 })\r\n  @IsInt()\r\n  @Min(1)\r\n  @Type(() => Number)\r\n  creditCost!: number;\r\n\r\n  @ApiPropertyOptional({ default: true })\r\n  @IsOptional()\r\n  @IsBoolean()\r\n  @Type(() => Boolean)\r\n  isActive?: boolean;\r\n}"
+    },
+    {
+      "name": "UpdateGiftDto",
+      "file": "src/app/module/gift/dto/gift.dto.ts",
+      "source": "export class UpdateGiftDto extends PartialType(CreateGiftDto) {}"
+    },
+    {
+      "name": "SendGiftDto",
+      "file": "src/app/module/gift/dto/gift.dto.ts",
+      "source": "export class SendGiftDto {\r\n  @ApiProperty({ example: 'companion-id' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  companionId!: string;\r\n}"
+    },
+    {
+      "name": "BroadcastNewsletterDto",
+      "file": "src/app/module/newsletter/dto/broadcast-newsletter.dto.ts",
+      "source": "export class BroadcastNewsletterDto {\r\n  @ApiProperty({ example: 'Latest news from Elysia' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  subject: string;\r\n\r\n  @ApiProperty({ example: '<h1>Hello!</h1><p>Here is our latest update.</p>' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  html: string;\r\n}"
+    },
+    {
+      "name": "CreateNewsletterDto",
+      "file": "src/app/module/newsletter/dto/create-newsletter.dto.ts",
+      "source": "export class CreateNewsletterDto {\r\n  @ApiProperty({\r\n    example: '[EMAIL_ADDRESS]',\r\n    description: 'The email of the user',\r\n  })\r\n  @IsEmail()\r\n  @IsNotEmpty()\r\n  email: string;\r\n}"
+    },
+    {
+      "name": "UpdateNewsletterDto",
+      "file": "src/app/module/newsletter/dto/update-newsletter.dto.ts",
+      "source": "export class UpdateNewsletterDto extends PartialType(CreateNewsletterDto) {}"
+    },
+    {
+      "name": "BuyCreditsDto",
+      "file": "src/app/module/payment/dto/buy-credits.dto.ts",
+      "source": "export class BuyCreditsDto {\r\n  @ApiProperty({ example: 'credit-package-id' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  packageId!: string;\r\n}"
+    },
+    {
+      "name": "CreatePaymentDto",
+      "file": "src/app/module/payment/dto/create-payment.dto.ts",
+      "source": "export class CreatePaymentDto {}"
+    },
+    {
+      "name": "UpdatePaymentDto",
+      "file": "src/app/module/payment/dto/update-payment.dto.ts",
+      "source": "export class UpdatePaymentDto extends PartialType(CreatePaymentDto) {}"
+    },
+    {
+      "name": "CreateSubscriptionDto",
+      "file": "src/app/module/subscription/dto/create-subscription.dto.ts",
+      "source": "export class CreateSubscriptionDto {\r\n  @ApiProperty({\r\n    example: 'Premium Plan',\r\n    description: 'Subscription plan name',\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Name is required' })\r\n  name: string;\r\n\r\n  @ApiProperty({\r\n    example: '29.99',\r\n    description: 'Subscription plan price',\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Price is required' })\r\n  price: string;\r\n\r\n  @ApiPropertyOptional({\r\n    example: 1000,\r\n    description: 'Deprecated: use creditAllowance',\r\n  })\r\n  @IsOptional()\r\n  @IsInt({ message: 'Message limit must be an integer' })\r\n  @Min(0, {\r\n    message: 'Message limit cannot be negative',\r\n  })\r\n  messageLimit?: number;\r\n\r\n  @ApiPropertyOptional({\r\n    example: 500,\r\n    description: 'Credits granted for each subscription period',\r\n  })\r\n  @IsOptional()\r\n  @IsInt({ message: 'Credit allowance must be an integer' })\r\n  @Min(0, { message: 'Credit allowance cannot be negative' })\r\n  creditAllowance?: number;\r\n\r\n  @ApiProperty({ example: 30, required: false, default: 30 })\r\n  @IsOptional()\r\n  @IsInt()\r\n  @Min(1)\r\n  durationDays?: number;\r\n\r\n  @ApiProperty({\r\n    example: [\r\n      '1000 messages per month',\r\n      'Priority support',\r\n      'Advanced AI features',\r\n    ],\r\n    description: 'List of subscription features',\r\n    type: [String],\r\n  })\r\n  @IsArray({\r\n    message: 'Features must be an array',\r\n  })\r\n  @IsString({\r\n    each: true,\r\n    message: 'Each feature must be a string',\r\n  })\r\n  features: string[];\r\n\r\n  @ApiPropertyOptional({\r\n    example: true,\r\n    default: false,\r\n    description: 'Whether this plan is popular',\r\n  })\r\n  @IsOptional()\r\n  @IsBoolean({\r\n    message: 'isPopular must be a boolean',\r\n  })\r\n  isPopular?: boolean;\r\n\r\n  @ApiPropertyOptional({\r\n    example: true,\r\n    default: true,\r\n    description: 'Whether this subscription plan is active',\r\n  })\r\n  @IsOptional()\r\n  @IsBoolean({\r\n    message: 'isActive must be a boolean',\r\n  })\r\n  isActive?: boolean;\r\n}"
+    },
+    {
+      "name": "UpdateSubscriptionDto",
+      "file": "src/app/module/subscription/dto/update-subscription.dto.ts",
+      "source": "export class UpdateSubscriptionDto extends PartialType(CreateSubscriptionDto) {}"
+    },
+    {
+      "name": "TelegramSessionDto",
+      "file": "src/app/module/telegram/telegram-mini-app.controller.ts",
+      "source": "class TelegramSessionDto {\n  @IsString() @MinLength(1) @MaxLength(8192) initData!: string;\n}"
+    },
+    {
+      "name": "TelegramLoginDto",
+      "file": "src/app/module/telegram/telegram-mini-app.controller.ts",
+      "source": "class TelegramLoginDto extends TelegramSessionDto {\n  @IsOptional() @IsBoolean() confirmTransfer?: boolean;\n  @IsEmail() @MaxLength(254) email!: string;\n  @IsString() @MinLength(1) @MaxLength(256) password!: string;\n}"
+    },
+    {
+      "name": "CreateUserDto",
+      "file": "src/app/module/user/dto/create-user.dto.ts",
+      "source": "export class CreateUserDto {\r\n  @ApiPropertyOptional({ example: '' })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Name is requried' })\r\n  name!: string;\r\n\r\n  @ApiPropertyOptional({ example: '' })\r\n  @IsEmail()\r\n  @IsNotEmpty({ message: 'Email is requried' })\r\n  email!: string;\r\n\r\n  @ApiPropertyOptional({ example: '' })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Password is requried' })\r\n  password!: string;\r\n\r\n  @ApiPropertyOptional({ example: '' })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Phone number is requried' })\r\n  phoneNumber!: string;\r\n\r\n  @ApiPropertyOptional({ type: 'string', format: 'binary' })\r\n  @IsString()\r\n  @IsOptional()\r\n  profileImage?: string;\r\n}"
+    },
+    {
+      "name": "UpdateUserDto",
+      "file": "src/app/module/user/dto/update-user.dto.ts",
+      "source": "export class UpdateUserDto extends PartialType(CreateUserDto) {}"
+    },
+    {
+      "name": "WhatsAppTestDto",
+      "file": "src/app/module/whatsapp/whatsapp.controller.ts",
+      "source": "export class WhatsAppTestDto {\r\n  @ApiPropertyOptional({\r\n    description:\r\n      'Use this companion sender. Omit to use the Meta test sender from .env.',\r\n  })\r\n  @IsOptional()\r\n  @IsUUID()\r\n  companionId?: string;\r\n\r\n  @ApiProperty({ example: '8801712345678' })\r\n  @Matches(/^[1-9]\\d{6,14}$/)\r\n  to!: string;\r\n\r\n  @ApiPropertyOptional({ enum: ['template', 'text'], default: 'template' })\r\n  @IsOptional()\r\n  @IsIn(['template', 'text'])\r\n  type?: 'template' | 'text';\r\n\r\n  @ApiPropertyOptional({ example: 'Hello from Meet Elysia backend' })\r\n  @IsOptional()\r\n  @IsString()\r\n  @MinLength(1)\r\n  @MaxLength(4096)\r\n  message?: string;\r\n}"
+    }
+  ]
+}

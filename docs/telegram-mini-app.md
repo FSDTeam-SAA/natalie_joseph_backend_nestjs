@@ -2,7 +2,7 @@
 
 Unlinked users and `/login` receive a **Log In / Connect Account** Mini App button.
 The backend serves the mobile login page at `/api/v1/telegram/app?companionId=UUID`.
-No database migration is required. Existing deep links continue working.
+The production-hardening migration is now required for shared authentication rate limits and the durable Telegram inbox. See production-deployment.md before starting the backend. Existing deep links continue working.
 
 ## Deployment
 
@@ -11,7 +11,7 @@ No database migration is required. Existing deep links continue working.
 3. Set `TELEGRAM_REGISTER_URL` and `TELEGRAM_FORGOT_PASSWORD_URL` to actual frontend pages. An empty registration setting keeps Create Account visible and shows a configuration-unavailable message when tapped; an empty reset setting hides Forgot Password. They must not be Swagger pages.
 4. Set `TELEGRAM_CREDITS_URL` and `TELEGRAM_SUBSCRIPTION_URL` to actual frontend purchase pages. Existing `/api/docs` placeholders do not provide a customer checkout experience.
 5. Register the Telegram webhooks against the same deployment with `node scripts/telegram.cjs setup https://YOUR-BACKEND-HOST`. No Mini App menu registration is required for the inline web_app button.
-6. Protect `POST /api/v1/telegram/app/login/*` at the reverse proxy with a shared rate limit. The backend also limits attempts per verified Telegram ID and email (10 per 10 minutes per process). Multiple replicas need a shared limiter. Do not log request bodies, credentials, or initData.
+6. Protect `POST /api/v1/telegram/app/login/*` at the reverse proxy with a shared rate limit. The backend now uses shared PostgreSQL counters for login requests, alongside the Mini App per-process limits. Run the runtime-hardening migration first; keep proxy-level traffic limits as an additional layer. Do not log request bodies, credentials, or initData.
 
 ## Account and payment flow
 
