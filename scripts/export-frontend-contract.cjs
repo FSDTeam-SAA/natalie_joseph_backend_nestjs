@@ -28,7 +28,7 @@ for(const file of files){
 }
 const target=path.join(root,'docs/frontend-handoff');fs.mkdirSync(target,{recursive:true});
 fs.writeFileSync(path.join(target,'api-contract.json'),JSON.stringify({generatedAt:new Date().toISOString(),note:'Source inventory, not OpenAPI. Controller guards are shown; service validation still applies.',routes,dtos},null,2));
-let md='# Meet Elysia — সম্পূর্ণ API ও request field reference\n\nতারিখ: ১০ অক্টোবর ২০২৬। Controller ও DTO থেকে সরাসরি তৈরি; live API test নয়। মূল নির্দেশনা পড়ুন: [বাংলা integration guide](./frontend-integration-bn.md)।\n\n';
+let md='# Meet Elysia — সম্পূর্ণ API ও request field reference\n\nController ও DTO থেকে সরাসরি তৈরি; live API test নয়। নতুন lifestyle API নির্দেশনা: [Backend handover](../README-lifestyle-handoff-bn.md)। মূল নির্দেশনা: [বাংলা integration guide](./frontend-integration-bn.md)।\n\n';
 md+=`মোট **${routes.length}টি route**, **${dtos.length}টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।\n\n`;
 md+='## সব endpoint এক নজরে\n\n| Method | সম্পূর্ণ path | Controller-এ access | Handler |\n|---|---|---|---|\n';
 const cell=s=>s.replaceAll('|','\\|').replace(/\s+/g,' ');

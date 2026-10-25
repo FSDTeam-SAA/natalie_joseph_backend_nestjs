@@ -65,6 +65,7 @@ export type SubscriptionMaxAggregateOutputType = {
 }
 
 export type SubscriptionCountAggregateOutputType = {
+  entitlementPolicy: number
   id: number
   name: number
   price: number
@@ -119,6 +120,7 @@ export type SubscriptionMaxAggregateInputType = {
 }
 
 export type SubscriptionCountAggregateInputType = {
+  entitlementPolicy?: true
   id?: true
   name?: true
   price?: true
@@ -220,6 +222,7 @@ export type SubscriptionGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 }
 
 export type SubscriptionGroupByOutputType = {
+  entitlementPolicy: runtime.JsonValue
   id: string
   name: string
   price: string
@@ -257,6 +260,7 @@ export type SubscriptionWhereInput = {
   AND?: Prisma.SubscriptionWhereInput | Prisma.SubscriptionWhereInput[]
   OR?: Prisma.SubscriptionWhereInput[]
   NOT?: Prisma.SubscriptionWhereInput | Prisma.SubscriptionWhereInput[]
+  entitlementPolicy?: Prisma.JsonFilter<"Subscription">
   id?: Prisma.StringFilter<"Subscription"> | string
   name?: Prisma.StringFilter<"Subscription"> | string
   price?: Prisma.StringFilter<"Subscription"> | string
@@ -273,6 +277,7 @@ export type SubscriptionWhereInput = {
 }
 
 export type SubscriptionOrderByWithRelationInput = {
+  entitlementPolicy?: Prisma.SortOrder
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -293,6 +298,7 @@ export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.SubscriptionWhereInput | Prisma.SubscriptionWhereInput[]
   OR?: Prisma.SubscriptionWhereInput[]
   NOT?: Prisma.SubscriptionWhereInput | Prisma.SubscriptionWhereInput[]
+  entitlementPolicy?: Prisma.JsonFilter<"Subscription">
   name?: Prisma.StringFilter<"Subscription"> | string
   price?: Prisma.StringFilter<"Subscription"> | string
   messageLimit?: Prisma.IntFilter<"Subscription"> | number
@@ -308,6 +314,7 @@ export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
 }, "id">
 
 export type SubscriptionOrderByWithAggregationInput = {
+  entitlementPolicy?: Prisma.SortOrder
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -330,6 +337,7 @@ export type SubscriptionScalarWhereWithAggregatesInput = {
   AND?: Prisma.SubscriptionScalarWhereWithAggregatesInput | Prisma.SubscriptionScalarWhereWithAggregatesInput[]
   OR?: Prisma.SubscriptionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.SubscriptionScalarWhereWithAggregatesInput | Prisma.SubscriptionScalarWhereWithAggregatesInput[]
+  entitlementPolicy?: Prisma.JsonWithAggregatesFilter<"Subscription">
   id?: Prisma.StringWithAggregatesFilter<"Subscription"> | string
   name?: Prisma.StringWithAggregatesFilter<"Subscription"> | string
   price?: Prisma.StringWithAggregatesFilter<"Subscription"> | string
@@ -344,6 +352,7 @@ export type SubscriptionScalarWhereWithAggregatesInput = {
 }
 
 export type SubscriptionCreateInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   name: string
   price: string
@@ -360,6 +369,7 @@ export type SubscriptionCreateInput = {
 }
 
 export type SubscriptionUncheckedCreateInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   name: string
   price: string
@@ -376,6 +386,7 @@ export type SubscriptionUncheckedCreateInput = {
 }
 
 export type SubscriptionUpdateInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
@@ -392,6 +403,7 @@ export type SubscriptionUpdateInput = {
 }
 
 export type SubscriptionUncheckedUpdateInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
@@ -408,6 +420,7 @@ export type SubscriptionUncheckedUpdateInput = {
 }
 
 export type SubscriptionCreateManyInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   name: string
   price: string
@@ -422,6 +435,7 @@ export type SubscriptionCreateManyInput = {
 }
 
 export type SubscriptionUpdateManyMutationInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
@@ -436,6 +450,7 @@ export type SubscriptionUpdateManyMutationInput = {
 }
 
 export type SubscriptionUncheckedUpdateManyInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
@@ -455,6 +470,7 @@ export type SubscriptionNullableScalarRelationFilter = {
 }
 
 export type SubscriptionCountOrderByAggregateInput = {
+  entitlementPolicy?: Prisma.SortOrder
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -551,6 +567,7 @@ export type SubscriptionUpdateOneRequiredWithoutUserSubscriptionsNestedInput = {
 }
 
 export type SubscriptionCreateWithoutPaymentsInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   name: string
   price: string
@@ -566,6 +583,7 @@ export type SubscriptionCreateWithoutPaymentsInput = {
 }
 
 export type SubscriptionUncheckedCreateWithoutPaymentsInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   name: string
   price: string
@@ -597,6 +615,7 @@ export type SubscriptionUpdateToOneWithWhereWithoutPaymentsInput = {
 }
 
 export type SubscriptionUpdateWithoutPaymentsInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
@@ -612,6 +631,7 @@ export type SubscriptionUpdateWithoutPaymentsInput = {
 }
 
 export type SubscriptionUncheckedUpdateWithoutPaymentsInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
@@ -627,6 +647,7 @@ export type SubscriptionUncheckedUpdateWithoutPaymentsInput = {
 }
 
 export type SubscriptionCreateWithoutUserSubscriptionsInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   name: string
   price: string
@@ -642,6 +663,7 @@ export type SubscriptionCreateWithoutUserSubscriptionsInput = {
 }
 
 export type SubscriptionUncheckedCreateWithoutUserSubscriptionsInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   name: string
   price: string
@@ -673,6 +695,7 @@ export type SubscriptionUpdateToOneWithWhereWithoutUserSubscriptionsInput = {
 }
 
 export type SubscriptionUpdateWithoutUserSubscriptionsInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
@@ -688,6 +711,7 @@ export type SubscriptionUpdateWithoutUserSubscriptionsInput = {
 }
 
 export type SubscriptionUncheckedUpdateWithoutUserSubscriptionsInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.StringFieldUpdateOperationsInput | string
@@ -743,6 +767,7 @@ export type SubscriptionCountOutputTypeCountUserSubscriptionsArgs<ExtArgs extend
 
 
 export type SubscriptionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  entitlementPolicy?: boolean
   id?: boolean
   name?: boolean
   price?: boolean
@@ -760,6 +785,7 @@ export type SubscriptionSelect<ExtArgs extends runtime.Types.Extensions.Internal
 }, ExtArgs["result"]["subscription"]>
 
 export type SubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  entitlementPolicy?: boolean
   id?: boolean
   name?: boolean
   price?: boolean
@@ -774,6 +800,7 @@ export type SubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
 }, ExtArgs["result"]["subscription"]>
 
 export type SubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  entitlementPolicy?: boolean
   id?: boolean
   name?: boolean
   price?: boolean
@@ -788,6 +815,7 @@ export type SubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
 }, ExtArgs["result"]["subscription"]>
 
 export type SubscriptionSelectScalar = {
+  entitlementPolicy?: boolean
   id?: boolean
   name?: boolean
   price?: boolean
@@ -801,7 +829,7 @@ export type SubscriptionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type SubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "price" | "messageLimit" | "creditAllowance" | "durationDays" | "features" | "isPopular" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
+export type SubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"entitlementPolicy" | "id" | "name" | "price" | "messageLimit" | "creditAllowance" | "durationDays" | "features" | "isPopular" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
 export type SubscriptionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   payments?: boolean | Prisma.Subscription$paymentsArgs<ExtArgs>
   userSubscriptions?: boolean | Prisma.Subscription$userSubscriptionsArgs<ExtArgs>
@@ -817,6 +845,7 @@ export type $SubscriptionPayload<ExtArgs extends runtime.Types.Extensions.Intern
     userSubscriptions: Prisma.$UserSubscriptionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
+    entitlementPolicy: runtime.JsonValue
     id: string
     name: string
     price: string
@@ -911,8 +940,8 @@ export interface SubscriptionDelegate<ExtArgs extends runtime.Types.Extensions.I
    * // Get first 10 Subscriptions
    * const subscriptions = await prisma.subscription.findMany({ take: 10 })
    * 
-   * // Only select the `id`
-   * const subscriptionWithIdOnly = await prisma.subscription.findMany({ select: { id: true } })
+   * // Only select the `entitlementPolicy`
+   * const subscriptionWithEntitlementPolicyOnly = await prisma.subscription.findMany({ select: { entitlementPolicy: true } })
    * 
    */
   findMany<T extends SubscriptionFindManyArgs>(args?: Prisma.SelectSubset<T, SubscriptionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -956,9 +985,9 @@ export interface SubscriptionDelegate<ExtArgs extends runtime.Types.Extensions.I
    *   ]
    * })
    * 
-   * // Create many Subscriptions and only return the `id`
-   * const subscriptionWithIdOnly = await prisma.subscription.createManyAndReturn({
-   *   select: { id: true },
+   * // Create many Subscriptions and only return the `entitlementPolicy`
+   * const subscriptionWithEntitlementPolicyOnly = await prisma.subscription.createManyAndReturn({
+   *   select: { entitlementPolicy: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -1047,9 +1076,9 @@ export interface SubscriptionDelegate<ExtArgs extends runtime.Types.Extensions.I
    *   ]
    * })
    * 
-   * // Update zero or more Subscriptions and only return the `id`
-   * const subscriptionWithIdOnly = await prisma.subscription.updateManyAndReturn({
-   *   select: { id: true },
+   * // Update zero or more Subscriptions and only return the `entitlementPolicy`
+   * const subscriptionWithEntitlementPolicyOnly = await prisma.subscription.updateManyAndReturn({
+   *   select: { entitlementPolicy: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1253,6 +1282,7 @@ export interface Prisma__SubscriptionClient<T, Null = never, ExtArgs extends run
  * Fields of the Subscription model
  */
 export interface SubscriptionFieldRefs {
+  readonly entitlementPolicy: Prisma.FieldRef<"Subscription", 'Json'>
   readonly id: Prisma.FieldRef<"Subscription", 'String'>
   readonly name: Prisma.FieldRef<"Subscription", 'String'>
   readonly price: Prisma.FieldRef<"Subscription", 'String'>

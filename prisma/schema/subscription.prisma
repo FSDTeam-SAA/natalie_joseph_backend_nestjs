@@ -1,4 +1,5 @@
 model Subscription {
+ entitlementPolicy Json @default("{}")
   id                String             @id @default(uuid())
   name              String
   price             String

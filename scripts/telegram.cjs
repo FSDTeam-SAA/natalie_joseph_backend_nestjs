@@ -138,6 +138,9 @@ async function main() {
       const defaults = await call(bot, 'getMyCommands');
       const preferred = [
         { command: 'stories', description: '📸 Stories — view the latest photos and videos' },
+        { command: 'photo', description: 'Request a photo from the approved library (plan charges apply)' },
+        { command: 'daily', description: 'Enable included daily updates for this companion' },
+        { command: 'daily_off', description: 'Stop daily updates' },
         { command: 'login', description: 'Log in or connect your Meet Elysia account' },
         { command: 'start', description: 'Start chatting with your companion' },
       ];

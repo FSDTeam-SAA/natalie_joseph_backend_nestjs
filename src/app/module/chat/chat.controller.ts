@@ -79,6 +79,7 @@ export class ChatController {
       payload.message,
       request.headers.authorization!,
       payload.type,
+      payload.requestId ? `web:${request.user.id}:${companionId}:${payload.requestId}` : undefined,
     );
     return { message: 'Message sent successfully', data };
   }
