@@ -92,16 +92,9 @@ export class UserService {
       updateUserDto.profileImage = url;
     }
 
-    const hashPassword = await bcrypt.hash(
-      updateUserDto.password!,
-      Number(config.bcryptSaltRounds) || 10,
-    );
     const result = await this.prisma.user.update({
       where: { id },
-      data: {
-        ...updateUserDto,
-        password: hashPassword,
-      },
+      data: updateUserDto,
     });
     return result;
   }
@@ -144,16 +137,10 @@ export class UserService {
       const { url } = await fileUpload.uploadToCloudinary(file);
       updateUserDto.profileImage = url;
     }
-    const hashPassword = await bcrypt.hash(
-      updateUserDto.password!,
-      Number(config.bcryptSaltRounds) || 10,
-    );
+
     const result = await this.prisma.user.update({
       where: { id },
-      data: {
-        ...updateUserDto,
-        password: hashPassword,
-      },
+      data: updateUserDto,
     });
     return result;
   }

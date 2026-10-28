@@ -2,13 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as jwt from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
+import { createHash, randomBytes, randomInt } from 'node:crypto';
 import config from 'src/app/config';
 import sendMailer from 'src/app/helper/sendMailer';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateAuthDto, LoginAuthDto } from './dto/create-auth.dto';
-import { createHash, randomBytes, randomInt } from 'node:crypto';
 import { publicUser } from '../../helper/public-user';
 import { sessionVersion } from '../../helper/session-version';
+import { CreateAuthDto, LoginAuthDto } from './dto/create-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -239,13 +239,13 @@ export class AuthService {
   }
 
   async changePassword(
-    email: string,
+    userId: string,
     oldPassword: string,
     newPassword: string,
   ) {
     const user = await this.prisma.user.findUnique({
       where: {
-        email,
+        id: userId,
       },
     });
     if (!user) {
