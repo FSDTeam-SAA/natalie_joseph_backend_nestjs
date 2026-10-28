@@ -140,6 +140,36 @@ export type Gift = Prisma.GiftModel
  */
 export type GiftTransaction = Prisma.GiftTransactionModel
 /**
+ * Model CompanionRoutine
+ * 
+ */
+export type CompanionRoutine = Prisma.CompanionRoutineModel
+/**
+ * Model LibraryPhoto
+ * 
+ */
+export type LibraryPhoto = Prisma.LibraryPhotoModel
+/**
+ * Model DailyContent
+ * 
+ */
+export type DailyContent = Prisma.DailyContentModel
+/**
+ * Model DailyPreference
+ * 
+ */
+export type DailyPreference = Prisma.DailyPreferenceModel
+/**
+ * Model DailyDelivery
+ * 
+ */
+export type DailyDelivery = Prisma.DailyDeliveryModel
+/**
+ * Model AllowanceUsage
+ * 
+ */
+export type AllowanceUsage = Prisma.AllowanceUsageModel
+/**
  * Model Newsletter
  * 
  */

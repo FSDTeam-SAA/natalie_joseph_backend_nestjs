@@ -71,6 +71,12 @@ export const ModelName = {
   ConversationModeEvent: 'ConversationModeEvent',
   Gift: 'Gift',
   GiftTransaction: 'GiftTransaction',
+  CompanionRoutine: 'CompanionRoutine',
+  LibraryPhoto: 'LibraryPhoto',
+  DailyContent: 'DailyContent',
+  DailyPreference: 'DailyPreference',
+  DailyDelivery: 'DailyDelivery',
+  AllowanceUsage: 'AllowanceUsage',
   Newsletter: 'Newsletter',
   Payment: 'Payment',
   TelegramProfileSync: 'TelegramProfileSync',
@@ -392,6 +398,83 @@ export const GiftTransactionScalarFieldEnum = {
 export type GiftTransactionScalarFieldEnum = (typeof GiftTransactionScalarFieldEnum)[keyof typeof GiftTransactionScalarFieldEnum]
 
 
+export const CompanionRoutineScalarFieldEnum = {
+  companionId: 'companionId',
+  timezone: 'timezone',
+  weekly: 'weekly',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanionRoutineScalarFieldEnum = (typeof CompanionRoutineScalarFieldEnum)[keyof typeof CompanionRoutineScalarFieldEnum]
+
+
+export const LibraryPhotoScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  url: 'url',
+  publicId: 'publicId',
+  mimeType: 'mimeType',
+  caption: 'caption',
+  tags: 'tags',
+  approved: 'approved',
+  createdAt: 'createdAt'
+} as const
+
+export type LibraryPhotoScalarFieldEnum = (typeof LibraryPhotoScalarFieldEnum)[keyof typeof LibraryPhotoScalarFieldEnum]
+
+
+export const DailyContentScalarFieldEnum = {
+  id: 'id',
+  companionId: 'companionId',
+  day: 'day',
+  publishAt: 'publishAt',
+  expiresAt: 'expiresAt',
+  photoId: 'photoId',
+  text: 'text',
+  activity: 'activity',
+  published: 'published',
+  createdAt: 'createdAt'
+} as const
+
+export type DailyContentScalarFieldEnum = (typeof DailyContentScalarFieldEnum)[keyof typeof DailyContentScalarFieldEnum]
+
+
+export const DailyPreferenceScalarFieldEnum = {
+  userId: 'userId',
+  companionId: 'companionId',
+  enabled: 'enabled',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DailyPreferenceScalarFieldEnum = (typeof DailyPreferenceScalarFieldEnum)[keyof typeof DailyPreferenceScalarFieldEnum]
+
+
+export const DailyDeliveryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  contentId: 'contentId',
+  kind: 'kind',
+  status: 'status',
+  telegramMessageId: 'telegramMessageId',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DailyDeliveryScalarFieldEnum = (typeof DailyDeliveryScalarFieldEnum)[keyof typeof DailyDeliveryScalarFieldEnum]
+
+
+export const AllowanceUsageScalarFieldEnum = {
+  id: 'id',
+  subscriptionId: 'subscriptionId',
+  day: 'day',
+  action: 'action',
+  count: 'count'
+} as const
+
+export type AllowanceUsageScalarFieldEnum = (typeof AllowanceUsageScalarFieldEnum)[keyof typeof AllowanceUsageScalarFieldEnum]
+
+
 export const NewsletterScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -482,6 +565,7 @@ export type TelegramJobScalarFieldEnum = (typeof TelegramJobScalarFieldEnum)[key
 
 
 export const SubscriptionScalarFieldEnum = {
+  entitlementPolicy: 'entitlementPolicy',
   id: 'id',
   name: 'name',
   price: 'price',
@@ -541,6 +625,7 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 
 export const UserSubscriptionScalarFieldEnum = {
+  entitlementPolicy: 'entitlementPolicy',
   id: 'id',
   stripeInvoiceId: 'stripeInvoiceId',
   stripeSubscriptionId: 'stripeSubscriptionId',

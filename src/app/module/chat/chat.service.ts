@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  BadGatewayException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -10,6 +11,9 @@ import { randomUUID } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AiApi, AiReply, AiAudio } from '../../helper/ai/aiapi';
 import { CreditService } from '../credit/credit.service';
+import { LifestyleService } from '../lifestyle/lifestyle.service';
+import { policy } from '../lifestyle/lifestyle-policy';
+import { responseCost } from './response-cost';
 
 @Injectable()
 export class ChatService {
@@ -18,6 +22,7 @@ export class ChatService {
     private readonly prisma: PrismaService,
     private readonly creditService: CreditService,
     private readonly aiApi: AiApi,
+    private readonly lifestyle: LifestyleService,
   ) {}
 
   getAudio(media: NonNullable<AiReply['media']>, authorization: string) {
@@ -183,31 +188,55 @@ export class ChatService {
 
           const messageId = randomUUID();
           const costs = await this.creditService.getCosts(tx);
-          const creditCost = type === 'voice' ? costs.voice : costs.message;
-          const charge = await this.creditService.consumeCredits(
-            tx,
-            userId,
-            creditCost,
-            {
-              reason: type === 'voice' ? 'voice' : 'extra_message',
-              companionId,
-              referenceId: messageId,
-              message: true,
-              lowCreditThreshold: costs.low_credit_threshold,
-            },
-          );
-          if (!charge) {
+          const isTrial =
+            policy(activeSubscription.entitlementPolicy).kind === 'trial';
+          if (isTrial && (audio || type === 'voice'))
             throw new HttpException(
-              'Not enough credits. Buy credits to continue',
-              HttpStatus.PAYMENT_REQUIRED,
+              'Voice is not included in the trial. Please choose a paid subscription.',
+              403,
             );
-          }
-          const usedCredit = charge.fromPurchased > 0;
-
-          const aiCompanionId = companion.id;
+          const enhanced = process.env.AI_RESPONSE_BILLING_ENABLED === 'true';
+          const contextual =
+            process.env.AI_LIFESTYLE_CONTEXT_ENABLED === 'true';
+          await this.creditService.expirePurchasedCredits(tx, userId);
+          const wallet = await tx.user.findUniqueOrThrow({
+            where: { id: userId },
+            select: { creditBalance: true },
+          });
+          const available =
+            wallet.creditBalance +
+            Math.max(
+              0,
+              activeSubscription.creditAllowance -
+                activeSubscription.creditsUsed,
+            );
           let conversation = await tx.chatConversation.findUnique({
             where: { userId_companionId: { userId, companionId } },
           });
+          const minimumCost = enhanced
+            ? Math.min(costs.message, costs.photo, costs.voice) +
+              (audio ? costs.transcription : 0)
+            : type === 'voice'
+              ? costs.voice
+              : costs.message;
+          if (
+            conversation?.mode !== 'human' &&
+            !isTrial &&
+            available < minimumCost
+          )
+            throw new HttpException(
+              'Not enough credits. Buy credits to continue',
+              402,
+            );
+          let creditCost = 0;
+          if (isTrial && conversation?.mode !== 'human')
+            await this.lifestyle.allowance(
+              tx,
+              activeSubscription,
+              'trial_reply',
+            );
+
+          const aiCompanionId = companion.id;
           if (!conversation) {
             const remote = await this.aiApi.createConversation(
               aiCompanionId,
@@ -229,6 +258,26 @@ export class ChatService {
           }
           const inputAudio =
             audio && conversation.mode !== 'human' ? await audio() : undefined;
+          // Only approved companion content is shared when explicitly enabled.
+          // Never include private relationship notes or other users' histories.
+          const context =
+            conversation.mode !== 'human' && (contextual || enhanced || isTrial)
+              ? {
+                  version: 'lifestyle-v1',
+                  ...(contextual
+                    ? await this.lifestyle.context(companionId, tx)
+                    : {}),
+                  access: {
+                    trial: isTrial,
+                    allowed_output_types: isTrial
+                      ? ['text']
+                      : ['text', 'image', 'audio'],
+                    available_credits: isTrial ? 0 : available,
+                    prices: costs,
+                    billing_mode: enhanced ? 'response' : 'legacy',
+                  },
+                }
+              : undefined;
           aiStartedAt = Date.now();
           const reply =
             conversation.mode === 'human'
@@ -239,9 +288,51 @@ export class ChatService {
                   message,
                   authorization,
                   whatsappMessageKey || messageId,
-                  ...(inputAudio ? [inputAudio] : []),
+                  inputAudio,
+                  context,
                 );
           aiFinishedAt = Date.now();
+          if (
+            isTrial &&
+            reply &&
+            reply.message_type &&
+            reply.message_type !== 'text'
+          )
+            throw new BadGatewayException(
+              'AI returned content not permitted in trial',
+            );
+          if (reply && !isTrial)
+            creditCost = enhanced
+              ? responseCost(reply, !!inputAudio, costs)
+              : type === 'voice'
+                ? costs.voice
+                : costs.message;
+          const charge =
+            reply && !isTrial
+              ? await this.creditService.consumeCredits(
+                  tx,
+                  userId,
+                  creditCost,
+                  {
+                    reason:
+                      reply.message_type === 'image'
+                        ? 'photo'
+                        : reply.message_type === 'audio'
+                          ? 'voice'
+                          : 'extra_message',
+                    companionId,
+                    referenceId: messageId,
+                    message: true,
+                    lowCreditThreshold: costs.low_credit_threshold,
+                  },
+                )
+              : null;
+          if (reply && !isTrial && !charge)
+            throw new HttpException(
+              'Not enough credits for this response. Please add credits.',
+              402,
+            );
+          const usedCredit = (charge?.fromPurchased ?? 0) > 0;
           await tx.chatConversation.update({
             where: { id: conversation.id },
             data: { updatedAt: new Date() },
@@ -268,7 +359,11 @@ export class ChatService {
             },
           });
 
-          const balance = charge.balanceAfter;
+          const balance = charge?.balanceAfter ?? {
+            creditBalance: wallet.creditBalance,
+            creditsUsed: activeSubscription.creditsUsed,
+            creditAllowance: activeSubscription.creditAllowance,
+          };
 
           await tx.relationship.upsert({
             where: { userId_companionId: { userId, companionId } },
@@ -298,8 +393,9 @@ export class ChatService {
               ),
               purchasedCredits: balance.creditBalance,
               creditBalance: balance.creditBalance,
-              chargedFrom:
-                charge.fromSubscription > 0 && charge.fromPurchased > 0
+              chargedFrom: !charge
+                ? 'included'
+                : charge.fromSubscription > 0 && charge.fromPurchased > 0
                   ? 'subscription_and_purchased'
                   : usedCredit
                     ? 'purchased'

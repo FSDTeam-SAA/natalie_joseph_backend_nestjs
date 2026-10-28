@@ -1,8 +1,8 @@
 # Meet Elysia — সম্পূর্ণ API ও request field reference
 
-তারিখ: ১০ অক্টোবর ২০২৬। Controller ও DTO থেকে সরাসরি তৈরি; live API test নয়। মূল নির্দেশনা পড়ুন: [বাংলা integration guide](./frontend-integration-bn.md)।
+Controller ও DTO থেকে সরাসরি তৈরি; live API test নয়। নতুন lifestyle API নির্দেশনা: [Backend handover](../README-lifestyle-handoff-bn.md)। মূল নির্দেশনা: [বাংলা integration guide](./frontend-integration-bn.md)।
 
-মোট **107টি route**, **55টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।
+মোট **122টি route**, **63টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।
 
 ## সব endpoint এক নজরে
 
@@ -61,6 +61,21 @@
 | PATCH | `/api/v1/gifts/:id` | UseGuards(AuthGuard('admin')) | updateGift |
 | DELETE | `/api/v1/gifts/:id` | UseGuards(AuthGuard('admin')) | deactivateGift |
 | POST | `/api/v1/gifts/:giftId/send` | UseGuards(AuthGuard('user')) | sendGift |
+| GET | `/api/v1/admin/companions/:companionId/lifestyle/routine` | UseGuards(AuthGuard('admin')) | routine |
+| PUT | `/api/v1/admin/companions/:companionId/lifestyle/routine` | UseGuards(AuthGuard('admin')) | saveRoutine |
+| GET | `/api/v1/admin/companions/:companionId/lifestyle/context` | UseGuards(AuthGuard('admin')) | context |
+| GET | `/api/v1/admin/companions/:companionId/lifestyle/photos` | UseGuards(AuthGuard('admin')) | photos |
+| POST | `/api/v1/admin/companions/:companionId/lifestyle/photos` | UseGuards(AuthGuard('admin')) | upload |
+| PATCH | `/api/v1/admin/companions/:companionId/lifestyle/photos/:photoId` | UseGuards(AuthGuard('admin')) | approve |
+| GET | `/api/v1/admin/companions/:companionId/lifestyle/daily-content` | UseGuards(AuthGuard('admin')) | daily |
+| PUT | `/api/v1/admin/companions/:companionId/lifestyle/daily-content` | UseGuards(AuthGuard('admin')) | save |
+| POST | `/api/v1/admin/companions/:companionId/lifestyle/daily-content/:contentId/unpublish` | UseGuards(AuthGuard('admin')) | unpublish |
+| GET | `/api/v1/admin/companions/:companionId/lifestyle/deliveries` | UseGuards(AuthGuard('admin')) | deliveries |
+| GET | `/api/v1/lifestyle/preference` | UseGuards(AuthGuard('user')) | preference |
+| PUT | `/api/v1/lifestyle/preference` | UseGuards(AuthGuard('user')) | save |
+| GET | `/api/v1/lifestyle/allowances` | UseGuards(AuthGuard('user')) | allowances |
+| POST | `/api/v1/lifestyle/companions/:companionId/photo` | UseGuards(AuthGuard('user')) | photo |
+| GET | `/api/v1/lifestyle/inbox` | UseGuards(AuthGuard('user')) | inbox |
 | POST | `/api/v1/newsletter` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | sendMail |
 | POST | `/api/v1/newsletter/broadcast` | UseGuards(AuthGuard('admin')) | broadcastNewsletter |
 | GET | `/api/v1/newsletter` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getAllNewsletter |
@@ -614,6 +629,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
       payload.message,
       request.headers.authorization!,
       payload.type,
+      payload.requestId ? `web:${request.user.id}:${companionId}:${payload.requestId}` : undefined,
     );
     return { message: 'Message sent successfully', data };
   }
@@ -1968,6 +1984,444 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
+### GET /api/v1/admin/companions/:companionId/lifestyle/routine
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:48` • Handler: `LifestyleAdminController.routine`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('routine')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.service.routine(id) };
+  }
+```
+
+### PUT /api/v1/admin/companions/:companionId/lifestyle/routine
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:53` • Handler: `LifestyleAdminController.saveRoutine`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Body() dto: RoutineDto
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Put('routine')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.service.saveRoutine(id, dto) };
+  }
+```
+
+### GET /api/v1/admin/companions/:companionId/lifestyle/context
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:59` • Handler: `LifestyleAdminController.context`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('context')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    await this.service.companion(id);
+    return { data: await this.service.context(id) };
+  }
+```
+
+### GET /api/v1/admin/companions/:companionId/lifestyle/photos
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:65` • Handler: `LifestyleAdminController.photos`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('photos')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.service.photos(id, pageNumber(page)) };
+  }
+```
+
+### POST /api/v1/admin/companions/:companionId/lifestyle/photos
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:71` • Handler: `LifestyleAdminController.upload`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Body() dto: LibraryPhotoDto
+@UploadedFile() file?: Express.Multer.File
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Post('photos')
+@ApiConsumes('multipart/form-data')
+@ApiBody({
+    schema: {
+      type: 'object',
+      required: ['image'],
+      properties: {
+        image: { type: 'string', format: 'binary' },
+        caption: { type: 'string' },
+        tags: { type: 'string', example: 'gym,morning' },
+      },
+    },
+  })
+@UseInterceptors(FileInterceptor('image', fileUpload.uploadConfig))
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.service.upload(id, dto, file) };
+  }
+```
+
+### PATCH /api/v1/admin/companions/:companionId/lifestyle/photos/:photoId
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:92` • Handler: `LifestyleAdminController.approve`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Param('photoId', ParseUUIDPipe) photoId: string
+@Body() dto: ApprovePhotoDto
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Patch('photos/:photoId')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.service.approve(id, photoId, dto.approved) };
+  }
+```
+
+### GET /api/v1/admin/companions/:companionId/lifestyle/daily-content
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:99` • Handler: `LifestyleAdminController.daily`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('daily-content')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.service.daily(id, pageNumber(page)) };
+  }
+```
+
+### PUT /api/v1/admin/companions/:companionId/lifestyle/daily-content
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:105` • Handler: `LifestyleAdminController.save`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Body() dto: DailyContentDto
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Put('daily-content')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.service.saveDaily(id, dto) };
+  }
+```
+
+### POST /api/v1/admin/companions/:companionId/lifestyle/daily-content/:contentId/unpublish
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:111` • Handler: `LifestyleAdminController.unpublish`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Param('contentId', ParseUUIDPipe) contentId: string
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Post('daily-content/:contentId/unpublish')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.service.unpublish(id, contentId) };
+  }
+```
+
+### GET /api/v1/admin/companions/:companionId/lifestyle/deliveries
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:117` • Handler: `LifestyleAdminController.deliveries`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('deliveries')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return {
+      data: await this.prisma.dailyDelivery.findMany({
+        where: { content: { companionId: id } },
+        orderBy: { createdAt: 'desc' },
+        skip: (pageNumber(page) - 1) * 50,
+        take: 50,
+      }),
+    };
+  }
+```
+
+### GET /api/v1/lifestyle/preference
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:140` • Handler: `LifestyleController.preference`
+
+Access: `UseGuards(AuthGuard('user'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Req() req: Request
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('preference')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.service.preference(req.user!.id) };
+  }
+```
+
+### PUT /api/v1/lifestyle/preference
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:143` • Handler: `LifestyleController.save`
+
+Access: `UseGuards(AuthGuard('user'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Req() req: Request
+@Body() dto: DailyPreferenceDto
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Put('preference')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.service.preference(req.user!.id, dto) };
+  }
+```
+
+### GET /api/v1/lifestyle/allowances
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:149` • Handler: `LifestyleController.allowances`
+
+Access: `UseGuards(AuthGuard('user'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Req() req: Request
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('allowances')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.service.usage(req.user!.id) };
+  }
+```
+
+### POST /api/v1/lifestyle/companions/:companionId/photo
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:152` • Handler: `LifestyleController.photo`
+
+Access: `UseGuards(AuthGuard('user'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Req() req: Request
+@Param('companionId', ParseUUIDPipe) id: string
+@Body() dto: PhotoRequestDto
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Post('companions/:companionId/photo')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    return { data: await this.service.requestPhoto(req.user!.id, id, dto) };
+  }
+```
+
+### GET /api/v1/lifestyle/inbox
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:159` • Handler: `LifestyleController.inbox`
+
+Access: `UseGuards(AuthGuard('user'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Req() req: Request
+@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('inbox')
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    await this.service.active(this.prisma, req.user!.id);
+    return {
+      data: await this.prisma.dailyDelivery.findMany({
+        where: {
+          userId: req.user!.id,
+          status: { in: ['available', 'sent', 'unknown', 'failed'] },
+          content: { published: true, photo: { approved: true } },
+        },
+        include: { content: { include: { photo: true } } },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+        skip: (pageNumber(page) - 1) * 50,
+      }),
+    };
+  }
+```
+
 ### POST /api/v1/newsletter
 
 Source: `src/app/module/newsletter/newsletter.controller.ts:30` • Handler: `NewsletterController.sendMail`
@@ -2369,7 +2823,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/companions/:companionId/telegram-profile
 
-Source: `src/app/module/publishing/publishing.controller.ts:47` • Handler: `PublishingAdminController.status`
+Source: `src/app/module/publishing/publishing.controller.ts:49` • Handler: `PublishingAdminController.status`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2396,7 +2850,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/admin/companions/:companionId/telegram-profile
 
-Source: `src/app/module/publishing/publishing.controller.ts:52` • Handler: `PublishingAdminController.profile`
+Source: `src/app/module/publishing/publishing.controller.ts:54` • Handler: `PublishingAdminController.profile`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2424,7 +2878,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/admin/companions/:companionId/telegram-profile/retry
 
-Source: `src/app/module/publishing/publishing.controller.ts:60` • Handler: `PublishingAdminController.retry`
+Source: `src/app/module/publishing/publishing.controller.ts:62` • Handler: `PublishingAdminController.retry`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2450,7 +2904,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/companions/:companionId/media-stories
 
-Source: `src/app/module/publishing/publishing.controller.ts:64` • Handler: `PublishingAdminController.list`
+Source: `src/app/module/publishing/publishing.controller.ts:66` • Handler: `PublishingAdminController.list`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2476,7 +2930,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/admin/companions/:companionId/media-stories
 
-Source: `src/app/module/publishing/publishing.controller.ts:68` • Handler: `PublishingAdminController.publish`
+Source: `src/app/module/publishing/publishing.controller.ts:70` • Handler: `PublishingAdminController.publish`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2521,7 +2975,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/admin/companions/:companionId/media-stories/:storyId
 
-Source: `src/app/module/publishing/publishing.controller.ts:93` • Handler: `PublishingAdminController.remove`
+Source: `src/app/module/publishing/publishing.controller.ts:95` • Handler: `PublishingAdminController.remove`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2548,7 +3002,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/media-stories/summary
 
-Source: `src/app/module/publishing/publishing.controller.ts:108` • Handler: `MediaStoryController.summary`
+Source: `src/app/module/publishing/publishing.controller.ts:110` • Handler: `MediaStoryController.summary`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -2575,7 +3029,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/media-stories/companions/:companionId
 
-Source: `src/app/module/publishing/publishing.controller.ts:113` • Handler: `MediaStoryController.feed`
+Source: `src/app/module/publishing/publishing.controller.ts:115` • Handler: `MediaStoryController.feed`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -2603,7 +3057,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/media-stories/:storyId/media
 
-Source: `src/app/module/publishing/publishing.controller.ts:127` • Handler: `StoryMediaController.media`
+Source: `src/app/module/publishing/publishing.controller.ts:129` • Handler: `StoryMediaController.media`
 
 Access: `Controller JWT guard নেই`
 
@@ -2611,7 +3065,7 @@ Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
 
 ```typescript
 @Param('storyId', ParseUUIDPipe) id: string
-@Query('ticket') ticket: string | undefined
+@Query('ticket') ticket: string | string[] | undefined
 @Headers('range') range: string | undefined
 @Res() res: Response
 ```
@@ -2627,7 +3081,10 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ```typescript
 {
-    const row = await this.stories.media(id, ticket || '');
+    if (ticket !== undefined && typeof ticket !== 'string')
+      throw new ForbiddenException('Invalid media link');
+    const safeTicket = ticket ?? '';
+    const row = await this.stories.media(id, safeTicket);
     const bytes = Buffer.from(row.media);
     const length = bytes.length;
     res.set({
@@ -2670,7 +3127,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/telegram/stories
 
-Source: `src/app/module/publishing/publishing.controller.ts:180` • Handler: `TelegramStoryController.page`
+Source: `src/app/module/publishing/publishing.controller.ts:185` • Handler: `TelegramStoryController.page`
 
 Access: `Controller JWT guard নেই`
 
@@ -2706,7 +3163,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/telegram/stories/:companionId/feed
 
-Source: `src/app/module/publishing/publishing.controller.ts:194` • Handler: `TelegramStoryController.feed`
+Source: `src/app/module/publishing/publishing.controller.ts:199` • Handler: `TelegramStoryController.feed`
 
 Access: `Controller JWT guard নেই`
 
@@ -2739,7 +3196,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/publishing/admin
 
-Source: `src/app/module/publishing/publishing.controller.ts:212` • Handler: `PublishingConsoleController.page`
+Source: `src/app/module/publishing/publishing.controller.ts:217` • Handler: `PublishingConsoleController.page`
 
 Access: `Controller JWT guard নেই`
 
@@ -4188,6 +4645,10 @@ Source: `src/app/module/chat/dto/send-message.dto.ts`
 
 ```typescript
 export class SendMessageDto {
+  @ApiProperty({required:false,description:'UUID; reuse on retries to avoid duplicate replies and charges'})
+  @IsOptional()
+  @IsUUID()
+  requestId?: string;
   @ApiProperty({
     enum: ['text', 'voice'],
     required: false,
@@ -4939,6 +5400,163 @@ export class SendGiftDto {
 }
 ```
 
+### RoutineSlotDto
+
+Source: `src/app/module/lifestyle/lifestyle.dto.ts`
+
+```typescript
+export class RoutineSlotDto {
+  @ApiProperty({ description: 'ISO weekday: Monday=1, Sunday=7' })
+  @IsInt()
+  @Min(1)
+  @Max(7)
+  day!: number;
+  @ApiProperty({ example: '06:00' })
+  @Matches(/^([01]\d|2[0-3]):[0-5]\d$/)
+  start!: string;
+  @ApiProperty({ example: '12:00' })
+  @Matches(/^([01]\d|2[0-3]):[0-5]\d$/)
+  end!: string;
+  @ApiProperty() @IsString() @Matches(/\S/) @MaxLength(500) activity!: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  location?: string;
+}
+```
+
+### RoutineDto
+
+Source: `src/app/module/lifestyle/lifestyle.dto.ts`
+
+```typescript
+export class RoutineDto {
+  @ApiProperty({ example: 'Asia/Dubai' })
+  @IsString()
+  @MaxLength(80)
+  timezone!: string;
+  @ApiProperty({ type: [RoutineSlotDto] })
+  @IsArray()
+  @ArrayMaxSize(100)
+  @ValidateNested({ each: true })
+  @Type(() => RoutineSlotDto)
+  weekly!: RoutineSlotDto[];
+}
+```
+
+### LibraryPhotoDto
+
+Source: `src/app/module/lifestyle/lifestyle.dto.ts`
+
+```typescript
+export class LibraryPhotoDto {
+  @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(1000) caption =
+    '';
+  @ApiPropertyOptional({
+    description: 'Comma-separated tags, e.g. gym,morning,sporty',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  tags = '';
+}
+```
+
+### ApprovePhotoDto
+
+Source: `src/app/module/lifestyle/lifestyle.dto.ts`
+
+```typescript
+export class ApprovePhotoDto {
+  @ApiProperty() @IsBoolean() approved!: boolean;
+}
+```
+
+### DailyContentDto
+
+Source: `src/app/module/lifestyle/lifestyle.dto.ts`
+
+```typescript
+export class DailyContentDto {
+  @ApiProperty({ example: '2026-10-25' })
+  @Matches(/^\d{4}-\d{2}-\d{2}$/)
+  day!: string;
+  @ApiProperty({ description: 'ISO instant including timezone' })
+  @IsDateString({ strict: true })
+  @Matches(/T.*(?:Z|[+-]\d{2}:\d{2})$/)
+  publishAt!: string;
+  @ApiProperty({
+    description: 'End of delivery window; missed content is skipped',
+  })
+  @IsDateString({ strict: true })
+  @Matches(/T.*(?:Z|[+-]\d{2}:\d{2})$/)
+  expiresAt!: string;
+  @ApiProperty() @IsUUID() photoId!: string;
+  @ApiProperty() @IsString() @Matches(/\S/) @MaxLength(4000) text!: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(500) activity =
+    '';
+  @ApiPropertyOptional() @IsOptional() @IsBoolean() published = false;
+}
+```
+
+### DailyPreferenceDto
+
+Source: `src/app/module/lifestyle/lifestyle.dto.ts`
+
+```typescript
+export class DailyPreferenceDto {
+  @ApiProperty() @IsUUID() companionId!: string;
+  @ApiProperty() @IsBoolean() enabled!: boolean;
+}
+```
+
+### PhotoRequestDto
+
+Source: `src/app/module/lifestyle/lifestyle.dto.ts`
+
+```typescript
+export class PhotoRequestDto {
+  @ApiProperty({
+    description: 'Unique per user request; reuse on network retry',
+  })
+  @IsUUID()
+  requestId!: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(80) tag?: string;
+}
+```
+
+### EntitlementPolicyDto
+
+Source: `src/app/module/lifestyle/lifestyle.dto.ts`
+
+```typescript
+export class EntitlementPolicyDto {
+  @ApiProperty({ enum: ['paid', 'trial'] }) @IsIn(['paid', 'trial']) kind!:
+    'paid' | 'trial';
+  @ApiPropertyOptional() @IsOptional() @IsBoolean() dailyPhoto = false;
+  @ApiPropertyOptional() @IsOptional() @IsBoolean() dailyText = false;
+  @ApiPropertyOptional({ default: 10 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(10)
+  trialRepliesPerDay = 10;
+  @ApiPropertyOptional({ default: 30 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(30)
+  trialRepliesTotal = 30;
+  @ApiPropertyOptional({ default: 3 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(3)
+  trialPhotosTotal = 3;
+}
+```
+
 ### BroadcastNewsletterDto
 
 Source: `src/app/module/newsletter/dto/broadcast-newsletter.dto.ts`
@@ -5071,13 +5689,18 @@ Source: `src/app/module/subscription/dto/create-subscription.dto.ts`
 
 ```typescript
 export class CreateSubscriptionDto {
+  @ApiPropertyOptional({ type: EntitlementPolicyDto })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => EntitlementPolicyDto)
+  entitlementPolicy?: EntitlementPolicyDto;
   @ApiProperty({
     example: 'Premium Plan',
     description: 'Subscription plan name',
   })
   @IsString()
   @IsNotEmpty({ message: 'Name is required' })
-  name: string;
+  name!: string;
 
   @ApiProperty({
     example: '29.99',
@@ -5085,7 +5708,7 @@ export class CreateSubscriptionDto {
   })
   @IsString()
   @IsNotEmpty({ message: 'Price is required' })
-  price: string;
+  price!: string;
 
   @ApiPropertyOptional({
     example: 1000,
@@ -5129,7 +5752,7 @@ export class CreateSubscriptionDto {
     each: true,
     message: 'Each feature must be a string',
   })
-  features: string[];
+  features!: string[];
 
   @ApiPropertyOptional({
     example: true,

@@ -20,6 +20,8 @@ import { ChatService } from '../chat/chat.service';
 import { MediaStoryService } from '../publishing/media-story.service';
 import type { AiReply, AiAudio } from '../../helper/ai/aiapi';
 import { AiVoiceFailure } from '../../helper/ai/ai-failure';
+import { LifestyleService } from '../lifestyle/lifestyle.service';
+import { aiIdempotencyKey } from '../../helper/ai/aiapi';
 
 @Injectable()
 export class TelegramAiService {
@@ -29,6 +31,7 @@ export class TelegramAiService {
     private readonly jwt: JwtService,
     private readonly stories: MediaStoryService,
     private readonly config: ConfigService,
+    private readonly lifestyle: LifestyleService,
   ) {}
 
   async status(userId: string, companionId: string) {
@@ -160,6 +163,29 @@ export class TelegramAiService {
 
     try {
       const user = await this.getEligibleUser(connection.userId);
+      if (/^\/daily(?:@\w+)?$/.test(text.trim())) {
+        await this.lifestyle.active(this.prisma, user.id);
+        await this.lifestyle.preference(user.id, {
+          companionId,
+          enabled: true,
+        });
+        return 'Daily updates are enabled for this companion. Your plan allowance applies when scheduled content is available. Use /daily_off to stop.';
+      }
+      if (/^\/daily_off(?:@\w+)?$/.test(text.trim())) {
+        await this.lifestyle.preference(user.id, {
+          companionId,
+          enabled: false,
+        });
+        return 'Daily updates are now turned off.';
+      }
+      if (/^\/photo(?:@\w+)?(?:\s|$)/.test(text.trim())) {
+        const saved = await this.lifestyle.requestPhoto(user.id, companionId, {
+          requestId: aiIdempotencyKey(messageKey),
+          tag: text.trim().replace(/^\/photo(?:@\w+)?\s*/, '') || undefined,
+        });
+        const payload = saved.aiPayload as unknown as AiReply;
+        return { response: saved.response || '', media: payload.media! };
+      }
       // Mint a short-lived token for this linked user; never store a login JWT.
       const token = this.jwt.sign(
         {
@@ -207,10 +233,16 @@ export class TelegramAiService {
       if (error instanceof AiVoiceFailure) return error.message;
       if (
         error instanceof HttpException &&
-        [400, 402, 403, 404].includes(error.getStatus())
+        [400, 402, 403, 404, 429].includes(error.getStatus())
       ) {
         if (error.getStatus() === 402) {
           const active = await this.hasSubscription(connection.userId);
+          if (
+            active &&
+            (active.entitlementPolicy as { kind?: string } | null)?.kind ===
+              'trial'
+          )
+            return 'Your trial allowance is used up or has expired. Please choose a paid plan on the website to continue.';
           return {
             text: active
               ? 'Your credits have run out. Buy credits to continue chatting.'
@@ -242,7 +274,7 @@ export class TelegramAiService {
         startsAt: { lte: now },
         endsAt: { gt: now },
       },
-      select: { id: true },
+      select: { id: true, entitlementPolicy: true },
     });
   }
 

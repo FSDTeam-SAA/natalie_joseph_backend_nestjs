@@ -15,6 +15,24 @@ import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
 export class SubscriptionService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private validatePolicy(plan: {
+    price: string;
+    durationDays?: number;
+    creditAllowance?: number;
+    entitlementPolicy?: unknown;
+  }) {
+    const p = plan.entitlementPolicy as { kind?: string } | undefined;
+    if (
+      p?.kind === 'trial' &&
+      (Number(plan.price) !== 0 ||
+        plan.durationDays !== 3 ||
+        plan.creditAllowance !== 0)
+    )
+      throw new BadRequestException(
+        'Trial plans must have price 0, durationDays 3 and creditAllowance 0',
+      );
+  }
+
   async createSubscription(createSubscriptionDto: CreateSubscriptionDto) {
     const subscribe = await this.prisma.subscription.findFirst({
       where: { name: createSubscriptionDto.name },
@@ -29,11 +47,15 @@ export class SubscriptionService {
       createSubscriptionDto.creditAllowance ??
       createSubscriptionDto.messageLimit ??
       0;
+    this.validatePolicy({ ...createSubscriptionDto, creditAllowance });
     const result = await this.prisma.subscription.create({
       data: {
         ...createSubscriptionDto,
         messageLimit: createSubscriptionDto.messageLimit ?? 0,
         creditAllowance,
+        entitlementPolicy: JSON.parse(
+          JSON.stringify(createSubscriptionDto.entitlementPolicy ?? {}),
+        ),
       },
     });
     return result;
@@ -86,9 +108,21 @@ export class SubscriptionService {
     }
     const creditAllowance =
       payload.creditAllowance ?? payload.messageLimit ?? undefined;
+    this.validatePolicy({
+      ...subscribe,
+      ...payload,
+      creditAllowance: creditAllowance ?? subscribe.creditAllowance,
+    });
     const result = await this.prisma.subscription.update({
       where: { id },
-      data: { ...payload, creditAllowance },
+      data: {
+        ...payload,
+        creditAllowance,
+        entitlementPolicy:
+          payload.entitlementPolicy === undefined
+            ? undefined
+            : JSON.parse(JSON.stringify(payload.entitlementPolicy)),
+      },
     });
     return result;
   }
