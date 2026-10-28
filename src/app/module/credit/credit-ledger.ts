@@ -56,8 +56,17 @@ export async function grantSubscriptionCredits(
   tx: Prisma.TransactionClient,
   data: Prisma.UserSubscriptionUncheckedCreateInput,
 ) {
+  const plan = await tx.subscription.findUniqueOrThrow({
+    where: { id: data.subscriptionId },
+    select: { entitlementPolicy: true },
+  });
   await closeSubscriptionCredits(tx, data.userId);
-  const subscription = await tx.userSubscription.create({ data });
+  const subscription = await tx.userSubscription.create({
+    data: {
+      ...data,
+      entitlementPolicy: plan.entitlementPolicy as Prisma.InputJsonValue,
+    },
+  });
   if (subscription.creditAllowance > 0)
     await tx.creditTransaction.create({
       data: {

@@ -352,6 +352,8 @@ export type UserWhereInput = {
   creditBalance?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  dailyPreference?: Prisma.XOR<Prisma.DailyPreferenceNullableScalarRelationFilter, Prisma.DailyPreferenceWhereInput> | null
+  dailyDeliveries?: Prisma.DailyDeliveryListRelationFilter
   whatsappConnections?: Prisma.WhatsAppConnectionListRelationFilter
   telegramConnections?: Prisma.TelegramConnectionListRelationFilter
   relationships?: Prisma.RelationshipListRelationFilter
@@ -389,6 +391,8 @@ export type UserOrderByWithRelationInput = {
   creditBalance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  dailyPreference?: Prisma.DailyPreferenceOrderByWithRelationInput
+  dailyDeliveries?: Prisma.DailyDeliveryOrderByRelationAggregateInput
   whatsappConnections?: Prisma.WhatsAppConnectionOrderByRelationAggregateInput
   telegramConnections?: Prisma.TelegramConnectionOrderByRelationAggregateInput
   relationships?: Prisma.RelationshipOrderByRelationAggregateInput
@@ -429,6 +433,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   creditBalance?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  dailyPreference?: Prisma.XOR<Prisma.DailyPreferenceNullableScalarRelationFilter, Prisma.DailyPreferenceWhereInput> | null
+  dailyDeliveries?: Prisma.DailyDeliveryListRelationFilter
   whatsappConnections?: Prisma.WhatsAppConnectionListRelationFilter
   telegramConnections?: Prisma.TelegramConnectionListRelationFilter
   relationships?: Prisma.RelationshipListRelationFilter
@@ -524,6 +530,8 @@ export type UserCreateInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
@@ -561,6 +569,8 @@ export type UserUncheckedCreateInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
@@ -598,6 +608,8 @@ export type UserUpdateInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
@@ -635,6 +647,8 @@ export type UserUncheckedUpdateInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
@@ -924,6 +938,34 @@ export type UserUpdateOneRequiredWithoutGiftTransactionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGiftTransactionsInput, Prisma.UserUpdateWithoutGiftTransactionsInput>, Prisma.UserUncheckedUpdateWithoutGiftTransactionsInput>
 }
 
+export type UserCreateNestedOneWithoutDailyPreferenceInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDailyPreferenceInput, Prisma.UserUncheckedCreateWithoutDailyPreferenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDailyPreferenceInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDailyPreferenceNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDailyPreferenceInput, Prisma.UserUncheckedCreateWithoutDailyPreferenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDailyPreferenceInput
+  upsert?: Prisma.UserUpsertWithoutDailyPreferenceInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDailyPreferenceInput, Prisma.UserUpdateWithoutDailyPreferenceInput>, Prisma.UserUncheckedUpdateWithoutDailyPreferenceInput>
+}
+
+export type UserCreateNestedOneWithoutDailyDeliveriesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDailyDeliveriesInput, Prisma.UserUncheckedCreateWithoutDailyDeliveriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDailyDeliveriesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDailyDeliveriesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDailyDeliveriesInput, Prisma.UserUncheckedCreateWithoutDailyDeliveriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDailyDeliveriesInput
+  upsert?: Prisma.UserUpsertWithoutDailyDeliveriesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDailyDeliveriesInput, Prisma.UserUpdateWithoutDailyDeliveriesInput>, Prisma.UserUncheckedUpdateWithoutDailyDeliveriesInput>
+}
+
 export type UserCreateNestedOneWithoutPaymentsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentsInput, Prisma.UserUncheckedCreateWithoutPaymentsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentsInput
@@ -1015,6 +1057,8 @@ export type UserCreateWithoutChatMessagesInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
@@ -1051,6 +1095,8 @@ export type UserUncheckedCreateWithoutChatMessagesInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
@@ -1103,6 +1149,8 @@ export type UserUpdateWithoutChatMessagesInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
@@ -1139,6 +1187,8 @@ export type UserUncheckedUpdateWithoutChatMessagesInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
@@ -1175,6 +1225,8 @@ export type UserCreateWithoutChatConversationsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
@@ -1211,6 +1263,8 @@ export type UserUncheckedCreateWithoutChatConversationsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
@@ -1263,6 +1317,8 @@ export type UserUpdateWithoutChatConversationsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
@@ -1299,6 +1355,8 @@ export type UserUncheckedUpdateWithoutChatConversationsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
@@ -1335,6 +1393,8 @@ export type UserCreateWithoutCreditTransactionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
@@ -1371,6 +1431,8 @@ export type UserUncheckedCreateWithoutCreditTransactionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
@@ -1423,6 +1485,8 @@ export type UserUpdateWithoutCreditTransactionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
@@ -1459,6 +1523,8 @@ export type UserUncheckedUpdateWithoutCreditTransactionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
@@ -1495,6 +1561,8 @@ export type UserCreateWithoutPurchasedCreditLotsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
@@ -1531,6 +1599,8 @@ export type UserUncheckedCreateWithoutPurchasedCreditLotsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
@@ -1583,6 +1653,8 @@ export type UserUpdateWithoutPurchasedCreditLotsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
@@ -1619,6 +1691,8 @@ export type UserUncheckedUpdateWithoutPurchasedCreditLotsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
@@ -1655,6 +1729,8 @@ export type UserCreateWithoutRelationshipsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -1691,6 +1767,8 @@ export type UserUncheckedCreateWithoutRelationshipsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -1743,6 +1821,8 @@ export type UserUpdateWithoutRelationshipsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -1779,6 +1859,8 @@ export type UserUncheckedUpdateWithoutRelationshipsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -1815,6 +1897,8 @@ export type UserCreateWithoutPhotoViewsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
@@ -1851,6 +1935,8 @@ export type UserUncheckedCreateWithoutPhotoViewsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
@@ -1903,6 +1989,8 @@ export type UserUpdateWithoutPhotoViewsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
@@ -1939,6 +2027,8 @@ export type UserUncheckedUpdateWithoutPhotoViewsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
@@ -1975,6 +2065,8 @@ export type UserCreateWithoutNotificationsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
@@ -2011,6 +2103,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
@@ -2063,6 +2157,8 @@ export type UserUpdateWithoutNotificationsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
@@ -2099,6 +2195,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
@@ -2135,6 +2233,8 @@ export type UserCreateWithoutGiftTransactionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
@@ -2171,6 +2271,8 @@ export type UserUncheckedCreateWithoutGiftTransactionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
@@ -2223,6 +2325,8 @@ export type UserUpdateWithoutGiftTransactionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
@@ -2259,6 +2363,8 @@ export type UserUncheckedUpdateWithoutGiftTransactionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
@@ -2270,6 +2376,342 @@ export type UserUncheckedUpdateWithoutGiftTransactionsInput = {
   chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutUserNestedInput
   creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
   purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutDailyPreferenceInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
+  chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDailyPreferenceInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
+  chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDailyPreferenceInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDailyPreferenceInput, Prisma.UserUncheckedCreateWithoutDailyPreferenceInput>
+}
+
+export type UserUpsertWithoutDailyPreferenceInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDailyPreferenceInput, Prisma.UserUncheckedUpdateWithoutDailyPreferenceInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDailyPreferenceInput, Prisma.UserUncheckedCreateWithoutDailyPreferenceInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDailyPreferenceInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDailyPreferenceInput, Prisma.UserUncheckedUpdateWithoutDailyPreferenceInput>
+}
+
+export type UserUpdateWithoutDailyPreferenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
+  relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
+  chatConversations?: Prisma.ChatConversationUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDailyPreferenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutDailyDeliveriesInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
+  telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
+  relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.UserSubscriptionCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
+  chatConversations?: Prisma.ChatConversationCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDailyDeliveriesInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password: string
+  role?: $Enums.UserRole
+  phoneNumber?: string | null
+  profileImage?: string | null
+  otp?: string | null
+  otpExpiry?: Date | string | null
+  status?: $Enums.Status
+  verifiedForgot?: boolean
+  stripeAccountId?: string | null
+  billingSubscriptionId?: string | null
+  billingStatus?: string | null
+  cancelAtPeriodEnd?: boolean
+  lowCreditNotified?: boolean
+  adultEligible?: boolean | null
+  isSubscribed?: boolean
+  isFreeTrialUsed?: boolean
+  creditBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
+  relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  photoViews?: Prisma.PhotoViewUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.UserSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
+  chatConversations?: Prisma.ChatConversationUncheckedCreateNestedManyWithoutUserInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedCreateNestedManyWithoutUserInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedCreateNestedManyWithoutUserInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDailyDeliveriesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDailyDeliveriesInput, Prisma.UserUncheckedCreateWithoutDailyDeliveriesInput>
+}
+
+export type UserUpsertWithoutDailyDeliveriesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDailyDeliveriesInput, Prisma.UserUncheckedUpdateWithoutDailyDeliveriesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDailyDeliveriesInput, Prisma.UserUncheckedCreateWithoutDailyDeliveriesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDailyDeliveriesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDailyDeliveriesInput, Prisma.UserUncheckedUpdateWithoutDailyDeliveriesInput>
+}
+
+export type UserUpdateWithoutDailyDeliveriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
+  relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.UserSubscriptionUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
+  chatConversations?: Prisma.ChatConversationUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDailyDeliveriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  verifiedForgot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripeAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lowCreditNotified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  adultEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isSubscribed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFreeTrialUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
+  telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
+  relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  photoViews?: Prisma.PhotoViewUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  chatConversations?: Prisma.ChatConversationUncheckedUpdateManyWithoutUserNestedInput
+  creditTransactions?: Prisma.CreditTransactionUncheckedUpdateManyWithoutUserNestedInput
+  purchasedCreditLots?: Prisma.PurchasedCreditLotUncheckedUpdateManyWithoutUserNestedInput
+  giftTransactions?: Prisma.GiftTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPaymentsInput = {
@@ -2295,6 +2737,8 @@ export type UserCreateWithoutPaymentsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
@@ -2331,6 +2775,8 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
@@ -2383,6 +2829,8 @@ export type UserUpdateWithoutPaymentsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
@@ -2419,6 +2867,8 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
@@ -2455,6 +2905,8 @@ export type UserCreateWithoutTelegramConnectionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -2491,6 +2943,8 @@ export type UserUncheckedCreateWithoutTelegramConnectionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -2543,6 +2997,8 @@ export type UserUpdateWithoutTelegramConnectionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2579,6 +3035,8 @@ export type UserUncheckedUpdateWithoutTelegramConnectionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2615,6 +3073,8 @@ export type UserCreateWithoutSubscriptionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
@@ -2651,6 +3111,8 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
@@ -2703,6 +3165,8 @@ export type UserUpdateWithoutSubscriptionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
@@ -2739,6 +3203,8 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
   whatsappConnections?: Prisma.WhatsAppConnectionUncheckedUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
@@ -2775,6 +3241,8 @@ export type UserCreateWithoutWhatsappConnectionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -2811,6 +3279,8 @@ export type UserUncheckedCreateWithoutWhatsappConnectionsInput = {
   creditBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedCreateNestedOneWithoutUserInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedCreateNestedManyWithoutUserInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedCreateNestedManyWithoutUserInput
   relationships?: Prisma.RelationshipUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -2863,6 +3333,8 @@ export type UserUpdateWithoutWhatsappConnectionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2899,6 +3371,8 @@ export type UserUncheckedUpdateWithoutWhatsappConnectionsInput = {
   creditBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyPreference?: Prisma.DailyPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  dailyDeliveries?: Prisma.DailyDeliveryUncheckedUpdateManyWithoutUserNestedInput
   telegramConnections?: Prisma.TelegramConnectionUncheckedUpdateManyWithoutUserNestedInput
   relationships?: Prisma.RelationshipUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2918,6 +3392,7 @@ export type UserUncheckedUpdateWithoutWhatsappConnectionsInput = {
  */
 
 export type UserCountOutputType = {
+  dailyDeliveries: number
   whatsappConnections: number
   telegramConnections: number
   relationships: number
@@ -2933,6 +3408,7 @@ export type UserCountOutputType = {
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  dailyDeliveries?: boolean | UserCountOutputTypeCountDailyDeliveriesArgs
   whatsappConnections?: boolean | UserCountOutputTypeCountWhatsappConnectionsArgs
   telegramConnections?: boolean | UserCountOutputTypeCountTelegramConnectionsArgs
   relationships?: boolean | UserCountOutputTypeCountRelationshipsArgs
@@ -2955,6 +3431,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDailyDeliveriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DailyDeliveryWhereInput
 }
 
 /**
@@ -3065,6 +3548,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   creditBalance?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  dailyPreference?: boolean | Prisma.User$dailyPreferenceArgs<ExtArgs>
+  dailyDeliveries?: boolean | Prisma.User$dailyDeliveriesArgs<ExtArgs>
   whatsappConnections?: boolean | Prisma.User$whatsappConnectionsArgs<ExtArgs>
   telegramConnections?: boolean | Prisma.User$telegramConnectionsArgs<ExtArgs>
   relationships?: boolean | Prisma.User$relationshipsArgs<ExtArgs>
@@ -3157,6 +3642,8 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "phoneNumber" | "profileImage" | "otp" | "otpExpiry" | "status" | "verifiedForgot" | "stripeAccountId" | "billingSubscriptionId" | "billingStatus" | "cancelAtPeriodEnd" | "lowCreditNotified" | "adultEligible" | "isSubscribed" | "isFreeTrialUsed" | "creditBalance" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  dailyPreference?: boolean | Prisma.User$dailyPreferenceArgs<ExtArgs>
+  dailyDeliveries?: boolean | Prisma.User$dailyDeliveriesArgs<ExtArgs>
   whatsappConnections?: boolean | Prisma.User$whatsappConnectionsArgs<ExtArgs>
   telegramConnections?: boolean | Prisma.User$telegramConnectionsArgs<ExtArgs>
   relationships?: boolean | Prisma.User$relationshipsArgs<ExtArgs>
@@ -3177,6 +3664,8 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    dailyPreference: Prisma.$DailyPreferencePayload<ExtArgs> | null
+    dailyDeliveries: Prisma.$DailyDeliveryPayload<ExtArgs>[]
     whatsappConnections: Prisma.$WhatsAppConnectionPayload<ExtArgs>[]
     telegramConnections: Prisma.$TelegramConnectionPayload<ExtArgs>[]
     relationships: Prisma.$RelationshipPayload<ExtArgs>[]
@@ -3607,6 +4096,8 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  dailyPreference<T extends Prisma.User$dailyPreferenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$dailyPreferenceArgs<ExtArgs>>): Prisma.Prisma__DailyPreferenceClient<runtime.Types.Result.GetResult<Prisma.$DailyPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  dailyDeliveries<T extends Prisma.User$dailyDeliveriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$dailyDeliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DailyDeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   whatsappConnections<T extends Prisma.User$whatsappConnectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$whatsappConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WhatsAppConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   telegramConnections<T extends Prisma.User$telegramConnectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$telegramConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TelegramConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   relationships<T extends Prisma.User$relationshipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$relationshipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RelationshipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4060,6 +4551,49 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
+}
+
+/**
+ * User.dailyPreference
+ */
+export type User$dailyPreferenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DailyPreference
+   */
+  select?: Prisma.DailyPreferenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DailyPreference
+   */
+  omit?: Prisma.DailyPreferenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DailyPreferenceInclude<ExtArgs> | null
+  where?: Prisma.DailyPreferenceWhereInput
+}
+
+/**
+ * User.dailyDeliveries
+ */
+export type User$dailyDeliveriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DailyDelivery
+   */
+  select?: Prisma.DailyDeliverySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DailyDelivery
+   */
+  omit?: Prisma.DailyDeliveryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DailyDeliveryInclude<ExtArgs> | null
+  where?: Prisma.DailyDeliveryWhereInput
+  orderBy?: Prisma.DailyDeliveryOrderByWithRelationInput | Prisma.DailyDeliveryOrderByWithRelationInput[]
+  cursor?: Prisma.DailyDeliveryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DailyDeliveryScalarFieldEnum | Prisma.DailyDeliveryScalarFieldEnum[]
 }
 
 /**

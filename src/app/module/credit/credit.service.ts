@@ -280,7 +280,7 @@ export class CreditService {
   }
 
   async getCosts(tx: Prisma.TransactionClient = this.prisma) {
-    const costs = { message: 1, photo: 5, voice: 3, low_credit_threshold: 10 };
+    const costs = { message: 1, photo: 5, voice: 3, transcription: 1, low_credit_threshold: 10 };
     for (const row of await tx.creditCost.findMany()) {
       if (row.action in costs)
         costs[row.action as keyof typeof costs] = row.credits;

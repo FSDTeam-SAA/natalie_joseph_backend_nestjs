@@ -1,5 +1,9 @@
 # NestJS E-Commerce Backend — Complete Deployment Guide
 
+**Frontend team-এর সম্পূর্ণ বাংলা API README:** [Website + Admin Dashboard integration](docs/frontend-handoff/README-FRONTEND-FULL-BN.md)।
+
+Meet Elysia নতুন backend/API নির্দেশনা: [Lifestyle ও frontend/AI handover](docs/README-lifestyle-handoff-bn.md).
+
 > Follow this README top to bottom. After completing all steps, every push to `main` will automatically deploy to your server.
 
 ---

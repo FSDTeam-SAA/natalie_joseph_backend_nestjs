@@ -202,9 +202,13 @@ export class AuthController {
     description: 'Unauthorized',
   })
   @HttpCode(HttpStatus.OK)
-  async changePassword(@Body() changePasswordAuthDto: ChangePasswordAuthDto) {
+  async changePassword(
+    @Req() req: Request,
+    @Body() changePasswordAuthDto: ChangePasswordAuthDto,
+  ) {
+    const userId = req.user!.id;
     const result = await this.authService.changePassword(
-      changePasswordAuthDto.email,
+      userId,
       changePasswordAuthDto.oldPassword,
       changePasswordAuthDto.newPassword,
     );

@@ -1,4 +1,6 @@
 model UserSubscription {
+ entitlementPolicy Json @default("{}")
+ allowanceUsage AllowanceUsage[]
   id                   String   @id @default(uuid())
   stripeInvoiceId      String?  @unique
   stripeSubscriptionId String?

@@ -1,4 +1,6 @@
 model User {
+ dailyPreference DailyPreference?
+ dailyDeliveries DailyDelivery[]
   whatsappConnections WhatsAppConnection[]
   telegramConnections TelegramConnection[]
   id                    String               @id @default(uuid())

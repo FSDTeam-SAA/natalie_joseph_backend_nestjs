@@ -28,6 +28,8 @@ export interface AiAudio {
 }
 
 export interface AiReply {
+  context_version?: string;
+  billing?: { voice_characters?: number; transcription_seconds?: number };
   message_type?: 'text' | 'image' | 'audio';
   media?: {
     id: string;
@@ -175,12 +177,14 @@ export class AiApi {
     authorization: string,
     idempotencyKey: string,
     audio?: AiAudio,
+    context?: Record<string, unknown>,
   ) {
     const form = new FormData();
     form.set('conversation_id', conversationId);
     form.set('companion_id', companionId);
     form.set('message', message);
     form.set('idempotency_key', aiIdempotencyKey(idempotencyKey));
+    if (context) form.set('context', JSON.stringify(context));
     if (audio)
       form.set(
         'audio',
@@ -188,6 +192,10 @@ export class AiApi {
         audio.filename,
       );
     const data = await this.post<AiReply>('/chat', form, authorization);
+    if (context && data.context_version !== 'lifestyle-v1')
+      throw new BadGatewayException(
+        'AI service must acknowledge the lifestyle-v1 context contract',
+      );
     if (
       !data?.message_id ||
       typeof data.response !== 'string' ||

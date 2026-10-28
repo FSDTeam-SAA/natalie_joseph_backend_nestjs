@@ -131,13 +131,6 @@ export class ResetPasswordAuthDto {
 
 export class ChangePasswordAuthDto {
   @ApiProperty({
-    example: 'john@example.com',
-  })
-  @IsEmail({}, { message: 'Please provide a valid email' })
-  @IsNotEmpty({ message: 'Email is required' })
-  email!: string;
-
-  @ApiProperty({
     example: 'OldPassword123',
   })
   @IsString()

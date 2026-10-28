@@ -7,16 +7,24 @@ import {
   IsOptional,
   IsString,
   Min,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { EntitlementPolicyDto } from '../../lifestyle/lifestyle.dto';
 
 export class CreateSubscriptionDto {
+  @ApiPropertyOptional({ type: EntitlementPolicyDto })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => EntitlementPolicyDto)
+  entitlementPolicy?: EntitlementPolicyDto;
   @ApiProperty({
     example: 'Premium Plan',
     description: 'Subscription plan name',
   })
   @IsString()
   @IsNotEmpty({ message: 'Name is required' })
-  name: string;
+  name!: string;
 
   @ApiProperty({
     example: '29.99',
@@ -24,7 +32,7 @@ export class CreateSubscriptionDto {
   })
   @IsString()
   @IsNotEmpty({ message: 'Price is required' })
-  price: string;
+  price!: string;
 
   @ApiPropertyOptional({
     example: 1000,
@@ -68,7 +76,7 @@ export class CreateSubscriptionDto {
     each: true,
     message: 'Each feature must be a string',
   })
-  features: string[];
+  features!: string[];
 
   @ApiPropertyOptional({
     example: true,

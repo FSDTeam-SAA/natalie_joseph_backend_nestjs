@@ -1,0 +1,76 @@
+model CompanionRoutine {
+ companionId String @id
+ timezone String @default("Asia/Dubai")
+ weekly Json @default("[]")
+ updatedAt DateTime @updatedAt
+ companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+ @@map("companion_routines")
+}
+model LibraryPhoto {
+ id String @id @default(uuid())
+ companionId String
+ url String
+ publicId String
+  mimeType String @default("image/jpeg")
+ caption String @default("")
+ tags String[]
+ approved Boolean @default(false)
+ createdAt DateTime @default(now())
+ companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+ dailyContent DailyContent[]
+ @@index([companionId, approved])
+ @@map("library_photos")
+}
+model DailyContent {
+ id String @id @default(uuid())
+ companionId String
+ day String
+ publishAt DateTime
+ expiresAt DateTime
+ photoId String
+ text String
+ activity String @default("")
+ published Boolean @default(false)
+ createdAt DateTime @default(now())
+ companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+ photo LibraryPhoto @relation(fields: [photoId], references: [id])
+ deliveries DailyDelivery[]
+ @@unique([companionId, day])
+ @@index([published, publishAt, expiresAt])
+ @@map("daily_content")
+}
+model DailyPreference {
+ userId String @id
+ companionId String
+ enabled Boolean @default(false)
+ updatedAt DateTime @updatedAt
+ user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ companion Companions @relation(fields: [companionId], references: [id], onDelete: Cascade)
+ @@map("daily_preferences")
+}
+model DailyDelivery {
+ id String @id @default(uuid())
+ userId String
+ contentId String
+ kind String
+ status String @default("pending")
+ telegramMessageId Int?
+ lastError String?
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ content DailyContent @relation(fields: [contentId], references: [id], onDelete: Cascade)
+ @@unique([userId, contentId, kind])
+ @@index([status, createdAt])
+ @@map("daily_deliveries")
+}
+model AllowanceUsage {
+ id String @id @default(uuid())
+ subscriptionId String
+ day String
+ action String
+ count Int @default(0)
+ subscription UserSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+ @@unique([subscriptionId, day, action])
+ @@map("allowance_usage")
+}

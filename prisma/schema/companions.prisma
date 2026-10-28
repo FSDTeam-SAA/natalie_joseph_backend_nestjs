@@ -1,4 +1,8 @@
 model Companions {
+ routine CompanionRoutine?
+ libraryPhotos LibraryPhoto[]
+ dailyContent DailyContent[]
+ dailyPreferences DailyPreference[]
   telegramProfileSync TelegramProfileSync?
   mediaStories CompanionMediaStory[]
   whatsappConnections WhatsAppConnection[]

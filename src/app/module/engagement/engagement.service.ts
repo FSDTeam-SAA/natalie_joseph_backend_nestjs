@@ -153,7 +153,7 @@ export class EngagementService {
     });
   }
   async setCost(action: string, credits: number) {
-    if (!['message', 'photo', 'voice', 'low_credit_threshold'].includes(action))
+    if (!['message', 'photo', 'voice', 'transcription', 'low_credit_threshold'].includes(action))
       throw new BadRequestException('Unknown credit action');
     return this.prisma.creditCost.upsert({
       where: { action },

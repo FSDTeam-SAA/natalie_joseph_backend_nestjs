@@ -75,6 +75,7 @@ export type UserSubscriptionMaxAggregateOutputType = {
 }
 
 export type UserSubscriptionCountAggregateOutputType = {
+  entitlementPolicy: number
   id: number
   stripeInvoiceId: number
   stripeSubscriptionId: number
@@ -142,6 +143,7 @@ export type UserSubscriptionMaxAggregateInputType = {
 }
 
 export type UserSubscriptionCountAggregateInputType = {
+  entitlementPolicy?: true
   id?: true
   stripeInvoiceId?: true
   stripeSubscriptionId?: true
@@ -246,6 +248,7 @@ export type UserSubscriptionGroupByArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 export type UserSubscriptionGroupByOutputType = {
+  entitlementPolicy: runtime.JsonValue
   id: string
   stripeInvoiceId: string | null
   stripeSubscriptionId: string | null
@@ -286,6 +289,7 @@ export type UserSubscriptionWhereInput = {
   AND?: Prisma.UserSubscriptionWhereInput | Prisma.UserSubscriptionWhereInput[]
   OR?: Prisma.UserSubscriptionWhereInput[]
   NOT?: Prisma.UserSubscriptionWhereInput | Prisma.UserSubscriptionWhereInput[]
+  entitlementPolicy?: Prisma.JsonFilter<"UserSubscription">
   id?: Prisma.StringFilter<"UserSubscription"> | string
   stripeInvoiceId?: Prisma.StringNullableFilter<"UserSubscription"> | string | null
   stripeSubscriptionId?: Prisma.StringNullableFilter<"UserSubscription"> | string | null
@@ -300,11 +304,13 @@ export type UserSubscriptionWhereInput = {
   isActive?: Prisma.BoolFilter<"UserSubscription"> | boolean
   createdAt?: Prisma.DateTimeFilter<"UserSubscription"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserSubscription"> | Date | string
+  allowanceUsage?: Prisma.AllowanceUsageListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   subscription?: Prisma.XOR<Prisma.SubscriptionScalarRelationFilter, Prisma.SubscriptionWhereInput>
 }
 
 export type UserSubscriptionOrderByWithRelationInput = {
+  entitlementPolicy?: Prisma.SortOrder
   id?: Prisma.SortOrder
   stripeInvoiceId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -319,6 +325,7 @@ export type UserSubscriptionOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  allowanceUsage?: Prisma.AllowanceUsageOrderByRelationAggregateInput
   user?: Prisma.UserOrderByWithRelationInput
   subscription?: Prisma.SubscriptionOrderByWithRelationInput
 }
@@ -329,6 +336,7 @@ export type UserSubscriptionWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.UserSubscriptionWhereInput | Prisma.UserSubscriptionWhereInput[]
   OR?: Prisma.UserSubscriptionWhereInput[]
   NOT?: Prisma.UserSubscriptionWhereInput | Prisma.UserSubscriptionWhereInput[]
+  entitlementPolicy?: Prisma.JsonFilter<"UserSubscription">
   stripeSubscriptionId?: Prisma.StringNullableFilter<"UserSubscription"> | string | null
   userId?: Prisma.StringFilter<"UserSubscription"> | string
   subscriptionId?: Prisma.StringFilter<"UserSubscription"> | string
@@ -341,11 +349,13 @@ export type UserSubscriptionWhereUniqueInput = Prisma.AtLeast<{
   isActive?: Prisma.BoolFilter<"UserSubscription"> | boolean
   createdAt?: Prisma.DateTimeFilter<"UserSubscription"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserSubscription"> | Date | string
+  allowanceUsage?: Prisma.AllowanceUsageListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   subscription?: Prisma.XOR<Prisma.SubscriptionScalarRelationFilter, Prisma.SubscriptionWhereInput>
 }, "id" | "stripeInvoiceId">
 
 export type UserSubscriptionOrderByWithAggregationInput = {
+  entitlementPolicy?: Prisma.SortOrder
   id?: Prisma.SortOrder
   stripeInvoiceId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -371,6 +381,7 @@ export type UserSubscriptionScalarWhereWithAggregatesInput = {
   AND?: Prisma.UserSubscriptionScalarWhereWithAggregatesInput | Prisma.UserSubscriptionScalarWhereWithAggregatesInput[]
   OR?: Prisma.UserSubscriptionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.UserSubscriptionScalarWhereWithAggregatesInput | Prisma.UserSubscriptionScalarWhereWithAggregatesInput[]
+  entitlementPolicy?: Prisma.JsonWithAggregatesFilter<"UserSubscription">
   id?: Prisma.StringWithAggregatesFilter<"UserSubscription"> | string
   stripeInvoiceId?: Prisma.StringNullableWithAggregatesFilter<"UserSubscription"> | string | null
   stripeSubscriptionId?: Prisma.StringNullableWithAggregatesFilter<"UserSubscription"> | string | null
@@ -388,6 +399,7 @@ export type UserSubscriptionScalarWhereWithAggregatesInput = {
 }
 
 export type UserSubscriptionCreateInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   stripeInvoiceId?: string | null
   stripeSubscriptionId?: string | null
@@ -400,11 +412,13 @@ export type UserSubscriptionCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  allowanceUsage?: Prisma.AllowanceUsageCreateNestedManyWithoutSubscriptionInput
   user: Prisma.UserCreateNestedOneWithoutSubscriptionsInput
   subscription: Prisma.SubscriptionCreateNestedOneWithoutUserSubscriptionsInput
 }
 
 export type UserSubscriptionUncheckedCreateInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   stripeInvoiceId?: string | null
   stripeSubscriptionId?: string | null
@@ -419,9 +433,11 @@ export type UserSubscriptionUncheckedCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  allowanceUsage?: Prisma.AllowanceUsageUncheckedCreateNestedManyWithoutSubscriptionInput
 }
 
 export type UserSubscriptionUpdateInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -434,11 +450,13 @@ export type UserSubscriptionUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  allowanceUsage?: Prisma.AllowanceUsageUpdateManyWithoutSubscriptionNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutSubscriptionsNestedInput
   subscription?: Prisma.SubscriptionUpdateOneRequiredWithoutUserSubscriptionsNestedInput
 }
 
 export type UserSubscriptionUncheckedUpdateInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -453,9 +471,11 @@ export type UserSubscriptionUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  allowanceUsage?: Prisma.AllowanceUsageUncheckedUpdateManyWithoutSubscriptionNestedInput
 }
 
 export type UserSubscriptionCreateManyInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   stripeInvoiceId?: string | null
   stripeSubscriptionId?: string | null
@@ -473,6 +493,7 @@ export type UserSubscriptionCreateManyInput = {
 }
 
 export type UserSubscriptionUpdateManyMutationInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -488,6 +509,7 @@ export type UserSubscriptionUpdateManyMutationInput = {
 }
 
 export type UserSubscriptionUncheckedUpdateManyInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -504,6 +526,11 @@ export type UserSubscriptionUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type UserSubscriptionScalarRelationFilter = {
+  is?: Prisma.UserSubscriptionWhereInput
+  isNot?: Prisma.UserSubscriptionWhereInput
+}
+
 export type UserSubscriptionListRelationFilter = {
   every?: Prisma.UserSubscriptionWhereInput
   some?: Prisma.UserSubscriptionWhereInput
@@ -515,6 +542,7 @@ export type UserSubscriptionOrderByRelationAggregateInput = {
 }
 
 export type UserSubscriptionCountOrderByAggregateInput = {
+  entitlementPolicy?: Prisma.SortOrder
   id?: Prisma.SortOrder
   stripeInvoiceId?: Prisma.SortOrder
   stripeSubscriptionId?: Prisma.SortOrder
@@ -577,6 +605,20 @@ export type UserSubscriptionSumOrderByAggregateInput = {
   messagesUsed?: Prisma.SortOrder
   creditAllowance?: Prisma.SortOrder
   creditsUsed?: Prisma.SortOrder
+}
+
+export type UserSubscriptionCreateNestedOneWithoutAllowanceUsageInput = {
+  create?: Prisma.XOR<Prisma.UserSubscriptionCreateWithoutAllowanceUsageInput, Prisma.UserSubscriptionUncheckedCreateWithoutAllowanceUsageInput>
+  connectOrCreate?: Prisma.UserSubscriptionCreateOrConnectWithoutAllowanceUsageInput
+  connect?: Prisma.UserSubscriptionWhereUniqueInput
+}
+
+export type UserSubscriptionUpdateOneRequiredWithoutAllowanceUsageNestedInput = {
+  create?: Prisma.XOR<Prisma.UserSubscriptionCreateWithoutAllowanceUsageInput, Prisma.UserSubscriptionUncheckedCreateWithoutAllowanceUsageInput>
+  connectOrCreate?: Prisma.UserSubscriptionCreateOrConnectWithoutAllowanceUsageInput
+  upsert?: Prisma.UserSubscriptionUpsertWithoutAllowanceUsageInput
+  connect?: Prisma.UserSubscriptionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserSubscriptionUpdateToOneWithWhereWithoutAllowanceUsageInput, Prisma.UserSubscriptionUpdateWithoutAllowanceUsageInput>, Prisma.UserSubscriptionUncheckedUpdateWithoutAllowanceUsageInput>
 }
 
 export type UserSubscriptionCreateNestedManyWithoutSubscriptionInput = {
@@ -663,7 +705,8 @@ export type UserSubscriptionUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.UserSubscriptionScalarWhereInput | Prisma.UserSubscriptionScalarWhereInput[]
 }
 
-export type UserSubscriptionCreateWithoutSubscriptionInput = {
+export type UserSubscriptionCreateWithoutAllowanceUsageInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   stripeInvoiceId?: string | null
   stripeSubscriptionId?: string | null
@@ -677,9 +720,99 @@ export type UserSubscriptionCreateWithoutSubscriptionInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutSubscriptionsInput
+  subscription: Prisma.SubscriptionCreateNestedOneWithoutUserSubscriptionsInput
+}
+
+export type UserSubscriptionUncheckedCreateWithoutAllowanceUsageInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  id?: string
+  stripeInvoiceId?: string | null
+  stripeSubscriptionId?: string | null
+  userId: string
+  subscriptionId: string
+  messageLimit: number
+  messagesUsed?: number
+  creditAllowance?: number
+  creditsUsed?: number
+  startsAt?: Date | string
+  endsAt: Date | string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type UserSubscriptionCreateOrConnectWithoutAllowanceUsageInput = {
+  where: Prisma.UserSubscriptionWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserSubscriptionCreateWithoutAllowanceUsageInput, Prisma.UserSubscriptionUncheckedCreateWithoutAllowanceUsageInput>
+}
+
+export type UserSubscriptionUpsertWithoutAllowanceUsageInput = {
+  update: Prisma.XOR<Prisma.UserSubscriptionUpdateWithoutAllowanceUsageInput, Prisma.UserSubscriptionUncheckedUpdateWithoutAllowanceUsageInput>
+  create: Prisma.XOR<Prisma.UserSubscriptionCreateWithoutAllowanceUsageInput, Prisma.UserSubscriptionUncheckedCreateWithoutAllowanceUsageInput>
+  where?: Prisma.UserSubscriptionWhereInput
+}
+
+export type UserSubscriptionUpdateToOneWithWhereWithoutAllowanceUsageInput = {
+  where?: Prisma.UserSubscriptionWhereInput
+  data: Prisma.XOR<Prisma.UserSubscriptionUpdateWithoutAllowanceUsageInput, Prisma.UserSubscriptionUncheckedUpdateWithoutAllowanceUsageInput>
+}
+
+export type UserSubscriptionUpdateWithoutAllowanceUsageInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
+  creditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutSubscriptionsNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneRequiredWithoutUserSubscriptionsNestedInput
+}
+
+export type UserSubscriptionUncheckedUpdateWithoutAllowanceUsageInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  subscriptionId?: Prisma.StringFieldUpdateOperationsInput | string
+  messageLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  messagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  creditAllowance?: Prisma.IntFieldUpdateOperationsInput | number
+  creditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type UserSubscriptionCreateWithoutSubscriptionInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  id?: string
+  stripeInvoiceId?: string | null
+  stripeSubscriptionId?: string | null
+  messageLimit: number
+  messagesUsed?: number
+  creditAllowance?: number
+  creditsUsed?: number
+  startsAt?: Date | string
+  endsAt: Date | string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  allowanceUsage?: Prisma.AllowanceUsageCreateNestedManyWithoutSubscriptionInput
+  user: Prisma.UserCreateNestedOneWithoutSubscriptionsInput
 }
 
 export type UserSubscriptionUncheckedCreateWithoutSubscriptionInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   stripeInvoiceId?: string | null
   stripeSubscriptionId?: string | null
@@ -693,6 +826,7 @@ export type UserSubscriptionUncheckedCreateWithoutSubscriptionInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  allowanceUsage?: Prisma.AllowanceUsageUncheckedCreateNestedManyWithoutSubscriptionInput
 }
 
 export type UserSubscriptionCreateOrConnectWithoutSubscriptionInput = {
@@ -725,6 +859,7 @@ export type UserSubscriptionScalarWhereInput = {
   AND?: Prisma.UserSubscriptionScalarWhereInput | Prisma.UserSubscriptionScalarWhereInput[]
   OR?: Prisma.UserSubscriptionScalarWhereInput[]
   NOT?: Prisma.UserSubscriptionScalarWhereInput | Prisma.UserSubscriptionScalarWhereInput[]
+  entitlementPolicy?: Prisma.JsonFilter<"UserSubscription">
   id?: Prisma.StringFilter<"UserSubscription"> | string
   stripeInvoiceId?: Prisma.StringNullableFilter<"UserSubscription"> | string | null
   stripeSubscriptionId?: Prisma.StringNullableFilter<"UserSubscription"> | string | null
@@ -742,6 +877,7 @@ export type UserSubscriptionScalarWhereInput = {
 }
 
 export type UserSubscriptionCreateWithoutUserInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   stripeInvoiceId?: string | null
   stripeSubscriptionId?: string | null
@@ -754,10 +890,12 @@ export type UserSubscriptionCreateWithoutUserInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  allowanceUsage?: Prisma.AllowanceUsageCreateNestedManyWithoutSubscriptionInput
   subscription: Prisma.SubscriptionCreateNestedOneWithoutUserSubscriptionsInput
 }
 
 export type UserSubscriptionUncheckedCreateWithoutUserInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   stripeInvoiceId?: string | null
   stripeSubscriptionId?: string | null
@@ -771,6 +909,7 @@ export type UserSubscriptionUncheckedCreateWithoutUserInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  allowanceUsage?: Prisma.AllowanceUsageUncheckedCreateNestedManyWithoutSubscriptionInput
 }
 
 export type UserSubscriptionCreateOrConnectWithoutUserInput = {
@@ -800,6 +939,7 @@ export type UserSubscriptionUpdateManyWithWhereWithoutUserInput = {
 }
 
 export type UserSubscriptionCreateManySubscriptionInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   stripeInvoiceId?: string | null
   stripeSubscriptionId?: string | null
@@ -816,6 +956,7 @@ export type UserSubscriptionCreateManySubscriptionInput = {
 }
 
 export type UserSubscriptionUpdateWithoutSubscriptionInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -828,10 +969,12 @@ export type UserSubscriptionUpdateWithoutSubscriptionInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  allowanceUsage?: Prisma.AllowanceUsageUpdateManyWithoutSubscriptionNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutSubscriptionsNestedInput
 }
 
 export type UserSubscriptionUncheckedUpdateWithoutSubscriptionInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -845,9 +988,11 @@ export type UserSubscriptionUncheckedUpdateWithoutSubscriptionInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  allowanceUsage?: Prisma.AllowanceUsageUncheckedUpdateManyWithoutSubscriptionNestedInput
 }
 
 export type UserSubscriptionUncheckedUpdateManyWithoutSubscriptionInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -864,6 +1009,7 @@ export type UserSubscriptionUncheckedUpdateManyWithoutSubscriptionInput = {
 }
 
 export type UserSubscriptionCreateManyUserInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: string
   stripeInvoiceId?: string | null
   stripeSubscriptionId?: string | null
@@ -880,6 +1026,7 @@ export type UserSubscriptionCreateManyUserInput = {
 }
 
 export type UserSubscriptionUpdateWithoutUserInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -892,10 +1039,12 @@ export type UserSubscriptionUpdateWithoutUserInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  allowanceUsage?: Prisma.AllowanceUsageUpdateManyWithoutSubscriptionNestedInput
   subscription?: Prisma.SubscriptionUpdateOneRequiredWithoutUserSubscriptionsNestedInput
 }
 
 export type UserSubscriptionUncheckedUpdateWithoutUserInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -909,9 +1058,11 @@ export type UserSubscriptionUncheckedUpdateWithoutUserInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  allowanceUsage?: Prisma.AllowanceUsageUncheckedUpdateManyWithoutSubscriptionNestedInput
 }
 
 export type UserSubscriptionUncheckedUpdateManyWithoutUserInput = {
+  entitlementPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stripeInvoiceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -928,8 +1079,38 @@ export type UserSubscriptionUncheckedUpdateManyWithoutUserInput = {
 }
 
 
+/**
+ * Count Type UserSubscriptionCountOutputType
+ */
+
+export type UserSubscriptionCountOutputType = {
+  allowanceUsage: number
+}
+
+export type UserSubscriptionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  allowanceUsage?: boolean | UserSubscriptionCountOutputTypeCountAllowanceUsageArgs
+}
+
+/**
+ * UserSubscriptionCountOutputType without action
+ */
+export type UserSubscriptionCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserSubscriptionCountOutputType
+   */
+  select?: Prisma.UserSubscriptionCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserSubscriptionCountOutputType without action
+ */
+export type UserSubscriptionCountOutputTypeCountAllowanceUsageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AllowanceUsageWhereInput
+}
+
 
 export type UserSubscriptionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  entitlementPolicy?: boolean
   id?: boolean
   stripeInvoiceId?: boolean
   stripeSubscriptionId?: boolean
@@ -944,11 +1125,14 @@ export type UserSubscriptionSelect<ExtArgs extends runtime.Types.Extensions.Inte
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  allowanceUsage?: boolean | Prisma.UserSubscription$allowanceUsageArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   subscription?: boolean | Prisma.SubscriptionDefaultArgs<ExtArgs>
+  _count?: boolean | Prisma.UserSubscriptionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userSubscription"]>
 
 export type UserSubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  entitlementPolicy?: boolean
   id?: boolean
   stripeInvoiceId?: boolean
   stripeSubscriptionId?: boolean
@@ -968,6 +1152,7 @@ export type UserSubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
 }, ExtArgs["result"]["userSubscription"]>
 
 export type UserSubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  entitlementPolicy?: boolean
   id?: boolean
   stripeInvoiceId?: boolean
   stripeSubscriptionId?: boolean
@@ -987,6 +1172,7 @@ export type UserSubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
 }, ExtArgs["result"]["userSubscription"]>
 
 export type UserSubscriptionSelectScalar = {
+  entitlementPolicy?: boolean
   id?: boolean
   stripeInvoiceId?: boolean
   stripeSubscriptionId?: boolean
@@ -1003,10 +1189,12 @@ export type UserSubscriptionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserSubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "stripeInvoiceId" | "stripeSubscriptionId" | "userId" | "subscriptionId" | "messageLimit" | "messagesUsed" | "creditAllowance" | "creditsUsed" | "startsAt" | "endsAt" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["userSubscription"]>
+export type UserSubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"entitlementPolicy" | "id" | "stripeInvoiceId" | "stripeSubscriptionId" | "userId" | "subscriptionId" | "messageLimit" | "messagesUsed" | "creditAllowance" | "creditsUsed" | "startsAt" | "endsAt" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["userSubscription"]>
 export type UserSubscriptionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  allowanceUsage?: boolean | Prisma.UserSubscription$allowanceUsageArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   subscription?: boolean | Prisma.SubscriptionDefaultArgs<ExtArgs>
+  _count?: boolean | Prisma.UserSubscriptionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserSubscriptionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1020,10 +1208,12 @@ export type UserSubscriptionIncludeUpdateManyAndReturn<ExtArgs extends runtime.T
 export type $UserSubscriptionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "UserSubscription"
   objects: {
+    allowanceUsage: Prisma.$AllowanceUsagePayload<ExtArgs>[]
     user: Prisma.$UserPayload<ExtArgs>
     subscription: Prisma.$SubscriptionPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
+    entitlementPolicy: runtime.JsonValue
     id: string
     stripeInvoiceId: string | null
     stripeSubscriptionId: string | null
@@ -1121,8 +1311,8 @@ export interface UserSubscriptionDelegate<ExtArgs extends runtime.Types.Extensio
    * // Get first 10 UserSubscriptions
    * const userSubscriptions = await prisma.userSubscription.findMany({ take: 10 })
    * 
-   * // Only select the `id`
-   * const userSubscriptionWithIdOnly = await prisma.userSubscription.findMany({ select: { id: true } })
+   * // Only select the `entitlementPolicy`
+   * const userSubscriptionWithEntitlementPolicyOnly = await prisma.userSubscription.findMany({ select: { entitlementPolicy: true } })
    * 
    */
   findMany<T extends UserSubscriptionFindManyArgs>(args?: Prisma.SelectSubset<T, UserSubscriptionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -1166,9 +1356,9 @@ export interface UserSubscriptionDelegate<ExtArgs extends runtime.Types.Extensio
    *   ]
    * })
    * 
-   * // Create many UserSubscriptions and only return the `id`
-   * const userSubscriptionWithIdOnly = await prisma.userSubscription.createManyAndReturn({
-   *   select: { id: true },
+   * // Create many UserSubscriptions and only return the `entitlementPolicy`
+   * const userSubscriptionWithEntitlementPolicyOnly = await prisma.userSubscription.createManyAndReturn({
+   *   select: { entitlementPolicy: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -1257,9 +1447,9 @@ export interface UserSubscriptionDelegate<ExtArgs extends runtime.Types.Extensio
    *   ]
    * })
    * 
-   * // Update zero or more UserSubscriptions and only return the `id`
-   * const userSubscriptionWithIdOnly = await prisma.userSubscription.updateManyAndReturn({
-   *   select: { id: true },
+   * // Update zero or more UserSubscriptions and only return the `entitlementPolicy`
+   * const userSubscriptionWithEntitlementPolicyOnly = await prisma.userSubscription.updateManyAndReturn({
+   *   select: { entitlementPolicy: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1432,6 +1622,7 @@ readonly fields: UserSubscriptionFieldRefs;
  */
 export interface Prisma__UserSubscriptionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  allowanceUsage<T extends Prisma.UserSubscription$allowanceUsageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserSubscription$allowanceUsageArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AllowanceUsagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   subscription<T extends Prisma.SubscriptionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SubscriptionDefaultArgs<ExtArgs>>): Prisma.Prisma__SubscriptionClient<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1463,6 +1654,7 @@ export interface Prisma__UserSubscriptionClient<T, Null = never, ExtArgs extends
  * Fields of the UserSubscription model
  */
 export interface UserSubscriptionFieldRefs {
+  readonly entitlementPolicy: Prisma.FieldRef<"UserSubscription", 'Json'>
   readonly id: Prisma.FieldRef<"UserSubscription", 'String'>
   readonly stripeInvoiceId: Prisma.FieldRef<"UserSubscription", 'String'>
   readonly stripeSubscriptionId: Prisma.FieldRef<"UserSubscription", 'String'>
@@ -1875,6 +2067,30 @@ export type UserSubscriptionDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many UserSubscriptions to delete.
    */
   limit?: number
+}
+
+/**
+ * UserSubscription.allowanceUsage
+ */
+export type UserSubscription$allowanceUsageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AllowanceUsage
+   */
+  select?: Prisma.AllowanceUsageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AllowanceUsage
+   */
+  omit?: Prisma.AllowanceUsageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AllowanceUsageInclude<ExtArgs> | null
+  where?: Prisma.AllowanceUsageWhereInput
+  orderBy?: Prisma.AllowanceUsageOrderByWithRelationInput | Prisma.AllowanceUsageOrderByWithRelationInput[]
+  cursor?: Prisma.AllowanceUsageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AllowanceUsageScalarFieldEnum | Prisma.AllowanceUsageScalarFieldEnum[]
 }
 
 /**
