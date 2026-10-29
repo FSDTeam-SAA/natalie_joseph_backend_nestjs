@@ -1,3 +1,4 @@
+import { ApiExcludeController } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -35,6 +36,7 @@ class TelegramLoginDto extends TelegramSessionDto {
 
 @ApiTags('Telegram Mini App')
 @Controller('telegram/app')
+@ApiExcludeController()
 export class TelegramMiniAppController {
   constructor(private readonly app: TelegramMiniAppService) {}
 

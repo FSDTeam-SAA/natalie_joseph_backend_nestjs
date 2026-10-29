@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-29T02:55:33.854Z",
+  "generatedAt": "2026-10-29T08:18:03.743Z",
   "note": "Source inventory, not OpenAPI. Controller guards are shown; service validation still applies.",
   "routes": [
     {
@@ -9,6 +9,7 @@
       "handler": "register",
       "file": "src/app/module/auth/auth.controller.ts",
       "line": 39,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Body() createAuthDto: CreateAuthDto"
@@ -29,6 +30,7 @@
       "handler": "login",
       "file": "src/app/module/auth/auth.controller.ts",
       "line": 62,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Body() loginAuthDto: LoginAuthDto",
@@ -50,6 +52,7 @@
       "handler": "refreshToken",
       "file": "src/app/module/auth/auth.controller.ts",
       "line": 88,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Req() req: Request"
@@ -71,6 +74,7 @@
       "handler": "forgotPassword",
       "file": "src/app/module/auth/auth.controller.ts",
       "line": 112,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Body() forgotPasswordAuthDto: ForgotPasswordAuthDto"
@@ -91,6 +95,7 @@
       "handler": "verifyOtp",
       "file": "src/app/module/auth/auth.controller.ts",
       "line": 137,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Body() verifyOtpAuthDto: VerifyOtpAuthDto"
@@ -111,6 +116,7 @@
       "handler": "resetPassword",
       "file": "src/app/module/auth/auth.controller.ts",
       "line": 163,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Body() resetPasswordAuthDto: ResetPasswordAuthDto"
@@ -131,6 +137,7 @@
       "handler": "changePassword",
       "file": "src/app/module/auth/auth.controller.ts",
       "line": 190,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin', 'user'))"
       ],
@@ -156,6 +163,7 @@
       "handler": "logout",
       "file": "src/app/module/auth/auth.controller.ts",
       "line": 223,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin', 'user'))"
       ],
@@ -181,6 +189,7 @@
       "handler": "getConversations",
       "file": "src/app/module/chat/chat.controller.ts",
       "line": 28,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -201,6 +210,7 @@
       "handler": "getMessages",
       "file": "src/app/module/chat/chat.controller.ts",
       "line": 36,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -223,6 +233,7 @@
       "handler": "getUsage",
       "file": "src/app/module/chat/chat.controller.ts",
       "line": 55,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -244,6 +255,7 @@
       "handler": "sendMessage",
       "file": "src/app/module/chat/chat.controller.ts",
       "line": 65,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -268,6 +280,7 @@
       "handler": "createCompanion",
       "file": "src/app/module/companions/companions.controller.ts",
       "line": 38,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -291,6 +304,7 @@
       "handler": "getAllCompanions",
       "file": "src/app/module/companions/companions.controller.ts",
       "line": 49,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Req() request: Request"
@@ -319,6 +333,7 @@
       "handler": "getCompanionById",
       "file": "src/app/module/companions/companions.controller.ts",
       "line": 92,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Param('id') id: string"
@@ -337,6 +352,7 @@
       "handler": "updateCompanion",
       "file": "src/app/module/companions/companions.controller.ts",
       "line": 100,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -361,6 +377,7 @@
       "handler": "updateProfileImage",
       "file": "src/app/module/companions/companions.controller.ts",
       "line": 114,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -386,6 +403,7 @@
       "handler": "updateCoverImage",
       "file": "src/app/module/companions/companions.controller.ts",
       "line": 145,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -411,6 +429,7 @@
       "handler": "addGalleryImages",
       "file": "src/app/module/companions/companions.controller.ts",
       "line": 176,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -436,6 +455,7 @@
       "handler": "updateGalleryImages",
       "file": "src/app/module/companions/companions.controller.ts",
       "line": 213,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -461,6 +481,7 @@
       "handler": "deleteCompanion",
       "file": "src/app/module/companions/companions.controller.ts",
       "line": 250,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -482,6 +503,7 @@
       "handler": "updateVoice",
       "file": "src/app/module/companions/companions.controller.ts",
       "line": 258,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -505,6 +527,7 @@
       "handler": "createPackage",
       "file": "src/app/module/credit/credit.controller.ts",
       "line": 29,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -517,7 +540,7 @@
         "@UseGuards(AuthGuard('admin'))",
         "@ApiOperation({ summary: 'Create a credit package (admin)' })"
       ],
-      "handlerSource": "{\n    const data = await this.creditService.createPackage(payload);\n    return { message: 'Credit package created successfully', data };\n  }"
+      "handlerSource": "{\r\n    const data = await this.creditService.createPackage(payload);\r\n    return { message: 'Credit package created successfully', data };\r\n  }"
     },
     {
       "method": "GET",
@@ -526,13 +549,14 @@
       "handler": "getPackages",
       "file": "src/app/module/credit/credit.controller.ts",
       "line": 38,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [],
       "decorators": [
         "@Get('packages')",
         "@ApiOperation({ summary: 'Get active credit packages' })"
       ],
-      "handlerSource": "{\n    const data = await this.creditService.getActivePackages();\n    return { message: 'Credit packages fetched successfully', data };\n  }"
+      "handlerSource": "{\r\n    const data = await this.creditService.getActivePackages();\r\n    return { message: 'Credit packages fetched successfully', data };\r\n  }"
     },
     {
       "method": "PATCH",
@@ -541,6 +565,7 @@
       "handler": "updatePackage",
       "file": "src/app/module/credit/credit.controller.ts",
       "line": 45,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -554,7 +579,7 @@
         "@UseGuards(AuthGuard('admin'))",
         "@ApiOperation({ summary: 'Update a credit package (admin)' })"
       ],
-      "handlerSource": "{\n    const data = await this.creditService.updatePackage(id, payload);\n    return { message: 'Credit package updated successfully', data };\n  }"
+      "handlerSource": "{\r\n    const data = await this.creditService.updatePackage(id, payload);\r\n    return { message: 'Credit package updated successfully', data };\r\n  }"
     },
     {
       "method": "DELETE",
@@ -563,6 +588,7 @@
       "handler": "deactivatePackage",
       "file": "src/app/module/credit/credit.controller.ts",
       "line": 57,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -575,7 +601,7 @@
         "@UseGuards(AuthGuard('admin'))",
         "@ApiOperation({ summary: 'Deactivate a credit package (admin)' })"
       ],
-      "handlerSource": "{\n    const data = await this.creditService.deactivatePackage(id);\n    return { message: 'Credit package deactivated successfully', data };\n  }"
+      "handlerSource": "{\r\n    const data = await this.creditService.deactivatePackage(id);\r\n    return { message: 'Credit package deactivated successfully', data };\r\n  }"
     },
     {
       "method": "GET",
@@ -584,6 +610,7 @@
       "handler": "getWallet",
       "file": "src/app/module/credit/credit.controller.ts",
       "line": 66,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -596,7 +623,7 @@
         "@UseGuards(AuthGuard('user'))",
         "@ApiOperation({ summary: 'Get wallet balance and recent transactions' })"
       ],
-      "handlerSource": "{\n    if (!request.user) throw new UnauthorizedException();\n    const data = await this.creditService.getWallet(request.user.id);\n    return { message: 'Wallet fetched successfully', data };\n  }"
+      "handlerSource": "{\r\n    if (!request.user) throw new UnauthorizedException();\r\n    const data = await this.creditService.getWallet(request.user.id);\r\n    return { message: 'Wallet fetched successfully', data };\r\n  }"
     },
     {
       "method": "GET",
@@ -605,6 +632,7 @@
       "handler": "dashboardOverview",
       "file": "src/app/module/dashboard/dashboard.controller.ts",
       "line": 17,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -625,6 +653,7 @@
       "handler": "relationships",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 39,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -644,6 +673,7 @@
       "handler": "relationship",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 45,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -664,6 +694,7 @@
       "handler": "stories",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 54,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -683,6 +714,7 @@
       "handler": "photo",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 60,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -703,6 +735,7 @@
       "handler": "photos",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 69,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -722,6 +755,7 @@
       "handler": "ledger",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 75,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -741,6 +775,7 @@
       "handler": "costs",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 81,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -757,6 +792,7 @@
       "handler": "notifications",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 84,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -776,6 +812,7 @@
       "handler": "read",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 90,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -795,6 +832,7 @@
       "handler": "cost",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 107,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -814,6 +852,7 @@
       "handler": "story",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 113,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -833,6 +872,7 @@
       "handler": "stories",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 119,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -852,6 +892,7 @@
       "handler": "conversations",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 125,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -870,6 +911,7 @@
       "handler": "conversation",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 128,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -889,6 +931,7 @@
       "handler": "mode",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 134,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -909,6 +952,7 @@
       "handler": "reply",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 141,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -929,6 +973,7 @@
       "handler": "user",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 148,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -947,6 +992,7 @@
       "handler": "ledger",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 151,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -966,6 +1012,7 @@
       "handler": "notification",
       "file": "src/app/module/engagement/engagement.controller.ts",
       "line": 157,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -984,6 +1031,7 @@
       "handler": "createGift",
       "file": "src/app/module/gift/gift.controller.ts",
       "line": 37,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1008,6 +1056,7 @@
       "handler": "getGifts",
       "file": "src/app/module/gift/gift.controller.ts",
       "line": 51,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Req() req: Request"
@@ -1032,6 +1081,7 @@
       "handler": "updateGift",
       "file": "src/app/module/gift/gift.controller.ts",
       "line": 71,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1054,6 +1104,7 @@
       "handler": "deactivateGift",
       "file": "src/app/module/gift/gift.controller.ts",
       "line": 80,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1075,6 +1126,7 @@
       "handler": "sendGift",
       "file": "src/app/module/gift/gift.controller.ts",
       "line": 89,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -1098,6 +1150,7 @@
       "handler": "routine",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 48,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1116,6 +1169,7 @@
       "handler": "saveRoutine",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 53,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1135,6 +1189,7 @@
       "handler": "context",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 59,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1153,6 +1208,7 @@
       "handler": "photos",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 65,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1172,6 +1228,7 @@
       "handler": "upload",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 71,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1195,6 +1252,7 @@
       "handler": "approve",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 92,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1215,6 +1273,7 @@
       "handler": "daily",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 99,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1234,6 +1293,7 @@
       "handler": "save",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 105,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1253,6 +1313,7 @@
       "handler": "unpublish",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 111,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1272,6 +1333,7 @@
       "handler": "deliveries",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 117,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1291,6 +1353,7 @@
       "handler": "preference",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 140,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -1309,6 +1372,7 @@
       "handler": "save",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 143,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -1328,6 +1392,7 @@
       "handler": "allowances",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 149,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -1346,6 +1411,7 @@
       "handler": "photo",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 152,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -1366,6 +1432,7 @@
       "handler": "inbox",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
       "line": 159,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -1385,6 +1452,7 @@
       "handler": "sendMail",
       "file": "src/app/module/newsletter/newsletter.controller.ts",
       "line": 30,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Body() createNewsletterDto: CreateNewsletterDto"
@@ -1403,6 +1471,7 @@
       "handler": "broadcastNewsletter",
       "file": "src/app/module/newsletter/newsletter.controller.ts",
       "line": 41,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1425,6 +1494,7 @@
       "handler": "getAllNewsletter",
       "file": "src/app/module/newsletter/newsletter.controller.ts",
       "line": 55,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Req() req: Request"
@@ -1449,6 +1519,7 @@
       "handler": "getNewsletterById",
       "file": "src/app/module/newsletter/newsletter.controller.ts",
       "line": 109,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Param('id') id: string"
@@ -1467,6 +1538,7 @@
       "handler": "status",
       "file": "src/app/module/payment/payment.controller.ts",
       "line": 28,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -1487,6 +1559,7 @@
       "handler": "sync",
       "file": "src/app/module/payment/payment.controller.ts",
       "line": 35,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -1508,6 +1581,7 @@
       "handler": "portal",
       "file": "src/app/module/payment/payment.controller.ts",
       "line": 46,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -1528,6 +1602,7 @@
       "handler": "cancel",
       "file": "src/app/module/payment/payment.controller.ts",
       "line": 53,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -1548,6 +1623,7 @@
       "handler": "upgrade",
       "file": "src/app/module/payment/payment.controller.ts",
       "line": 60,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -1569,6 +1645,7 @@
       "handler": "paySubscriber",
       "file": "src/app/module/payment/payment.controller.ts",
       "line": 67,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin', 'user'))"
       ],
@@ -1592,6 +1669,7 @@
       "handler": "buyCredits",
       "file": "src/app/module/payment/payment.controller.ts",
       "line": 91,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -1614,7 +1692,8 @@
       "controller": "PublishingAdminController",
       "handler": "status",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 49,
+      "line": 50,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1632,7 +1711,8 @@
       "controller": "PublishingAdminController",
       "handler": "profile",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 54,
+      "line": 55,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1651,7 +1731,8 @@
       "controller": "PublishingAdminController",
       "handler": "retry",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 62,
+      "line": 63,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1669,7 +1750,8 @@
       "controller": "PublishingAdminController",
       "handler": "list",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 66,
+      "line": 67,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1687,7 +1769,8 @@
       "controller": "PublishingAdminController",
       "handler": "publish",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 70,
+      "line": 71,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1710,7 +1793,8 @@
       "controller": "PublishingAdminController",
       "handler": "remove",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 95,
+      "line": 96,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1729,7 +1813,8 @@
       "controller": "MediaStoryController",
       "handler": "summary",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 110,
+      "line": 111,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -1748,7 +1833,8 @@
       "controller": "MediaStoryController",
       "handler": "feed",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 115,
+      "line": 116,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -1768,7 +1854,8 @@
       "controller": "StoryMediaController",
       "handler": "media",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 129,
+      "line": 130,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Param('storyId', ParseUUIDPipe) id: string",
@@ -1788,7 +1875,8 @@
       "controller": "TelegramStoryController",
       "handler": "page",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 185,
+      "line": 187,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [
         "@Res() res: Response"
@@ -1805,7 +1893,8 @@
       "controller": "TelegramStoryController",
       "handler": "feed",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 199,
+      "line": 201,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [
         "@Param('companionId', ParseUUIDPipe) id: string",
@@ -1823,7 +1912,8 @@
       "controller": "PublishingConsoleController",
       "handler": "page",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 217,
+      "line": 220,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [
         "@Res() res: Response"
@@ -1841,6 +1931,7 @@
       "handler": "createSubscription",
       "file": "src/app/module/subscription/subscription.controller.ts",
       "line": 26,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1862,6 +1953,7 @@
       "handler": "getAllSubscription",
       "file": "src/app/module/subscription/subscription.controller.ts",
       "line": 42,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Req() req: Request"
@@ -1889,6 +1981,7 @@
       "handler": "getSubscriptionById",
       "file": "src/app/module/subscription/subscription.controller.ts",
       "line": 110,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Param('id') id: string"
@@ -1907,6 +2000,7 @@
       "handler": "updateSubscription",
       "file": "src/app/module/subscription/subscription.controller.ts",
       "line": 121,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1929,6 +2023,7 @@
       "handler": "deleteSubscription",
       "file": "src/app/module/subscription/subscription.controller.ts",
       "line": 139,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -1950,6 +2045,7 @@
       "handler": "status",
       "file": "src/app/module/telegram/telegram-connect.controller.ts",
       "line": 28,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -1971,6 +2067,7 @@
       "handler": "connect",
       "file": "src/app/module/telegram/telegram-connect.controller.ts",
       "line": 42,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -1992,7 +2089,8 @@
       "controller": "TelegramMiniAppController",
       "handler": "page",
       "file": "src/app/module/telegram/telegram-mini-app.controller.ts",
-      "line": 41,
+      "line": 43,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [
         "@Res() response: Response"
@@ -2009,7 +2107,8 @@
       "controller": "TelegramMiniAppController",
       "handler": "settings",
       "file": "src/app/module/telegram/telegram-mini-app.controller.ts",
-      "line": 56,
+      "line": 58,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [
         "@Param('companionId', ParseUUIDPipe) companionId: string"
@@ -2026,7 +2125,8 @@
       "controller": "TelegramMiniAppController",
       "handler": "login",
       "file": "src/app/module/telegram/telegram-mini-app.controller.ts",
-      "line": 62,
+      "line": 64,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [
         "@Param('companionId', ParseUUIDPipe) id: string",
@@ -2045,7 +2145,8 @@
       "controller": "TelegramMiniAppController",
       "handler": "status",
       "file": "src/app/module/telegram/telegram-mini-app.controller.ts",
-      "line": 80,
+      "line": 82,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [
         "@Param('companionId', ParseUUIDPipe) id: string",
@@ -2064,7 +2165,8 @@
       "controller": "TelegramWebhookController",
       "handler": "receiveForCompanion",
       "file": "src/app/module/telegram/telegram-webhook.controller.ts",
-      "line": 22,
+      "line": 24,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [
         "@Param('companionId', ParseUUIDPipe) companionId: string",
@@ -2083,7 +2185,8 @@
       "controller": "TelegramWebhookController",
       "handler": "receive",
       "file": "src/app/module/telegram/telegram-webhook.controller.ts",
-      "line": 35,
+      "line": 37,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [
         "@Body() body: unknown",
@@ -2102,6 +2205,7 @@
       "handler": "createUser",
       "file": "src/app/module/user/user.controller.ts",
       "line": 38,
+      "swaggerVisible": true,
       "guards": [],
       "parameters": [
         "@Body() createUserDto: CreateUserDto"
@@ -2120,6 +2224,7 @@
       "handler": "getAllUser",
       "file": "src/app/module/user/user.controller.ts",
       "line": 52,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -2133,6 +2238,8 @@
         "@ApiQuery({\r\n    name: 'role',\r\n    type: String,\r\n    required: false,\r\n    description: 'role',\r\n  })",
         "@ApiQuery({\r\n    name: 'email',\r\n    type: String,\r\n    required: false,\r\n    description: 'email',\r\n  })",
         "@ApiQuery({\r\n    name: 'name',\r\n    type: String,\r\n    required: false,\r\n    description: 'name',\r\n  })",
+        "@ApiQuery({\r\n    name: 'phoneNumber',\r\n    type: String,\r\n    required: false,\r\n    description: 'phoneNumber',\r\n  })",
+        "@ApiQuery({\r\n    name: 'status',\r\n    type: String,\r\n    required: false,\r\n    description: 'status',\r\n  })",
         "@ApiQuery({\r\n    name: 'page',\r\n    type: Number,\r\n    required: false,\r\n    description: 'page number',\r\n  })",
         "@ApiQuery({\r\n    name: 'limit',\r\n    type: Number,\r\n    required: false,\r\n    description: 'limit number',\r\n  })",
         "@ApiQuery({\r\n    name: 'sortBy',\r\n    type: String,\r\n    required: false,\r\n    description: 'sort by',\r\n  })",
@@ -2141,7 +2248,28 @@
         "@UseGuards(AuthGuard('admin'))",
         "@HttpCode(HttpStatus.OK)"
       ],
-      "handlerSource": "{\r\n    const filters = pick(req.query, ['searchTerm', 'role', 'email', 'name']);\r\n    const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);\r\n    const result = await this.userService.getAllUser(filters, options);\r\n\r\n    return {\r\n      message: 'get all user successfully',\r\n      meta: result.meta,\r\n      data: result.data,\r\n    };\r\n  }"
+      "handlerSource": "{\r\n    const filters = pick(req.query, [\r\n      'searchTerm',\r\n      'role',\r\n      'email',\r\n      'name',\r\n      'phoneNumber',\r\n      'status',\r\n    ]);\r\n    const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);\r\n    const result = await this.userService.getAllUser(filters, options);\r\n\r\n    return {\r\n      message: 'get all user successfully',\r\n      meta: result.meta,\r\n      data: result.data,\r\n    };\r\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/user//overview",
+      "controller": "UserController",
+      "handler": "getAllUserOverview",
+      "file": "src/app/module/user/user.controller.ts",
+      "line": 138,
+      "swaggerVisible": true,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [],
+      "decorators": [
+        "@Get('/overview')",
+        "@ApiOperation({ summary: 'User overview' })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const result = await this.userService.getAllUserOverview();\r\n    return {\r\n      message: 'get all user overview successfully',\r\n      data: result,\r\n    };\r\n  }"
     },
     {
       "method": "GET",
@@ -2149,7 +2277,8 @@
       "controller": "UserController",
       "handler": "myProfile",
       "file": "src/app/module/user/user.controller.ts",
-      "line": 119,
+      "line": 151,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -2171,7 +2300,8 @@
       "controller": "UserController",
       "handler": "UpdateMyProfile",
       "file": "src/app/module/user/user.controller.ts",
-      "line": 136,
+      "line": 168,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
@@ -2198,7 +2328,8 @@
       "controller": "UserController",
       "handler": "getUserById",
       "file": "src/app/module/user/user.controller.ts",
-      "line": 164,
+      "line": 196,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -2220,7 +2351,8 @@
       "controller": "UserController",
       "handler": "updateUser",
       "file": "src/app/module/user/user.controller.ts",
-      "line": 180,
+      "line": 212,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -2245,7 +2377,8 @@
       "controller": "UserController",
       "handler": "deleteUser",
       "file": "src/app/module/user/user.controller.ts",
-      "line": 201,
+      "line": 233,
+      "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -2267,7 +2400,8 @@
       "controller": "WebhookController",
       "handler": "handleWebhook",
       "file": "src/app/module/webhook/webhook.controller.ts",
-      "line": 12,
+      "line": 14,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [
         "@Req() req: RawBodyRequest<Request>",
@@ -2281,70 +2415,13 @@
       "handlerSource": "{\r\n    return this.webhookService.handleWebhook(req.rawBody, signature);\r\n  }"
     },
     {
-      "method": "POST",
-      "path": "/api/v1/whatsapp/connect/:companionId",
-      "controller": "WhatsAppConnectController",
-      "handler": "connect",
-      "file": "src/app/module/whatsapp/whatsapp-connect.controller.ts",
-      "line": 21,
-      "guards": [
-        "UseGuards(AuthGuard('user'))"
-      ],
-      "parameters": [
-        "@Req() request: Request",
-        "@Param('companionId', ParseUUIDPipe) companionId: string"
-      ],
-      "decorators": [
-        "@Post('connect/:companionId')"
-      ],
-      "handlerSource": "{\r\n    return { data: await this.ai.connect(request.user!.id, companionId) };\r\n  }"
-    },
-    {
-      "method": "GET",
-      "path": "/api/v1/webhooks/whatsapp",
-      "controller": "WhatsAppWebhookController",
-      "handler": "verifyWebhook",
-      "file": "src/app/module/whatsapp/whatsapp-webhook.controller.ts",
-      "line": 30,
-      "guards": [],
-      "parameters": [
-        "@Query('hub.mode') mode: string",
-        "@Query('hub.verify_token') token: string",
-        "@Query('hub.challenge') challenge: string"
-      ],
-      "decorators": [
-        "@Get()",
-        "@Header('Content-Type', 'text/plain')"
-      ],
-      "handlerSource": "{\r\n    const expectedToken = this.configService.get<string>(\r\n      'WHATSAPP_VERIFY_TOKEN',\r\n    );\r\n    if (\r\n      mode !== 'subscribe' ||\r\n      !expectedToken ||\r\n      token !== expectedToken ||\r\n      typeof challenge !== 'string' ||\r\n      !challenge\r\n    ) {\r\n      throw new ForbiddenException('Invalid webhook verification');\r\n    }\r\n\r\n    return challenge;\r\n  }"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/webhooks/whatsapp",
-      "controller": "WhatsAppWebhookController",
-      "handler": "receiveWebhook",
-      "file": "src/app/module/whatsapp/whatsapp-webhook.controller.ts",
-      "line": 53,
-      "guards": [],
-      "parameters": [
-        "@Body() body: Parameters<WhatsAppInboundService['receive']>[0]",
-        "@Req() req: RawBodyRequest<Request>",
-        "@Headers('x-hub-signature-256') signature?: string"
-      ],
-      "decorators": [
-        "@Post()",
-        "@HttpCode(200)",
-        "@Header('Content-Type', 'text/plain')"
-      ],
-      "handlerSource": "{\r\n    this.inbound.verifySignature(req.rawBody, signature);\r\n    this.logger.log('Verified WhatsApp webhook received');\r\n    await this.inbound.receive(body);\r\n    return 'EVENT_RECEIVED';\r\n  }"
-    },
-    {
       "method": "GET",
       "path": "/",
       "controller": "AppController",
       "handler": "getHello",
       "file": "src/app.controller.ts",
-      "line": 9,
+      "line": 11,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [
         "@Res() res: Response"
@@ -2360,7 +2437,8 @@
       "controller": "HealthController",
       "handler": "live",
       "file": "src/health.controller.ts",
-      "line": 12,
+      "line": 14,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [],
       "decorators": [
@@ -2374,7 +2452,8 @@
       "controller": "HealthController",
       "handler": "ready",
       "file": "src/health.controller.ts",
-      "line": 15,
+      "line": 17,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [],
       "decorators": [
@@ -2388,14 +2467,15 @@
       "controller": "LegalPagesController",
       "handler": "privacyPolicy",
       "file": "src/legal-pages.controller.ts",
-      "line": 38,
+      "line": 40,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [],
       "decorators": [
         "@Get('privacy-policy')",
         "@Header('Content-Type', 'text/html; charset=utf-8')"
       ],
-      "handlerSource": "{\r\n    return page(\r\n      'Privacy Policy',\r\n      `\r\n      <p>This policy describes information processed by Meet Elysia through its website, accounts, AI companion features and WhatsApp integration.</p>\r\n      <h2>Information we process</h2>\r\n      <ul>\r\n        <li>Account information such as your email, name, password hash, optional phone number and profile image.</li>\r\n        <li>Messages you send, generated responses, conversation identifiers, selected companions and interaction history.</li>\r\n        <li>For WhatsApp, your sender number, message identifiers, message content and account-linking information received through Meta.</li>\r\n        <li>Subscription status, payment records, payment-provider identifiers, credits and purchases.</li>\r\n        <li>Operational information used to investigate errors, secure accounts and process message delivery.</li>\r\n      </ul>\r\n      <h2>How information is used</h2>\r\n      <p>We use this information to authenticate accounts, link WhatsApp conversations to users and companions, generate and deliver replies, manage subscriptions and credits, provide support and troubleshoot the service. Authorized administrators can access conversations for support and human takeover.</p>\r\n      <h2>Service providers</h2>\r\n      <p>Operating the service involves providers for hosting and database storage, AI processing, email, media storage and payments. Relevant message content and conversation context are sent to the configured AI service when AI replies are enabled. Meta processes WhatsApp messages; Stripe handles payment processing; uploaded profile media may be stored through Cloudinary. These providers process information under their own applicable terms and privacy policies.</p>\r\n      <h2>Storage and retention</h2>\r\n      <p>Account, conversation and transaction information is stored to operate the service. Retention varies by record type and provider; there is no single automatic deletion period for all records. Contact us to request deletion or ask about a particular record. Some records may need to be retained for applicable obligations, dispute resolution or security, and provider backups may follow separate retention schedules.</p>\r\n      <h2>Your choices and requests</h2>\r\n      <p>You may stop messaging the service and contact ${contactLink} to request access, correction or deletion of your information. Follow our <a href=\"/data-deletion\">data deletion instructions</a> to identify the account or WhatsApp data involved. Deleting a chat in WhatsApp does not itself delete records held by Meet Elysia.</p>\r\n      <h2>Security and updates</h2>\r\n      <p>Account passwords are stored as hashes. No online system can guarantee absolute security; do not send passwords, payment card details or other unnecessary sensitive information in companion chats. Updates to this policy will be reflected on this page.</p>\r\n    `,\r\n    );\r\n  }"
+      "handlerSource": "{\r\n    return page(\r\n      'Privacy Policy',\r\n      `\r\n      <p>This policy describes information processed by Meet Elysia through its website, accounts, AI companion features and Telegram integration.</p>\r\n      <h2>Information we process</h2>\r\n      <ul>\r\n        <li>Account information such as your email, name, password hash, optional phone number and profile image.</li>\r\n        <li>Messages you send, generated responses, conversation identifiers, selected companions and interaction history.</li>\r\n        <li>For Telegram, your Telegram user/chat identifiers, message identifiers, message content and account-linking information received through Telegram.</li>\r\n        <li>Subscription status, payment records, payment-provider identifiers, credits and purchases.</li>\r\n        <li>Operational information used to investigate errors, secure accounts and process message delivery.</li>\r\n      </ul>\r\n      <h2>How information is used</h2>\r\n      <p>We use this information to authenticate accounts, link Telegram conversations to users and companions, generate and deliver replies, manage subscriptions and credits, provide support and troubleshoot the service. Authorized administrators can access conversations for support and human takeover.</p>\r\n      <h2>Service providers</h2>\r\n      <p>Operating the service involves providers for hosting and database storage, AI processing, email, media storage and payments. Relevant message content and conversation context are sent to the configured AI service when AI replies are enabled. Telegram processes Telegram messages; Stripe handles payment processing; uploaded profile media may be stored through Cloudinary. These providers process information under their own applicable terms and privacy policies.</p>\r\n      <h2>Storage and retention</h2>\r\n      <p>Account, conversation and transaction information is stored to operate the service. Retention varies by record type and provider; there is no single automatic deletion period for all records. Contact us to request deletion or ask about a particular record. Some records may need to be retained for applicable obligations, dispute resolution or security, and provider backups may follow separate retention schedules.</p>\r\n      <h2>Your choices and requests</h2>\r\n      <p>You may stop messaging the service and contact ${contactLink} to request access, correction or deletion of your information. Follow our <a href=\"/data-deletion\">data deletion instructions</a> to identify the account or Telegram data involved. Deleting a chat in Telegram does not itself delete records held by Meet Elysia.</p>\r\n      <h2>Security and updates</h2>\r\n      <p>Account passwords are stored as hashes. No online system can guarantee absolute security; do not send passwords, payment card details or other unnecessary sensitive information in companion chats. Updates to this policy will be reflected on this page.</p>\r\n    `,\r\n    );\r\n  }"
     },
     {
       "method": "GET",
@@ -2403,14 +2483,15 @@
       "controller": "LegalPagesController",
       "handler": "terms",
       "file": "src/legal-pages.controller.ts",
-      "line": 67,
+      "line": 69,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [],
       "decorators": [
         "@Get('terms')",
         "@Header('Content-Type', 'text/html; charset=utf-8')"
       ],
-      "handlerSource": "{\r\n    return page(\r\n      'Terms of Service',\r\n      `\r\n      <p>These terms describe use of Meet Elysia's account, companion chat and WhatsApp features. By using the service, you agree to these terms.</p>\r\n      <h2>Accounts and responsible use</h2>\r\n      <p>Provide accurate account information, use only accounts and phone numbers you are authorized to use, and keep your credentials secure. Do not use the service for unlawful activity, harassment, fraud, unauthorized access or interference with other users or systems.</p>\r\n      <h2>Companion conversations</h2>\r\n      <p>Companions are AI-powered characters. Generated responses may be inaccurate or inappropriate and should not be relied on as professional advice or emergency assistance. Authorized administrators may participate through human takeover. Availability and response times can vary.</p>\r\n      <h2>Subscriptions and credits</h2>\r\n      <p>Some features require a subscription or credits. Review the price, renewal terms and purchase details shown at checkout before paying. Contact ${contactLink} for billing, cancellation or refund questions; applicable consumer rights remain unaffected.</p>\r\n      <h2>Your content and privacy</h2>\r\n      <p>Only submit content you have permission to share. You allow the service and its providers to process that content as needed to deliver the requested features. See our <a href=\"/privacy-policy\">Privacy Policy</a> for data handling and our <a href=\"/data-deletion\">Data Deletion</a> page for removal requests.</p>\r\n      <h2>Third-party services and access</h2>\r\n      <p>WhatsApp, payment services and other integrated providers have their own terms. Features may change or become unavailable. Access may be restricted to address abuse, security issues or violations of these terms.</p>\r\n      <h2>Contact and changes</h2>\r\n      <p>Questions or requests to close an account can be sent to ${contactLink}. Revised terms will be posted here with an updated date.</p>\r\n    `,\r\n    );\r\n  }"
+      "handlerSource": "{\r\n    return page(\r\n      'Terms of Service',\r\n      `\r\n      <p>These terms describe use of Meet Elysia's account, companion chat and Telegram features. By using the service, you agree to these terms.</p>\r\n      <h2>Accounts and responsible use</h2>\r\n      <p>Provide accurate account information, use only accounts and phone numbers you are authorized to use, and keep your credentials secure. Do not use the service for unlawful activity, harassment, fraud, unauthorized access or interference with other users or systems.</p>\r\n      <h2>Companion conversations</h2>\r\n      <p>Companions are AI-powered characters. Generated responses may be inaccurate or inappropriate and should not be relied on as professional advice or emergency assistance. Authorized administrators may participate through human takeover. Availability and response times can vary.</p>\r\n      <h2>Subscriptions and credits</h2>\r\n      <p>Some features require a subscription or credits. Review the price, renewal terms and purchase details shown at checkout before paying. Contact ${contactLink} for billing, cancellation or refund questions; applicable consumer rights remain unaffected.</p>\r\n      <h2>Your content and privacy</h2>\r\n      <p>Only submit content you have permission to share. You allow the service and its providers to process that content as needed to deliver the requested features. See our <a href=\"/privacy-policy\">Privacy Policy</a> for data handling and our <a href=\"/data-deletion\">Data Deletion</a> page for removal requests.</p>\r\n      <h2>Third-party services and access</h2>\r\n      <p>Telegram, payment services and other integrated providers have their own terms. Features may change or become unavailable. Access may be restricted to address abuse, security issues or violations of these terms.</p>\r\n      <h2>Contact and changes</h2>\r\n      <p>Questions or requests to close an account can be sent to ${contactLink}. Revised terms will be posted here with an updated date.</p>\r\n    `,\r\n    );\r\n  }"
     },
     {
       "method": "GET",
@@ -2418,14 +2499,15 @@
       "controller": "LegalPagesController",
       "handler": "dataDeletion",
       "file": "src/legal-pages.controller.ts",
-      "line": 90,
+      "line": 92,
+      "swaggerVisible": false,
       "guards": [],
       "parameters": [],
       "decorators": [
         "@Get('data-deletion')",
         "@Header('Content-Type', 'text/html; charset=utf-8')"
       ],
-      "handlerSource": "{\r\n    return page(\r\n      'Data Deletion Instructions',\r\n      `\r\n      <p>You can request deletion of your Meet Elysia account or data associated with its WhatsApp integration by email.</p>\r\n      <h2>Submit a request</h2>\r\n      <ol>\r\n        <li>Email ${contactLink} with the subject <strong>Meet Elysia Data Deletion Request</strong>.</li>\r\n        <li>Send from your registered email where possible. Include the account email and, for WhatsApp data, your phone number with country code.</li>\r\n        <li>Specify whether you want the entire account deleted or only particular data, such as WhatsApp linking information or conversation history.</li>\r\n      </ol>\r\n      <p>Do not include passwords, one-time codes, access tokens or payment card details.</p>\r\n      <h2>What happens next</h2>\r\n      <p>The support team handles requests manually and may ask for information needed to verify account ownership before processing deletion. Ask in the same email for confirmation of completion and the status of any retained records.</p>\r\n      <h2>Scope and limitations</h2>\r\n      <p>A request can cover your profile, stored conversations and WhatsApp account links. Records subject to applicable retention obligations or needed for disputes or security may require separate handling. Copies held in provider backups may follow their retention schedules.</p>\r\n      <p>Deleting Meet Elysia data does not delete your Facebook or WhatsApp account or copies held by Meta or message recipients. Deleting a WhatsApp chat alone does not submit a deletion request to Meet Elysia. If you have an active subscription, include a cancellation request so support can address billing separately.</p>\r\n      <p>Read our <a href=\"/privacy-policy\">Privacy Policy</a> for an overview of the information processed by the service.</p>\r\n    `,\r\n    );\r\n  }"
+      "handlerSource": "{\r\n    return page(\r\n      'Data Deletion Instructions',\r\n      `\r\n      <p>You can request deletion of your Meet Elysia account or data associated with its Telegram integration by email.</p>\r\n      <h2>Submit a request</h2>\r\n      <ol>\r\n        <li>Email ${contactLink} with the subject <strong>Meet Elysia Data Deletion Request</strong>.</li>\r\n        <li>Send from your registered email where possible. Include the account email and, for Telegram data, your Telegram username or user ID.</li>\r\n        <li>Specify whether you want the entire account deleted or only particular data, such as Telegram linking information or conversation history.</li>\r\n      </ol>\r\n      <p>Do not include passwords, one-time codes, access tokens or payment card details.</p>\r\n      <h2>What happens next</h2>\r\n      <p>The support team handles requests manually and may ask for information needed to verify account ownership before processing deletion. Ask in the same email for confirmation of completion and the status of any retained records.</p>\r\n      <h2>Scope and limitations</h2>\r\n      <p>A request can cover your profile, stored conversations and Telegram account links. Records subject to applicable retention obligations or needed for disputes or security may require separate handling. Copies held in provider backups may follow their retention schedules.</p>\r\n      <p>Deleting Meet Elysia data does not delete your Telegram account or copies held by Telegram or message recipients. Deleting a Telegram chat alone does not submit a deletion request to Meet Elysia. If you have an active subscription, include a cancellation request so support can address billing separately.</p>\r\n      <p>Read our <a href=\"/privacy-policy\">Privacy Policy</a> for an overview of the information processed by the service.</p>\r\n    `,\r\n    );\r\n  }"
     }
   ],
   "dtos": [
@@ -2502,7 +2584,7 @@
     {
       "name": "CreateCompanionDto",
       "file": "src/app/module/companions/dto/create-companion.dto.ts",
-      "source": "export class CreateCompanionDto {\r\n  @ApiPropertyOptional({ example: '+15551234567', nullable: true })\r\n  @IsOptional()\r\n  @Matches(/^\\+[1-9]\\d{6,14}$/)\r\n  whatsappPhoneNumber?: string | null;\r\n\r\n  @ApiPropertyOptional({ example: '123456789012345', nullable: true })\r\n  @IsOptional()\r\n  @Matches(/^\\d+$/)\r\n  whatsappPhoneNumberId?: string | null;\r\n\r\n  @ApiPropertyOptional({ example: 'Elena - AI Companion', nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  @MaxLength(200)\r\n  whatsappDisplayName?: string | null;\r\n\r\n  @ApiPropertyOptional({ default: false })\r\n  @ValidateIf((_object, value) => value !== undefined)\r\n  @Transform(toBoolean)\r\n  @IsBoolean()\r\n  whatsappEnabled?: boolean;\r\n\r\n  @ApiPropertyOptional({ nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  @MaxLength(4096)\r\n  whatsappWelcomeMessage?: string | null;\r\n\r\n  @ApiProperty({})\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  name!: string;\r\n\r\n  @ApiPropertyOptional({})\r\n  @ValidateIf((_object, value) => value !== undefined)\r\n  @Transform(toNumber)\r\n  @IsInt()\r\n  @Min(1)\r\n  version?: number;\r\n\r\n  @ApiProperty({})\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  title!: string;\r\n\r\n  @ApiPropertyOptional({ type: Number, nullable: true })\r\n  @IsOptional()\r\n  @Transform(toNumber)\r\n  @IsInt()\r\n  @Min(18)\r\n  age?: number | null;\r\n\r\n  @ApiPropertyOptional({ type: String, nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  backstory?: string | null;\r\n\r\n  @ApiProperty({ type: [String] })\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  voiceDescription!: string[];\r\n\r\n  @ApiPropertyOptional({ type: String, nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  profileImage?: string | null;\r\n\r\n  @ApiPropertyOptional({ type: String, nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  coverImage?: string | null;\r\n\r\n  @ApiPropertyOptional({ type: [String] })\r\n  @ValidateIf((_object, value) => value !== undefined)\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  galleryImages?: string[];\r\n\r\n  @ApiPropertyOptional({})\r\n  @ValidateIf((_object, value) => value !== undefined)\r\n  @Transform(toBoolean)\r\n  @IsBoolean()\r\n  status?: boolean;\r\n\r\n  @ApiProperty({ type: [String] })\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  interests!: string[];\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionPersonalityDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionPersonalityDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  personality?: CompanionPersonalityDto;\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionCommunicationStyleDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionCommunicationStyleDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  communicationStyle?: CompanionCommunicationStyleDto;\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionBackgroundDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionBackgroundDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  background?: CompanionBackgroundDto;\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionVisualProfileDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionVisualProfileDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  visualProfile?: CompanionVisualProfileDto;\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionVoiceDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionVoiceDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  voice?: CompanionVoiceDto;\r\n}"
+      "source": "export class CreateCompanionDto {\r\n  @ApiProperty({})\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  name!: string;\r\n\r\n  @ApiPropertyOptional({})\r\n  @ValidateIf((_object, value) => value !== undefined)\r\n  @Transform(toNumber)\r\n  @IsInt()\r\n  @Min(1)\r\n  version?: number;\r\n\r\n  @ApiProperty({})\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  title!: string;\r\n\r\n  @ApiPropertyOptional({ type: Number, nullable: true })\r\n  @IsOptional()\r\n  @Transform(toNumber)\r\n  @IsInt()\r\n  @Min(18)\r\n  age?: number | null;\r\n\r\n  @ApiPropertyOptional({ type: String, nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  backstory?: string | null;\r\n\r\n  @ApiProperty({ type: [String] })\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  voiceDescription!: string[];\r\n\r\n  @ApiPropertyOptional({ type: String, nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  profileImage?: string | null;\r\n\r\n  @ApiPropertyOptional({ type: String, nullable: true })\r\n  @IsOptional()\r\n  @IsString()\r\n  coverImage?: string | null;\r\n\r\n  @ApiPropertyOptional({ type: [String] })\r\n  @ValidateIf((_object, value) => value !== undefined)\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  galleryImages?: string[];\r\n\r\n  @ApiPropertyOptional({})\r\n  @ValidateIf((_object, value) => value !== undefined)\r\n  @Transform(toBoolean)\r\n  @IsBoolean()\r\n  status?: boolean;\r\n\r\n  @ApiProperty({ type: [String] })\r\n  @Transform(toArray)\r\n  @IsArray()\r\n  @IsString({ each: true })\r\n  interests!: string[];\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionPersonalityDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionPersonalityDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  personality?: CompanionPersonalityDto;\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionCommunicationStyleDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionCommunicationStyleDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  communicationStyle?: CompanionCommunicationStyleDto;\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionBackgroundDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionBackgroundDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  background?: CompanionBackgroundDto;\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionVisualProfileDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionVisualProfileDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  visualProfile?: CompanionVisualProfileDto;\r\n\r\n  @ApiPropertyOptional({\r\n    type: () => CompanionVoiceDto,\r\n    description: 'Nested JSON object',\r\n  })\r\n  @IsOptional()\r\n  @nested(CompanionVoiceDto)\r\n  @IsObject()\r\n  @ValidateNested()\r\n  voice?: CompanionVoiceDto;\r\n}"
     },
     {
       "name": "UpdateCompanionPersonalityDto",
@@ -2547,12 +2629,12 @@
     {
       "name": "CreateCreditPackageDto",
       "file": "src/app/module/credit/dto/credit.dto.ts",
-      "source": "export class CreateCreditPackageDto {\n  @ApiProperty({ example: 'Starter Credits' })\n  @IsString()\n  @IsNotEmpty()\n  name!: string;\n\n  @ApiProperty({ example: 100 })\n  @IsInt()\n  @Min(1)\n  credits!: number;\n\n  @ApiProperty({ example: '4.99' })\n  @IsString()\n  @Matches(/^\\d+(\\.\\d{1,2})?$/, { message: 'Price must be a valid amount' })\n  price!: string;\n\n  @ApiPropertyOptional({ example: 'usd', default: 'usd' })\n  @IsOptional()\n  @IsString()\n  currency?: string;\n\n  @ApiPropertyOptional({ default: true })\n  @IsOptional()\n  @IsBoolean()\n  isActive?: boolean;\n}"
+      "source": "export class CreateCreditPackageDto {\r\n  @ApiProperty({ example: 'Starter Credits' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  name!: string;\r\n\r\n  @ApiProperty({ example: 100 })\r\n  @IsInt()\r\n  @Min(1)\r\n  credits!: number;\r\n\r\n  @ApiProperty({ example: '4.99' })\r\n  @IsString()\r\n  @Matches(/^\\d+(\\.\\d{1,2})?$/, { message: 'Price must be a valid amount' })\r\n  price!: string;\r\n\r\n  @ApiPropertyOptional({ example: 'usd', default: 'usd' })\r\n  @IsOptional()\r\n  @IsString()\r\n  currency?: string;\r\n\r\n  @ApiPropertyOptional({ default: true })\r\n  @IsOptional()\r\n  @IsBoolean()\r\n  isActive?: boolean;\r\n}"
     },
     {
       "name": "UpdateCreditPackageDto",
       "file": "src/app/module/credit/dto/credit.dto.ts",
-      "source": "export class UpdateCreditPackageDto extends PartialType(\n  CreateCreditPackageDto,\n) {}"
+      "source": "export class UpdateCreditPackageDto extends PartialType(\r\n  CreateCreditPackageDto,\r\n) {}"
     },
     {
       "name": "CreateDashboardDto",

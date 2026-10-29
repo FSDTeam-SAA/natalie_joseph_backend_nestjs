@@ -1,3 +1,4 @@
+import { ApiExcludeController } from '@nestjs/swagger';
 import {
   Controller,
   Get,
@@ -7,6 +8,7 @@ import {
 import { PrismaService } from './prisma/prisma.service';
 @Controller('health')
 @SetMetadata('rawResponse', true)
+@ApiExcludeController()
 export class HealthController {
   constructor(private readonly prisma: PrismaService) {}
   @Get('live') live() {

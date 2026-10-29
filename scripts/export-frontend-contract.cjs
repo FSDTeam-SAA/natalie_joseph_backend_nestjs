@@ -22,7 +22,7 @@ for(const file of files){
    const url=['','privacy-policy','terms','data-deletion'].includes(tail)?'/'+tail:'/api/v1/'+tail;
    const guards=[named(cls,'UseGuards'),named(method,'UseGuards')].filter(Boolean).map(c=>c.getText(source));
    const params=method.parameters.map(p=>p.getText(source));
-   routes.push({method:route.expression.getText().toUpperCase(),path:url,controller:cls.name.text,handler:method.name.getText(source),file:rel(file),line:source.getLineAndCharacterOfPosition(method.getStart(source)).line+1,guards,parameters:params,decorators:decs(method).map(d=>d.getText(source)),handlerSource:method.body?.getText(source)||''});
+   routes.push({method:route.expression.getText().toUpperCase(),path:url,controller:cls.name.text,handler:method.name.getText(source),file:rel(file),line:source.getLineAndCharacterOfPosition(method.getStart(source)).line+1,swaggerVisible: !named(cls,'ApiExcludeController') && !named(method,'ApiExcludeEndpoint'),guards,parameters:params,decorators:decs(method).map(d=>d.getText(source)),handlerSource:method.body?.getText(source)||''});
   }
  }
 }
@@ -39,3 +39,11 @@ md+='## Request DTO: সব field ও validation\n\nIsOptional থাকলে o
 for(const d of dtos)md+=`### ${d.name}\n\nSource: \`${d.file}\`\n\n\`\`\`typescript\n${d.source}\n\`\`\`\n\n`;
 fs.writeFileSync(path.join(target,'api-reference-bn.md'),md);
 console.log(JSON.stringify({routes:routes.length,dtos:dtos.length,controllers:[...new Set(routes.map(r=>r.controller))]}));
+
+// Frontend-only index mirrors Swagger exclusions; full reference retains internal routes for backend operations.
+const visible=routes.filter(r=>r.swaggerVisible);
+let frontend='# Website ও Dashboard — Frontend API তালিকা\n\nSwagger-এ এই API-গুলো দেখা যাবে। Internal webhook, Telegram Mini App implementation, health ও server HTML routes চালু আছে, কিন্তু frontend engineer-কে implement করতে হয় না বলে hidden। Telegram connect এবং signed media endpoint frontend-এর দরকার, তাই রাখা হয়েছে।\n\n';
+frontend+='মোট '+visible.length+'টি frontend-visible route। Full request/response: [পূর্ণ README](README-FRONTEND-FULL-BN.md)।\n\n| Method | API | Access | Handler |\n|---|---|---|---|\n';
+for(const r of visible)frontend+='| '+r.method+' | '+r.path+' | '+cell(r.guards.join('; ')||'Public অথবা service-level validation')+' | '+r.handler+' |\n';
+fs.writeFileSync(path.join(target,'FRONTEND-API-ONLY-BN.md'),frontend);
+console.log(JSON.stringify({swaggerVisible:visible.length,internalHidden:routes.length-visible.length}));

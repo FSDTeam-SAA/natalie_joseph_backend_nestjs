@@ -18,7 +18,6 @@ import { SubscribePaymentCronService } from './app/helper/subscribePayment.cron'
 import { CreditModule } from './app/module/credit/credit.module';
 import { GiftModule } from './app/module/gift/gift.module';
 import { DashboardModule } from './app/module/dashboard/dashboard.module';
-import { WhatsAppModule } from './app/module/whatsapp/whatsapp.module';
 import { TelegramModule } from './app/module/telegram/telegram.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RequestLimitGuard } from './app/middlewares/request-limit.guard';
@@ -36,7 +35,6 @@ import { HealthController } from './health.controller';
     SubscriptionModule,
     PaymentModule,
     WebhookModule,
-    WhatsAppModule,
     TelegramModule,
     CompanionsModule,
     ChatModule,

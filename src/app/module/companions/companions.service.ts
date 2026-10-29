@@ -25,24 +25,7 @@ export class CompanionsService {
     private readonly profiles: TelegramProfileService,
   ) {}
 
-  private validateWhatsAppSettings(settings: {
-    whatsappEnabled?: boolean;
-    whatsappPhoneNumber?: string | null;
-    whatsappPhoneNumberId?: string | null;
-  }) {
-    if (
-      settings.whatsappEnabled &&
-      (!settings.whatsappPhoneNumber || !settings.whatsappPhoneNumberId)
-    ) {
-      throw new HttpException(
-        'WhatsApp phone number and Meta Phone Number ID are required when WhatsApp is enabled',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-  }
-
   async createCompanion(payload: CreateCompanionDto) {
-    this.validateWhatsAppSettings(payload);
     const {
       personality,
       communicationStyle,
@@ -202,7 +185,6 @@ export class CompanionsService {
 
   async updateCompanion(id: string, payload: UpdateCompanionDto) {
     const existing = await this.getCompanionById(id);
-    this.validateWhatsAppSettings({ ...existing, ...payload });
     const {
       personality: personalityPatch,
       communicationStyle: communicationPatch,

@@ -1,3 +1,4 @@
+import { ApiExcludeController } from '@nestjs/swagger';
 import {
   BadRequestException,
   Body,
@@ -180,6 +181,7 @@ export class StoryMediaController {
 
 @ApiTags('Telegram Story Viewer')
 @Controller('telegram/stories')
+@ApiExcludeController()
 export class TelegramStoryController {
   constructor(private readonly stories: MediaStoryService) {}
   @Get()
@@ -212,6 +214,7 @@ export class TelegramStoryController {
 }
 
 @Controller('publishing')
+@ApiExcludeController()
 export class PublishingConsoleController {
   constructor(private readonly config: ConfigService) {}
   @Get('admin')

@@ -1,3 +1,4 @@
+import { ApiExcludeController } from '@nestjs/swagger';
 import type { RawBodyRequest } from '@nestjs/common';
 import { Controller, Headers, HttpCode, Post, Req } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -6,6 +7,7 @@ import { WebhookService } from './webhook.service';
 
 @ApiTags('webhook')
 @Controller('webhook')
+@ApiExcludeController()
 export class WebhookController {
   constructor(private readonly webhookService: WebhookService) {}
 
