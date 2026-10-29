@@ -1,6 +1,6 @@
 # Meet Elysia — সম্পূর্ণ Frontend ও Admin API README
 
-**তারিখ: ২৯ অক্টোবর ২০২৬ • Source-derived handover • 120টি route • 61টি DTO class**
+**তারিখ: ২৯ অক্টোবর ২০২৬ • Source-derived handover • 118টি route • 61টি DTO class**
 
 Frontend engineer-কে **এই একটি ফাইল** দিলেই website এবং admin dashboard-এর API mapping, flow, upload, DTO, access ও response mapping পড়তে পারবেন। এটি বর্তমান local backend source-এর contract; deployed server একই version চালাচ্ছে কি না rollout team যাচাই করবে। কোনো credentials এই ফাইলে নেই।
 
@@ -37,7 +37,6 @@ Base URL উদাহরণ: local `http://localhost:8080/api/v1`; project-এ�
 | Gifts / relationship | /gifts, /gifts/:giftId/send, /relationships | Catalogue, gift debit, nickname/notes |
 | Notifications | /notifications, /notifications/:id/read | List ও read state |
 | Continue in Telegram | /telegram/status/:companionId, /telegram/connect/:companionId | Login/subscribe/connect/return flow |
-| WhatsApp | /whatsapp/connect/:companionId | Returned link খুলে user START পাঠাবে |
 | Newsletter / legal | POST /newsletter; /privacy-policy, /terms, /data-deletion | Subscribe ও legal pages; legal paths API prefix-এর বাইরে |
 
 ## Admin dashboard page map
@@ -134,7 +133,6 @@ Admin overview data keys: `totalUsers, totalSubscriptionPlans, activeSubscriptio
 | GET | `/api/v1/lifestyle/inbox` | নিজের included daily photo/text inbox | UseGuards(AuthGuard('user')) |
 | GET | `/api/v1/telegram/status/:companionId` | Companion Telegram link ও subscription state | UseGuards(AuthGuard('user')) |
 | POST | `/api/v1/telegram/connect/:companionId` | Single-use, 10-minute Telegram connect URL | UseGuards(AuthGuard('user')) |
-| POST | `/api/v1/whatsapp/connect/:companionId` | WhatsApp link/prefilled START message URL | UseGuards(AuthGuard('user')) |
 
 ### Admin dashboard API
 
@@ -212,6 +210,7 @@ Admin overview data keys: `totalUsers, totalSubscriptionPlans, activeSubscriptio
 | DELETE | `/api/v1/subscription/:id` | Plan deactivate | UseGuards(AuthGuard('admin')) |
 | POST | `/api/v1/user` | Legacy account creation; website signup-এ /auth/register ব্যবহার | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
 | GET | `/api/v1/user` | Admin user list/search | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/user//overview` | Admin user summary counts—total, approved, subscribed ও free users | UseGuards(AuthGuard('admin')) |
 | GET | `/api/v1/user/my-profile` | নিজের current profile | UseGuards(AuthGuard('user', 'admin')) |
 | PUT | `/api/v1/user/my-profile` | নিজের profile update; password-only limitation নিচে দেখুন | UseGuards(AuthGuard('user', 'admin')) |
 | GET | `/api/v1/user/:id` | Admin user detail | UseGuards(AuthGuard('admin')) |
@@ -233,8 +232,6 @@ Admin overview data keys: `totalUsers, totalSubscriptionPlans, activeSubscriptio
 | POST | `/api/v1/webhooks/telegram/:companionId` | Telegram provider update, companion-specific secret | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
 | POST | `/api/v1/webhooks/telegram` | Legacy/default Telegram provider webhook | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
 | POST | `/api/v1/webhook` | Stripe signed webhook; frontend থেকে call নয় | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/api/v1/webhooks/whatsapp` | Meta webhook subscription verification | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/webhooks/whatsapp` | Meta signed incoming events | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
 | GET | `/` | Backend root response | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
 | GET | `/api/v1/health/live` | Process liveness | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
 | GET | `/api/v1/health/ready` | Backend readiness check; সব provider tested বোঝায় না | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
@@ -300,7 +297,6 @@ Request body-তে validation DTO অনুসরণ করুন। Whitelist 
 | Gifts | GET `/gifts`, POST `/gifts/:giftId/send` | companionId দিয়ে gift পাঠানো |
 | Notifications | GET `/notifications`, PATCH `/notifications/:id/read` | list ও read state |
 | Telegram connection | POST `/telegram/connect/:companionId`, GET `/telegram/status/:companionId` | secure link ও return-to-bot |
-| WhatsApp connection | POST `/whatsapp/connect/:companionId` | returned whatsappUrl খুলুন |
 | Newsletter | POST `/newsletter` | email subscription form |
 
 ## ৪. Registration, login ও password reset
@@ -463,7 +459,7 @@ POST `/chat/:companionId/messages` response-এর `data`:
 
 Overview-তে `totalSubscriptionPlans`, `activeSubscriptions`, `activeSubscribers`, `totalMessages`, `totalConversations`, `totalRevenue`, `totalUsers` ব্যবহার করুন। Legacy `totalConversions` আসলে message count; conversion-rate হিসেবে দেখাবেন না।
 
-Human takeover: প্রথমে mode=human সেট করুন, তারপর নির্বাচিত unanswered user message-এর messageId দিয়ে reply করুন। Reply-কারী admin-এর assignment মিলতে হবে; answered message-এ 409 আসতে পারে। Current `humanReply` method response database-এ save করে এবং in-app notification তৈরি করে; **Telegram/WhatsApp outbound send করে না**। তাই “Reply delivered to Telegram” success label এখন দেবেন না।
+Human takeover: প্রথমে mode=human সেট করুন, তারপর নির্বাচিত unanswered user message-এর messageId দিয়ে reply করুন। Reply-কারী admin-এর assignment মিলতে হবে; answered message-এ 409 আসতে পারে। Current `humanReply` method response database-এ save করে এবং in-app notification তৈরি করে; **Telegram outbound send করে না**। তাই “Reply delivered to Telegram” success label এখন দেবেন না।
 
 Plan create example:
 
@@ -498,11 +494,11 @@ Query names exact reference-এ আছে। Common `page`, `limit`, `sortBy`, `
 
 ## ১১. Webhook ও infrastructure route—frontend button নয়
 
-সব exact webhook route reference-এর inventory-তে আছে। Stripe POST `/webhook` raw body ও `stripe-signature` দিয়ে provider call করবে। Frontend fake webhook বা payment success লিখে subscription/credit grant করতে পারবে না। Telegram webhook-এ bot-specific secret validation হয়; WhatsApp-এ provider verification/signature। Bot secrets browser-এ দেওয়া যাবে না।
+সব exact webhook route reference-এর inventory-তে আছে। Stripe POST `/webhook` raw body ও `stripe-signature` দিয়ে provider call করবে। Frontend fake webhook বা payment success লিখে subscription/credit grant করতে পারবে না। Telegram webhook-এ bot-specific secret validation হয়। Bot secrets browser-এ দেওয়া যাবে না।
 
 GET `/health/live` process health; GET `/health/ready` database/runtime-table readiness। Ready সফল মানে AI, mail, Stripe সব tested নয়। Root `/`, `/privacy-policy`, `/terms`, `/data-deletion` global API prefix-এর বাইরে। Backend-এ থাকা legal text publish-এর আগে owner review করবেন।
 
-WhatsApp connect response `data.whatsappUrl` খুলে prefilled START message user-কে send করতে হবে। Operational test endpoint সরানো হয়েছে; WhatsApp connect ও webhook বহাল আছে।
+Messaging channel এখন Telegram; WhatsApp integration সরানো হয়েছে।
 
 ## ১২. Error ও UX handling
 
@@ -539,7 +535,7 @@ Production backend rollout/migration/queue/HTTPS নির্দেশনা rep
 
 1. Website raw voice upload/transcription route নেই; transcript-only chat contract আছে।
 2. Website realtime socket/SSE route নেই; controlled polling বা নতুন backend কাজ লাগবে।
-3. Admin human reply Telegram/WhatsApp-এ push হয় না।
+3. Admin human reply Telegram-এ push হয় না।
 4. Website profile image/name update configured Telegram profile-sync queue-তে যায়; about/description-এর publishing API আছে। Feature flag/token mapping ও sync status যাচাই করুন। Bot username edit এই API-তে নেই।
 5. Bot token/username/env পরিবর্তনের public admin endpoint নেই। Frontend-এ এমন Save button বানাবেন না যার API নেই।
 6. User self-service Telegram unlink endpoint নেই; transfer flow আলাদা।
@@ -3797,7 +3793,7 @@ Controller response mapping:
 
 **কাজ:** Telegram profile desired fields ও sync status
 
-Source: `src/app/module/publishing/publishing.controller.ts:49`
+Source: `src/app/module/publishing/publishing.controller.ts:50`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3826,7 +3822,7 @@ Controller response mapping:
 
 **কাজ:** Display name/about/description save ও sync queue
 
-Source: `src/app/module/publishing/publishing.controller.ts:54`
+Source: `src/app/module/publishing/publishing.controller.ts:55`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3856,7 +3852,7 @@ Controller response mapping:
 
 **কাজ:** Failed profile sync requeue
 
-Source: `src/app/module/publishing/publishing.controller.ts:62`
+Source: `src/app/module/publishing/publishing.controller.ts:63`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3884,7 +3880,7 @@ Controller response mapping:
 
 **কাজ:** 24h photo/video Story admin metadata list
 
-Source: `src/app/module/publishing/publishing.controller.ts:66`
+Source: `src/app/module/publishing/publishing.controller.ts:67`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3912,7 +3908,7 @@ Controller response mapping:
 
 **কাজ:** media upload করে 24h Story publish
 
-Source: `src/app/module/publishing/publishing.controller.ts:70`
+Source: `src/app/module/publishing/publishing.controller.ts:71`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3959,7 +3955,7 @@ Controller response mapping:
 
 **কাজ:** Story remove
 
-Source: `src/app/module/publishing/publishing.controller.ts:95`
+Source: `src/app/module/publishing/publishing.controller.ts:96`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3988,7 +3984,7 @@ Controller response mapping:
 
 **কাজ:** Website avatar Story ring-এর active count/expiry
 
-Source: `src/app/module/publishing/publishing.controller.ts:110`
+Source: `src/app/module/publishing/publishing.controller.ts:111`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -4017,7 +4013,7 @@ Controller response mapping:
 
 **কাজ:** Active media Story feed ও signed mediaPath
 
-Source: `src/app/module/publishing/publishing.controller.ts:115`
+Source: `src/app/module/publishing/publishing.controller.ts:116`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -4047,7 +4043,7 @@ Controller response mapping:
 
 **কাজ:** Signed ticket দিয়ে image/video bytes; Range support
 
-Source: `src/app/module/publishing/publishing.controller.ts:129`
+Source: `src/app/module/publishing/publishing.controller.ts:130`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -4119,7 +4115,7 @@ Controller response mapping:
 
 **কাজ:** Telegram Story Mini App HTML shell
 
-Source: `src/app/module/publishing/publishing.controller.ts:185`
+Source: `src/app/module/publishing/publishing.controller.ts:187`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -4157,7 +4153,7 @@ Controller response mapping:
 
 **কাজ:** Telegram signed initData দিয়ে linked-user Story feed
 
-Source: `src/app/module/publishing/publishing.controller.ts:199`
+Source: `src/app/module/publishing/publishing.controller.ts:201`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -4192,7 +4188,7 @@ Controller response mapping:
 
 **কাজ:** Backend test/admin publishing HTML; final dashboard নয়
 
-Source: `src/app/module/publishing/publishing.controller.ts:217`
+Source: `src/app/module/publishing/publishing.controller.ts:220`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -4543,7 +4539,7 @@ Controller response mapping:
 
 **কাজ:** Telegram login Mini App HTML
 
-Source: `src/app/module/telegram/telegram-mini-app.controller.ts:41`
+Source: `src/app/module/telegram/telegram-mini-app.controller.ts:43`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -4581,7 +4577,7 @@ Controller response mapping:
 
 **কাজ:** Companion ও website register/reset links
 
-Source: `src/app/module/telegram/telegram-mini-app.controller.ts:56`
+Source: `src/app/module/telegram/telegram-mini-app.controller.ts:58`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -4610,7 +4606,7 @@ Controller response mapping:
 
 **কাজ:** Signed Telegram initData + website credentials দিয়ে account link
 
-Source: `src/app/module/telegram/telegram-mini-app.controller.ts:62`
+Source: `src/app/module/telegram/telegram-mini-app.controller.ts:64`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -4649,7 +4645,7 @@ Controller response mapping:
 
 **কাজ:** Signed Telegram session-এর connection/access status
 
-Source: `src/app/module/telegram/telegram-mini-app.controller.ts:80`
+Source: `src/app/module/telegram/telegram-mini-app.controller.ts:82`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -4680,7 +4676,7 @@ Controller response mapping:
 
 **কাজ:** Telegram provider update, companion-specific secret
 
-Source: `src/app/module/telegram/telegram-webhook.controller.ts:22`
+Source: `src/app/module/telegram/telegram-webhook.controller.ts:24`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -4714,7 +4710,7 @@ Controller response mapping:
 
 **কাজ:** Legacy/default Telegram provider webhook
 
-Source: `src/app/module/telegram/telegram-webhook.controller.ts:35`
+Source: `src/app/module/telegram/telegram-webhook.controller.ts:37`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -4825,6 +4821,18 @@ Upload/status/validation metadata:
     description: 'name',
   })
 @ApiQuery({
+    name: 'phoneNumber',
+    type: String,
+    required: false,
+    description: 'phoneNumber',
+  })
+@ApiQuery({
+    name: 'status',
+    type: String,
+    required: false,
+    description: 'status',
+  })
+@ApiQuery({
     name: 'page',
     type: Number,
     required: false,
@@ -4857,7 +4865,14 @@ Controller response mapping:
 
 ```typescript
 {
-    const filters = pick(req.query, ['searchTerm', 'role', 'email', 'name']);
+    const filters = pick(req.query, [
+      'searchTerm',
+      'role',
+      'email',
+      'name',
+      'phoneNumber',
+      'status',
+    ]);
     const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
     const result = await this.userService.getAllUser(filters, options);
 
@@ -4869,11 +4884,47 @@ Controller response mapping:
   }
 ```
 
+## GET /api/v1/user//overview
+
+**কাজ:** Admin user summary counts—total, approved, subscribed ও free users
+
+Source: `src/app/module/user/user.controller.ts:138`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters ও DTO:
+
+```typescript
+// No explicit parameters
+```
+
+Upload/status/validation metadata:
+
+```typescript
+@Get('/overview')
+@ApiOperation({ summary: 'User overview' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@HttpCode(HttpStatus.OK)
+```
+
+Controller response mapping:
+
+```typescript
+{
+    const result = await this.userService.getAllUserOverview();
+    return {
+      message: 'get all user overview successfully',
+      data: result,
+    };
+  }
+```
+
 ## GET /api/v1/user/my-profile
 
 **কাজ:** নিজের current profile
 
-Source: `src/app/module/user/user.controller.ts:119`
+Source: `src/app/module/user/user.controller.ts:151`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -4913,7 +4964,7 @@ Controller response mapping:
 
 **কাজ:** নিজের profile update; password-only limitation নিচে দেখুন
 
-Source: `src/app/module/user/user.controller.ts:136`
+Source: `src/app/module/user/user.controller.ts:168`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -4962,7 +5013,7 @@ Controller response mapping:
 
 **কাজ:** Admin user detail
 
-Source: `src/app/module/user/user.controller.ts:164`
+Source: `src/app/module/user/user.controller.ts:196`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -5001,7 +5052,7 @@ Controller response mapping:
 
 **কাজ:** Admin user edit; DTO permissions অনুসরণ করুন
 
-Source: `src/app/module/user/user.controller.ts:180`
+Source: `src/app/module/user/user.controller.ts:212`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -5043,7 +5094,7 @@ Controller response mapping:
 
 **কাজ:** Admin user delete; destructive action confirmation
 
-Source: `src/app/module/user/user.controller.ts:201`
+Source: `src/app/module/user/user.controller.ts:233`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -5082,7 +5133,7 @@ Controller response mapping:
 
 **কাজ:** Stripe signed webhook; frontend থেকে call নয়
 
-Source: `src/app/module/webhook/webhook.controller.ts:12`
+Source: `src/app/module/webhook/webhook.controller.ts:14`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -5109,119 +5160,11 @@ Controller response mapping:
   }
 ```
 
-## POST /api/v1/whatsapp/connect/:companionId
-
-**কাজ:** WhatsApp link/prefilled START message URL
-
-Source: `src/app/module/whatsapp/whatsapp-connect.controller.ts:21`
-
-Access: `UseGuards(AuthGuard('user'))`
-
-Request parameters ও DTO:
-
-```typescript
-@Req() request: Request
-@Param('companionId', ParseUUIDPipe) companionId: string
-```
-
-Upload/status/validation metadata:
-
-```typescript
-@Post('connect/:companionId')
-```
-
-Controller response mapping:
-
-```typescript
-{
-    return { data: await this.ai.connect(request.user!.id, companionId) };
-  }
-```
-
-## GET /api/v1/webhooks/whatsapp
-
-**কাজ:** Meta webhook subscription verification
-
-Source: `src/app/module/whatsapp/whatsapp-webhook.controller.ts:30`
-
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
-
-Request parameters ও DTO:
-
-```typescript
-@Query('hub.mode') mode: string
-@Query('hub.verify_token') token: string
-@Query('hub.challenge') challenge: string
-```
-
-Upload/status/validation metadata:
-
-```typescript
-@Get()
-@Header('Content-Type', 'text/plain')
-```
-
-Controller response mapping:
-
-```typescript
-{
-    const expectedToken = this.configService.get<string>(
-      'WHATSAPP_VERIFY_TOKEN',
-    );
-    if (
-      mode !== 'subscribe' ||
-      !expectedToken ||
-      token !== expectedToken ||
-      typeof challenge !== 'string' ||
-      !challenge
-    ) {
-      throw new ForbiddenException('Invalid webhook verification');
-    }
-
-    return challenge;
-  }
-```
-
-## POST /api/v1/webhooks/whatsapp
-
-**কাজ:** Meta signed incoming events
-
-Source: `src/app/module/whatsapp/whatsapp-webhook.controller.ts:53`
-
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
-
-Request parameters ও DTO:
-
-```typescript
-@Body() body: Parameters<WhatsAppInboundService['receive']>[0]
-@Req() req: RawBodyRequest<Request>
-@Headers('x-hub-signature-256') signature?: string
-```
-
-Upload/status/validation metadata:
-
-```typescript
-@Post()
-@HttpCode(200)
-@Header('Content-Type', 'text/plain')
-```
-
-Controller response mapping:
-
-```typescript
-{
-    this.inbound.verifySignature(req.rawBody, signature);
-    this.logger.log('Verified WhatsApp webhook received');
-    await this.inbound.receive(body);
-    return 'EVENT_RECEIVED';
-  }
-```
-
 ## GET /
 
 **কাজ:** Backend root response
 
-Source: `src/app.controller.ts:9`
+Source: `src/app.controller.ts:11`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -5249,7 +5192,7 @@ Controller response mapping:
 
 **কাজ:** Process liveness
 
-Source: `src/health.controller.ts:12`
+Source: `src/health.controller.ts:14`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -5277,7 +5220,7 @@ Controller response mapping:
 
 **কাজ:** Backend readiness check; সব provider tested বোঝায় না
 
-Source: `src/health.controller.ts:15`
+Source: `src/health.controller.ts:17`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -5313,7 +5256,7 @@ Controller response mapping:
 
 **কাজ:** Privacy policy HTML
 
-Source: `src/legal-pages.controller.ts:38`
+Source: `src/legal-pages.controller.ts:40`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -5337,23 +5280,23 @@ Controller response mapping:
     return page(
       'Privacy Policy',
       `
-      <p>This policy describes information processed by Meet Elysia through its website, accounts, AI companion features and WhatsApp integration.</p>
+      <p>This policy describes information processed by Meet Elysia through its website, accounts, AI companion features and Telegram integration.</p>
       <h2>Information we process</h2>
       <ul>
         <li>Account information such as your email, name, password hash, optional phone number and profile image.</li>
         <li>Messages you send, generated responses, conversation identifiers, selected companions and interaction history.</li>
-        <li>For WhatsApp, your sender number, message identifiers, message content and account-linking information received through Meta.</li>
+        <li>For Telegram, your Telegram user/chat identifiers, message identifiers, message content and account-linking information received through Telegram.</li>
         <li>Subscription status, payment records, payment-provider identifiers, credits and purchases.</li>
         <li>Operational information used to investigate errors, secure accounts and process message delivery.</li>
       </ul>
       <h2>How information is used</h2>
-      <p>We use this information to authenticate accounts, link WhatsApp conversations to users and companions, generate and deliver replies, manage subscriptions and credits, provide support and troubleshoot the service. Authorized administrators can access conversations for support and human takeover.</p>
+      <p>We use this information to authenticate accounts, link Telegram conversations to users and companions, generate and deliver replies, manage subscriptions and credits, provide support and troubleshoot the service. Authorized administrators can access conversations for support and human takeover.</p>
       <h2>Service providers</h2>
-      <p>Operating the service involves providers for hosting and database storage, AI processing, email, media storage and payments. Relevant message content and conversation context are sent to the configured AI service when AI replies are enabled. Meta processes WhatsApp messages; Stripe handles payment processing; uploaded profile media may be stored through Cloudinary. These providers process information under their own applicable terms and privacy policies.</p>
+      <p>Operating the service involves providers for hosting and database storage, AI processing, email, media storage and payments. Relevant message content and conversation context are sent to the configured AI service when AI replies are enabled. Telegram processes Telegram messages; Stripe handles payment processing; uploaded profile media may be stored through Cloudinary. These providers process information under their own applicable terms and privacy policies.</p>
       <h2>Storage and retention</h2>
       <p>Account, conversation and transaction information is stored to operate the service. Retention varies by record type and provider; there is no single automatic deletion period for all records. Contact us to request deletion or ask about a particular record. Some records may need to be retained for applicable obligations, dispute resolution or security, and provider backups may follow separate retention schedules.</p>
       <h2>Your choices and requests</h2>
-      <p>You may stop messaging the service and contact ${contactLink} to request access, correction or deletion of your information. Follow our <a href="/data-deletion">data deletion instructions</a> to identify the account or WhatsApp data involved. Deleting a chat in WhatsApp does not itself delete records held by Meet Elysia.</p>
+      <p>You may stop messaging the service and contact ${contactLink} to request access, correction or deletion of your information. Follow our <a href="/data-deletion">data deletion instructions</a> to identify the account or Telegram data involved. Deleting a chat in Telegram does not itself delete records held by Meet Elysia.</p>
       <h2>Security and updates</h2>
       <p>Account passwords are stored as hashes. No online system can guarantee absolute security; do not send passwords, payment card details or other unnecessary sensitive information in companion chats. Updates to this policy will be reflected on this page.</p>
     `,
@@ -5365,7 +5308,7 @@ Controller response mapping:
 
 **কাজ:** Terms HTML
 
-Source: `src/legal-pages.controller.ts:67`
+Source: `src/legal-pages.controller.ts:69`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -5389,7 +5332,7 @@ Controller response mapping:
     return page(
       'Terms of Service',
       `
-      <p>These terms describe use of Meet Elysia's account, companion chat and WhatsApp features. By using the service, you agree to these terms.</p>
+      <p>These terms describe use of Meet Elysia's account, companion chat and Telegram features. By using the service, you agree to these terms.</p>
       <h2>Accounts and responsible use</h2>
       <p>Provide accurate account information, use only accounts and phone numbers you are authorized to use, and keep your credentials secure. Do not use the service for unlawful activity, harassment, fraud, unauthorized access or interference with other users or systems.</p>
       <h2>Companion conversations</h2>
@@ -5399,7 +5342,7 @@ Controller response mapping:
       <h2>Your content and privacy</h2>
       <p>Only submit content you have permission to share. You allow the service and its providers to process that content as needed to deliver the requested features. See our <a href="/privacy-policy">Privacy Policy</a> for data handling and our <a href="/data-deletion">Data Deletion</a> page for removal requests.</p>
       <h2>Third-party services and access</h2>
-      <p>WhatsApp, payment services and other integrated providers have their own terms. Features may change or become unavailable. Access may be restricted to address abuse, security issues or violations of these terms.</p>
+      <p>Telegram, payment services and other integrated providers have their own terms. Features may change or become unavailable. Access may be restricted to address abuse, security issues or violations of these terms.</p>
       <h2>Contact and changes</h2>
       <p>Questions or requests to close an account can be sent to ${contactLink}. Revised terms will be posted here with an updated date.</p>
     `,
@@ -5411,7 +5354,7 @@ Controller response mapping:
 
 **কাজ:** Data-deletion instructions HTML
 
-Source: `src/legal-pages.controller.ts:90`
+Source: `src/legal-pages.controller.ts:92`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -5435,19 +5378,19 @@ Controller response mapping:
     return page(
       'Data Deletion Instructions',
       `
-      <p>You can request deletion of your Meet Elysia account or data associated with its WhatsApp integration by email.</p>
+      <p>You can request deletion of your Meet Elysia account or data associated with its Telegram integration by email.</p>
       <h2>Submit a request</h2>
       <ol>
         <li>Email ${contactLink} with the subject <strong>Meet Elysia Data Deletion Request</strong>.</li>
-        <li>Send from your registered email where possible. Include the account email and, for WhatsApp data, your phone number with country code.</li>
-        <li>Specify whether you want the entire account deleted or only particular data, such as WhatsApp linking information or conversation history.</li>
+        <li>Send from your registered email where possible. Include the account email and, for Telegram data, your Telegram username or user ID.</li>
+        <li>Specify whether you want the entire account deleted or only particular data, such as Telegram linking information or conversation history.</li>
       </ol>
       <p>Do not include passwords, one-time codes, access tokens or payment card details.</p>
       <h2>What happens next</h2>
       <p>The support team handles requests manually and may ask for information needed to verify account ownership before processing deletion. Ask in the same email for confirmation of completion and the status of any retained records.</p>
       <h2>Scope and limitations</h2>
-      <p>A request can cover your profile, stored conversations and WhatsApp account links. Records subject to applicable retention obligations or needed for disputes or security may require separate handling. Copies held in provider backups may follow their retention schedules.</p>
-      <p>Deleting Meet Elysia data does not delete your Facebook or WhatsApp account or copies held by Meta or message recipients. Deleting a WhatsApp chat alone does not submit a deletion request to Meet Elysia. If you have an active subscription, include a cancellation request so support can address billing separately.</p>
+      <p>A request can cover your profile, stored conversations and Telegram account links. Records subject to applicable retention obligations or needed for disputes or security may require separate handling. Copies held in provider backups may follow their retention schedules.</p>
+      <p>Deleting Meet Elysia data does not delete your Telegram account or copies held by Telegram or message recipients. Deleting a Telegram chat alone does not submit a deletion request to Meet Elysia. If you have an active subscription, include a cancellation request so support can address billing separately.</p>
       <p>Read our <a href="/privacy-policy">Privacy Policy</a> for an overview of the information processed by the service.</p>
     `,
     );
@@ -5850,34 +5793,6 @@ Source: `src/app/module/companions/dto/create-companion.dto.ts`
 
 ```typescript
 export class CreateCompanionDto {
-  @ApiPropertyOptional({ example: '+15551234567', nullable: true })
-  @IsOptional()
-  @Matches(/^\+[1-9]\d{6,14}$/)
-  whatsappPhoneNumber?: string | null;
-
-  @ApiPropertyOptional({ example: '123456789012345', nullable: true })
-  @IsOptional()
-  @Matches(/^\d+$/)
-  whatsappPhoneNumberId?: string | null;
-
-  @ApiPropertyOptional({ example: 'Elena - AI Companion', nullable: true })
-  @IsOptional()
-  @IsString()
-  @MaxLength(200)
-  whatsappDisplayName?: string | null;
-
-  @ApiPropertyOptional({ default: false })
-  @ValidateIf((_object, value) => value !== undefined)
-  @Transform(toBoolean)
-  @IsBoolean()
-  whatsappEnabled?: boolean;
-
-  @ApiPropertyOptional({ nullable: true })
-  @IsOptional()
-  @IsString()
-  @MaxLength(4096)
-  whatsappWelcomeMessage?: string | null;
-
   @ApiProperty({})
   @IsString()
   @IsNotEmpty()

@@ -5,11 +5,6 @@ export const companionProfileSelect = {
   telegramProfileSync: {
     select: { displayName: true, about: true, description: true },
   },
-  whatsappPhoneNumber: true,
-  whatsappPhoneNumberId: true,
-  whatsappDisplayName: true,
-  whatsappEnabled: true,
-  whatsappWelcomeMessage: true,
   id: true,
   name: true,
   version: true,

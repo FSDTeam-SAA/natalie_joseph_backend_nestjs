@@ -26,20 +26,18 @@ const purpose = {
  TelegramConnectController:{status:'Companion Telegram link ও subscription state',connect:'Single-use, 10-minute Telegram connect URL'},
  TelegramMiniAppController:{page:'Telegram login Mini App HTML',settings:'Companion ও website register/reset links',login:'Signed Telegram initData + website credentials দিয়ে account link',status:'Signed Telegram session-এর connection/access status'},
  TelegramWebhookController:{receiveForCompanion:'Telegram provider update, companion-specific secret',receive:'Legacy/default Telegram provider webhook'},
- UserController:{createUser:'Legacy account creation; website signup-এ /auth/register ব্যবহার',getAllUser:'Admin user list/search',myProfile:'নিজের current profile',UpdateMyProfile:'নিজের profile update; password-only limitation নিচে দেখুন',getUserById:'Admin user detail',updateUser:'Admin user edit; DTO permissions অনুসরণ করুন',deleteUser:'Admin user delete; destructive action confirmation'},
+ UserController:{getAllUserOverview:'Admin user summary counts—total, approved, subscribed ও free users',createUser:'Legacy account creation; website signup-এ /auth/register ব্যবহার',getAllUser:'Admin user list/search',myProfile:'নিজের current profile',UpdateMyProfile:'নিজের profile update; password-only limitation নিচে দেখুন',getUserById:'Admin user detail',updateUser:'Admin user edit; DTO permissions অনুসরণ করুন',deleteUser:'Admin user delete; destructive action confirmation'},
  WebhookController:{handleWebhook:'Stripe signed webhook; frontend থেকে call নয়'},
- WhatsAppConnectController:{connect:'WhatsApp link/prefilled START message URL'},
- WhatsAppWebhookController:{verifyWebhook:'Meta webhook subscription verification',receiveWebhook:'Meta signed incoming events'},
  AppController:{getHello:'Backend root response'},
  HealthController:{live:'Process liveness',ready:'Backend readiness check; সব provider tested বোঝায় না'},
  LegalPagesController:{privacyPolicy:'Privacy policy HTML',terms:'Terms HTML',dataDeletion:'Data-deletion instructions HTML'},
 };
 for (const r of contract.routes) if(!purpose[r.controller]?.[r.handler]) throw new Error(`Missing purpose: ${r.controller}.${r.handler}`);
 const groups=[
- ['website','Website: public/auth ও user API',new Set(['AuthController','ChatController','EngagementController','LifestyleController','TelegramConnectController','WhatsAppConnectController'])],
+ ['website','Website: public/auth ও user API',new Set(['AuthController','ChatController','EngagementController','LifestyleController','TelegramConnectController'])],
  ['admin','Admin dashboard API',new Set(['DashboardController','EngagementAdminController','LifestyleAdminController','PublishingAdminController'])],
  ['shared','Website listing + admin CRUD',new Set(['CompanionsController','CreditController','GiftController','SubscriptionController','UserController','PaymentController','NewsletterController','MediaStoryController'])],
- ['system','Mini App, media, webhook ও infrastructure',new Set(['StoryMediaController','TelegramStoryController','PublishingConsoleController','TelegramMiniAppController','TelegramWebhookController','WebhookController','WhatsAppWebhookController','AppController','HealthController','LegalPagesController'])],
+ ['system','Mini App, media, webhook ও infrastructure',new Set(['StoryMediaController','TelegramStoryController','PublishingConsoleController','TelegramMiniAppController','TelegramWebhookController','WebhookController','AppController','HealthController','LegalPagesController'])],
 ];
 const head=`# Meet Elysia — সম্পূর্ণ Frontend ও Admin API README
 
@@ -80,7 +78,6 @@ Base URL উদাহরণ: local \`http://localhost:8080/api/v1\`; project-এ
 | Gifts / relationship | /gifts, /gifts/:giftId/send, /relationships | Catalogue, gift debit, nickname/notes |
 | Notifications | /notifications, /notifications/:id/read | List ও read state |
 | Continue in Telegram | /telegram/status/:companionId, /telegram/connect/:companionId | Login/subscribe/connect/return flow |
-| WhatsApp | /whatsapp/connect/:companionId | Returned link খুলে user START পাঠাবে |
 | Newsletter / legal | POST /newsletter; /privacy-policy, /terms, /data-deletion | Subscribe ও legal pages; legal paths API prefix-এর বাইরে |
 
 ## Admin dashboard page map

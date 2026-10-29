@@ -41,8 +41,8 @@ async function bootstrap() {
   app.useGlobalFilters(new GlobalExceptionFilter(httpAdapterHost));
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Natalie Joseph API')
-    .setDescription('Natalie Joseph API Documentation')
+    .setTitle('Meet Elysia — Website & Admin API')
+    .setDescription('Website and admin dashboard integration APIs. Internal Telegram Mini App, provider webhook, health and server-rendered utility routes are intentionally hidden; they remain operational. Telegram account connection and signed story media are included for frontend integration.')
     .setVersion('1.0')
     .addTag('Natalie Joseph')
     .addBearerAuth(
