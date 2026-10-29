@@ -71,6 +71,34 @@ export class UserService {
     };
   }
 
+  async getAllUserOverview() {
+    const totalUser = await this.prisma.user.count();
+    const totalActiveUser = await this.prisma.user.count({
+      where: {
+        status: 'approved',
+      },
+    });
+    const totalPremiumUser = await this.prisma.user.count({
+      where: {
+        isSubscribed: true,
+      },
+    });
+
+    const totalFreeUser = await this.prisma.user.count({
+      where: {
+        isSubscribed: false,
+        isFreeTrialUsed: true,
+      },
+    });
+
+    return {
+      totalUser,
+      totalActiveUser,
+      totalPremiumUser,
+      totalFreeUser,
+    };
+  }
+
   async getUserById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
