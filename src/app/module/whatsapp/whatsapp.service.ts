@@ -23,13 +23,6 @@ export class WhatsAppService {
     });
   }
 
-  sendTestTemplate(phoneNumberId: string, to: string) {
-    return this.send(phoneNumberId, to, {
-      type: 'template',
-      template: { name: 'hello_world', language: { code: 'en_US' } },
-    });
-  }
-
   private async send(
     phoneId: string,
     to: string,

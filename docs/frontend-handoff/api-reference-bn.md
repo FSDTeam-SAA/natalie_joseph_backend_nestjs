@@ -2,7 +2,7 @@
 
 Controller ও DTO থেকে সরাসরি তৈরি; live API test নয়। নতুন lifestyle API নির্দেশনা: [Backend handover](../README-lifestyle-handoff-bn.md)। মূল নির্দেশনা: [বাংলা integration guide](./frontend-integration-bn.md)।
 
-মোট **122টি route**, **63টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।
+মোট **120টি route**, **61টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।
 
 ## সব endpoint এক নজরে
 
@@ -34,7 +34,6 @@ Controller ও DTO থেকে সরাসরি তৈরি; live API test �
 | GET | `/api/v1/credits/packages` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getPackages |
 | PATCH | `/api/v1/credits/packages/:id` | UseGuards(AuthGuard('admin')) | updatePackage |
 | DELETE | `/api/v1/credits/packages/:id` | UseGuards(AuthGuard('admin')) | deactivatePackage |
-| POST | `/api/v1/credits/purchase` | UseGuards(AuthGuard('user')) | purchase |
 | GET | `/api/v1/credits/wallet` | UseGuards(AuthGuard('user')) | getWallet |
 | GET | `/api/v1/dashboard/overview` | UseGuards(AuthGuard('admin')) | dashboardOverview |
 | GET | `/api/v1/relationships` | UseGuards(AuthGuard('user', 'admin')) | relationships |
@@ -123,7 +122,6 @@ Controller ও DTO থেকে সরাসরি তৈরি; live API test �
 | POST | `/api/v1/whatsapp/connect/:companionId` | UseGuards(AuthGuard('user')) | connect |
 | GET | `/api/v1/webhooks/whatsapp` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | verifyWebhook |
 | POST | `/api/v1/webhooks/whatsapp` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | receiveWebhook |
-| POST | `/api/v1/whatsapp/test` | UseGuards(AuthGuard('admin', 'user')) | test |
 | GET | `/` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getHello |
 | GET | `/api/v1/health/live` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | live |
 | GET | `/api/v1/health/ready` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | ready |
@@ -413,6 +411,7 @@ Access: `UseGuards(AuthGuard('admin', 'user'))`
 Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
 
 ```typescript
+@Req() req: Request
 @Body() changePasswordAuthDto: ChangePasswordAuthDto
 ```
 
@@ -440,8 +439,9 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ```typescript
 {
+    const userId = req.user!.id;
     const result = await this.authService.changePassword(
-      changePasswordAuthDto.email,
+      userId,
       changePasswordAuthDto.oldPassword,
       changePasswordAuthDto.newPassword,
     );
@@ -455,7 +455,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/auth/logout
 
-Source: `src/app/module/auth/auth.controller.ts:219` • Handler: `AuthController.logout`
+Source: `src/app/module/auth/auth.controller.ts:223` • Handler: `AuthController.logout`
 
 Access: `UseGuards(AuthGuard('admin', 'user'))`
 
@@ -1073,7 +1073,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/credits/packages
 
-Source: `src/app/module/credit/credit.controller.ts:32` • Handler: `CreditController.createPackage`
+Source: `src/app/module/credit/credit.controller.ts:29` • Handler: `CreditController.createPackage`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1103,7 +1103,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/credits/packages
 
-Source: `src/app/module/credit/credit.controller.ts:41` • Handler: `CreditController.getPackages`
+Source: `src/app/module/credit/credit.controller.ts:38` • Handler: `CreditController.getPackages`
 
 Access: `Controller JWT guard নেই`
 
@@ -1131,7 +1131,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PATCH /api/v1/credits/packages/:id
 
-Source: `src/app/module/credit/credit.controller.ts:48` • Handler: `CreditController.updatePackage`
+Source: `src/app/module/credit/credit.controller.ts:45` • Handler: `CreditController.updatePackage`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1162,7 +1162,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/credits/packages/:id
 
-Source: `src/app/module/credit/credit.controller.ts:60` • Handler: `CreditController.deactivatePackage`
+Source: `src/app/module/credit/credit.controller.ts:57` • Handler: `CreditController.deactivatePackage`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1190,44 +1190,9 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
-### POST /api/v1/credits/purchase
-
-Source: `src/app/module/credit/credit.controller.ts:69` • Handler: `CreditController.purchase`
-
-Access: `UseGuards(AuthGuard('user'))`
-
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
-
-```typescript
-@Req() request: Request
-@Body() payload: PurchaseCreditPackageDto
-```
-
-Upload/query/status metadata:
-
-```typescript
-@Post('purchase')
-@ApiBearerAuth('access-token')
-@UseGuards(AuthGuard('user'))
-@ApiOperation({ summary: 'Purchase a credit package' })
-```
-
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
-
-```typescript
-{
-    if (!request.user) throw new UnauthorizedException();
-    const data = await this.paymentService.buyCredits(
-      request.user.id,
-      payload.packageId,
-    );
-    return { message: 'Credit payment initiated successfully', data };
-  }
-```
-
 ### GET /api/v1/credits/wallet
 
-Source: `src/app/module/credit/credit.controller.ts:85` • Handler: `CreditController.getWallet`
+Source: `src/app/module/credit/credit.controller.ts:66` • Handler: `CreditController.getWallet`
 
 Access: `UseGuards(AuthGuard('user'))`
 
@@ -4173,53 +4138,6 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
-### POST /api/v1/whatsapp/test
-
-Source: `src/app/module/whatsapp/whatsapp.controller.ts:66` • Handler: `WhatsAppController.test`
-
-Access: `UseGuards(AuthGuard('admin', 'user'))`
-
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
-
-```typescript
-@Body() dto: WhatsAppTestDto
-```
-
-Upload/query/status metadata:
-
-```typescript
-@Post('test')
-@HttpCode(200)
-```
-
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
-
-```typescript
-{
-    // Only the admin test route falls back to the single .env sender.
-    let phoneNumberId =
-      this.config.get<string>('WHATSAPP_PHONE_NUMBER_ID') ?? '';
-    if (dto.companionId) {
-      const companion = await this.prisma.companions.findFirst({
-        where: { id: dto.companionId, status: true, whatsappEnabled: true },
-      });
-      if (!companion?.whatsappPhoneNumberId) {
-        throw new NotFoundException('Active WhatsApp companion not found');
-      }
-      phoneNumberId = companion.whatsappPhoneNumberId;
-    }
-    const data =
-      dto.type === 'text'
-        ? await this.whatsapp.sendText(
-            phoneNumberId,
-            dto.to,
-            dto.message ?? 'Hello from Meet Elysia backend',
-          )
-        : await this.whatsapp.sendTestTemplate(phoneNumberId, dto.to);
-    return { message: 'WhatsApp message accepted by Meta', data };
-  }
-```
-
 ### GET /
 
 Source: `src/app.controller.ts:9` • Handler: `AppController.getHello`
@@ -4604,13 +4522,6 @@ Source: `src/app/module/auth/dto/create-auth.dto.ts`
 
 ```typescript
 export class ChangePasswordAuthDto {
-  @ApiProperty({
-    example: 'john@example.com',
-  })
-  @IsEmail({}, { message: 'Please provide a valid email' })
-  @IsNotEmpty({ message: 'Email is required' })
-  email!: string;
-
   @ApiProperty({
     example: 'OldPassword123',
   })
@@ -5166,19 +5077,6 @@ Source: `src/app/module/credit/dto/credit.dto.ts`
 export class UpdateCreditPackageDto extends PartialType(
   CreateCreditPackageDto,
 ) {}
-```
-
-### PurchaseCreditPackageDto
-
-Source: `src/app/module/credit/dto/credit.dto.ts`
-
-```typescript
-export class PurchaseCreditPackageDto {
-  @ApiProperty({ example: 'credit-package-id' })
-  @IsString()
-  @IsNotEmpty()
-  packageId!: string;
-}
 ```
 
 ### CreateDashboardDto
@@ -5846,38 +5744,8 @@ export class CreateUserDto {
 Source: `src/app/module/user/dto/update-user.dto.ts`
 
 ```typescript
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
-```
-
-### WhatsAppTestDto
-
-Source: `src/app/module/whatsapp/whatsapp.controller.ts`
-
-```typescript
-export class WhatsAppTestDto {
-  @ApiPropertyOptional({
-    description:
-      'Use this companion sender. Omit to use the Meta test sender from .env.',
-  })
-  @IsOptional()
-  @IsUUID()
-  companionId?: string;
-
-  @ApiProperty({ example: '8801712345678' })
-  @Matches(/^[1-9]\d{6,14}$/)
-  to!: string;
-
-  @ApiPropertyOptional({ enum: ['template', 'text'], default: 'template' })
-  @IsOptional()
-  @IsIn(['template', 'text'])
-  type?: 'template' | 'text';
-
-  @ApiPropertyOptional({ example: 'Hello from Meet Elysia backend' })
-  @IsOptional()
-  @IsString()
-  @MinLength(1)
-  @MaxLength(4096)
-  message?: string;
-}
+export class UpdateUserDto extends PartialType(
+  OmitType(CreateUserDto, ['email', 'password'] as const),
+) {}
 ```
 
