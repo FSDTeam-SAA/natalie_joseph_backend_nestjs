@@ -78,6 +78,18 @@ export class UserController {
     description: 'name',
   })
   @ApiQuery({
+    name: 'phoneNumber',
+    type: String,
+    required: false,
+    description: 'phoneNumber',
+  })
+  @ApiQuery({
+    name: 'status',
+    type: String,
+    required: false,
+    description: 'status',
+  })
+  @ApiQuery({
     name: 'page',
     type: Number,
     required: false,
@@ -105,7 +117,14 @@ export class UserController {
   @UseGuards(AuthGuard('admin'))
   @HttpCode(HttpStatus.OK)
   async getAllUser(@Req() req: Request) {
-    const filters = pick(req.query, ['searchTerm', 'role', 'email', 'name']);
+    const filters = pick(req.query, [
+      'searchTerm',
+      'role',
+      'email',
+      'name',
+      'phoneNumber',
+      'status',
+    ]);
     const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
     const result = await this.userService.getAllUser(filters, options);
 

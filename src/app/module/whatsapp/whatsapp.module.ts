@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { WhatsAppWebhookController } from './whatsapp-webhook.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { WhatsAppController } from './whatsapp.controller';
 import { WhatsAppService } from './whatsapp.service';
 import { WhatsAppInboundService } from './whatsapp-inbound.service';
 import { PrismaModule } from '../../../prisma/prisma.module';
@@ -14,7 +13,6 @@ import { WhatsAppConnectController } from './whatsapp-connect.controller';
   imports: [ConfigModule, JwtModule.register({}), PrismaModule, ChatModule],
   controllers: [
     WhatsAppWebhookController,
-    WhatsAppController,
     WhatsAppConnectController,
   ],
   providers: [WhatsAppService, WhatsAppInboundService, WhatsAppAiService],

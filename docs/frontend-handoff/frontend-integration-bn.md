@@ -121,7 +121,7 @@ POST /api/v1/payment/credits
 {"packageId":"<credit-package-id>"}
 ```
 
-`data.clientSecret` দিয়ে payment confirm করুন। `/credits/purchase` একই কাজের alternative route; **একই purchase-এর জন্য দুটো endpoint hit করবেন না**। Payment-এর পরে wallet সীমিত সময় poll করুন (যেমন ২–৩ সেকেন্ড interval, সর্বোচ্চ ৩০ সেকেন্ড; এটি frontend প্রস্তাব, backend guarantee নয়)। Pending থাকলে “Payment received; balance update pending” এবং Refresh/Support দেখান; আবার Pay চাপিয়ে duplicate purchase করাবেন না।
+`data.clientSecret` দিয়ে payment confirm করুন। `/payment/credits` হলো credit purchase-এর একমাত্র endpoint। Payment-এর পরে wallet সীমিত সময় poll করুন (যেমন ২–৩ সেকেন্ড interval, সর্বোচ্চ ৩০ সেকেন্ড; এটি frontend প্রস্তাব, backend guarantee নয়)। Pending থাকলে “Payment received; balance update pending” এবং Refresh/Support দেখান; আবার Pay চাপিয়ে duplicate purchase করাবেন না।
 
 Usage response-এর fields:
 
@@ -270,7 +270,7 @@ Query names exact reference-এ আছে। Common `page`, `limit`, `sortBy`, `
 
 GET `/health/live` process health; GET `/health/ready` database/runtime-table readiness। Ready সফল মানে AI, mail, Stripe সব tested নয়। Root `/`, `/privacy-policy`, `/terms`, `/data-deletion` global API prefix-এর বাইরে। Backend-এ থাকা legal text publish-এর আগে owner review করবেন।
 
-WhatsApp connect response `data.whatsappUrl` খুলে prefilled START message user-কে send করতে হবে। `/whatsapp/test` বর্তমান guard-এ user/admin দুটোই আছে, যদিও এটি operational testing route; সাধারণ user UI-তে expose করবেন না, backend permission review লাগবে।
+WhatsApp connect response `data.whatsappUrl` খুলে prefilled START message user-কে send করতে হবে। Operational test endpoint সরানো হয়েছে; WhatsApp connect ও webhook বহাল আছে।
 
 ## ১২. Error ও UX handling
 
@@ -313,7 +313,7 @@ Production backend rollout/migration/queue/HTTPS নির্দেশনা rep
 6. User self-service Telegram unlink endpoint নেই; transfer flow আলাদা।
 7. General all-payments export, refund API, manual wallet top-up API এই controller set-এ নেই। Admin user details-এ recent payment data আছে; এর বাইরে feature হলে backend contract লাগবে।
 8. Newsletter GET list/detail controller-এ JWT guard নেই। Subscriber data public হওয়া launch-এর আগে backend review/fix দরকার; শুধু UI লুকানো protection নয়।
-9. `/whatsapp/test` user role-ও গ্রহণ করে। Public launch-এর আগে access policy ঠিক করুন।
+9. Credit purchase-এর জন্য শুধু POST `/payment/credits` ব্যবহার করুন।
 10. Cookie same-site deployment, registration/payment return handling, protected audio playback, real checkout URLs ও mobile test এখনো frontend integration-এর acceptance কাজ।
 11. Response inventory source-derived; provider-dependent live response ও field nullability staging-এ verify করতে হবে। কোনো route list মানেই feature live-tested নয়।
 12. User update service বর্তমানে optional password না থাকলেও bcrypt.hash call করে। তাই name/photo-only profile update fail হতে পারে। Frontend থেকে dummy password পাঠিয়ে workaround করবেন না; backend fix প্রয়োজন।
