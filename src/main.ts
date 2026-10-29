@@ -22,7 +22,7 @@ async function bootstrap() {
   expressApp.set('trust proxy', deployment.hops);
   app.enableShutdownHooks();
   app.enableCors({
-    origin: deployment.origins,
+    origin: true,
     credentials: true,
   });
 
