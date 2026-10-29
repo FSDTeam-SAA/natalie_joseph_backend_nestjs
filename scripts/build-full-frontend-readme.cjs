@@ -8,7 +8,7 @@ const purpose = {
  AuthController: {register:'নতুন website account তৈরি; এরপর login',login:'Email/password login, accessToken ও refresh cookie',refreshToken:'HttpOnly refresh cookie দিয়ে নতুন access token',forgotPassword:'Password reset OTP পাঠানো',verifyOtp:'OTP যাচাই করে resetToken নেওয়া',resetPassword:'resetToken দিয়ে নতুন password',changePassword:'বর্তমান password যাচাই করে পরিবর্তন',logout:'Session logout ও refresh cookie clear'},
  ChatController:{getConversations:'নিজের conversation list',getMessages:'নির্বাচিত companion-এর paginated message history',getUsage:'Active subscription, ব্যবহৃত/বাকি credits ও purchased balance',sendMessage:'Text/transcript পাঠিয়ে AI reply; requestId retry support'},
  CompanionsController:{createCompanion:'Nested metadata দিয়ে companion তৈরি',getAllCompanions:'Public companion cards, filter ও pagination',getCompanionById:'Companion details page data',updateCompanion:'Companion metadata edit',updateProfileImage:'Profile picture upload; configured হলে Telegram sync queue',updateCoverImage:'Cover image upload',addGalleryImages:'Gallery-তে ছবি যোগ',updateGalleryImages:'Gallery replace—append নয়',deleteCompanion:'Companion delete action; confirmation আবশ্যক',updateVoice:'Companion voiceId বদলানো'},
- CreditController:{createPackage:'Extra credit package তৈরি',getPackages:'Active packages দিয়ে purchase cards',updatePackage:'Package price/credits/active state edit',deactivatePackage:'Package deactivate',purchase:'Credit purchase payment শুরু; /payment/credits-এর alternative',getWallet:'নিজের effective wallet, credit lots/expiry ও recent ledger'},
+ CreditController:{createPackage:'Extra credit package তৈরি',getPackages:'Active packages দিয়ে purchase cards',updatePackage:'Package price/credits/active state edit',deactivatePackage:'Package deactivate',getWallet:'নিজের effective wallet, credit lots/expiry ও recent ledger'},
  DashboardController:{dashboardOverview:'Admin summary cards—users, subscriptions, messages, conversations, revenue'},
  EngagementController:{relationships:'নিজের relationship list',relationship:'নিজের nickname/notes edit',stories:'Published dated text/life events; 24h media Story নয়',photo:'Existing gallery photo unlock/view; library request নয়',photos:'নিজের viewed-photo history',ledger:'নিজের credit transaction history',costs:'বর্তমান per-action credit rates',notifications:'নিজের notification list',read:'নিজের notification read করা'},
  EngagementAdminController:{cost:'Action credit rate পরিবর্তন',story:'Companion/day অনুযায়ী text life event upsert',stories:'সব text life events, future/draft সহ',conversations:'Conversation monitoring list',conversation:'Conversation details ও messages',mode:'AI/human mode ও admin takeover',reply:'Human reply DB-তে save; Telegram push নয়',user:'User finance/relationship detail',ledger:'নির্বাচিত user-এর ledger',notification:'নির্বাচিত user-এর in-app notification তৈরি'},
@@ -30,7 +30,6 @@ const purpose = {
  WebhookController:{handleWebhook:'Stripe signed webhook; frontend থেকে call নয়'},
  WhatsAppConnectController:{connect:'WhatsApp link/prefilled START message URL'},
  WhatsAppWebhookController:{verifyWebhook:'Meta webhook subscription verification',receiveWebhook:'Meta signed incoming events'},
- WhatsAppController:{test:'Operational WhatsApp test; সাধারণ user website feature নয়'},
  AppController:{getHello:'Backend root response'},
  HealthController:{live:'Process liveness',ready:'Backend readiness check; সব provider tested বোঝায় না'},
  LegalPagesController:{privacyPolicy:'Privacy policy HTML',terms:'Terms HTML',dataDeletion:'Data-deletion instructions HTML'},
@@ -40,11 +39,11 @@ const groups=[
  ['website','Website: public/auth ও user API',new Set(['AuthController','ChatController','EngagementController','LifestyleController','TelegramConnectController','WhatsAppConnectController'])],
  ['admin','Admin dashboard API',new Set(['DashboardController','EngagementAdminController','LifestyleAdminController','PublishingAdminController'])],
  ['shared','Website listing + admin CRUD',new Set(['CompanionsController','CreditController','GiftController','SubscriptionController','UserController','PaymentController','NewsletterController','MediaStoryController'])],
- ['system','Mini App, media, webhook ও infrastructure',new Set(['StoryMediaController','TelegramStoryController','PublishingConsoleController','TelegramMiniAppController','TelegramWebhookController','WebhookController','WhatsAppWebhookController','WhatsAppController','AppController','HealthController','LegalPagesController'])],
+ ['system','Mini App, media, webhook ও infrastructure',new Set(['StoryMediaController','TelegramStoryController','PublishingConsoleController','TelegramMiniAppController','TelegramWebhookController','WebhookController','WhatsAppWebhookController','AppController','HealthController','LegalPagesController'])],
 ];
 const head=`# Meet Elysia — সম্পূর্ণ Frontend ও Admin API README
 
-**তারিখ: ২৫ অক্টোবর ২০২৬ • Source-derived handover • ${contract.routes.length}টি route • ${contract.dtos.length}টি DTO class**
+**তারিখ: ২৯ অক্টোবর ২০২৬ • Source-derived handover • ${contract.routes.length}টি route • ${contract.dtos.length}টি DTO class**
 
 Frontend engineer-কে **এই একটি ফাইল** দিলেই website এবং admin dashboard-এর API mapping, flow, upload, DTO, access ও response mapping পড়তে পারবেন। এটি বর্তমান local backend source-এর contract; deployed server একই version চালাচ্ছে কি না rollout team যাচাই করবে। কোনো credentials এই ফাইলে নেই।
 

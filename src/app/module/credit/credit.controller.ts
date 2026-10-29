@@ -13,11 +13,9 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { AuthGuard } from 'src/app/middlewares/auth.guard';
-import { PaymentService } from '../payment/payment.service';
 import { CreditService } from './credit.service';
 import {
   CreateCreditPackageDto,
-  PurchaseCreditPackageDto,
   UpdateCreditPackageDto,
 } from './dto/credit.dto';
 
@@ -26,7 +24,6 @@ import {
 export class CreditController {
   constructor(
     private readonly creditService: CreditService,
-    private readonly paymentService: PaymentService,
   ) {}
 
   @Post('packages')
@@ -64,22 +61,6 @@ export class CreditController {
   async deactivatePackage(@Param('id') id: string) {
     const data = await this.creditService.deactivatePackage(id);
     return { message: 'Credit package deactivated successfully', data };
-  }
-
-  @Post('purchase')
-  @ApiBearerAuth('access-token')
-  @UseGuards(AuthGuard('user'))
-  @ApiOperation({ summary: 'Purchase a credit package' })
-  async purchase(
-    @Req() request: Request,
-    @Body() payload: PurchaseCreditPackageDto,
-  ) {
-    if (!request.user) throw new UnauthorizedException();
-    const data = await this.paymentService.buyCredits(
-      request.user.id,
-      payload.packageId,
-    );
-    return { message: 'Credit payment initiated successfully', data };
   }
 
   @Get('wallet')

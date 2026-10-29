@@ -1,6 +1,6 @@
 # Meet Elysia — সম্পূর্ণ Frontend ও Admin API README
 
-**তারিখ: ২৫ অক্টোবর ২০২৬ • Source-derived handover • 122টি route • 63টি DTO class**
+**তারিখ: ২৯ অক্টোবর ২০২৬ • Source-derived handover • 120টি route • 61টি DTO class**
 
 Frontend engineer-কে **এই একটি ফাইল** দিলেই website এবং admin dashboard-এর API mapping, flow, upload, DTO, access ও response mapping পড়তে পারবেন। এটি বর্তমান local backend source-এর contract; deployed server একই version চালাচ্ছে কি না rollout team যাচাই করবে। কোনো credentials এই ফাইলে নেই।
 
@@ -186,7 +186,6 @@ Admin overview data keys: `totalUsers, totalSubscriptionPlans, activeSubscriptio
 | GET | `/api/v1/credits/packages` | Active packages দিয়ে purchase cards | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
 | PATCH | `/api/v1/credits/packages/:id` | Package price/credits/active state edit | UseGuards(AuthGuard('admin')) |
 | DELETE | `/api/v1/credits/packages/:id` | Package deactivate | UseGuards(AuthGuard('admin')) |
-| POST | `/api/v1/credits/purchase` | Credit purchase payment শুরু; /payment/credits-এর alternative | UseGuards(AuthGuard('user')) |
 | GET | `/api/v1/credits/wallet` | নিজের effective wallet, credit lots/expiry ও recent ledger | UseGuards(AuthGuard('user')) |
 | POST | `/api/v1/gifts` | Gift item ও image তৈরি | UseGuards(AuthGuard('admin')) |
 | GET | `/api/v1/gifts` | Gift catalogue | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
@@ -236,7 +235,6 @@ Admin overview data keys: `totalUsers, totalSubscriptionPlans, activeSubscriptio
 | POST | `/api/v1/webhook` | Stripe signed webhook; frontend থেকে call নয় | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
 | GET | `/api/v1/webhooks/whatsapp` | Meta webhook subscription verification | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
 | POST | `/api/v1/webhooks/whatsapp` | Meta signed incoming events | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/whatsapp/test` | Operational WhatsApp test; সাধারণ user website feature নয় | UseGuards(AuthGuard('admin', 'user')) |
 | GET | `/` | Backend root response | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
 | GET | `/api/v1/health/live` | Process liveness | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
 | GET | `/api/v1/health/ready` | Backend readiness check; সব provider tested বোঝায় না | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
@@ -355,7 +353,7 @@ POST /api/v1/payment/credits
 {"packageId":"<credit-package-id>"}
 ```
 
-`data.clientSecret` দিয়ে payment confirm করুন। `/credits/purchase` একই কাজের alternative route; **একই purchase-এর জন্য দুটো endpoint hit করবেন না**। Payment-এর পরে wallet সীমিত সময় poll করুন (যেমন ২–৩ সেকেন্ড interval, সর্বোচ্চ ৩০ সেকেন্ড; এটি frontend প্রস্তাব, backend guarantee নয়)। Pending থাকলে “Payment received; balance update pending” এবং Refresh/Support দেখান; আবার Pay চাপিয়ে duplicate purchase করাবেন না।
+`data.clientSecret` দিয়ে payment confirm করুন। `/payment/credits` হলো credit purchase-এর একমাত্র endpoint। Payment-এর পরে wallet সীমিত সময় poll করুন (যেমন ২–৩ সেকেন্ড interval, সর্বোচ্চ ৩০ সেকেন্ড; এটি frontend প্রস্তাব, backend guarantee নয়)। Pending থাকলে “Payment received; balance update pending” এবং Refresh/Support দেখান; আবার Pay চাপিয়ে duplicate purchase করাবেন না।
 
 Usage response-এর fields:
 
@@ -504,7 +502,7 @@ Query names exact reference-এ আছে। Common `page`, `limit`, `sortBy`, `
 
 GET `/health/live` process health; GET `/health/ready` database/runtime-table readiness। Ready সফল মানে AI, mail, Stripe সব tested নয়। Root `/`, `/privacy-policy`, `/terms`, `/data-deletion` global API prefix-এর বাইরে। Backend-এ থাকা legal text publish-এর আগে owner review করবেন।
 
-WhatsApp connect response `data.whatsappUrl` খুলে prefilled START message user-কে send করতে হবে। `/whatsapp/test` বর্তমান guard-এ user/admin দুটোই আছে, যদিও এটি operational testing route; সাধারণ user UI-তে expose করবেন না, backend permission review লাগবে।
+WhatsApp connect response `data.whatsappUrl` খুলে prefilled START message user-কে send করতে হবে। Operational test endpoint সরানো হয়েছে; WhatsApp connect ও webhook বহাল আছে।
 
 ## ১২. Error ও UX handling
 
@@ -547,7 +545,7 @@ Production backend rollout/migration/queue/HTTPS নির্দেশনা rep
 6. User self-service Telegram unlink endpoint নেই; transfer flow আলাদা।
 7. General all-payments export, refund API, manual wallet top-up API এই controller set-এ নেই। Admin user details-এ recent payment data আছে; এর বাইরে feature হলে backend contract লাগবে।
 8. Newsletter GET list/detail controller-এ JWT guard নেই। Subscriber data public হওয়া launch-এর আগে backend review/fix দরকার; শুধু UI লুকানো protection নয়।
-9. `/whatsapp/test` user role-ও গ্রহণ করে। Public launch-এর আগে access policy ঠিক করুন।
+9. Credit purchase-এর জন্য শুধু POST `/payment/credits` ব্যবহার করুন।
 10. Cookie same-site deployment, registration/payment return handling, protected audio playback, real checkout URLs ও mobile test এখনো frontend integration-এর acceptance কাজ।
 11. Response inventory source-derived; provider-dependent live response ও field nullability staging-এ verify করতে হবে। কোনো route list মানেই feature live-tested নয়।
 12. User update service বর্তমানে optional password না থাকলেও bcrypt.hash call করে। তাই name/photo-only profile update fail হতে পারে। Frontend থেকে dummy password পাঠিয়ে workaround করবেন না; backend fix প্রয়োজন।
@@ -1278,6 +1276,7 @@ Access: `UseGuards(AuthGuard('admin', 'user'))`
 Request parameters ও DTO:
 
 ```typescript
+@Req() req: Request
 @Body() changePasswordAuthDto: ChangePasswordAuthDto
 ```
 
@@ -1305,8 +1304,9 @@ Controller response mapping:
 
 ```typescript
 {
+    const userId = req.user!.id;
     const result = await this.authService.changePassword(
-      changePasswordAuthDto.email,
+      userId,
       changePasswordAuthDto.oldPassword,
       changePasswordAuthDto.newPassword,
     );
@@ -1322,7 +1322,7 @@ Controller response mapping:
 
 **কাজ:** Session logout ও refresh cookie clear
 
-Source: `src/app/module/auth/auth.controller.ts:219`
+Source: `src/app/module/auth/auth.controller.ts:223`
 
 Access: `UseGuards(AuthGuard('admin', 'user'))`
 
@@ -1970,7 +1970,7 @@ Controller response mapping:
 
 **কাজ:** Extra credit package তৈরি
 
-Source: `src/app/module/credit/credit.controller.ts:32`
+Source: `src/app/module/credit/credit.controller.ts:29`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2002,7 +2002,7 @@ Controller response mapping:
 
 **কাজ:** Active packages দিয়ে purchase cards
 
-Source: `src/app/module/credit/credit.controller.ts:41`
+Source: `src/app/module/credit/credit.controller.ts:38`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -2032,7 +2032,7 @@ Controller response mapping:
 
 **কাজ:** Package price/credits/active state edit
 
-Source: `src/app/module/credit/credit.controller.ts:48`
+Source: `src/app/module/credit/credit.controller.ts:45`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2065,7 +2065,7 @@ Controller response mapping:
 
 **কাজ:** Package deactivate
 
-Source: `src/app/module/credit/credit.controller.ts:60`
+Source: `src/app/module/credit/credit.controller.ts:57`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2093,48 +2093,11 @@ Controller response mapping:
   }
 ```
 
-## POST /api/v1/credits/purchase
-
-**কাজ:** Credit purchase payment শুরু; /payment/credits-এর alternative
-
-Source: `src/app/module/credit/credit.controller.ts:69`
-
-Access: `UseGuards(AuthGuard('user'))`
-
-Request parameters ও DTO:
-
-```typescript
-@Req() request: Request
-@Body() payload: PurchaseCreditPackageDto
-```
-
-Upload/status/validation metadata:
-
-```typescript
-@Post('purchase')
-@ApiBearerAuth('access-token')
-@UseGuards(AuthGuard('user'))
-@ApiOperation({ summary: 'Purchase a credit package' })
-```
-
-Controller response mapping:
-
-```typescript
-{
-    if (!request.user) throw new UnauthorizedException();
-    const data = await this.paymentService.buyCredits(
-      request.user.id,
-      payload.packageId,
-    );
-    return { message: 'Credit payment initiated successfully', data };
-  }
-```
-
 ## GET /api/v1/credits/wallet
 
 **কাজ:** নিজের effective wallet, credit lots/expiry ও recent ledger
 
-Source: `src/app/module/credit/credit.controller.ts:85`
+Source: `src/app/module/credit/credit.controller.ts:66`
 
 Access: `UseGuards(AuthGuard('user'))`
 
@@ -5254,55 +5217,6 @@ Controller response mapping:
   }
 ```
 
-## POST /api/v1/whatsapp/test
-
-**কাজ:** Operational WhatsApp test; সাধারণ user website feature নয়
-
-Source: `src/app/module/whatsapp/whatsapp.controller.ts:66`
-
-Access: `UseGuards(AuthGuard('admin', 'user'))`
-
-Request parameters ও DTO:
-
-```typescript
-@Body() dto: WhatsAppTestDto
-```
-
-Upload/status/validation metadata:
-
-```typescript
-@Post('test')
-@HttpCode(200)
-```
-
-Controller response mapping:
-
-```typescript
-{
-    // Only the admin test route falls back to the single .env sender.
-    let phoneNumberId =
-      this.config.get<string>('WHATSAPP_PHONE_NUMBER_ID') ?? '';
-    if (dto.companionId) {
-      const companion = await this.prisma.companions.findFirst({
-        where: { id: dto.companionId, status: true, whatsappEnabled: true },
-      });
-      if (!companion?.whatsappPhoneNumberId) {
-        throw new NotFoundException('Active WhatsApp companion not found');
-      }
-      phoneNumberId = companion.whatsappPhoneNumberId;
-    }
-    const data =
-      dto.type === 'text'
-        ? await this.whatsapp.sendText(
-            phoneNumberId,
-            dto.to,
-            dto.message ?? 'Hello from Meet Elysia backend',
-          )
-        : await this.whatsapp.sendTestTemplate(phoneNumberId, dto.to);
-    return { message: 'WhatsApp message accepted by Meta', data };
-  }
-```
-
 ## GET /
 
 **কাজ:** Backend root response
@@ -5700,13 +5614,6 @@ Source: `src/app/module/auth/dto/create-auth.dto.ts`
 
 ```typescript
 export class ChangePasswordAuthDto {
-  @ApiProperty({
-    example: 'john@example.com',
-  })
-  @IsEmail({}, { message: 'Please provide a valid email' })
-  @IsNotEmpty({ message: 'Email is required' })
-  email!: string;
-
   @ApiProperty({
     example: 'OldPassword123',
   })
@@ -6262,19 +6169,6 @@ Source: `src/app/module/credit/dto/credit.dto.ts`
 export class UpdateCreditPackageDto extends PartialType(
   CreateCreditPackageDto,
 ) {}
-```
-
-## PurchaseCreditPackageDto
-
-Source: `src/app/module/credit/dto/credit.dto.ts`
-
-```typescript
-export class PurchaseCreditPackageDto {
-  @ApiProperty({ example: 'credit-package-id' })
-  @IsString()
-  @IsNotEmpty()
-  packageId!: string;
-}
 ```
 
 ## CreateDashboardDto
@@ -6942,39 +6836,9 @@ export class CreateUserDto {
 Source: `src/app/module/user/dto/update-user.dto.ts`
 
 ```typescript
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
-```
-
-## WhatsAppTestDto
-
-Source: `src/app/module/whatsapp/whatsapp.controller.ts`
-
-```typescript
-export class WhatsAppTestDto {
-  @ApiPropertyOptional({
-    description:
-      'Use this companion sender. Omit to use the Meta test sender from .env.',
-  })
-  @IsOptional()
-  @IsUUID()
-  companionId?: string;
-
-  @ApiProperty({ example: '8801712345678' })
-  @Matches(/^[1-9]\d{6,14}$/)
-  to!: string;
-
-  @ApiPropertyOptional({ enum: ['template', 'text'], default: 'template' })
-  @IsOptional()
-  @IsIn(['template', 'text'])
-  type?: 'template' | 'text';
-
-  @ApiPropertyOptional({ example: 'Hello from Meet Elysia backend' })
-  @IsOptional()
-  @IsString()
-  @MinLength(1)
-  @MaxLength(4096)
-  message?: string;
-}
+export class UpdateUserDto extends PartialType(
+  OmitType(CreateUserDto, ['email', 'password'] as const),
+) {}
 ```
 
 # Response enum values

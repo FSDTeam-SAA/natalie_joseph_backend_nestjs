@@ -41,7 +41,11 @@ export class UserService {
 
   async getAllUser(params: IFilterParams, options: IOptions) {
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper(options);
-    const whenCondition = buildWhereConditions(params, ['name', 'email']);
+    const whenCondition = buildWhereConditions(params, [
+      'name',
+      'email',
+      'phoneNumber',
+    ]);
 
     const [result, total] = await Promise.all([
       this.prisma.user.findMany({

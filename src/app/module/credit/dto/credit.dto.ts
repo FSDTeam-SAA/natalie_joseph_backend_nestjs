@@ -40,9 +40,3 @@ export class UpdateCreditPackageDto extends PartialType(
   CreateCreditPackageDto,
 ) {}
 
-export class PurchaseCreditPackageDto {
-  @ApiProperty({ example: 'credit-package-id' })
-  @IsString()
-  @IsNotEmpty()
-  packageId!: string;
-}

@@ -64,7 +64,7 @@ and tunnel running. POST requires Meta raw-body signature verification.
 
 ## Admin test API
 
-POST /api/v1/whatsapp/test remains admin-only and sends template or fixed text.
+The operational POST /api/v1/whatsapp/test endpoint has been removed. Connect and webhook routes remain available.
 It does not call AI. Example body (replace recipient and UUID):
 
 ```json

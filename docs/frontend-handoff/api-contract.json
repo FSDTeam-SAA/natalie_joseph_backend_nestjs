@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-25T09:03:31.344Z",
+  "generatedAt": "2026-10-29T02:55:33.854Z",
   "note": "Source inventory, not OpenAPI. Controller guards are shown; service validation still applies.",
   "routes": [
     {
@@ -135,6 +135,7 @@
         "UseGuards(AuthGuard('admin', 'user'))"
       ],
       "parameters": [
+        "@Req() req: Request",
         "@Body() changePasswordAuthDto: ChangePasswordAuthDto"
       ],
       "decorators": [
@@ -146,7 +147,7 @@
         "@ApiResponse({\r\n    status: HttpStatus.UNAUTHORIZED,\r\n    description: 'Unauthorized',\r\n  })",
         "@HttpCode(HttpStatus.OK)"
       ],
-      "handlerSource": "{\r\n    const result = await this.authService.changePassword(\r\n      changePasswordAuthDto.email,\r\n      changePasswordAuthDto.oldPassword,\r\n      changePasswordAuthDto.newPassword,\r\n    );\r\n\r\n    return {\r\n      message: 'Password changed successfully',\r\n      data: result,\r\n    };\r\n  }"
+      "handlerSource": "{\r\n    const userId = req.user!.id;\r\n    const result = await this.authService.changePassword(\r\n      userId,\r\n      changePasswordAuthDto.oldPassword,\r\n      changePasswordAuthDto.newPassword,\r\n    );\r\n\r\n    return {\r\n      message: 'Password changed successfully',\r\n      data: result,\r\n    };\r\n  }"
     },
     {
       "method": "POST",
@@ -154,7 +155,7 @@
       "controller": "AuthController",
       "handler": "logout",
       "file": "src/app/module/auth/auth.controller.ts",
-      "line": 219,
+      "line": 223,
       "guards": [
         "UseGuards(AuthGuard('admin', 'user'))"
       ],
@@ -503,7 +504,7 @@
       "controller": "CreditController",
       "handler": "createPackage",
       "file": "src/app/module/credit/credit.controller.ts",
-      "line": 32,
+      "line": 29,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -516,7 +517,7 @@
         "@UseGuards(AuthGuard('admin'))",
         "@ApiOperation({ summary: 'Create a credit package (admin)' })"
       ],
-      "handlerSource": "{\r\n    const data = await this.creditService.createPackage(payload);\r\n    return { message: 'Credit package created successfully', data };\r\n  }"
+      "handlerSource": "{\n    const data = await this.creditService.createPackage(payload);\n    return { message: 'Credit package created successfully', data };\n  }"
     },
     {
       "method": "GET",
@@ -524,14 +525,14 @@
       "controller": "CreditController",
       "handler": "getPackages",
       "file": "src/app/module/credit/credit.controller.ts",
-      "line": 41,
+      "line": 38,
       "guards": [],
       "parameters": [],
       "decorators": [
         "@Get('packages')",
         "@ApiOperation({ summary: 'Get active credit packages' })"
       ],
-      "handlerSource": "{\r\n    const data = await this.creditService.getActivePackages();\r\n    return { message: 'Credit packages fetched successfully', data };\r\n  }"
+      "handlerSource": "{\n    const data = await this.creditService.getActivePackages();\n    return { message: 'Credit packages fetched successfully', data };\n  }"
     },
     {
       "method": "PATCH",
@@ -539,7 +540,7 @@
       "controller": "CreditController",
       "handler": "updatePackage",
       "file": "src/app/module/credit/credit.controller.ts",
-      "line": 48,
+      "line": 45,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -553,7 +554,7 @@
         "@UseGuards(AuthGuard('admin'))",
         "@ApiOperation({ summary: 'Update a credit package (admin)' })"
       ],
-      "handlerSource": "{\r\n    const data = await this.creditService.updatePackage(id, payload);\r\n    return { message: 'Credit package updated successfully', data };\r\n  }"
+      "handlerSource": "{\n    const data = await this.creditService.updatePackage(id, payload);\n    return { message: 'Credit package updated successfully', data };\n  }"
     },
     {
       "method": "DELETE",
@@ -561,7 +562,7 @@
       "controller": "CreditController",
       "handler": "deactivatePackage",
       "file": "src/app/module/credit/credit.controller.ts",
-      "line": 60,
+      "line": 57,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
       ],
@@ -574,29 +575,7 @@
         "@UseGuards(AuthGuard('admin'))",
         "@ApiOperation({ summary: 'Deactivate a credit package (admin)' })"
       ],
-      "handlerSource": "{\r\n    const data = await this.creditService.deactivatePackage(id);\r\n    return { message: 'Credit package deactivated successfully', data };\r\n  }"
-    },
-    {
-      "method": "POST",
-      "path": "/api/v1/credits/purchase",
-      "controller": "CreditController",
-      "handler": "purchase",
-      "file": "src/app/module/credit/credit.controller.ts",
-      "line": 69,
-      "guards": [
-        "UseGuards(AuthGuard('user'))"
-      ],
-      "parameters": [
-        "@Req() request: Request",
-        "@Body() payload: PurchaseCreditPackageDto"
-      ],
-      "decorators": [
-        "@Post('purchase')",
-        "@ApiBearerAuth('access-token')",
-        "@UseGuards(AuthGuard('user'))",
-        "@ApiOperation({ summary: 'Purchase a credit package' })"
-      ],
-      "handlerSource": "{\r\n    if (!request.user) throw new UnauthorizedException();\r\n    const data = await this.paymentService.buyCredits(\r\n      request.user.id,\r\n      payload.packageId,\r\n    );\r\n    return { message: 'Credit payment initiated successfully', data };\r\n  }"
+      "handlerSource": "{\n    const data = await this.creditService.deactivatePackage(id);\n    return { message: 'Credit package deactivated successfully', data };\n  }"
     },
     {
       "method": "GET",
@@ -604,7 +583,7 @@
       "controller": "CreditController",
       "handler": "getWallet",
       "file": "src/app/module/credit/credit.controller.ts",
-      "line": 85,
+      "line": 66,
       "guards": [
         "UseGuards(AuthGuard('user'))"
       ],
@@ -617,7 +596,7 @@
         "@UseGuards(AuthGuard('user'))",
         "@ApiOperation({ summary: 'Get wallet balance and recent transactions' })"
       ],
-      "handlerSource": "{\r\n    if (!request.user) throw new UnauthorizedException();\r\n    const data = await this.creditService.getWallet(request.user.id);\r\n    return { message: 'Wallet fetched successfully', data };\r\n  }"
+      "handlerSource": "{\n    if (!request.user) throw new UnauthorizedException();\n    const data = await this.creditService.getWallet(request.user.id);\n    return { message: 'Wallet fetched successfully', data };\n  }"
     },
     {
       "method": "GET",
@@ -2360,25 +2339,6 @@
       "handlerSource": "{\r\n    this.inbound.verifySignature(req.rawBody, signature);\r\n    this.logger.log('Verified WhatsApp webhook received');\r\n    await this.inbound.receive(body);\r\n    return 'EVENT_RECEIVED';\r\n  }"
     },
     {
-      "method": "POST",
-      "path": "/api/v1/whatsapp/test",
-      "controller": "WhatsAppController",
-      "handler": "test",
-      "file": "src/app/module/whatsapp/whatsapp.controller.ts",
-      "line": 66,
-      "guards": [
-        "UseGuards(AuthGuard('admin', 'user'))"
-      ],
-      "parameters": [
-        "@Body() dto: WhatsAppTestDto"
-      ],
-      "decorators": [
-        "@Post('test')",
-        "@HttpCode(200)"
-      ],
-      "handlerSource": "{\r\n    // Only the admin test route falls back to the single .env sender.\r\n    let phoneNumberId =\r\n      this.config.get<string>('WHATSAPP_PHONE_NUMBER_ID') ?? '';\r\n    if (dto.companionId) {\r\n      const companion = await this.prisma.companions.findFirst({\r\n        where: { id: dto.companionId, status: true, whatsappEnabled: true },\r\n      });\r\n      if (!companion?.whatsappPhoneNumberId) {\r\n        throw new NotFoundException('Active WhatsApp companion not found');\r\n      }\r\n      phoneNumberId = companion.whatsappPhoneNumberId;\r\n    }\r\n    const data =\r\n      dto.type === 'text'\r\n        ? await this.whatsapp.sendText(\r\n            phoneNumberId,\r\n            dto.to,\r\n            dto.message ?? 'Hello from Meet Elysia backend',\r\n          )\r\n        : await this.whatsapp.sendTestTemplate(phoneNumberId, dto.to);\r\n    return { message: 'WhatsApp message accepted by Meta', data };\r\n  }"
-    },
-    {
       "method": "GET",
       "path": "/",
       "controller": "AppController",
@@ -2497,7 +2457,7 @@
     {
       "name": "ChangePasswordAuthDto",
       "file": "src/app/module/auth/dto/create-auth.dto.ts",
-      "source": "export class ChangePasswordAuthDto {\r\n  @ApiProperty({\r\n    example: 'john@example.com',\r\n  })\r\n  @IsEmail({}, { message: 'Please provide a valid email' })\r\n  @IsNotEmpty({ message: 'Email is required' })\r\n  email!: string;\r\n\r\n  @ApiProperty({\r\n    example: 'OldPassword123',\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Old password is required' })\r\n  oldPassword!: string;\r\n\r\n  @ApiProperty({\r\n    example: 'NewPassword123',\r\n    minLength: 6,\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'New password is required' })\r\n  @MinLength(6, {\r\n    message: 'New password must be at least 6 characters',\r\n  })\r\n  newPassword!: string;\r\n}"
+      "source": "export class ChangePasswordAuthDto {\r\n  @ApiProperty({\r\n    example: 'OldPassword123',\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Old password is required' })\r\n  oldPassword!: string;\r\n\r\n  @ApiProperty({\r\n    example: 'NewPassword123',\r\n    minLength: 6,\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'New password is required' })\r\n  @MinLength(6, {\r\n    message: 'New password must be at least 6 characters',\r\n  })\r\n  newPassword!: string;\r\n}"
     },
     {
       "name": "UpdateAuthDto",
@@ -2587,17 +2547,12 @@
     {
       "name": "CreateCreditPackageDto",
       "file": "src/app/module/credit/dto/credit.dto.ts",
-      "source": "export class CreateCreditPackageDto {\r\n  @ApiProperty({ example: 'Starter Credits' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  name!: string;\r\n\r\n  @ApiProperty({ example: 100 })\r\n  @IsInt()\r\n  @Min(1)\r\n  credits!: number;\r\n\r\n  @ApiProperty({ example: '4.99' })\r\n  @IsString()\r\n  @Matches(/^\\d+(\\.\\d{1,2})?$/, { message: 'Price must be a valid amount' })\r\n  price!: string;\r\n\r\n  @ApiPropertyOptional({ example: 'usd', default: 'usd' })\r\n  @IsOptional()\r\n  @IsString()\r\n  currency?: string;\r\n\r\n  @ApiPropertyOptional({ default: true })\r\n  @IsOptional()\r\n  @IsBoolean()\r\n  isActive?: boolean;\r\n}"
+      "source": "export class CreateCreditPackageDto {\n  @ApiProperty({ example: 'Starter Credits' })\n  @IsString()\n  @IsNotEmpty()\n  name!: string;\n\n  @ApiProperty({ example: 100 })\n  @IsInt()\n  @Min(1)\n  credits!: number;\n\n  @ApiProperty({ example: '4.99' })\n  @IsString()\n  @Matches(/^\\d+(\\.\\d{1,2})?$/, { message: 'Price must be a valid amount' })\n  price!: string;\n\n  @ApiPropertyOptional({ example: 'usd', default: 'usd' })\n  @IsOptional()\n  @IsString()\n  currency?: string;\n\n  @ApiPropertyOptional({ default: true })\n  @IsOptional()\n  @IsBoolean()\n  isActive?: boolean;\n}"
     },
     {
       "name": "UpdateCreditPackageDto",
       "file": "src/app/module/credit/dto/credit.dto.ts",
-      "source": "export class UpdateCreditPackageDto extends PartialType(\r\n  CreateCreditPackageDto,\r\n) {}"
-    },
-    {
-      "name": "PurchaseCreditPackageDto",
-      "file": "src/app/module/credit/dto/credit.dto.ts",
-      "source": "export class PurchaseCreditPackageDto {\r\n  @ApiProperty({ example: 'credit-package-id' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  packageId!: string;\r\n}"
+      "source": "export class UpdateCreditPackageDto extends PartialType(\n  CreateCreditPackageDto,\n) {}"
     },
     {
       "name": "CreateDashboardDto",
@@ -2777,12 +2732,7 @@
     {
       "name": "UpdateUserDto",
       "file": "src/app/module/user/dto/update-user.dto.ts",
-      "source": "export class UpdateUserDto extends PartialType(CreateUserDto) {}"
-    },
-    {
-      "name": "WhatsAppTestDto",
-      "file": "src/app/module/whatsapp/whatsapp.controller.ts",
-      "source": "export class WhatsAppTestDto {\r\n  @ApiPropertyOptional({\r\n    description:\r\n      'Use this companion sender. Omit to use the Meta test sender from .env.',\r\n  })\r\n  @IsOptional()\r\n  @IsUUID()\r\n  companionId?: string;\r\n\r\n  @ApiProperty({ example: '8801712345678' })\r\n  @Matches(/^[1-9]\\d{6,14}$/)\r\n  to!: string;\r\n\r\n  @ApiPropertyOptional({ enum: ['template', 'text'], default: 'template' })\r\n  @IsOptional()\r\n  @IsIn(['template', 'text'])\r\n  type?: 'template' | 'text';\r\n\r\n  @ApiPropertyOptional({ example: 'Hello from Meet Elysia backend' })\r\n  @IsOptional()\r\n  @IsString()\r\n  @MinLength(1)\r\n  @MaxLength(4096)\r\n  message?: string;\r\n}"
+      "source": "export class UpdateUserDto extends PartialType(\r\n  OmitType(CreateUserDto, ['email', 'password'] as const),\r\n) {}"
     }
   ]
 }
