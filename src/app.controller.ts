@@ -1,8 +1,10 @@
+import { ApiExcludeController } from '@nestjs/swagger';
 import { Controller, Get, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import type { Response } from 'express';
 
 @Controller()
+@ApiExcludeController()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 

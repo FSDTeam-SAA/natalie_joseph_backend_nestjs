@@ -135,6 +135,19 @@ export class UserController {
     };
   }
 
+  @Get('/overview')
+  @ApiOperation({ summary: 'User overview' })
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('admin'))
+  @HttpCode(HttpStatus.OK)
+  async getAllUserOverview() {
+    const result = await this.userService.getAllUserOverview();
+    return {
+      message: 'get all user overview successfully',
+      data: result,
+    };
+  }
+
   @Get('my-profile')
   @ApiOperation({
     summary: 'get my profile',

@@ -71,6 +71,43 @@ export class UserService {
     };
   }
 
+  async getAllUserOverview() {
+    const totalUser = await this.prisma.user.count({
+      where: {
+        role: { not: 'admin' },
+      },
+    });
+
+    const totalActiveUser = await this.prisma.user.count({
+      where: {
+        role: { not: 'admin' },
+        status: 'approved',
+      },
+    });
+
+    const totalPremiumUser = await this.prisma.user.count({
+      where: {
+        role: { not: 'admin' },
+        isSubscribed: true,
+      },
+    });
+
+    const totalFreeUser = await this.prisma.user.count({
+      where: {
+        role: { not: 'admin' },
+        isSubscribed: false,
+        isFreeTrialUsed: true,
+      },
+    });
+
+    return {
+      totalUser,
+      totalActiveUser,
+      totalPremiumUser,
+      totalFreeUser,
+    };
+  }
+
   async getUserById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },

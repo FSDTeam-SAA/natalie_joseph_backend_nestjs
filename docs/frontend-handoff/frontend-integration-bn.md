@@ -68,7 +68,6 @@ Request body-তে validation DTO অনুসরণ করুন। Whitelist 
 | Gifts | GET `/gifts`, POST `/gifts/:giftId/send` | companionId দিয়ে gift পাঠানো |
 | Notifications | GET `/notifications`, PATCH `/notifications/:id/read` | list ও read state |
 | Telegram connection | POST `/telegram/connect/:companionId`, GET `/telegram/status/:companionId` | secure link ও return-to-bot |
-| WhatsApp connection | POST `/whatsapp/connect/:companionId` | returned whatsappUrl খুলুন |
 | Newsletter | POST `/newsletter` | email subscription form |
 
 ## ৪. Registration, login ও password reset
@@ -231,7 +230,7 @@ POST `/chat/:companionId/messages` response-এর `data`:
 
 Overview-তে `totalSubscriptionPlans`, `activeSubscriptions`, `activeSubscribers`, `totalMessages`, `totalConversations`, `totalRevenue`, `totalUsers` ব্যবহার করুন। Legacy `totalConversions` আসলে message count; conversion-rate হিসেবে দেখাবেন না।
 
-Human takeover: প্রথমে mode=human সেট করুন, তারপর নির্বাচিত unanswered user message-এর messageId দিয়ে reply করুন। Reply-কারী admin-এর assignment মিলতে হবে; answered message-এ 409 আসতে পারে। Current `humanReply` method response database-এ save করে এবং in-app notification তৈরি করে; **Telegram/WhatsApp outbound send করে না**। তাই “Reply delivered to Telegram” success label এখন দেবেন না।
+Human takeover: প্রথমে mode=human সেট করুন, তারপর নির্বাচিত unanswered user message-এর messageId দিয়ে reply করুন। Reply-কারী admin-এর assignment মিলতে হবে; answered message-এ 409 আসতে পারে। Current `humanReply` method response database-এ save করে এবং in-app notification তৈরি করে; **Telegram outbound send করে না**। তাই “Reply delivered to Telegram” success label এখন দেবেন না।
 
 Plan create example:
 
@@ -266,11 +265,11 @@ Query names exact reference-এ আছে। Common `page`, `limit`, `sortBy`, `
 
 ## ১১. Webhook ও infrastructure route—frontend button নয়
 
-সব exact webhook route reference-এর inventory-তে আছে। Stripe POST `/webhook` raw body ও `stripe-signature` দিয়ে provider call করবে। Frontend fake webhook বা payment success লিখে subscription/credit grant করতে পারবে না। Telegram webhook-এ bot-specific secret validation হয়; WhatsApp-এ provider verification/signature। Bot secrets browser-এ দেওয়া যাবে না।
+সব exact webhook route reference-এর inventory-তে আছে। Stripe POST `/webhook` raw body ও `stripe-signature` দিয়ে provider call করবে। Frontend fake webhook বা payment success লিখে subscription/credit grant করতে পারবে না। Telegram webhook-এ bot-specific secret validation হয়। Bot secrets browser-এ দেওয়া যাবে না।
 
 GET `/health/live` process health; GET `/health/ready` database/runtime-table readiness। Ready সফল মানে AI, mail, Stripe সব tested নয়। Root `/`, `/privacy-policy`, `/terms`, `/data-deletion` global API prefix-এর বাইরে। Backend-এ থাকা legal text publish-এর আগে owner review করবেন।
 
-WhatsApp connect response `data.whatsappUrl` খুলে prefilled START message user-কে send করতে হবে। Operational test endpoint সরানো হয়েছে; WhatsApp connect ও webhook বহাল আছে।
+Messaging channel এখন Telegram; WhatsApp integration সরানো হয়েছে।
 
 ## ১২. Error ও UX handling
 
@@ -307,7 +306,7 @@ Production backend rollout/migration/queue/HTTPS নির্দেশনা rep
 
 1. Website raw voice upload/transcription route নেই; transcript-only chat contract আছে।
 2. Website realtime socket/SSE route নেই; controlled polling বা নতুন backend কাজ লাগবে।
-3. Admin human reply Telegram/WhatsApp-এ push হয় না।
+3. Admin human reply Telegram-এ push হয় না।
 4. Website admin profile image update Telegram bot-এর BotFather picture/name নিজে বদলায় না। Bot branding আলাদা configuration।
 5. Bot token/username/env পরিবর্তনের public admin endpoint নেই। Frontend-এ এমন Save button বানাবেন না যার API নেই।
 6. User self-service Telegram unlink endpoint নেই; transfer flow আলাদা।

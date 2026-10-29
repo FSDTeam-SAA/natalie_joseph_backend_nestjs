@@ -2,7 +2,7 @@
 
 Controller ও DTO থেকে সরাসরি তৈরি; live API test নয়। নতুন lifestyle API নির্দেশনা: [Backend handover](../README-lifestyle-handoff-bn.md)। মূল নির্দেশনা: [বাংলা integration guide](./frontend-integration-bn.md)।
 
-মোট **120টি route**, **61টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।
+মোট **118টি route**, **61টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।
 
 ## সব endpoint এক নজরে
 
@@ -113,15 +113,13 @@ Controller ও DTO থেকে সরাসরি তৈরি; live API test �
 | POST | `/api/v1/webhooks/telegram` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | receive |
 | POST | `/api/v1/user` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | createUser |
 | GET | `/api/v1/user` | UseGuards(AuthGuard('admin')) | getAllUser |
+| GET | `/api/v1/user//overview` | UseGuards(AuthGuard('admin')) | getAllUserOverview |
 | GET | `/api/v1/user/my-profile` | UseGuards(AuthGuard('user', 'admin')) | myProfile |
 | PUT | `/api/v1/user/my-profile` | UseGuards(AuthGuard('user', 'admin')) | UpdateMyProfile |
 | GET | `/api/v1/user/:id` | UseGuards(AuthGuard('admin')) | getUserById |
 | PUT | `/api/v1/user/:id` | UseGuards(AuthGuard('admin')) | updateUser |
 | DELETE | `/api/v1/user/:id` | UseGuards(AuthGuard('admin')) | deleteUser |
 | POST | `/api/v1/webhook` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | handleWebhook |
-| POST | `/api/v1/whatsapp/connect/:companionId` | UseGuards(AuthGuard('user')) | connect |
-| GET | `/api/v1/webhooks/whatsapp` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | verifyWebhook |
-| POST | `/api/v1/webhooks/whatsapp` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | receiveWebhook |
 | GET | `/` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getHello |
 | GET | `/api/v1/health/live` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | live |
 | GET | `/api/v1/health/ready` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | ready |
@@ -2788,7 +2786,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/companions/:companionId/telegram-profile
 
-Source: `src/app/module/publishing/publishing.controller.ts:49` • Handler: `PublishingAdminController.status`
+Source: `src/app/module/publishing/publishing.controller.ts:50` • Handler: `PublishingAdminController.status`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2815,7 +2813,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/admin/companions/:companionId/telegram-profile
 
-Source: `src/app/module/publishing/publishing.controller.ts:54` • Handler: `PublishingAdminController.profile`
+Source: `src/app/module/publishing/publishing.controller.ts:55` • Handler: `PublishingAdminController.profile`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2843,7 +2841,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/admin/companions/:companionId/telegram-profile/retry
 
-Source: `src/app/module/publishing/publishing.controller.ts:62` • Handler: `PublishingAdminController.retry`
+Source: `src/app/module/publishing/publishing.controller.ts:63` • Handler: `PublishingAdminController.retry`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2869,7 +2867,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/companions/:companionId/media-stories
 
-Source: `src/app/module/publishing/publishing.controller.ts:66` • Handler: `PublishingAdminController.list`
+Source: `src/app/module/publishing/publishing.controller.ts:67` • Handler: `PublishingAdminController.list`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2895,7 +2893,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/admin/companions/:companionId/media-stories
 
-Source: `src/app/module/publishing/publishing.controller.ts:70` • Handler: `PublishingAdminController.publish`
+Source: `src/app/module/publishing/publishing.controller.ts:71` • Handler: `PublishingAdminController.publish`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2940,7 +2938,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/admin/companions/:companionId/media-stories/:storyId
 
-Source: `src/app/module/publishing/publishing.controller.ts:95` • Handler: `PublishingAdminController.remove`
+Source: `src/app/module/publishing/publishing.controller.ts:96` • Handler: `PublishingAdminController.remove`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2967,7 +2965,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/media-stories/summary
 
-Source: `src/app/module/publishing/publishing.controller.ts:110` • Handler: `MediaStoryController.summary`
+Source: `src/app/module/publishing/publishing.controller.ts:111` • Handler: `MediaStoryController.summary`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -2994,7 +2992,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/media-stories/companions/:companionId
 
-Source: `src/app/module/publishing/publishing.controller.ts:115` • Handler: `MediaStoryController.feed`
+Source: `src/app/module/publishing/publishing.controller.ts:116` • Handler: `MediaStoryController.feed`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -3022,7 +3020,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/media-stories/:storyId/media
 
-Source: `src/app/module/publishing/publishing.controller.ts:129` • Handler: `StoryMediaController.media`
+Source: `src/app/module/publishing/publishing.controller.ts:130` • Handler: `StoryMediaController.media`
 
 Access: `Controller JWT guard নেই`
 
@@ -3092,7 +3090,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/telegram/stories
 
-Source: `src/app/module/publishing/publishing.controller.ts:185` • Handler: `TelegramStoryController.page`
+Source: `src/app/module/publishing/publishing.controller.ts:187` • Handler: `TelegramStoryController.page`
 
 Access: `Controller JWT guard নেই`
 
@@ -3128,7 +3126,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/telegram/stories/:companionId/feed
 
-Source: `src/app/module/publishing/publishing.controller.ts:199` • Handler: `TelegramStoryController.feed`
+Source: `src/app/module/publishing/publishing.controller.ts:201` • Handler: `TelegramStoryController.feed`
 
 Access: `Controller JWT guard নেই`
 
@@ -3161,7 +3159,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/publishing/admin
 
-Source: `src/app/module/publishing/publishing.controller.ts:217` • Handler: `PublishingConsoleController.page`
+Source: `src/app/module/publishing/publishing.controller.ts:220` • Handler: `PublishingConsoleController.page`
 
 Access: `Controller JWT guard নেই`
 
@@ -3496,7 +3494,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/telegram/app
 
-Source: `src/app/module/telegram/telegram-mini-app.controller.ts:41` • Handler: `TelegramMiniAppController.page`
+Source: `src/app/module/telegram/telegram-mini-app.controller.ts:43` • Handler: `TelegramMiniAppController.page`
 
 Access: `Controller JWT guard নেই`
 
@@ -3532,7 +3530,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/telegram/app/settings/:companionId
 
-Source: `src/app/module/telegram/telegram-mini-app.controller.ts:56` • Handler: `TelegramMiniAppController.settings`
+Source: `src/app/module/telegram/telegram-mini-app.controller.ts:58` • Handler: `TelegramMiniAppController.settings`
 
 Access: `Controller JWT guard নেই`
 
@@ -3559,7 +3557,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/telegram/app/login/:companionId
 
-Source: `src/app/module/telegram/telegram-mini-app.controller.ts:62` • Handler: `TelegramMiniAppController.login`
+Source: `src/app/module/telegram/telegram-mini-app.controller.ts:64` • Handler: `TelegramMiniAppController.login`
 
 Access: `Controller JWT guard নেই`
 
@@ -3596,7 +3594,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/telegram/app/status/:companionId
 
-Source: `src/app/module/telegram/telegram-mini-app.controller.ts:80` • Handler: `TelegramMiniAppController.status`
+Source: `src/app/module/telegram/telegram-mini-app.controller.ts:82` • Handler: `TelegramMiniAppController.status`
 
 Access: `Controller JWT guard নেই`
 
@@ -3625,7 +3623,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/webhooks/telegram/:companionId
 
-Source: `src/app/module/telegram/telegram-webhook.controller.ts:22` • Handler: `TelegramWebhookController.receiveForCompanion`
+Source: `src/app/module/telegram/telegram-webhook.controller.ts:24` • Handler: `TelegramWebhookController.receiveForCompanion`
 
 Access: `Controller JWT guard নেই`
 
@@ -3657,7 +3655,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/webhooks/telegram
 
-Source: `src/app/module/telegram/telegram-webhook.controller.ts:35` • Handler: `TelegramWebhookController.receive`
+Source: `src/app/module/telegram/telegram-webhook.controller.ts:37` • Handler: `TelegramWebhookController.receive`
 
 Access: `Controller JWT guard নেই`
 
@@ -3764,6 +3762,18 @@ Upload/query/status metadata:
     description: 'name',
   })
 @ApiQuery({
+    name: 'phoneNumber',
+    type: String,
+    required: false,
+    description: 'phoneNumber',
+  })
+@ApiQuery({
+    name: 'status',
+    type: String,
+    required: false,
+    description: 'status',
+  })
+@ApiQuery({
     name: 'page',
     type: Number,
     required: false,
@@ -3796,7 +3806,14 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ```typescript
 {
-    const filters = pick(req.query, ['searchTerm', 'role', 'email', 'name']);
+    const filters = pick(req.query, [
+      'searchTerm',
+      'role',
+      'email',
+      'name',
+      'phoneNumber',
+      'status',
+    ]);
     const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
     const result = await this.userService.getAllUser(filters, options);
 
@@ -3808,9 +3825,43 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
+### GET /api/v1/user//overview
+
+Source: `src/app/module/user/user.controller.ts:138` • Handler: `UserController.getAllUserOverview`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+// কোনো parameter নেই
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('/overview')
+@ApiOperation({ summary: 'User overview' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@HttpCode(HttpStatus.OK)
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    const result = await this.userService.getAllUserOverview();
+    return {
+      message: 'get all user overview successfully',
+      data: result,
+    };
+  }
+```
+
 ### GET /api/v1/user/my-profile
 
-Source: `src/app/module/user/user.controller.ts:119` • Handler: `UserController.myProfile`
+Source: `src/app/module/user/user.controller.ts:151` • Handler: `UserController.myProfile`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -3848,7 +3899,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/user/my-profile
 
-Source: `src/app/module/user/user.controller.ts:136` • Handler: `UserController.UpdateMyProfile`
+Source: `src/app/module/user/user.controller.ts:168` • Handler: `UserController.UpdateMyProfile`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -3895,7 +3946,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/user/:id
 
-Source: `src/app/module/user/user.controller.ts:164` • Handler: `UserController.getUserById`
+Source: `src/app/module/user/user.controller.ts:196` • Handler: `UserController.getUserById`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3932,7 +3983,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/user/:id
 
-Source: `src/app/module/user/user.controller.ts:180` • Handler: `UserController.updateUser`
+Source: `src/app/module/user/user.controller.ts:212` • Handler: `UserController.updateUser`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3972,7 +4023,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/user/:id
 
-Source: `src/app/module/user/user.controller.ts:201` • Handler: `UserController.deleteUser`
+Source: `src/app/module/user/user.controller.ts:233` • Handler: `UserController.deleteUser`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -4009,7 +4060,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/webhook
 
-Source: `src/app/module/webhook/webhook.controller.ts:12` • Handler: `WebhookController.handleWebhook`
+Source: `src/app/module/webhook/webhook.controller.ts:14` • Handler: `WebhookController.handleWebhook`
 
 Access: `Controller JWT guard নেই`
 
@@ -4036,111 +4087,9 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
-### POST /api/v1/whatsapp/connect/:companionId
-
-Source: `src/app/module/whatsapp/whatsapp-connect.controller.ts:21` • Handler: `WhatsAppConnectController.connect`
-
-Access: `UseGuards(AuthGuard('user'))`
-
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
-
-```typescript
-@Req() request: Request
-@Param('companionId', ParseUUIDPipe) companionId: string
-```
-
-Upload/query/status metadata:
-
-```typescript
-@Post('connect/:companionId')
-```
-
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
-
-```typescript
-{
-    return { data: await this.ai.connect(request.user!.id, companionId) };
-  }
-```
-
-### GET /api/v1/webhooks/whatsapp
-
-Source: `src/app/module/whatsapp/whatsapp-webhook.controller.ts:30` • Handler: `WhatsAppWebhookController.verifyWebhook`
-
-Access: `Controller JWT guard নেই`
-
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
-
-```typescript
-@Query('hub.mode') mode: string
-@Query('hub.verify_token') token: string
-@Query('hub.challenge') challenge: string
-```
-
-Upload/query/status metadata:
-
-```typescript
-@Get()
-@Header('Content-Type', 'text/plain')
-```
-
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
-
-```typescript
-{
-    const expectedToken = this.configService.get<string>(
-      'WHATSAPP_VERIFY_TOKEN',
-    );
-    if (
-      mode !== 'subscribe' ||
-      !expectedToken ||
-      token !== expectedToken ||
-      typeof challenge !== 'string' ||
-      !challenge
-    ) {
-      throw new ForbiddenException('Invalid webhook verification');
-    }
-
-    return challenge;
-  }
-```
-
-### POST /api/v1/webhooks/whatsapp
-
-Source: `src/app/module/whatsapp/whatsapp-webhook.controller.ts:53` • Handler: `WhatsAppWebhookController.receiveWebhook`
-
-Access: `Controller JWT guard নেই`
-
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
-
-```typescript
-@Body() body: Parameters<WhatsAppInboundService['receive']>[0]
-@Req() req: RawBodyRequest<Request>
-@Headers('x-hub-signature-256') signature?: string
-```
-
-Upload/query/status metadata:
-
-```typescript
-@Post()
-@HttpCode(200)
-@Header('Content-Type', 'text/plain')
-```
-
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
-
-```typescript
-{
-    this.inbound.verifySignature(req.rawBody, signature);
-    this.logger.log('Verified WhatsApp webhook received');
-    await this.inbound.receive(body);
-    return 'EVENT_RECEIVED';
-  }
-```
-
 ### GET /
 
-Source: `src/app.controller.ts:9` • Handler: `AppController.getHello`
+Source: `src/app.controller.ts:11` • Handler: `AppController.getHello`
 
 Access: `Controller JWT guard নেই`
 
@@ -4166,7 +4115,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/health/live
 
-Source: `src/health.controller.ts:12` • Handler: `HealthController.live`
+Source: `src/health.controller.ts:14` • Handler: `HealthController.live`
 
 Access: `Controller JWT guard নেই`
 
@@ -4192,7 +4141,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/health/ready
 
-Source: `src/health.controller.ts:15` • Handler: `HealthController.ready`
+Source: `src/health.controller.ts:17` • Handler: `HealthController.ready`
 
 Access: `Controller JWT guard নেই`
 
@@ -4226,7 +4175,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /privacy-policy
 
-Source: `src/legal-pages.controller.ts:38` • Handler: `LegalPagesController.privacyPolicy`
+Source: `src/legal-pages.controller.ts:40` • Handler: `LegalPagesController.privacyPolicy`
 
 Access: `Controller JWT guard নেই`
 
@@ -4250,23 +4199,23 @@ Controller response mapping ও service call (সাধারণ JSON response-�
     return page(
       'Privacy Policy',
       `
-      <p>This policy describes information processed by Meet Elysia through its website, accounts, AI companion features and WhatsApp integration.</p>
+      <p>This policy describes information processed by Meet Elysia through its website, accounts, AI companion features and Telegram integration.</p>
       <h2>Information we process</h2>
       <ul>
         <li>Account information such as your email, name, password hash, optional phone number and profile image.</li>
         <li>Messages you send, generated responses, conversation identifiers, selected companions and interaction history.</li>
-        <li>For WhatsApp, your sender number, message identifiers, message content and account-linking information received through Meta.</li>
+        <li>For Telegram, your Telegram user/chat identifiers, message identifiers, message content and account-linking information received through Telegram.</li>
         <li>Subscription status, payment records, payment-provider identifiers, credits and purchases.</li>
         <li>Operational information used to investigate errors, secure accounts and process message delivery.</li>
       </ul>
       <h2>How information is used</h2>
-      <p>We use this information to authenticate accounts, link WhatsApp conversations to users and companions, generate and deliver replies, manage subscriptions and credits, provide support and troubleshoot the service. Authorized administrators can access conversations for support and human takeover.</p>
+      <p>We use this information to authenticate accounts, link Telegram conversations to users and companions, generate and deliver replies, manage subscriptions and credits, provide support and troubleshoot the service. Authorized administrators can access conversations for support and human takeover.</p>
       <h2>Service providers</h2>
-      <p>Operating the service involves providers for hosting and database storage, AI processing, email, media storage and payments. Relevant message content and conversation context are sent to the configured AI service when AI replies are enabled. Meta processes WhatsApp messages; Stripe handles payment processing; uploaded profile media may be stored through Cloudinary. These providers process information under their own applicable terms and privacy policies.</p>
+      <p>Operating the service involves providers for hosting and database storage, AI processing, email, media storage and payments. Relevant message content and conversation context are sent to the configured AI service when AI replies are enabled. Telegram processes Telegram messages; Stripe handles payment processing; uploaded profile media may be stored through Cloudinary. These providers process information under their own applicable terms and privacy policies.</p>
       <h2>Storage and retention</h2>
       <p>Account, conversation and transaction information is stored to operate the service. Retention varies by record type and provider; there is no single automatic deletion period for all records. Contact us to request deletion or ask about a particular record. Some records may need to be retained for applicable obligations, dispute resolution or security, and provider backups may follow separate retention schedules.</p>
       <h2>Your choices and requests</h2>
-      <p>You may stop messaging the service and contact ${contactLink} to request access, correction or deletion of your information. Follow our <a href="/data-deletion">data deletion instructions</a> to identify the account or WhatsApp data involved. Deleting a chat in WhatsApp does not itself delete records held by Meet Elysia.</p>
+      <p>You may stop messaging the service and contact ${contactLink} to request access, correction or deletion of your information. Follow our <a href="/data-deletion">data deletion instructions</a> to identify the account or Telegram data involved. Deleting a chat in Telegram does not itself delete records held by Meet Elysia.</p>
       <h2>Security and updates</h2>
       <p>Account passwords are stored as hashes. No online system can guarantee absolute security; do not send passwords, payment card details or other unnecessary sensitive information in companion chats. Updates to this policy will be reflected on this page.</p>
     `,
@@ -4276,7 +4225,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /terms
 
-Source: `src/legal-pages.controller.ts:67` • Handler: `LegalPagesController.terms`
+Source: `src/legal-pages.controller.ts:69` • Handler: `LegalPagesController.terms`
 
 Access: `Controller JWT guard নেই`
 
@@ -4300,7 +4249,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
     return page(
       'Terms of Service',
       `
-      <p>These terms describe use of Meet Elysia's account, companion chat and WhatsApp features. By using the service, you agree to these terms.</p>
+      <p>These terms describe use of Meet Elysia's account, companion chat and Telegram features. By using the service, you agree to these terms.</p>
       <h2>Accounts and responsible use</h2>
       <p>Provide accurate account information, use only accounts and phone numbers you are authorized to use, and keep your credentials secure. Do not use the service for unlawful activity, harassment, fraud, unauthorized access or interference with other users or systems.</p>
       <h2>Companion conversations</h2>
@@ -4310,7 +4259,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
       <h2>Your content and privacy</h2>
       <p>Only submit content you have permission to share. You allow the service and its providers to process that content as needed to deliver the requested features. See our <a href="/privacy-policy">Privacy Policy</a> for data handling and our <a href="/data-deletion">Data Deletion</a> page for removal requests.</p>
       <h2>Third-party services and access</h2>
-      <p>WhatsApp, payment services and other integrated providers have their own terms. Features may change or become unavailable. Access may be restricted to address abuse, security issues or violations of these terms.</p>
+      <p>Telegram, payment services and other integrated providers have their own terms. Features may change or become unavailable. Access may be restricted to address abuse, security issues or violations of these terms.</p>
       <h2>Contact and changes</h2>
       <p>Questions or requests to close an account can be sent to ${contactLink}. Revised terms will be posted here with an updated date.</p>
     `,
@@ -4320,7 +4269,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /data-deletion
 
-Source: `src/legal-pages.controller.ts:90` • Handler: `LegalPagesController.dataDeletion`
+Source: `src/legal-pages.controller.ts:92` • Handler: `LegalPagesController.dataDeletion`
 
 Access: `Controller JWT guard নেই`
 
@@ -4344,19 +4293,19 @@ Controller response mapping ও service call (সাধারণ JSON response-�
     return page(
       'Data Deletion Instructions',
       `
-      <p>You can request deletion of your Meet Elysia account or data associated with its WhatsApp integration by email.</p>
+      <p>You can request deletion of your Meet Elysia account or data associated with its Telegram integration by email.</p>
       <h2>Submit a request</h2>
       <ol>
         <li>Email ${contactLink} with the subject <strong>Meet Elysia Data Deletion Request</strong>.</li>
-        <li>Send from your registered email where possible. Include the account email and, for WhatsApp data, your phone number with country code.</li>
-        <li>Specify whether you want the entire account deleted or only particular data, such as WhatsApp linking information or conversation history.</li>
+        <li>Send from your registered email where possible. Include the account email and, for Telegram data, your Telegram username or user ID.</li>
+        <li>Specify whether you want the entire account deleted or only particular data, such as Telegram linking information or conversation history.</li>
       </ol>
       <p>Do not include passwords, one-time codes, access tokens or payment card details.</p>
       <h2>What happens next</h2>
       <p>The support team handles requests manually and may ask for information needed to verify account ownership before processing deletion. Ask in the same email for confirmation of completion and the status of any retained records.</p>
       <h2>Scope and limitations</h2>
-      <p>A request can cover your profile, stored conversations and WhatsApp account links. Records subject to applicable retention obligations or needed for disputes or security may require separate handling. Copies held in provider backups may follow their retention schedules.</p>
-      <p>Deleting Meet Elysia data does not delete your Facebook or WhatsApp account or copies held by Meta or message recipients. Deleting a WhatsApp chat alone does not submit a deletion request to Meet Elysia. If you have an active subscription, include a cancellation request so support can address billing separately.</p>
+      <p>A request can cover your profile, stored conversations and Telegram account links. Records subject to applicable retention obligations or needed for disputes or security may require separate handling. Copies held in provider backups may follow their retention schedules.</p>
+      <p>Deleting Meet Elysia data does not delete your Telegram account or copies held by Telegram or message recipients. Deleting a Telegram chat alone does not submit a deletion request to Meet Elysia. If you have an active subscription, include a cancellation request so support can address billing separately.</p>
       <p>Read our <a href="/privacy-policy">Privacy Policy</a> for an overview of the information processed by the service.</p>
     `,
     );
@@ -4758,34 +4707,6 @@ Source: `src/app/module/companions/dto/create-companion.dto.ts`
 
 ```typescript
 export class CreateCompanionDto {
-  @ApiPropertyOptional({ example: '+15551234567', nullable: true })
-  @IsOptional()
-  @Matches(/^\+[1-9]\d{6,14}$/)
-  whatsappPhoneNumber?: string | null;
-
-  @ApiPropertyOptional({ example: '123456789012345', nullable: true })
-  @IsOptional()
-  @Matches(/^\d+$/)
-  whatsappPhoneNumberId?: string | null;
-
-  @ApiPropertyOptional({ example: 'Elena - AI Companion', nullable: true })
-  @IsOptional()
-  @IsString()
-  @MaxLength(200)
-  whatsappDisplayName?: string | null;
-
-  @ApiPropertyOptional({ default: false })
-  @ValidateIf((_object, value) => value !== undefined)
-  @Transform(toBoolean)
-  @IsBoolean()
-  whatsappEnabled?: boolean;
-
-  @ApiPropertyOptional({ nullable: true })
-  @IsOptional()
-  @IsString()
-  @MaxLength(4096)
-  whatsappWelcomeMessage?: string | null;
-
   @ApiProperty({})
   @IsString()
   @IsNotEmpty()

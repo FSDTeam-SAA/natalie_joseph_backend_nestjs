@@ -1,3 +1,4 @@
+import { ApiExcludeController } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -13,6 +14,7 @@ import { TelegramQueueService } from './telegram-queue.service';
 
 @Controller('webhooks/telegram')
 @SetMetadata('rawResponse', true)
+@ApiExcludeController()
 export class TelegramWebhookController {
   constructor(
     private readonly telegram: TelegramService,
