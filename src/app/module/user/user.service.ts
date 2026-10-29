@@ -72,20 +72,29 @@ export class UserService {
   }
 
   async getAllUserOverview() {
-    const totalUser = await this.prisma.user.count();
+    const totalUser = await this.prisma.user.count({
+      where: {
+        role: { not: 'admin' },
+      },
+    });
+
     const totalActiveUser = await this.prisma.user.count({
       where: {
+        role: { not: 'admin' },
         status: 'approved',
       },
     });
+
     const totalPremiumUser = await this.prisma.user.count({
       where: {
+        role: { not: 'admin' },
         isSubscribed: true,
       },
     });
 
     const totalFreeUser = await this.prisma.user.count({
       where: {
+        role: { not: 'admin' },
         isSubscribed: false,
         isFreeTrialUsed: true,
       },
