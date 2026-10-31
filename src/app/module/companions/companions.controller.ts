@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UploadedFiles,
   UseGuards,
@@ -208,6 +209,29 @@ export class CompanionsController {
       true,
     );
     return { message: 'Companion images updated successfully', data };
+  }
+
+  @Delete(':id/gallery')
+  @ApiOperation({ summary: 'Remove one companion gallery image' })
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('admin'))
+  @ApiQuery({
+    name: 'url',
+    type: String,
+    required: true,
+    description: 'Cloudinary image URL to remove from gallery',
+  })
+  @HttpCode(HttpStatus.OK)
+  async removedOneGallaryImage(
+    @Param('id') id: string,
+    @Query('url') url: string,
+  ) {
+    const data = await this.companionsService.removedOneGallaryImage(id, url);
+
+    return {
+      message: 'Gallery image removed successfully',
+      data,
+    };
   }
 
   @Put(':id/gallery')

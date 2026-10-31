@@ -7,6 +7,7 @@ import {
   miniAppUrl,
 } from './telegram-config';
 import {
+  BadGatewayException,
   ForbiddenException,
   HttpException,
   Injectable,
@@ -231,6 +232,7 @@ export class TelegramAiService {
       // The upstream has persisted this failed attempt and explicitly rejects
       // retries with the same key. Acknowledge it instead of blocking the bot queue.
       if (error instanceof AiVoiceFailure) return error.message;
+      if (error instanceof BadGatewayException) return 'I am having a brief connection issue right now. Please try sending your message again in a moment!';
       if (
         error instanceof HttpException &&
         [400, 402, 403, 404, 429].includes(error.getStatus())
