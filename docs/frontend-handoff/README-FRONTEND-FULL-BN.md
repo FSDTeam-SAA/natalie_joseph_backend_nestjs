@@ -1,6 +1,6 @@
 # Meet Elysia — সম্পূর্ণ Frontend ও Admin API README
 
-**তারিখ: ২৯ অক্টোবর ২০২৬ • Source-derived handover • 119টি route • 61টি DTO class**
+**তারিখ: ২৯ অক্টোবর ২০২৬ • Source-derived handover • 118টি route • 61টি DTO class**
 
 Frontend engineer-কে **এই একটি ফাইল** দিলেই website এবং admin dashboard-এর API mapping, flow, upload, DTO, access ও response mapping পড়তে পারবেন। এটি বর্তমান local backend source-এর contract; deployed server একই version চালাচ্ছে কি না rollout team যাচাই করবে। কোনো credentials এই ফাইলে নেই।
 
@@ -177,7 +177,6 @@ Admin overview data keys: `totalUsers, totalSubscriptionPlans, activeSubscriptio
 | PUT | `/api/v1/companions/:id/profile-image` | Profile picture upload; configured হলে Telegram sync queue | UseGuards(AuthGuard('admin')) |
 | PUT | `/api/v1/companions/:id/cover-image` | Cover image upload | UseGuards(AuthGuard('admin')) |
 | POST | `/api/v1/companions/:id/gallery` | Gallery-তে ছবি যোগ | UseGuards(AuthGuard('admin')) |
-| DELETE | `/api/v1/companions/:id/gallery` | URL দিয়ে একটি gallery image সরানো | UseGuards(AuthGuard('admin')) |
 | PUT | `/api/v1/companions/:id/gallery` | Gallery replace—append নয় | UseGuards(AuthGuard('admin')) |
 | DELETE | `/api/v1/companions/:id` | Companion delete action; confirmation আবশ্যক | UseGuards(AuthGuard('admin')) |
 | PUT | `/api/v1/companions/:id/voice` | Companion voiceId বদলানো | UseGuards(AuthGuard('admin')) |
@@ -603,10 +602,6 @@ window.location.assign(connected.data.telegramUrl);
 
 Profile sync ও photo/video Story integration-এর সম্পূর্ণ নির্দেশনা: companion-publishing-bn.md (এই README-তেই সংশ্লিষ্ট section আছে)। Backend API ও Telegram viewer তৈরি; website Story ring frontend team-কে integrate করতে হবে।
 
-
-## Companion routine response
-
-GET `/companions`-এর `data[]` এবং GET `/companions/:id`-এর `data`-তে এখন `routine` থাকে। Save করা থাকলে `{ "timezone": "Asia/Dubai", "weekly": [{ "day": 1, "start": "06:00", "end": "12:00", "activity": "Coffee at home, gym" }] }`; routine না থাকলে `null`। Admin routine update-এর পরে companion list/details refetch করুন। `background.lifestyle` হলো lifestyle description; `routine.weekly` হলো weekly schedule।
 
 <a id="publishing"></a>
 # Meet Elysia — Profile sync ও ২৪ ঘণ্টার Story
@@ -1515,7 +1510,7 @@ Controller response mapping:
 
 **কাজ:** Nested metadata দিয়ে companion তৈরি
 
-Source: `src/app/module/companions/companions.controller.ts:39`
+Source: `src/app/module/companions/companions.controller.ts:38`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1549,7 +1544,7 @@ Controller response mapping:
 
 **কাজ:** Public companion cards, filter ও pagination
 
-Source: `src/app/module/companions/companions.controller.ts:50`
+Source: `src/app/module/companions/companions.controller.ts:49`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -1615,7 +1610,7 @@ Controller response mapping:
 
 **কাজ:** Companion details page data
 
-Source: `src/app/module/companions/companions.controller.ts:93`
+Source: `src/app/module/companions/companions.controller.ts:92`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -1646,7 +1641,7 @@ Controller response mapping:
 
 **কাজ:** Companion metadata edit
 
-Source: `src/app/module/companions/companions.controller.ts:101`
+Source: `src/app/module/companions/companions.controller.ts:100`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1681,7 +1676,7 @@ Controller response mapping:
 
 **কাজ:** Profile picture upload; configured হলে Telegram sync queue
 
-Source: `src/app/module/companions/companions.controller.ts:115`
+Source: `src/app/module/companions/companions.controller.ts:114`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1733,7 +1728,7 @@ Controller response mapping:
 
 **কাজ:** Cover image upload
 
-Source: `src/app/module/companions/companions.controller.ts:146`
+Source: `src/app/module/companions/companions.controller.ts:145`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1785,7 +1780,7 @@ Controller response mapping:
 
 **কাজ:** Gallery-তে ছবি যোগ
 
-Source: `src/app/module/companions/companions.controller.ts:177`
+Source: `src/app/module/companions/companions.controller.ts:176`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1839,55 +1834,11 @@ Controller response mapping:
   }
 ```
 
-## DELETE /api/v1/companions/:id/gallery
-
-**কাজ:** URL দিয়ে একটি gallery image সরানো
-
-Source: `src/app/module/companions/companions.controller.ts:214`
-
-Access: `UseGuards(AuthGuard('admin'))`
-
-Request parameters ও DTO:
-
-```typescript
-@Param('id') id: string
-@Query('url') url: string
-```
-
-Upload/status/validation metadata:
-
-```typescript
-@Delete(':id/gallery')
-@ApiOperation({ summary: 'Remove one companion gallery image' })
-@ApiBearerAuth('access-token')
-@UseGuards(AuthGuard('admin'))
-@ApiQuery({
-    name: 'url',
-    type: String,
-    required: true,
-    description: 'Cloudinary image URL to remove from gallery',
-  })
-@HttpCode(HttpStatus.OK)
-```
-
-Controller response mapping:
-
-```typescript
-{
-    const data = await this.companionsService.removedOneGallaryImage(id, url);
-
-    return {
-      message: 'Gallery image removed successfully',
-      data,
-    };
-  }
-```
-
 ## PUT /api/v1/companions/:id/gallery
 
 **কাজ:** Gallery replace—append নয়
 
-Source: `src/app/module/companions/companions.controller.ts:237`
+Source: `src/app/module/companions/companions.controller.ts:213`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1945,7 +1896,7 @@ Controller response mapping:
 
 **কাজ:** Companion delete action; confirmation আবশ্যক
 
-Source: `src/app/module/companions/companions.controller.ts:274`
+Source: `src/app/module/companions/companions.controller.ts:250`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1977,7 +1928,7 @@ Controller response mapping:
 
 **কাজ:** Companion voiceId বদলানো
 
-Source: `src/app/module/companions/companions.controller.ts:282`
+Source: `src/app/module/companions/companions.controller.ts:258`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
