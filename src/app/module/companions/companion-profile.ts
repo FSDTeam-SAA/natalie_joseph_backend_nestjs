@@ -2,6 +2,9 @@ import type { Prisma } from '../../../../prisma/generated/prisma/client';
 
 // Shared public profile shape; excludes relation IDs and database timestamps.
 export const companionProfileSelect = {
+  routine: {
+    select: { timezone: true, weekly: true },
+  },
   telegramProfileSync: {
     select: { displayName: true, about: true, description: true },
   },

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-29T08:18:03.743Z",
+  "generatedAt": "2026-10-31T09:34:36.900Z",
   "note": "Source inventory, not OpenAPI. Controller guards are shown; service validation still applies.",
   "routes": [
     {
@@ -279,7 +279,7 @@
       "controller": "CompanionsController",
       "handler": "createCompanion",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 38,
+      "line": 39,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -303,7 +303,7 @@
       "controller": "CompanionsController",
       "handler": "getAllCompanions",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 49,
+      "line": 50,
       "swaggerVisible": true,
       "guards": [],
       "parameters": [
@@ -332,7 +332,7 @@
       "controller": "CompanionsController",
       "handler": "getCompanionById",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 92,
+      "line": 93,
       "swaggerVisible": true,
       "guards": [],
       "parameters": [
@@ -351,7 +351,7 @@
       "controller": "CompanionsController",
       "handler": "updateCompanion",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 100,
+      "line": 101,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -376,7 +376,7 @@
       "controller": "CompanionsController",
       "handler": "updateProfileImage",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 114,
+      "line": 115,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -402,7 +402,7 @@
       "controller": "CompanionsController",
       "handler": "updateCoverImage",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 145,
+      "line": 146,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -428,7 +428,7 @@
       "controller": "CompanionsController",
       "handler": "addGalleryImages",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 176,
+      "line": 177,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -449,12 +449,37 @@
       "handlerSource": "{\r\n    const data = await this.companionsService.updateImages(\r\n      id,\r\n      'galleryImages',\r\n      files.galleryImages ?? [],\r\n      true,\r\n    );\r\n    return { message: 'Companion images updated successfully', data };\r\n  }"
     },
     {
+      "method": "DELETE",
+      "path": "/api/v1/companions/:id/gallery",
+      "controller": "CompanionsController",
+      "handler": "removedOneGallaryImage",
+      "file": "src/app/module/companions/companions.controller.ts",
+      "line": 214,
+      "swaggerVisible": true,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('id') id: string",
+        "@Query('url') url: string"
+      ],
+      "decorators": [
+        "@Delete(':id/gallery')",
+        "@ApiOperation({ summary: 'Remove one companion gallery image' })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('admin'))",
+        "@ApiQuery({\r\n    name: 'url',\r\n    type: String,\r\n    required: true,\r\n    description: 'Cloudinary image URL to remove from gallery',\r\n  })",
+        "@HttpCode(HttpStatus.OK)"
+      ],
+      "handlerSource": "{\r\n    const data = await this.companionsService.removedOneGallaryImage(id, url);\r\n\r\n    return {\r\n      message: 'Gallery image removed successfully',\r\n      data,\r\n    };\r\n  }"
+    },
+    {
       "method": "PUT",
       "path": "/api/v1/companions/:id/gallery",
       "controller": "CompanionsController",
       "handler": "updateGalleryImages",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 213,
+      "line": 237,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -480,7 +505,7 @@
       "controller": "CompanionsController",
       "handler": "deleteCompanion",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 250,
+      "line": 274,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -502,7 +527,7 @@
       "controller": "CompanionsController",
       "handler": "updateVoice",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 258,
+      "line": 282,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"

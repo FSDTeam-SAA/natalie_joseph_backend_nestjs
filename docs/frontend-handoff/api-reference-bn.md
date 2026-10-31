@@ -2,7 +2,7 @@
 
 Controller ও DTO থেকে সরাসরি তৈরি; live API test নয়। নতুন lifestyle API নির্দেশনা: [Backend handover](../README-lifestyle-handoff-bn.md)। মূল নির্দেশনা: [বাংলা integration guide](./frontend-integration-bn.md)।
 
-মোট **118টি route**, **61টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।
+মোট **119টি route**, **61টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।
 
 ## সব endpoint এক নজরে
 
@@ -27,6 +27,7 @@ Controller ও DTO থেকে সরাসরি তৈরি; live API test �
 | PUT | `/api/v1/companions/:id/profile-image` | UseGuards(AuthGuard('admin')) | updateProfileImage |
 | PUT | `/api/v1/companions/:id/cover-image` | UseGuards(AuthGuard('admin')) | updateCoverImage |
 | POST | `/api/v1/companions/:id/gallery` | UseGuards(AuthGuard('admin')) | addGalleryImages |
+| DELETE | `/api/v1/companions/:id/gallery` | UseGuards(AuthGuard('admin')) | removedOneGallaryImage |
 | PUT | `/api/v1/companions/:id/gallery` | UseGuards(AuthGuard('admin')) | updateGalleryImages |
 | DELETE | `/api/v1/companions/:id` | UseGuards(AuthGuard('admin')) | deleteCompanion |
 | PUT | `/api/v1/companions/:id/voice` | UseGuards(AuthGuard('admin')) | updateVoice |
@@ -635,7 +636,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/companions
 
-Source: `src/app/module/companions/companions.controller.ts:38` • Handler: `CompanionsController.createCompanion`
+Source: `src/app/module/companions/companions.controller.ts:39` • Handler: `CompanionsController.createCompanion`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -667,7 +668,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/companions
 
-Source: `src/app/module/companions/companions.controller.ts:49` • Handler: `CompanionsController.getAllCompanions`
+Source: `src/app/module/companions/companions.controller.ts:50` • Handler: `CompanionsController.getAllCompanions`
 
 Access: `Controller JWT guard নেই`
 
@@ -731,7 +732,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/companions/:id
 
-Source: `src/app/module/companions/companions.controller.ts:92` • Handler: `CompanionsController.getCompanionById`
+Source: `src/app/module/companions/companions.controller.ts:93` • Handler: `CompanionsController.getCompanionById`
 
 Access: `Controller JWT guard নেই`
 
@@ -760,7 +761,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/companions/:id
 
-Source: `src/app/module/companions/companions.controller.ts:100` • Handler: `CompanionsController.updateCompanion`
+Source: `src/app/module/companions/companions.controller.ts:101` • Handler: `CompanionsController.updateCompanion`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -793,7 +794,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/companions/:id/profile-image
 
-Source: `src/app/module/companions/companions.controller.ts:114` • Handler: `CompanionsController.updateProfileImage`
+Source: `src/app/module/companions/companions.controller.ts:115` • Handler: `CompanionsController.updateProfileImage`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -843,7 +844,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/companions/:id/cover-image
 
-Source: `src/app/module/companions/companions.controller.ts:145` • Handler: `CompanionsController.updateCoverImage`
+Source: `src/app/module/companions/companions.controller.ts:146` • Handler: `CompanionsController.updateCoverImage`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -893,7 +894,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/companions/:id/gallery
 
-Source: `src/app/module/companions/companions.controller.ts:176` • Handler: `CompanionsController.addGalleryImages`
+Source: `src/app/module/companions/companions.controller.ts:177` • Handler: `CompanionsController.addGalleryImages`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -947,9 +948,51 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
+### DELETE /api/v1/companions/:id/gallery
+
+Source: `src/app/module/companions/companions.controller.ts:214` • Handler: `CompanionsController.removedOneGallaryImage`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('id') id: string
+@Query('url') url: string
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Delete(':id/gallery')
+@ApiOperation({ summary: 'Remove one companion gallery image' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@ApiQuery({
+    name: 'url',
+    type: String,
+    required: true,
+    description: 'Cloudinary image URL to remove from gallery',
+  })
+@HttpCode(HttpStatus.OK)
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    const data = await this.companionsService.removedOneGallaryImage(id, url);
+
+    return {
+      message: 'Gallery image removed successfully',
+      data,
+    };
+  }
+```
+
 ### PUT /api/v1/companions/:id/gallery
 
-Source: `src/app/module/companions/companions.controller.ts:213` • Handler: `CompanionsController.updateGalleryImages`
+Source: `src/app/module/companions/companions.controller.ts:237` • Handler: `CompanionsController.updateGalleryImages`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1005,7 +1048,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/companions/:id
 
-Source: `src/app/module/companions/companions.controller.ts:250` • Handler: `CompanionsController.deleteCompanion`
+Source: `src/app/module/companions/companions.controller.ts:274` • Handler: `CompanionsController.deleteCompanion`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1035,7 +1078,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/companions/:id/voice
 
-Source: `src/app/module/companions/companions.controller.ts:258` • Handler: `CompanionsController.updateVoice`
+Source: `src/app/module/companions/companions.controller.ts:282` • Handler: `CompanionsController.updateVoice`
 
 Access: `UseGuards(AuthGuard('admin'))`
 

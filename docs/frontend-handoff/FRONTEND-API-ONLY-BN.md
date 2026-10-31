@@ -2,7 +2,7 @@
 
 Swagger-এ এই API-গুলো দেখা যাবে। Internal webhook, Telegram Mini App implementation, health ও server HTML routes চালু আছে, কিন্তু frontend engineer-কে implement করতে হয় না বলে hidden। Telegram connect এবং signed media endpoint frontend-এর দরকার, তাই রাখা হয়েছে।
 
-মোট 102টি frontend-visible route। Full request/response: [পূর্ণ README](README-FRONTEND-FULL-BN.md)।
+মোট 103টি frontend-visible route। Full request/response: [পূর্ণ README](README-FRONTEND-FULL-BN.md)।
 
 | Method | API | Access | Handler |
 |---|---|---|---|
@@ -25,6 +25,7 @@ Swagger-এ এই API-গুলো দেখা যাবে। Internal webhoo
 | PUT | /api/v1/companions/:id/profile-image | UseGuards(AuthGuard('admin')) | updateProfileImage |
 | PUT | /api/v1/companions/:id/cover-image | UseGuards(AuthGuard('admin')) | updateCoverImage |
 | POST | /api/v1/companions/:id/gallery | UseGuards(AuthGuard('admin')) | addGalleryImages |
+| DELETE | /api/v1/companions/:id/gallery | UseGuards(AuthGuard('admin')) | removedOneGallaryImage |
 | PUT | /api/v1/companions/:id/gallery | UseGuards(AuthGuard('admin')) | updateGalleryImages |
 | DELETE | /api/v1/companions/:id | UseGuards(AuthGuard('admin')) | deleteCompanion |
 | PUT | /api/v1/companions/:id/voice | UseGuards(AuthGuard('admin')) | updateVoice |
