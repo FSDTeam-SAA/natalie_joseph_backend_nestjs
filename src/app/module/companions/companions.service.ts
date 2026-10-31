@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
 import { fileUpload } from 'src/app/helper/fileUploder';
@@ -6,6 +11,7 @@ import paginationHelper, { IOptions } from 'src/app/helper/pagenation';
 import { IFilterParams } from 'src/app/helper/pick';
 import { PrismaService } from 'src/prisma/prisma.service';
 import type { Prisma } from '../../../../prisma/generated/prisma/client';
+import { TelegramProfileService } from '../publishing/telegram-profile.service';
 import { companionProfileSelect } from './companion-profile';
 import {
   CompanionBackgroundDto,
@@ -16,7 +22,6 @@ import {
   CreateCompanionDto,
 } from './dto/create-companion.dto';
 import { UpdateCompanionDto } from './dto/update-companion.dto';
-import { TelegramProfileService } from '../publishing/telegram-profile.service';
 
 @Injectable()
 export class CompanionsService {
@@ -350,6 +355,35 @@ export class CompanionsService {
         ? await this.profiles.automatic(id, undefined, urls[0])
         : undefined;
     return { ...updated, ...(telegramSync ? { telegramSync } : {}) };
+  }
+
+  async removedOneGallaryImage(id: string, url: string) {
+    const companion = await this.prisma.companions.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        galleryImages: true,
+      },
+    });
+
+    if (!companion) {
+      throw new NotFoundException('Companion not found');
+    }
+
+    if (!companion.galleryImages.includes(url)) {
+      throw new NotFoundException('Gallery image not found');
+    }
+
+    const updatedCompanion = await this.prisma.companions.update({
+      where: { id },
+      data: {
+        galleryImages: {
+          set: companion.galleryImages.filter((image) => image !== url),
+        },
+      },
+    });
+
+    return updatedCompanion;
   }
 
   async updateVoiceSettings(id: string, voiceId: string) {

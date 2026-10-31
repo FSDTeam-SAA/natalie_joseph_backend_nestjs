@@ -199,7 +199,7 @@ export class AiApi {
     if (
       !data?.message_id ||
       typeof data.response !== 'string' ||
-      !data.response.trim() ||
+      (!data.media && !data.response.trim()) ||
       data.conversation_id !== conversationId ||
       data.companion_id !== companionId
     ) {
