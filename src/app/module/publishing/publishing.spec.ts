@@ -149,6 +149,32 @@ describe('Companion publishing boundaries', () => {
     });
     expect(findMany.mock.calls[0][0].select.media).toBeUndefined();
   });
+  it('returns only active admin stories with signed media paths', async () => {
+    const expiresAt = new Date(Date.now() + 60000);
+    const findMany = jest.fn().mockResolvedValue([
+      { id: 'story', expiresAt, publishedAt: new Date(), deletedAt: null },
+    ]);
+    const service = new MediaStoryService(
+      {
+        companions: {
+          findFirst: jest.fn().mockResolvedValue({ id: 'companion' }),
+        },
+        companionMediaStory: { findMany },
+      } as unknown as PrismaService,
+      config(),
+    );
+    const rows = await service.adminList('companion', 'admin');
+    expect(findMany.mock.calls[0][0]).toMatchObject({
+      take: 100,
+      where: {
+        companionId: 'companion',
+        deletedAt: null,
+        expiresAt: { gt: expect.any(Date) },
+        publishedAt: { lte: expect.any(Date) },
+      },
+    });
+    expect(rows[0].mediaPath).toContain('/media?ticket=');
+  });
   it('restricts profile image download to this applications Cloudinary image uploads', () => {
     const service = new TelegramProfileService({} as PrismaService, config());
     expect(

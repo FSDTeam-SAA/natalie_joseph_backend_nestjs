@@ -131,13 +131,24 @@ export class MediaStoryService {
       select: metadata,
     });
   }
-  adminList(id: string) {
-    return this.prisma.companionMediaStory.findMany({
-      where: { companionId: id },
+  async adminList(id: string, userId: string) {
+    await this.companion(id);
+    const now = new Date();
+    const stories = await this.prisma.companionMediaStory.findMany({
+      where: {
+        companionId: id,
+        deletedAt: null,
+        publishedAt: { lte: now },
+        expiresAt: { gt: now },
+      },
       select: metadata,
       orderBy: { publishedAt: 'desc' },
       take: 100,
     });
+    return stories.map((story) => ({
+      ...story,
+      mediaPath: `/api/v1/media-stories/${story.id}/media?ticket=${this.ticket(story.id, userId, story.expiresAt)}`,
+    }));
   }
   async remove(id: string, storyId: string) {
     const changed = await this.prisma.companionMediaStory.updateMany({

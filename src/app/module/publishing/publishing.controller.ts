@@ -65,8 +65,11 @@ export class PublishingAdminController {
     return { data: await this.profiles.retry(id) };
   }
   @Get('media-stories')
-  async list(@Param('companionId', ParseUUIDPipe) id: string) {
-    return { data: await this.stories.adminList(id) };
+  async list(
+    @Param('companionId', ParseUUIDPipe) id: string,
+    @Req() req: Request,
+  ) {
+    return { data: await this.stories.adminList(id, req.user!.id) };
   }
   @Post('media-stories')
   @ApiConsumes('multipart/form-data')
