@@ -113,7 +113,12 @@ export class CompanionsController {
   }
 
   @Put(':id/profile-image')
-  @ApiOperation({ summary: 'Set or replace companion profileImage' })
+  @ApiTags('Telegram profile setup')
+  @ApiOperation({
+    summary: '1. Upload profile photo — website and Telegram',
+    description:
+      'Admin only. Click Try it out, enter the companion ID and choose a file in profileImage. Saves the website photo and queues Telegram sync when TELEGRAM_PROFILE_SYNC_ENABLED=true and this companion has a configured bot. The worker checks every 15 seconds; upload success does not mean Telegram sync is complete. Check GET /api/v1/admin/companions/{companionId}/telegram-profile for enabled, status and lastError. When sync is disabled, only the website photo changes.',
+  })
   @ApiBearerAuth('access-token')
   @ApiConsumes('multipart/form-data')
   @ApiBody({

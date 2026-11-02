@@ -376,7 +376,12 @@ window.location.assign(connected.data.telegramUrl);
 </code></pre><h3>PUT /api/v1/companions/:id/profile-image</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:115</code> • Handler: <code>CompanionsController.updateProfileImage</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
 @UploadedFiles() files: { profileImage?: Express.Multer.File[] } = {}
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Put(':id/profile-image')
-@ApiOperation({ summary: 'Set or replace companion profileImage' })
+@ApiTags('Telegram profile setup')
+@ApiOperation({
+    summary: '1. Upload profile photo — website and Telegram',
+    description:
+      'Admin only. Click Try it out, enter the companion ID and choose a file in profileImage. Saves the website photo and queues Telegram sync when TELEGRAM_PROFILE_SYNC_ENABLED=true and this companion has a configured bot. The worker checks every 15 seconds; upload success does not mean Telegram sync is complete. Check GET /api/v1/admin/companions/{companionId}/telegram-profile for enabled, status and lastError. When sync is disabled, only the website photo changes.',
+  })
 @ApiBearerAuth('access-token')
 @ApiConsumes('multipart/form-data')
 @ApiBody({
@@ -402,7 +407,7 @@ window.location.assign(connected.data.telegramUrl);
     );
     return { message: 'Companion images updated successfully', data };
   }
-</code></pre><h3>PUT /api/v1/companions/:id/cover-image</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:146</code> • Handler: <code>CompanionsController.updateCoverImage</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><h3>PUT /api/v1/companions/:id/cover-image</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:151</code> • Handler: <code>CompanionsController.updateCoverImage</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
 @UploadedFiles() files: { coverImage?: Express.Multer.File[] } = {}
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Put(':id/cover-image')
 @ApiOperation({ summary: 'Set or replace companion coverImage' })
@@ -431,7 +436,7 @@ window.location.assign(connected.data.telegramUrl);
     );
     return { message: 'Companion images updated successfully', data };
   }
-</code></pre><h3>POST /api/v1/companions/:id/gallery</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:177</code> • Handler: <code>CompanionsController.addGalleryImages</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><h3>POST /api/v1/companions/:id/gallery</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:182</code> • Handler: <code>CompanionsController.addGalleryImages</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
 @UploadedFiles() files: { galleryImages?: Express.Multer.File[] } = {}
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Post(':id/gallery')
 @ApiOperation({ summary: 'Add to companion galleryImages' })
@@ -466,7 +471,7 @@ window.location.assign(connected.data.telegramUrl);
     );
     return { message: 'Companion images updated successfully', data };
   }
-</code></pre><h3>DELETE /api/v1/companions/:id/gallery</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:214</code> • Handler: <code>CompanionsController.removedOneGallaryImage</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><h3>DELETE /api/v1/companions/:id/gallery</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:219</code> • Handler: <code>CompanionsController.removedOneGallaryImage</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
 @Query('url') url: string
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Delete(':id/gallery')
 @ApiOperation({ summary: 'Remove one companion gallery image' })
@@ -487,7 +492,7 @@ window.location.assign(connected.data.telegramUrl);
       data,
     };
   }
-</code></pre><h3>PUT /api/v1/companions/:id/gallery</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:237</code> • Handler: <code>CompanionsController.updateGalleryImages</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><h3>PUT /api/v1/companions/:id/gallery</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:242</code> • Handler: <code>CompanionsController.updateGalleryImages</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
 @UploadedFiles() files: { galleryImages?: Express.Multer.File[] } = {}
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Put(':id/gallery')
 @ApiOperation({ summary: 'Set or replace companion galleryImages' })
@@ -522,7 +527,7 @@ window.location.assign(connected.data.telegramUrl);
     );
     return { message: 'Companion images updated successfully', data };
   }
-</code></pre><h3>DELETE /api/v1/companions/:id</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:274</code> • Handler: <code>CompanionsController.deleteCompanion</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><h3>DELETE /api/v1/companions/:id</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:279</code> • Handler: <code>CompanionsController.deleteCompanion</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Delete(':id')
 @ApiOperation({ summary: 'Delete a companion' })
 @ApiBearerAuth('access-token')
@@ -531,7 +536,7 @@ window.location.assign(connected.data.telegramUrl);
     const data = await this.companionsService.deleteCompanion(id);
     return { message: 'Companion deleted successfully', data };
   }
-</code></pre><h3>PUT /api/v1/companions/:id/voice</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:282</code> • Handler: <code>CompanionsController.updateVoice</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
+</code></pre><h3>PUT /api/v1/companions/:id/voice</h3><p>Source: <code>src/app/module/companions/companions.controller.ts:287</code> • Handler: <code>CompanionsController.updateVoice</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('id') id: string
 @Body() payload: UpdateVoiceDto
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Put(':id/voice')
 @ApiOperation({ summary: 'Update companion voice ID' })
@@ -1087,28 +1092,43 @@ window.location.assign(connected.data.telegramUrl);
   }
 </code></pre><h3>GET /api/v1/admin/companions/:companionId/telegram-profile</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:50</code> • Handler: <code>PublishingAdminController.status</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('telegram-profile')
+@ApiTags('Telegram profile setup')
+@ApiOperation({
+    summary: '2. Check Telegram profile sync status',
+    description: 'Admin only. Inspect data.enabled, data.status and data.lastError after uploading a profile photo. status=synced confirms the worker completed the update. Profile sync requires TELEGRAM_PROFILE_SYNC_ENABLED=true and a configured companion bot.',
+  })
 </code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
     await this.stories.companion(id);
     return { data: await this.profiles.status(id) };
   }
-</code></pre><h3>PUT /api/v1/admin/companions/:companionId/telegram-profile</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:55</code> • Handler: <code>PublishingAdminController.profile</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
+</code></pre><h3>PUT /api/v1/admin/companions/:companionId/telegram-profile</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:60</code> • Handler: <code>PublishingAdminController.profile</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
 @Body() dto: TelegramProfileDto
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Put('telegram-profile')
+@ApiTags('Telegram profile setup')
+@ApiOperation({
+    summary: 'Edit Telegram display name, about and description',
+    description: 'Admin only. Queues text profile updates. This JSON endpoint does not upload photos; use PUT /api/v1/companions/{id}/profile-image with multipart field profileImage. displayName also updates the website companion name.',
+  })
 </code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
     await this.stories.companion(id);
     return { data: await this.profiles.save(id, dto) };
   }
-</code></pre><h3>POST /api/v1/admin/companions/:companionId/telegram-profile/retry</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:63</code> • Handler: <code>PublishingAdminController.retry</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
+</code></pre><h3>POST /api/v1/admin/companions/:companionId/telegram-profile/retry</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:73</code> • Handler: <code>PublishingAdminController.retry</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('telegram-profile/retry')
+@ApiTags('Telegram profile setup')
+@ApiOperation({
+    summary: '3. Retry a queued or failed Telegram profile update',
+    description: 'Admin only. Requeues an existing profile sync record. Enable sync and correct the reported configuration/error first. Poll the status endpoint afterwards; this request does not confirm delivery to Telegram.',
+  })
 </code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
     return { data: await this.profiles.retry(id) };
   }
-</code></pre><h3>GET /api/v1/admin/companions/:companionId/media-stories</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:67</code> • Handler: <code>PublishingAdminController.list</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
+</code></pre><h3>GET /api/v1/admin/companions/:companionId/media-stories</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:82</code> • Handler: <code>PublishingAdminController.list</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('media-stories')
 </code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
     return { data: await this.stories.adminList(id) };
   }
-</code></pre><h3>POST /api/v1/admin/companions/:companionId/media-stories</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:71</code> • Handler: <code>PublishingAdminController.publish</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
+</code></pre><h3>POST /api/v1/admin/companions/:companionId/media-stories</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:86</code> • Handler: <code>PublishingAdminController.publish</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
 @Body() dto: PublishMediaStoryDto
 @UploadedFile() file?: Express.Multer.File
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Post('media-stories')
@@ -1132,26 +1152,26 @@ window.location.assign(connected.data.telegramUrl);
 </code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
     return { data: await this.stories.publish(id, dto.caption || '', file) };
   }
-</code></pre><h3>DELETE /api/v1/admin/companions/:companionId/media-stories/:storyId</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:96</code> • Handler: <code>PublishingAdminController.remove</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
+</code></pre><h3>DELETE /api/v1/admin/companions/:companionId/media-stories/:storyId</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:111</code> • Handler: <code>PublishingAdminController.remove</code></p><p>Access: <code>UseGuards(AuthGuard('admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
 @Param('storyId', ParseUUIDPipe) storyId: string
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Delete('media-stories/:storyId')
 </code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
     return { data: await this.stories.remove(id, storyId) };
   }
-</code></pre><h3>GET /api/v1/media-stories/summary</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:111</code> • Handler: <code>MediaStoryController.summary</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
+</code></pre><h3>GET /api/v1/media-stories/summary</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:126</code> • Handler: <code>MediaStoryController.summary</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Req() req: Request
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('summary')
 @Header('Cache-Control', 'no-store')
 </code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
     return { data: await this.stories.summary(req.user!.id) };
   }
-</code></pre><h3>GET /api/v1/media-stories/companions/:companionId</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:116</code> • Handler: <code>MediaStoryController.feed</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
+</code></pre><h3>GET /api/v1/media-stories/companions/:companionId</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:131</code> • Handler: <code>MediaStoryController.feed</code></p><p>Access: <code>UseGuards(AuthGuard('user', 'admin'))</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
 @Req() req: Request
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('companions/:companionId')
 @Header('Cache-Control', 'no-store')
 </code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
     return { data: await this.stories.list(id, req.user!.id) };
   }
-</code></pre><h3>GET /api/v1/media-stories/:storyId/media</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:130</code> • Handler: <code>StoryMediaController.media</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('storyId', ParseUUIDPipe) id: string
+</code></pre><h3>GET /api/v1/media-stories/:storyId/media</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:145</code> • Handler: <code>StoryMediaController.media</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('storyId', ParseUUIDPipe) id: string
 @Query('ticket') ticket: string | string[] | undefined
 @Headers('range') range: string | undefined
 @Res() res: Response
@@ -1200,7 +1220,7 @@ window.location.assign(connected.data.telegramUrl);
     }
     return res.set('Content-Length', String(length)).send(bytes);
   }
-</code></pre><h3>GET /api/v1/telegram/stories</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:187</code> • Handler: <code>TelegramStoryController.page</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Res() res: Response
+</code></pre><h3>GET /api/v1/telegram/stories</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:202</code> • Handler: <code>TelegramStoryController.page</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Res() res: Response
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Get()
 @SetMetadata('rawResponse', true)
 </code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
@@ -1215,7 +1235,7 @@ window.location.assign(connected.data.telegramUrl);
       .type('html')
       .send(storyViewer.replaceAll('__NONCE__', nonce));
   }
-</code></pre><h3>POST /api/v1/telegram/stories/:companionId/feed</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:201</code> • Handler: <code>TelegramStoryController.feed</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
+</code></pre><h3>POST /api/v1/telegram/stories/:companionId/feed</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:216</code> • Handler: <code>TelegramStoryController.feed</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Param('companionId', ParseUUIDPipe) id: string
 @Body() dto: StorySessionDto
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Post(':companionId/feed')
 @Header('Cache-Control', 'no-store')
@@ -1227,7 +1247,7 @@ window.location.assign(connected.data.telegramUrl);
       ),
     };
   }
-</code></pre><h3>GET /api/v1/publishing/admin</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:220</code> • Handler: <code>PublishingConsoleController.page</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Res() res: Response
+</code></pre><h3>GET /api/v1/publishing/admin</h3><p>Source: <code>src/app/module/publishing/publishing.controller.ts:235</code> • Handler: <code>PublishingConsoleController.page</code></p><p>Access: <code>Controller JWT guard নেই</code></p><p>Request parameters (নাম, DTO ও pipe অপরিবর্তিত):</p><pre><code>@Res() res: Response
 </code></pre><p>Upload/query/status metadata:</p><pre><code>@Get('admin')
 @SetMetadata('rawResponse', true)
 </code></pre><p>Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):</p><pre><code>{
