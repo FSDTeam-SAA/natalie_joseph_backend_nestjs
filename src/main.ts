@@ -4,9 +4,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import { AppModule } from './app.module';
+import { deploymentSettings } from './app/config/deployment';
 import { GlobalExceptionFilter } from './app/helper/globalerror.filter';
 import { UtilsInterceptor } from './app/utils/utils.interceptor';
-import { deploymentSettings } from './app/config/deployment';
 dotenv.config();
 
 async function bootstrap() {
@@ -22,7 +22,7 @@ async function bootstrap() {
   expressApp.set('trust proxy', deployment.hops);
   app.enableShutdownHooks();
   app.enableCors({
-    origin: deployment.origins,
+    origin: true,
     credentials: true,
   });
 
@@ -42,7 +42,9 @@ async function bootstrap() {
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Meet Elysia — Website & Admin API')
-    .setDescription('Website and admin dashboard integration APIs. Internal Telegram Mini App, provider webhook, health and server-rendered utility routes are intentionally hidden; they remain operational. Telegram account connection and signed story media are included for frontend integration.')
+    .setDescription(
+      'Website and admin dashboard integration APIs. Internal Telegram Mini App, provider webhook, health and server-rendered utility routes are intentionally hidden; they remain operational. Telegram account connection and signed story media are included for frontend integration.',
+    )
     .setVersion('1.0')
     .addTag('Natalie Joseph')
     .addBearerAuth(
