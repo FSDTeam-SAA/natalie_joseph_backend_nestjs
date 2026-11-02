@@ -2,7 +2,7 @@
 
 Controller ও DTO থেকে সরাসরি তৈরি; live API test নয়। নতুন lifestyle API নির্দেশনা: [Backend handover](../README-lifestyle-handoff-bn.md)। মূল নির্দেশনা: [বাংলা integration guide](./frontend-integration-bn.md)।
 
-মোট **118টি route**, **61টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।
+মোট **119টি route**, **61টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।
 
 ## সব endpoint এক নজরে
 
@@ -27,6 +27,7 @@ Controller ও DTO থেকে সরাসরি তৈরি; live API test �
 | PUT | `/api/v1/companions/:id/profile-image` | UseGuards(AuthGuard('admin')) | updateProfileImage |
 | PUT | `/api/v1/companions/:id/cover-image` | UseGuards(AuthGuard('admin')) | updateCoverImage |
 | POST | `/api/v1/companions/:id/gallery` | UseGuards(AuthGuard('admin')) | addGalleryImages |
+| DELETE | `/api/v1/companions/:id/gallery` | UseGuards(AuthGuard('admin')) | removedOneGallaryImage |
 | PUT | `/api/v1/companions/:id/gallery` | UseGuards(AuthGuard('admin')) | updateGalleryImages |
 | DELETE | `/api/v1/companions/:id` | UseGuards(AuthGuard('admin')) | deleteCompanion |
 | PUT | `/api/v1/companions/:id/voice` | UseGuards(AuthGuard('admin')) | updateVoice |
@@ -635,7 +636,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/companions
 
-Source: `src/app/module/companions/companions.controller.ts:38` • Handler: `CompanionsController.createCompanion`
+Source: `src/app/module/companions/companions.controller.ts:39` • Handler: `CompanionsController.createCompanion`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -667,7 +668,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/companions
 
-Source: `src/app/module/companions/companions.controller.ts:49` • Handler: `CompanionsController.getAllCompanions`
+Source: `src/app/module/companions/companions.controller.ts:50` • Handler: `CompanionsController.getAllCompanions`
 
 Access: `Controller JWT guard নেই`
 
@@ -731,7 +732,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/companions/:id
 
-Source: `src/app/module/companions/companions.controller.ts:92` • Handler: `CompanionsController.getCompanionById`
+Source: `src/app/module/companions/companions.controller.ts:93` • Handler: `CompanionsController.getCompanionById`
 
 Access: `Controller JWT guard নেই`
 
@@ -760,7 +761,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/companions/:id
 
-Source: `src/app/module/companions/companions.controller.ts:100` • Handler: `CompanionsController.updateCompanion`
+Source: `src/app/module/companions/companions.controller.ts:101` • Handler: `CompanionsController.updateCompanion`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -793,7 +794,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/companions/:id/profile-image
 
-Source: `src/app/module/companions/companions.controller.ts:114` • Handler: `CompanionsController.updateProfileImage`
+Source: `src/app/module/companions/companions.controller.ts:115` • Handler: `CompanionsController.updateProfileImage`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -808,7 +809,12 @@ Upload/query/status metadata:
 
 ```typescript
 @Put(':id/profile-image')
-@ApiOperation({ summary: 'Set or replace companion profileImage' })
+@ApiTags('Telegram profile setup')
+@ApiOperation({
+    summary: '1. Upload profile photo — website and Telegram',
+    description:
+      'Admin only. Click Try it out, enter the companion ID and choose a file in profileImage. Saves the website photo and queues Telegram sync when TELEGRAM_PROFILE_SYNC_ENABLED=true and this companion has a configured bot. The worker checks every 15 seconds; upload success does not mean Telegram sync is complete. Check GET /api/v1/admin/companions/{companionId}/telegram-profile for enabled, status and lastError. When sync is disabled, only the website photo changes.',
+  })
 @ApiBearerAuth('access-token')
 @ApiConsumes('multipart/form-data')
 @ApiBody({
@@ -843,7 +849,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/companions/:id/cover-image
 
-Source: `src/app/module/companions/companions.controller.ts:145` • Handler: `CompanionsController.updateCoverImage`
+Source: `src/app/module/companions/companions.controller.ts:151` • Handler: `CompanionsController.updateCoverImage`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -893,7 +899,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/companions/:id/gallery
 
-Source: `src/app/module/companions/companions.controller.ts:176` • Handler: `CompanionsController.addGalleryImages`
+Source: `src/app/module/companions/companions.controller.ts:182` • Handler: `CompanionsController.addGalleryImages`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -947,9 +953,51 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
+### DELETE /api/v1/companions/:id/gallery
+
+Source: `src/app/module/companions/companions.controller.ts:219` • Handler: `CompanionsController.removedOneGallaryImage`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+
+```typescript
+@Param('id') id: string
+@Query('url') url: string
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Delete(':id/gallery')
+@ApiOperation({ summary: 'Remove one companion gallery image' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@ApiQuery({
+    name: 'url',
+    type: String,
+    required: true,
+    description: 'Cloudinary image URL to remove from gallery',
+  })
+@HttpCode(HttpStatus.OK)
+```
+
+Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+
+```typescript
+{
+    const data = await this.companionsService.removedOneGallaryImage(id, url);
+
+    return {
+      message: 'Gallery image removed successfully',
+      data,
+    };
+  }
+```
+
 ### PUT /api/v1/companions/:id/gallery
 
-Source: `src/app/module/companions/companions.controller.ts:213` • Handler: `CompanionsController.updateGalleryImages`
+Source: `src/app/module/companions/companions.controller.ts:242` • Handler: `CompanionsController.updateGalleryImages`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1005,7 +1053,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/companions/:id
 
-Source: `src/app/module/companions/companions.controller.ts:250` • Handler: `CompanionsController.deleteCompanion`
+Source: `src/app/module/companions/companions.controller.ts:279` • Handler: `CompanionsController.deleteCompanion`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1035,7 +1083,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/companions/:id/voice
 
-Source: `src/app/module/companions/companions.controller.ts:258` • Handler: `CompanionsController.updateVoice`
+Source: `src/app/module/companions/companions.controller.ts:287` • Handler: `CompanionsController.updateVoice`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2800,6 +2848,11 @@ Upload/query/status metadata:
 
 ```typescript
 @Get('telegram-profile')
+@ApiTags('Telegram profile setup')
+@ApiOperation({
+    summary: '2. Check Telegram profile sync status',
+    description: 'Admin only. Inspect data.enabled, data.status and data.lastError after uploading a profile photo. status=synced confirms the worker completed the update. Profile sync requires TELEGRAM_PROFILE_SYNC_ENABLED=true and a configured companion bot.',
+  })
 ```
 
 Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
@@ -2813,7 +2866,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/admin/companions/:companionId/telegram-profile
 
-Source: `src/app/module/publishing/publishing.controller.ts:55` • Handler: `PublishingAdminController.profile`
+Source: `src/app/module/publishing/publishing.controller.ts:60` • Handler: `PublishingAdminController.profile`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2828,6 +2881,11 @@ Upload/query/status metadata:
 
 ```typescript
 @Put('telegram-profile')
+@ApiTags('Telegram profile setup')
+@ApiOperation({
+    summary: 'Edit Telegram display name, about and description',
+    description: 'Admin only. Queues text profile updates. This JSON endpoint does not upload photos; use PUT /api/v1/companions/{id}/profile-image with multipart field profileImage. displayName also updates the website companion name.',
+  })
 ```
 
 Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
@@ -2841,7 +2899,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/admin/companions/:companionId/telegram-profile/retry
 
-Source: `src/app/module/publishing/publishing.controller.ts:63` • Handler: `PublishingAdminController.retry`
+Source: `src/app/module/publishing/publishing.controller.ts:73` • Handler: `PublishingAdminController.retry`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2855,6 +2913,11 @@ Upload/query/status metadata:
 
 ```typescript
 @Post('telegram-profile/retry')
+@ApiTags('Telegram profile setup')
+@ApiOperation({
+    summary: '3. Retry a queued or failed Telegram profile update',
+    description: 'Admin only. Requeues an existing profile sync record. Enable sync and correct the reported configuration/error first. Poll the status endpoint afterwards; this request does not confirm delivery to Telegram.',
+  })
 ```
 
 Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
@@ -2867,7 +2930,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/companions/:companionId/media-stories
 
-Source: `src/app/module/publishing/publishing.controller.ts:67` • Handler: `PublishingAdminController.list`
+Source: `src/app/module/publishing/publishing.controller.ts:82` • Handler: `PublishingAdminController.list`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2893,7 +2956,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/admin/companions/:companionId/media-stories
 
-Source: `src/app/module/publishing/publishing.controller.ts:71` • Handler: `PublishingAdminController.publish`
+Source: `src/app/module/publishing/publishing.controller.ts:86` • Handler: `PublishingAdminController.publish`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2938,7 +3001,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/admin/companions/:companionId/media-stories/:storyId
 
-Source: `src/app/module/publishing/publishing.controller.ts:96` • Handler: `PublishingAdminController.remove`
+Source: `src/app/module/publishing/publishing.controller.ts:111` • Handler: `PublishingAdminController.remove`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -2965,7 +3028,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/media-stories/summary
 
-Source: `src/app/module/publishing/publishing.controller.ts:111` • Handler: `MediaStoryController.summary`
+Source: `src/app/module/publishing/publishing.controller.ts:126` • Handler: `MediaStoryController.summary`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -2992,7 +3055,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/media-stories/companions/:companionId
 
-Source: `src/app/module/publishing/publishing.controller.ts:116` • Handler: `MediaStoryController.feed`
+Source: `src/app/module/publishing/publishing.controller.ts:131` • Handler: `MediaStoryController.feed`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -3020,7 +3083,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/media-stories/:storyId/media
 
-Source: `src/app/module/publishing/publishing.controller.ts:130` • Handler: `StoryMediaController.media`
+Source: `src/app/module/publishing/publishing.controller.ts:145` • Handler: `StoryMediaController.media`
 
 Access: `Controller JWT guard নেই`
 
@@ -3090,7 +3153,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/telegram/stories
 
-Source: `src/app/module/publishing/publishing.controller.ts:187` • Handler: `TelegramStoryController.page`
+Source: `src/app/module/publishing/publishing.controller.ts:202` • Handler: `TelegramStoryController.page`
 
 Access: `Controller JWT guard নেই`
 
@@ -3126,7 +3189,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/telegram/stories/:companionId/feed
 
-Source: `src/app/module/publishing/publishing.controller.ts:201` • Handler: `TelegramStoryController.feed`
+Source: `src/app/module/publishing/publishing.controller.ts:216` • Handler: `TelegramStoryController.feed`
 
 Access: `Controller JWT guard নেই`
 
@@ -3159,7 +3222,7 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/publishing/admin
 
-Source: `src/app/module/publishing/publishing.controller.ts:220` • Handler: `PublishingConsoleController.page`
+Source: `src/app/module/publishing/publishing.controller.ts:235` • Handler: `PublishingConsoleController.page`
 
 Access: `Controller JWT guard নেই`
 
