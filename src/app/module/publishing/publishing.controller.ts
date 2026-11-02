@@ -21,7 +21,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { memoryStorage } from 'multer';
 import type { Request, Response } from 'express';
 import { randomBytes } from 'node:crypto';
@@ -48,11 +48,21 @@ export class PublishingAdminController {
     private readonly stories: MediaStoryService,
   ) {}
   @Get('telegram-profile')
+  @ApiTags('Telegram profile setup')
+  @ApiOperation({
+    summary: '2. Check Telegram profile sync status',
+    description: 'Admin only. Inspect data.enabled, data.status and data.lastError after uploading a profile photo. status=synced confirms the worker completed the update. Profile sync requires TELEGRAM_PROFILE_SYNC_ENABLED=true and a configured companion bot.',
+  })
   async status(@Param('companionId', ParseUUIDPipe) id: string) {
     await this.stories.companion(id);
     return { data: await this.profiles.status(id) };
   }
   @Put('telegram-profile')
+  @ApiTags('Telegram profile setup')
+  @ApiOperation({
+    summary: 'Edit Telegram display name, about and description',
+    description: 'Admin only. Queues text profile updates. This JSON endpoint does not upload photos; use PUT /api/v1/companions/{id}/profile-image with multipart field profileImage. displayName also updates the website companion name.',
+  })
   async profile(
     @Param('companionId', ParseUUIDPipe) id: string,
     @Body() dto: TelegramProfileDto,
@@ -61,6 +71,11 @@ export class PublishingAdminController {
     return { data: await this.profiles.save(id, dto) };
   }
   @Post('telegram-profile/retry')
+  @ApiTags('Telegram profile setup')
+  @ApiOperation({
+    summary: '3. Retry a queued or failed Telegram profile update',
+    description: 'Admin only. Requeues an existing profile sync record. Enable sync and correct the reported configuration/error first. Poll the status endpoint afterwards; this request does not confirm delivery to Telegram.',
+  })
   async retry(@Param('companionId', ParseUUIDPipe) id: string) {
     return { data: await this.profiles.retry(id) };
   }

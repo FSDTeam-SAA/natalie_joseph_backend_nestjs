@@ -1,6 +1,6 @@
 # Meet Elysia — সম্পূর্ণ Frontend ও Admin API README
 
-**তারিখ: ২৯ অক্টোবর ২০২৬ • Source-derived handover • 118টি route • 61টি DTO class**
+**তারিখ: ২৯ অক্টোবর ২০২৬ • Source-derived handover • 119টি route • 61টি DTO class**
 
 Frontend engineer-কে **এই একটি ফাইল** দিলেই website এবং admin dashboard-এর API mapping, flow, upload, DTO, access ও response mapping পড়তে পারবেন। এটি বর্তমান local backend source-এর contract; deployed server একই version চালাচ্ছে কি না rollout team যাচাই করবে। কোনো credentials এই ফাইলে নেই।
 
@@ -177,6 +177,7 @@ Admin overview data keys: `totalUsers, totalSubscriptionPlans, activeSubscriptio
 | PUT | `/api/v1/companions/:id/profile-image` | Profile picture upload; configured হলে Telegram sync queue | UseGuards(AuthGuard('admin')) |
 | PUT | `/api/v1/companions/:id/cover-image` | Cover image upload | UseGuards(AuthGuard('admin')) |
 | POST | `/api/v1/companions/:id/gallery` | Gallery-তে ছবি যোগ | UseGuards(AuthGuard('admin')) |
+| DELETE | `/api/v1/companions/:id/gallery` | URL দিয়ে একটি gallery image সরানো | UseGuards(AuthGuard('admin')) |
 | PUT | `/api/v1/companions/:id/gallery` | Gallery replace—append নয় | UseGuards(AuthGuard('admin')) |
 | DELETE | `/api/v1/companions/:id` | Companion delete action; confirmation আবশ্যক | UseGuards(AuthGuard('admin')) |
 | PUT | `/api/v1/companions/:id/voice` | Companion voiceId বদলানো | UseGuards(AuthGuard('admin')) |
@@ -1510,7 +1511,7 @@ Controller response mapping:
 
 **কাজ:** Nested metadata দিয়ে companion তৈরি
 
-Source: `src/app/module/companions/companions.controller.ts:38`
+Source: `src/app/module/companions/companions.controller.ts:39`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1544,7 +1545,7 @@ Controller response mapping:
 
 **কাজ:** Public companion cards, filter ও pagination
 
-Source: `src/app/module/companions/companions.controller.ts:49`
+Source: `src/app/module/companions/companions.controller.ts:50`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -1610,7 +1611,7 @@ Controller response mapping:
 
 **কাজ:** Companion details page data
 
-Source: `src/app/module/companions/companions.controller.ts:92`
+Source: `src/app/module/companions/companions.controller.ts:93`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -1641,7 +1642,7 @@ Controller response mapping:
 
 **কাজ:** Companion metadata edit
 
-Source: `src/app/module/companions/companions.controller.ts:100`
+Source: `src/app/module/companions/companions.controller.ts:101`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1676,7 +1677,7 @@ Controller response mapping:
 
 **কাজ:** Profile picture upload; configured হলে Telegram sync queue
 
-Source: `src/app/module/companions/companions.controller.ts:114`
+Source: `src/app/module/companions/companions.controller.ts:115`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1691,7 +1692,12 @@ Upload/status/validation metadata:
 
 ```typescript
 @Put(':id/profile-image')
-@ApiOperation({ summary: 'Set or replace companion profileImage' })
+@ApiTags('Telegram profile setup')
+@ApiOperation({
+    summary: '1. Upload profile photo — website and Telegram',
+    description:
+      'Admin only. Click Try it out, enter the companion ID and choose a file in profileImage. Saves the website photo and queues Telegram sync when TELEGRAM_PROFILE_SYNC_ENABLED=true and this companion has a configured bot. The worker checks every 15 seconds; upload success does not mean Telegram sync is complete. Check GET /api/v1/admin/companions/{companionId}/telegram-profile for enabled, status and lastError. When sync is disabled, only the website photo changes.',
+  })
 @ApiBearerAuth('access-token')
 @ApiConsumes('multipart/form-data')
 @ApiBody({
@@ -1728,7 +1734,7 @@ Controller response mapping:
 
 **কাজ:** Cover image upload
 
-Source: `src/app/module/companions/companions.controller.ts:145`
+Source: `src/app/module/companions/companions.controller.ts:151`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1780,7 +1786,7 @@ Controller response mapping:
 
 **কাজ:** Gallery-তে ছবি যোগ
 
-Source: `src/app/module/companions/companions.controller.ts:176`
+Source: `src/app/module/companions/companions.controller.ts:182`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1834,11 +1840,55 @@ Controller response mapping:
   }
 ```
 
+## DELETE /api/v1/companions/:id/gallery
+
+**কাজ:** URL দিয়ে একটি gallery image সরানো
+
+Source: `src/app/module/companions/companions.controller.ts:219`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters ও DTO:
+
+```typescript
+@Param('id') id: string
+@Query('url') url: string
+```
+
+Upload/status/validation metadata:
+
+```typescript
+@Delete(':id/gallery')
+@ApiOperation({ summary: 'Remove one companion gallery image' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('admin'))
+@ApiQuery({
+    name: 'url',
+    type: String,
+    required: true,
+    description: 'Cloudinary image URL to remove from gallery',
+  })
+@HttpCode(HttpStatus.OK)
+```
+
+Controller response mapping:
+
+```typescript
+{
+    const data = await this.companionsService.removedOneGallaryImage(id, url);
+
+    return {
+      message: 'Gallery image removed successfully',
+      data,
+    };
+  }
+```
+
 ## PUT /api/v1/companions/:id/gallery
 
 **কাজ:** Gallery replace—append নয়
 
-Source: `src/app/module/companions/companions.controller.ts:213`
+Source: `src/app/module/companions/companions.controller.ts:242`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1896,7 +1946,7 @@ Controller response mapping:
 
 **কাজ:** Companion delete action; confirmation আবশ্যক
 
-Source: `src/app/module/companions/companions.controller.ts:250`
+Source: `src/app/module/companions/companions.controller.ts:279`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -1928,7 +1978,7 @@ Controller response mapping:
 
 **কাজ:** Companion voiceId বদলানো
 
-Source: `src/app/module/companions/companions.controller.ts:258`
+Source: `src/app/module/companions/companions.controller.ts:287`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3807,6 +3857,11 @@ Upload/status/validation metadata:
 
 ```typescript
 @Get('telegram-profile')
+@ApiTags('Telegram profile setup')
+@ApiOperation({
+    summary: '2. Check Telegram profile sync status',
+    description: 'Admin only. Inspect data.enabled, data.status and data.lastError after uploading a profile photo. status=synced confirms the worker completed the update. Profile sync requires TELEGRAM_PROFILE_SYNC_ENABLED=true and a configured companion bot.',
+  })
 ```
 
 Controller response mapping:
@@ -3822,7 +3877,7 @@ Controller response mapping:
 
 **কাজ:** Display name/about/description save ও sync queue
 
-Source: `src/app/module/publishing/publishing.controller.ts:55`
+Source: `src/app/module/publishing/publishing.controller.ts:60`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3837,6 +3892,11 @@ Upload/status/validation metadata:
 
 ```typescript
 @Put('telegram-profile')
+@ApiTags('Telegram profile setup')
+@ApiOperation({
+    summary: 'Edit Telegram display name, about and description',
+    description: 'Admin only. Queues text profile updates. This JSON endpoint does not upload photos; use PUT /api/v1/companions/{id}/profile-image with multipart field profileImage. displayName also updates the website companion name.',
+  })
 ```
 
 Controller response mapping:
@@ -3852,7 +3912,7 @@ Controller response mapping:
 
 **কাজ:** Failed profile sync requeue
 
-Source: `src/app/module/publishing/publishing.controller.ts:63`
+Source: `src/app/module/publishing/publishing.controller.ts:73`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3866,6 +3926,11 @@ Upload/status/validation metadata:
 
 ```typescript
 @Post('telegram-profile/retry')
+@ApiTags('Telegram profile setup')
+@ApiOperation({
+    summary: '3. Retry a queued or failed Telegram profile update',
+    description: 'Admin only. Requeues an existing profile sync record. Enable sync and correct the reported configuration/error first. Poll the status endpoint afterwards; this request does not confirm delivery to Telegram.',
+  })
 ```
 
 Controller response mapping:
@@ -3880,7 +3945,7 @@ Controller response mapping:
 
 **কাজ:** 24h photo/video Story admin metadata list
 
-Source: `src/app/module/publishing/publishing.controller.ts:67`
+Source: `src/app/module/publishing/publishing.controller.ts:82`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3908,7 +3973,7 @@ Controller response mapping:
 
 **কাজ:** media upload করে 24h Story publish
 
-Source: `src/app/module/publishing/publishing.controller.ts:71`
+Source: `src/app/module/publishing/publishing.controller.ts:86`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3955,7 +4020,7 @@ Controller response mapping:
 
 **কাজ:** Story remove
 
-Source: `src/app/module/publishing/publishing.controller.ts:96`
+Source: `src/app/module/publishing/publishing.controller.ts:111`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
@@ -3984,7 +4049,7 @@ Controller response mapping:
 
 **কাজ:** Website avatar Story ring-এর active count/expiry
 
-Source: `src/app/module/publishing/publishing.controller.ts:111`
+Source: `src/app/module/publishing/publishing.controller.ts:126`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -4013,7 +4078,7 @@ Controller response mapping:
 
 **কাজ:** Active media Story feed ও signed mediaPath
 
-Source: `src/app/module/publishing/publishing.controller.ts:116`
+Source: `src/app/module/publishing/publishing.controller.ts:131`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
@@ -4043,7 +4108,7 @@ Controller response mapping:
 
 **কাজ:** Signed ticket দিয়ে image/video bytes; Range support
 
-Source: `src/app/module/publishing/publishing.controller.ts:130`
+Source: `src/app/module/publishing/publishing.controller.ts:145`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -4115,7 +4180,7 @@ Controller response mapping:
 
 **কাজ:** Telegram Story Mini App HTML shell
 
-Source: `src/app/module/publishing/publishing.controller.ts:187`
+Source: `src/app/module/publishing/publishing.controller.ts:202`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -4153,7 +4218,7 @@ Controller response mapping:
 
 **কাজ:** Telegram signed initData দিয়ে linked-user Story feed
 
-Source: `src/app/module/publishing/publishing.controller.ts:201`
+Source: `src/app/module/publishing/publishing.controller.ts:216`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
@@ -4188,7 +4253,7 @@ Controller response mapping:
 
 **কাজ:** Backend test/admin publishing HTML; final dashboard নয়
 
-Source: `src/app/module/publishing/publishing.controller.ts:220`
+Source: `src/app/module/publishing/publishing.controller.ts:235`
 
 Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
 
