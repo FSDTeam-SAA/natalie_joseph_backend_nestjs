@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-02T02:21:16.776Z",
+  "generatedAt": "2026-11-02T02:31:21.600Z",
   "note": "Source inventory, not OpenAPI. Controller guards are shown; service validation still applies.",
   "routes": [
     {

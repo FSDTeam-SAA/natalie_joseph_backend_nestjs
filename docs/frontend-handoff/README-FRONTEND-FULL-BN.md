@@ -604,10 +604,6 @@ window.location.assign(connected.data.telegramUrl);
 Profile sync ও photo/video Story integration-এর সম্পূর্ণ নির্দেশনা: companion-publishing-bn.md (এই README-তেই সংশ্লিষ্ট section আছে)। Backend API ও Telegram viewer তৈরি; website Story ring frontend team-কে integrate করতে হবে।
 
 
-## Companion routine response
-
-GET `/companions`-এর `data[]` এবং GET `/companions/:id`-এর `data`-তে এখন `routine` থাকে। Save করা থাকলে `{ "timezone": "Asia/Dubai", "weekly": [{ "day": 1, "start": "06:00", "end": "12:00", "activity": "Coffee at home, gym" }] }`; routine না থাকলে `null`। Admin routine update-এর পরে companion list/details refetch করুন। `background.lifestyle` হলো lifestyle description; `routine.weekly` হলো weekly schedule।
-
 <a id="publishing"></a>
 # Meet Elysia — Profile sync ও ২৪ ঘণ্টার Story
 
