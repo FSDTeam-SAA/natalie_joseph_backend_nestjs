@@ -4,9 +4,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import { AppModule } from './app.module';
-import { deploymentSettings } from './app/config/deployment';
 import { GlobalExceptionFilter } from './app/helper/globalerror.filter';
 import { UtilsInterceptor } from './app/utils/utils.interceptor';
+import { deploymentSettings } from './app/config/deployment';
 dotenv.config();
 
 async function bootstrap() {
