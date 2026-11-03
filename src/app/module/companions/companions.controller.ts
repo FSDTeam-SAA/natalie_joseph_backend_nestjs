@@ -49,7 +49,11 @@ export class CompanionsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get all companions' })
+  @ApiOperation({
+    summary: 'Get all companions',
+    description:
+      'Returns each public companion profile with its routine (timezone and weekly slots). The routine is null until an admin creates it.',
+  })
   @ApiQuery({ name: 'searchTerm', required: false, type: String })
   @ApiQuery({ name: 'occupation', required: false, type: String })
   @ApiQuery({ name: 'location', required: false, type: String })
@@ -92,7 +96,11 @@ export class CompanionsController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get a companion by ID' })
+  @ApiOperation({
+    summary: 'Get a companion by ID',
+    description:
+      'Returns the public companion profile with its routine (timezone and weekly slots). The routine is null until an admin creates it.',
+  })
   async getCompanionById(@Param('id') id: string) {
     const data = await this.companionsService.getCompanionById(id);
     return { message: 'Companion fetched successfully', data };

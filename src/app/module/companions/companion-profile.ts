@@ -39,6 +39,12 @@ export const companionProfileSelect = {
       lifestyle: true,
     },
   },
+  routine: {
+    select: {
+      timezone: true,
+      weekly: true,
+    },
+  },
   visualProfile: {
     select: {
       aestheticKeywords: true,
