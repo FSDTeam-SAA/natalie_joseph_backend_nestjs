@@ -1,18 +1,20 @@
 import { BillingService } from './billing.service';
 import {
+  Body,
   Controller,
   Get,
-  Body,
   HttpCode,
   HttpStatus,
   Param,
   Post,
   Req,
+  ServiceUnavailableException,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { Request } from 'express';
+import config from 'src/app/config';
 import { AuthGuard } from 'src/app/middlewares/auth.guard';
 import { PaymentService } from './payment.service';
 import { BuyCreditsDto } from './dto/buy-credits.dto';
@@ -24,6 +26,15 @@ export class PaymentController {
     private readonly paymentService: PaymentService,
     private readonly billing: BillingService,
   ) {}
+
+  @Get('config')
+  @ApiOperation({ summary: 'Get public payment configuration' })
+  config() {
+    if (!config.stripe.publicKey) {
+      throw new ServiceUnavailableException('Stripe is not configured');
+    }
+    return { data: { publishableKey: config.stripe.publicKey } };
+  }
 
   @Get('subscription/status')
   @ApiBearerAuth('access-token')

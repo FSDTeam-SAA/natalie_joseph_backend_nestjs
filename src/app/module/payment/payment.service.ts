@@ -49,6 +49,12 @@ export class PaymentService {
     }
 
     if (amount === 0) {
+      if (user.billingSubscriptionId) {
+        if (user.billingStatus === 'incomplete') {
+          await this.billing.cancel(userId);
+        }
+        await this.billing.sync(userId);
+      }
       const startsAt = new Date();
       const endsAt = new Date(startsAt);
       endsAt.setUTCDate(endsAt.getUTCDate() + subscription.durationDays);
@@ -58,11 +64,23 @@ export class PaymentService {
         const current = await transaction.user.findUniqueOrThrow({
           where: { id: user.id },
         });
-        if (
-          current.billingSubscriptionId ||
-          (await transaction.userSubscription.findFirst({
+        const terminalBillingStatuses = [
+          'canceled',
+          'unpaid',
+          'incomplete_expired',
+          'paused',
+        ];
+        const hasNonTerminalBillingSubscription = Boolean(
+          current.billingSubscriptionId &&
+            !terminalBillingStatuses.includes(current.billingStatus ?? ''),
+        );
+        const activeSubscription =
+          await transaction.userSubscription.findFirst({
             where: { userId, isActive: true, endsAt: { gt: new Date() } },
-          }))
+          });
+        if (
+          hasNonTerminalBillingSubscription ||
+          activeSubscription
         )
           throw new BadRequestException(
             'Free trial cannot replace an existing subscription',
