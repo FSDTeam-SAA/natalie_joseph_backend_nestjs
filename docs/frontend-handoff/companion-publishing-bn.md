@@ -1,75 +1,62 @@
-# Meet Elysia — Profile sync ও ২৪ ঘণ্টার Story
+# Telegram profile sync and 24-hour media Stories
 
-## এখন যা আছে
+English handoff. These publishing features are separate from approved library delivery and scheduled daily subscription content.
 
-Admin থেকে companion-এর নাম বা profile photo পরিবর্তন করলে website save হওয়ার পরে Telegram update queue হবে। About ও Description নতুন publishing API দিয়ে পরিবর্তন করা যায়। Bot username পরিবর্তন এই feature-এর অংশ নয়। ছবি Cloudinary-তে এই backend দিয়ে upload করতে হবে; worker সেটিকে JPEG করে Telegram-এ পাঠায়। Client-এর OTP লাগে না।
+## Behavior
 
-Photo/video Story প্রকাশের সময় থেকে ঠিক ২৪ ঘণ্টা website API ও Telegram Mini App-এ দেখা যাবে। এটি Telegram-এর native Story bar নয়। Story দেখার জন্য approved adult account এবং Telegram থেকে দেখলে account connection প্রয়োজন; Story দেখায় subscription credit কাটা হয় না। Chat-এর আগের subscription/credit নিয়ম অপরিবর্তিত।
+Saving a companion name/profile photo updates the website first and queues Telegram synchronization when enabled/configured. Publishing APIs also manage About and Description. Bot username editing is not supported. Upload the profile photo through the backend/Cloudinary flow; the worker converts it to JPEG for Telegram. No client OTP is needed.
 
-## প্রথমবার পরীক্ষা
+Media Stories remain available for 24 hours after publication through website APIs and the Telegram Mini App viewer. This is not Telegram's native Story bar. An approved adult account is required, with account linking for Telegram. Viewing does not consume chat/subscription credits.
 
-1. Backend restart করুন। এই workspace-এর database-এ নতুন migration apply করা হয়েছে।
-2. Browser-এ `http://localhost:8080/api/v1/publishing/admin` খুলুন। Existing **admin** account দিয়ে login করুন।
-3. Elena বা অন্য companion নির্বাচন করুন। Display name, About, Description লিখে **Save profile & queue sync** চাপুন।
-4. **Upload profile photo** দিয়ে ছবি দিন। Status প্রথমে `pending`, পরে `processing`, সফল হলে `synced` হবে। Worker প্রতি ১৫ সেকেন্ডে queue পরীক্ষা করে। পাঁচটি bot থাকলে completion-এ আরও সময় লাগতে পারে।
-5. Telegram-এ profile খুলে নাম, ছবি ও পরিচিতি যাচাই করুন। Cache থাকলে profile আবার খুলুন। Failure হলে status-এর কারণ দেখুন, configuration ঠিক করে **Retry Telegram sync** চাপুন। Automatic সর্বোচ্চ তিনবার চেষ্টা হয়।
-6. **Publish a story** থেকে JPEG/PNG/WebP বা MP4 এবং caption দিন। Default limit ১০ MB; MP4-এর browser playback codec-compatible হতে হবে (H.264/AAC ব্যবহার করুন)।
-7. Connected Telegram account দিয়ে companion-কে `/stories` পাঠান। **View … Stories** চাপলে Telegram-এর ভিতরে viewer খুলবে। `/start`-এর welcome message-এও button আছে। Unconnected user-কে আগে login করতে হবে।
-8. Next/Previous, video playback, caption এবং Refresh পরীক্ষা করুন। Admin থেকে **Remove story** করলে পরের request-এ সেটি unavailable হবে। মেয়াদ শেষ হলে নতুন feed/media request-এও unavailable হবে। ইতিমধ্যে download করা ছবি/video ফিরিয়ে মুছে দেওয়া যায় না।
+## Initial acceptance flow
 
-Publish করলে সব user-কে unsolicited message পাঠানো হয় না। Story viewer খোলা অবস্থায় expiry পরীক্ষা করে; signed media link পাঁচ মিনিটের, প্রয়োজন হলে Refresh বা viewer পুনরায় খুলুন।
+1. Review/apply required migrations for the target environment, then restart the intended backend instance.
+2. If the optional publishing console is enabled, open `http://localhost:8080/api/v1/publishing/admin` and log in with an existing admin account.
+3. Select a companion, edit display name/About/Description and choose **Save profile & queue sync**.
+4. Upload a profile image. Status moves through pending/processing to synced or failed. The worker checks approximately every 15 seconds; multiple bots may take longer. Check Telegram and refresh cached profiles. Correct configuration before retrying. Automatic attempts are bounded at three.
+5. Publish JPEG/PNG/WebP or MP4 media with an optional caption. Default upload limit is 10 MB; H.264/AAC is appropriate for browser MP4 playback.
+6. A connected Telegram user can use Menu > Stories or `/stories` and choose the viewer. Next/previous, captions, video playback and refresh need device testing.
+7. Removing/expiring a Story makes subsequent feed/media requests unavailable. Already downloaded content cannot be recalled. Signed media links last five minutes; refresh/reopen the viewer when necessary.
 
-## ENV ও deployment
+Publishing does not broadcast unsolicited messages to every user. Menu setup commands are deliberate administrative actions: `node scripts/telegram.cjs menu` configures five bots, or append `ELENA` for one bot. This menu command does not change webhooks or send user messages; existing more-specific Telegram menu overrides may take precedence.
 
-এই workspace-এর `.env`-এ settings এবং নতুন random signing secret রাখা হয়েছে। Secret অন্য কারও সঙ্গে share করবেন না। VPS-এর সব instance-এ একই persistent secret রাখতে হবে।
+## Configuration
 
 ```dotenv
 TELEGRAM_PROFILE_SYNC_ENABLED=true
 COMPANION_MEDIA_STORIES_ENABLED=true
 PUBLISHING_ADMIN_CONSOLE_ENABLED=true
 STORY_MAX_UPLOAD_MB=10
-STORY_MEDIA_SIGNING_SECRET=<strong-random-secret>
+STORY_MEDIA_SIGNING_SECRET=<strong-persistent-random-secret>
 TELEGRAM_PUBLIC_BASE_URL=https://your-backend-domain.example
 ```
 
-Existing পাঁচটি companion-এর bot token ও companion ID mapping এবং Cloudinary credentials ঠিক থাকতে হবে। `TELEGRAM_PUBLIC_BASE_URL` backend-এর public HTTPS origin। ngrok URL বদলালে এটি ও আগের webhook configuration update করে server restart করতে হবে। VPS-এ স্থায়ী HTTPS domain ব্যবহার করুন। Existing website registration/subscription URL settings এই feature পরিবর্তন করে না।
+Keep signing secrets persistent and consistent across replicas. Existing bot-token/companion-ID mappings and Cloudinary credentials are required. A changing tunnel URL requires deliberate public-base/webhook updates and restart; use stable HTTPS origins in production. Registration/payment website URL settings remain separate.
 
-নতুন server/database-এ deployment order:
+## API map
 
-```powershell
-cd D:\BACKEND\natalie_joseph_backend_nestjs
-npm ci
-npx prisma generate
-npx prisma migrate deploy
-npm run build
-npm run start:prod
-```
+Prefix routes with `/api/v1`; normal payloads are in `data`. Admin mutations require an admin Bearer token.
 
-Production process manager দিয়ে service চালু রাখুন। Database migration ছাড়া নতুন build চালাবেন না। Frontend admin integration হয়ে গেলে `PUBLISHING_ADMIN_CONSOLE_ENABLED=false` দিয়ে test console বন্ধ করা যায়; admin APIs তখনও role-protected থাকবে। Upload memory-তে পড়ে এবং Story bytes database-এ থাকে; বড় traffic/media library-তে private object storage ও streaming যোগ করা উচিত। Expired bytes প্রতি ১০ মিনিটে cleanup হয়; metadata থাকে। Basic file signatures যাচাই করা হয়, malware scan/transcoding করা হয় না।
-
-## Frontend developer-এর API
-
-সব path-এর আগে `/api/v1`। Normal response-এর `data` ব্যবহার করুন। Admin route-এ admin Bearer token আবশ্যক।
-
-| Method | Path | ব্যবহার |
+| Method | Path | Use |
 |---|---|---|
-| GET | `/admin/companions/:companionId/telegram-profile` | Sync status, desired fields, lastError |
-| PUT | `/admin/companions/:companionId/telegram-profile` | JSON `displayName` (64), `about` (120), `description` (512 characters) |
-| POST | `/admin/companions/:companionId/telegram-profile/retry` | Failed/pending profile পুনরায় queue |
-| PUT | `/companions/:id/profile-image` | Existing multipart field `profileImage`; website save + Telegram queue |
-| GET | `/admin/companions/:companionId/media-stories` | শেষ ১০০টি Story metadata, expired/deleted সহ |
-| POST | `/admin/companions/:companionId/media-stories` | multipart `media` file এবং optional `caption` (2048 characters) |
-| DELETE | `/admin/companions/:companionId/media-stories/:storyId` | Story সরিয়ে media bytes clear |
-| GET | `/media-stories/summary` | Approved adult user/admin JWT; active Story count ও expiry, website ring-এর জন্য |
-| GET | `/media-stories/companions/:companionId` | User/admin JWT; active Story feed ও signed `mediaPath` |
-| GET | `/media-stories/:storyId/media?ticket=...` | Feed থেকে পাওয়া signed URL; video Range request সমর্থিত |
-| GET | `/telegram/stories?companionId=...` | Telegram Mini App viewer shell |
-| POST | `/telegram/stories/:companionId/feed` | JSON `initData`; server Telegram signature ও account connection যাচাই করে |
+| GET | `/admin/companions/:companionId/telegram-profile` | Desired fields, status and safe lastError |
+| PUT | `/admin/companions/:companionId/telegram-profile` | displayName (64), about (120), description (512 characters) |
+| POST | `/admin/companions/:companionId/telegram-profile/retry` | Requeue eligible profile sync |
+| PUT | `/companions/:id/profile-image` | Multipart profileImage; website save plus configured sync |
+| GET / POST | `/admin/companions/:companionId/media-stories` | Recent metadata or multipart media plus caption (2048 characters) |
+| DELETE | `/admin/companions/:companionId/media-stories/:storyId` | Remove a Story and clear stored media bytes |
+| GET | `/media-stories/summary` | Authenticated active counts and expiry for avatar rings |
+| GET | `/media-stories/companions/:companionId` | Authenticated active feed with signed mediaPath |
+| GET | `/media-stories/:storyId/media?ticket=...` | Signed media bytes, including video Range support |
+| GET | `/telegram/stories?companionId=...` | Mini App viewer shell |
+| POST | `/telegram/stories/:companionId/feed` | Signed initData/account-validated feed |
 
-Website ring নিজে frontend-এ implement করতে হবে: summary-তে `count > 0` হলে ring দেখান; click করলে feed পড়ুন, caption ও media render করুন। `mediaPath` ইতিমধ্যে `/api/v1` দিয়ে শুরু—backend origin-এর সঙ্গে যোগ করবেন, API prefix দ্বিতীয়বার যোগ করবেন না। `serverTime` ও `expiresAt` দিয়ে countdown হিসাব করুন এবং expiry-তে refresh করুন।
+A mediaPath already begins with `/api/v1`; prepend only the backend origin. Use serverTime/expiresAt for countdown and refresh at expiry. Public companion data may expose display fields; private queue status remains in admin APIs. A failed Telegram sync does not roll back saved website fields.
 
-Website companion profile response-এ `telegramProfileSync`-এর public displayName/about/description আছে। Private queue state admin API-তেই থাকে। Status UI-তে Pending / Updating / Updated / Failed ও Retry দেখান। Telegram ব্যর্থ হলেও ইতিমধ্যে saved website data rollback হবে না।
+## Operations and limits
 
-## যাচাইয়ের সীমা
+Use the reviewed deployment workflow: install dependencies, generate Prisma, review/apply pending migrations, build, then start under the deployment process manager. The optional test console can be disabled after dashboard integration while keeping role-protected APIs available.
 
-Local automated tests-এ expiry, access control, signed media link, version/lease concurrency, retry, range request এবং browser script parsing যাচাই করা হয়েছে। Live Telegram profile পরিবর্তন বা বাস্তব account দিয়ে Story publish এই test run-এ করা হয়নি; উপরের ধাপগুলো দিয়ে নিজের approved content পরীক্ষা করুন। Final website/Figma pages এই backend repository-তে তৈরি করা হয়নি; frontend team-এর integration দরকার।
+Uploads are memory-buffered and Story bytes use the database. Higher-volume media requires an appropriate object-storage/streaming design. Expired bytes are cleaned periodically (approximately every ten minutes), with metadata retained. Basic signatures are checked; malware scanning/transcoding are not included.
+
+Automated tests cover expiry, access, signed links, leases/retries, ranges and browser script parsing. Live profile mutation and real-account Story publishing were not performed as part of those tests. Exact website/Figma integration and device acceptance remain separate work.

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-02T02:31:21.600Z",
+  "generatedAt": "2026-11-10T07:29:38.365Z",
   "note": "Source inventory, not OpenAPI. Controller guards are shown; service validation still applies.",
   "routes": [
     {
@@ -312,7 +312,7 @@
       "decorators": [
         "@Get()",
         "@HttpCode(HttpStatus.OK)",
-        "@ApiOperation({ summary: 'Get all companions' })",
+        "@ApiOperation({\r\n    summary: 'Get all companions',\r\n    description:\r\n      'Returns each public companion profile with its routine (timezone and weekly slots). The routine is null until an admin creates it.',\r\n  })",
         "@ApiQuery({ name: 'searchTerm', required: false, type: String })",
         "@ApiQuery({ name: 'occupation', required: false, type: String })",
         "@ApiQuery({ name: 'location', required: false, type: String })",
@@ -332,7 +332,7 @@
       "controller": "CompanionsController",
       "handler": "getCompanionById",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 93,
+      "line": 97,
       "swaggerVisible": true,
       "guards": [],
       "parameters": [
@@ -341,7 +341,7 @@
       "decorators": [
         "@Get(':id')",
         "@HttpCode(HttpStatus.OK)",
-        "@ApiOperation({ summary: 'Get a companion by ID' })"
+        "@ApiOperation({\r\n    summary: 'Get a companion by ID',\r\n    description:\r\n      'Returns the public companion profile with its routine (timezone and weekly slots). The routine is null until an admin creates it.',\r\n  })"
       ],
       "handlerSource": "{\r\n    const data = await this.companionsService.getCompanionById(id);\r\n    return { message: 'Companion fetched successfully', data };\r\n  }"
     },
@@ -351,7 +351,7 @@
       "controller": "CompanionsController",
       "handler": "updateCompanion",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 101,
+      "line": 109,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -376,7 +376,7 @@
       "controller": "CompanionsController",
       "handler": "updateProfileImage",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 115,
+      "line": 123,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -403,7 +403,7 @@
       "controller": "CompanionsController",
       "handler": "updateCoverImage",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 151,
+      "line": 159,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -429,7 +429,7 @@
       "controller": "CompanionsController",
       "handler": "addGalleryImages",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 182,
+      "line": 190,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -455,7 +455,7 @@
       "controller": "CompanionsController",
       "handler": "removedOneGallaryImage",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 219,
+      "line": 227,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -480,7 +480,7 @@
       "controller": "CompanionsController",
       "handler": "updateGalleryImages",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 242,
+      "line": 250,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -506,7 +506,7 @@
       "controller": "CompanionsController",
       "handler": "deleteCompanion",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 279,
+      "line": 287,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -528,7 +528,7 @@
       "controller": "CompanionsController",
       "handler": "updateVoice",
       "file": "src/app/module/companions/companions.controller.ts",
-      "line": 287,
+      "line": 295,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1056,7 +1056,7 @@
       "controller": "GiftController",
       "handler": "createGift",
       "file": "src/app/module/gift/gift.controller.ts",
-      "line": 37,
+      "line": 41,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1073,7 +1073,7 @@
         "@UseGuards(AuthGuard('admin'))",
         "@UseInterceptors(FileInterceptor('image', fileUpload.uploadConfig))"
       ],
-      "handlerSource": "{\r\n    const data = await this.giftService.createGift(payload, file);\r\n    return { message: 'Gift created successfully', data };\r\n  }"
+      "handlerSource": "{\n    const data = await this.giftService.createGift(payload, file);\n    return { message: 'Gift created successfully', data };\n  }"
     },
     {
       "method": "GET",
@@ -1081,7 +1081,7 @@
       "controller": "GiftController",
       "handler": "getGifts",
       "file": "src/app/module/gift/gift.controller.ts",
-      "line": 51,
+      "line": 55,
       "swaggerVisible": true,
       "guards": [],
       "parameters": [
@@ -1098,7 +1098,48 @@
         "@ApiQuery({ name: 'page', required: false, type: Number })",
         "@HttpCode(HttpStatus.OK)"
       ],
-      "handlerSource": "{\r\n    const filters = pick(req.query, ['searchTerm', 'name']);\r\n    const options = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'page']);\r\n    const result = await this.giftService.getActiveGifts(filters, options);\r\n    return {\r\n      message: 'Gifts fetched successfully',\r\n      meta: result.meta,\r\n      data: result.data,\r\n    };\r\n  }"
+      "handlerSource": "{\n    const filters = pick(req.query, ['searchTerm', 'name']);\n    const options = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'page']);\n    const result = await this.giftService.getActiveGifts(filters, options);\n    return {\n      message: 'Gifts fetched successfully',\n      meta: result.meta,\n      data: result.data,\n    };\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/gifts/admin",
+      "controller": "GiftController",
+      "handler": "adminGifts",
+      "file": "src/app/module/gift/gift.controller.ts",
+      "line": 75,
+      "swaggerVisible": true,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request"
+      ],
+      "decorators": [
+        "@Get('admin')",
+        "@UseGuards(AuthGuard('admin'))"
+      ],
+      "handlerSource": "{\n    const result = await this.giftService.getActiveGifts(\n      pick(req.query, ['searchTerm', 'name']),\n      pick(req.query, ['sortBy', 'sortOrder', 'limit', 'page']),\n      true,\n    );\n    return { data: result.data, meta: result.meta };\n  }"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/gifts/history",
+      "controller": "GiftController",
+      "handler": "history",
+      "file": "src/app/module/gift/gift.controller.ts",
+      "line": 86,
+      "swaggerVisible": true,
+      "guards": [
+        "UseGuards(AuthGuard('user'))"
+      ],
+      "parameters": [
+        "@Req() req: Request",
+        "@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number"
+      ],
+      "decorators": [
+        "@Get('history')",
+        "@UseGuards(AuthGuard('user'))"
+      ],
+      "handlerSource": "{\n    if (page < 1 || page > 100000)\n      throw new BadRequestException('Invalid page');\n    return { data: await this.giftService.history(req.user!.id, page) };\n  }"
     },
     {
       "method": "PATCH",
@@ -1106,7 +1147,7 @@
       "controller": "GiftController",
       "handler": "updateGift",
       "file": "src/app/module/gift/gift.controller.ts",
-      "line": 71,
+      "line": 97,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1121,7 +1162,7 @@
         "@UseGuards(AuthGuard('admin'))",
         "@ApiOperation({ summary: 'Update a gift (admin)' })"
       ],
-      "handlerSource": "{\r\n    const data = await this.giftService.updateGift(id, payload);\r\n    return { message: 'Gift updated successfully', data };\r\n  }"
+      "handlerSource": "{\n    const data = await this.giftService.updateGift(id, payload);\n    return { message: 'Gift updated successfully', data };\n  }"
     },
     {
       "method": "DELETE",
@@ -1129,7 +1170,7 @@
       "controller": "GiftController",
       "handler": "deactivateGift",
       "file": "src/app/module/gift/gift.controller.ts",
-      "line": 80,
+      "line": 106,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1143,7 +1184,7 @@
         "@UseGuards(AuthGuard('admin'))",
         "@ApiOperation({ summary: 'Deactivate a gift (admin)' })"
       ],
-      "handlerSource": "{\r\n    const data = await this.giftService.deactivateGift(id);\r\n    return { message: 'Gift deactivated successfully', data };\r\n  }"
+      "handlerSource": "{\n    const data = await this.giftService.deactivateGift(id);\n    return { message: 'Gift deactivated successfully', data };\n  }"
     },
     {
       "method": "POST",
@@ -1151,7 +1192,7 @@
       "controller": "GiftController",
       "handler": "sendGift",
       "file": "src/app/module/gift/gift.controller.ts",
-      "line": 89,
+      "line": 115,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
@@ -1167,7 +1208,7 @@
         "@UseGuards(AuthGuard('user'))",
         "@ApiOperation({ summary: 'Send a gift to a companion using credits' })"
       ],
-      "handlerSource": "{\r\n    if (!request.user) throw new UnauthorizedException();\r\n    const data = await this.giftService.sendGift(\r\n      request.user.id,\r\n      payload.companionId,\r\n      giftId,\r\n    );\r\n    return { message: 'Gift sent successfully', data };\r\n  }"
+      "handlerSource": "{\n    if (!request.user) throw new UnauthorizedException();\n    const data = await this.giftService.sendGift(\n      request.user.id,\n      payload.companionId,\n      giftId,\n      payload.requestId,\n      payload.expectedCreditCost,\n    );\n    return { message: 'Gift sent successfully', data };\n  }"
     },
     {
       "method": "GET",
@@ -1175,7 +1216,7 @@
       "controller": "LifestyleAdminController",
       "handler": "routine",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 48,
+      "line": 50,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1194,7 +1235,7 @@
       "controller": "LifestyleAdminController",
       "handler": "saveRoutine",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 53,
+      "line": 55,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1214,7 +1255,7 @@
       "controller": "LifestyleAdminController",
       "handler": "context",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 59,
+      "line": 61,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1233,7 +1274,7 @@
       "controller": "LifestyleAdminController",
       "handler": "photos",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 65,
+      "line": 67,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1249,11 +1290,30 @@
     },
     {
       "method": "POST",
+      "path": "/api/v1/admin/companions/:companionId/lifestyle/photos/import-gallery",
+      "controller": "LifestyleAdminController",
+      "handler": "importGallery",
+      "file": "src/app/module/lifestyle/lifestyle.controller.ts",
+      "line": 73,
+      "swaggerVisible": true,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) id: string"
+      ],
+      "decorators": [
+        "@Post('photos/import-gallery')"
+      ],
+      "handlerSource": "{\n    return { data: await this.service.importGallery(id) };\n  }"
+    },
+    {
+      "method": "POST",
       "path": "/api/v1/admin/companions/:companionId/lifestyle/photos",
       "controller": "LifestyleAdminController",
       "handler": "upload",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 71,
+      "line": 78,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1277,7 +1337,7 @@
       "controller": "LifestyleAdminController",
       "handler": "approve",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 92,
+      "line": 99,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1293,12 +1353,53 @@
       "handlerSource": "{\n    return { data: await this.service.approve(id, photoId, dto.approved) };\n  }"
     },
     {
+      "method": "PUT",
+      "path": "/api/v1/admin/companions/:companionId/lifestyle/photos/:photoId",
+      "controller": "LifestyleAdminController",
+      "handler": "editPhoto",
+      "file": "src/app/module/lifestyle/lifestyle.controller.ts",
+      "line": 106,
+      "swaggerVisible": true,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) id: string",
+        "@Param('photoId', ParseUUIDPipe) photoId: string",
+        "@Body() dto: LibraryPhotoDto"
+      ],
+      "decorators": [
+        "@Put('photos/:photoId')"
+      ],
+      "handlerSource": "{\n    return { data: await this.service.editPhoto(id, photoId, dto) };\n  }"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/admin/companions/:companionId/lifestyle/photos/:photoId",
+      "controller": "LifestyleAdminController",
+      "handler": "removePhoto",
+      "file": "src/app/module/lifestyle/lifestyle.controller.ts",
+      "line": 113,
+      "swaggerVisible": true,
+      "guards": [
+        "UseGuards(AuthGuard('admin'))"
+      ],
+      "parameters": [
+        "@Param('companionId', ParseUUIDPipe) id: string",
+        "@Param('photoId', ParseUUIDPipe) photoId: string"
+      ],
+      "decorators": [
+        "@Delete('photos/:photoId')"
+      ],
+      "handlerSource": "{\n    return { data: await this.service.removePhoto(id, photoId) };\n  }"
+    },
+    {
       "method": "GET",
       "path": "/api/v1/admin/companions/:companionId/lifestyle/daily-content",
       "controller": "LifestyleAdminController",
       "handler": "daily",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 99,
+      "line": 119,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1318,7 +1419,7 @@
       "controller": "LifestyleAdminController",
       "handler": "save",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 105,
+      "line": 125,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1338,7 +1439,7 @@
       "controller": "LifestyleAdminController",
       "handler": "unpublish",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 111,
+      "line": 131,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1358,7 +1459,7 @@
       "controller": "LifestyleAdminController",
       "handler": "deliveries",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 117,
+      "line": 137,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1378,7 +1479,7 @@
       "controller": "LifestyleController",
       "handler": "preference",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 140,
+      "line": 161,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
@@ -1397,7 +1498,7 @@
       "controller": "LifestyleController",
       "handler": "save",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 143,
+      "line": 164,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
@@ -1417,7 +1518,7 @@
       "controller": "LifestyleController",
       "handler": "allowances",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 149,
+      "line": 170,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
@@ -1436,7 +1537,7 @@
       "controller": "LifestyleController",
       "handler": "photo",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 152,
+      "line": 173,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
@@ -1449,7 +1550,7 @@
       "decorators": [
         "@Post('companions/:companionId/photo')"
       ],
-      "handlerSource": "{\n    return { data: await this.service.requestPhoto(req.user!.id, id, dto) };\n  }"
+      "handlerSource": "{\n    const result = await this.chat.sendMessage(\n      req.user!.id,\n      id,\n      `/photo${dto.tag ? ` ${dto.tag}` : ''}`,\n      req.headers.authorization!,\n      'text',\n      `library:${req.user!.id}:${id}:${dto.requestId}`,\n    );\n    return { data: result.message };\n  }"
     },
     {
       "method": "GET",
@@ -1457,7 +1558,7 @@
       "controller": "LifestyleController",
       "handler": "inbox",
       "file": "src/app/module/lifestyle/lifestyle.controller.ts",
-      "line": 159,
+      "line": 188,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
@@ -1559,11 +1660,27 @@
     },
     {
       "method": "GET",
+      "path": "/api/v1/payment/config",
+      "controller": "PaymentController",
+      "handler": "config",
+      "file": "src/app/module/payment/payment.controller.ts",
+      "line": 30,
+      "swaggerVisible": true,
+      "guards": [],
+      "parameters": [],
+      "decorators": [
+        "@Get('config')",
+        "@ApiOperation({ summary: 'Get public payment configuration' })"
+      ],
+      "handlerSource": "{\r\n    if (!config.stripe.publicKey) {\r\n      throw new ServiceUnavailableException('Stripe is not configured');\r\n    }\r\n    return { data: { publishableKey: config.stripe.publicKey } };\r\n  }"
+    },
+    {
+      "method": "GET",
       "path": "/api/v1/payment/subscription/status",
       "controller": "PaymentController",
       "handler": "status",
       "file": "src/app/module/payment/payment.controller.ts",
-      "line": 28,
+      "line": 39,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
@@ -1584,7 +1701,7 @@
       "controller": "PaymentController",
       "handler": "sync",
       "file": "src/app/module/payment/payment.controller.ts",
-      "line": 35,
+      "line": 46,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
@@ -1606,7 +1723,7 @@
       "controller": "PaymentController",
       "handler": "portal",
       "file": "src/app/module/payment/payment.controller.ts",
-      "line": 46,
+      "line": 57,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
@@ -1627,7 +1744,7 @@
       "controller": "PaymentController",
       "handler": "cancel",
       "file": "src/app/module/payment/payment.controller.ts",
-      "line": 53,
+      "line": 64,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
@@ -1648,7 +1765,7 @@
       "controller": "PaymentController",
       "handler": "upgrade",
       "file": "src/app/module/payment/payment.controller.ts",
-      "line": 60,
+      "line": 71,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
@@ -1670,7 +1787,7 @@
       "controller": "PaymentController",
       "handler": "paySubscriber",
       "file": "src/app/module/payment/payment.controller.ts",
-      "line": 67,
+      "line": 78,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin', 'user'))"
@@ -1694,7 +1811,7 @@
       "controller": "PaymentController",
       "handler": "buyCredits",
       "file": "src/app/module/payment/payment.controller.ts",
-      "line": 91,
+      "line": 102,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user'))"
@@ -1729,7 +1846,7 @@
       "decorators": [
         "@Get('telegram-profile')",
         "@ApiTags('Telegram profile setup')",
-        "@ApiOperation({\n    summary: '2. Check Telegram profile sync status',\n    description: 'Admin only. Inspect data.enabled, data.status and data.lastError after uploading a profile photo. status=synced confirms the worker completed the update. Profile sync requires TELEGRAM_PROFILE_SYNC_ENABLED=true and a configured companion bot.',\n  })"
+        "@ApiOperation({\r\n    summary: '2. Check Telegram profile sync status',\r\n    description: 'Admin only. Inspect data.enabled, data.status and data.lastError after uploading a profile photo. status=synced confirms the worker completed the update. Profile sync requires TELEGRAM_PROFILE_SYNC_ENABLED=true and a configured companion bot.',\r\n  })"
       ],
       "handlerSource": "{\r\n    await this.stories.companion(id);\r\n    return { data: await this.profiles.status(id) };\r\n  }"
     },
@@ -1751,7 +1868,7 @@
       "decorators": [
         "@Put('telegram-profile')",
         "@ApiTags('Telegram profile setup')",
-        "@ApiOperation({\n    summary: 'Edit Telegram display name, about and description',\n    description: 'Admin only. Queues text profile updates. This JSON endpoint does not upload photos; use PUT /api/v1/companions/{id}/profile-image with multipart field profileImage. displayName also updates the website companion name.',\n  })"
+        "@ApiOperation({\r\n    summary: 'Edit Telegram display name, about and description',\r\n    description: 'Admin only. Queues text profile updates. This JSON endpoint does not upload photos; use PUT /api/v1/companions/{id}/profile-image with multipart field profileImage. displayName also updates the website companion name.',\r\n  })"
       ],
       "handlerSource": "{\r\n    await this.stories.companion(id);\r\n    return { data: await this.profiles.save(id, dto) };\r\n  }"
     },
@@ -1772,7 +1889,7 @@
       "decorators": [
         "@Post('telegram-profile/retry')",
         "@ApiTags('Telegram profile setup')",
-        "@ApiOperation({\n    summary: '3. Retry a queued or failed Telegram profile update',\n    description: 'Admin only. Requeues an existing profile sync record. Enable sync and correct the reported configuration/error first. Poll the status endpoint afterwards; this request does not confirm delivery to Telegram.',\n  })"
+        "@ApiOperation({\r\n    summary: '3. Retry a queued or failed Telegram profile update',\r\n    description: 'Admin only. Requeues an existing profile sync record. Enable sync and correct the reported configuration/error first. Poll the status endpoint afterwards; this request does not confirm delivery to Telegram.',\r\n  })"
       ],
       "handlerSource": "{\r\n    return { data: await this.profiles.retry(id) };\r\n  }"
     },
@@ -1788,12 +1905,13 @@
         "UseGuards(AuthGuard('admin'))"
       ],
       "parameters": [
-        "@Param('companionId', ParseUUIDPipe) id: string"
+        "@Param('companionId', ParseUUIDPipe) id: string",
+        "@Req() req: Request"
       ],
       "decorators": [
         "@Get('media-stories')"
       ],
-      "handlerSource": "{\r\n    return { data: await this.stories.adminList(id) };\r\n  }"
+      "handlerSource": "{\r\n    return { data: await this.stories.adminList(id, req.user!.id) };\r\n  }"
     },
     {
       "method": "POST",
@@ -1801,7 +1919,7 @@
       "controller": "PublishingAdminController",
       "handler": "publish",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 86,
+      "line": 89,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1825,7 +1943,7 @@
       "controller": "PublishingAdminController",
       "handler": "remove",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 111,
+      "line": 114,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -1845,7 +1963,7 @@
       "controller": "MediaStoryController",
       "handler": "summary",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 126,
+      "line": 129,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
@@ -1865,7 +1983,7 @@
       "controller": "MediaStoryController",
       "handler": "feed",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 131,
+      "line": 134,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
@@ -1886,7 +2004,7 @@
       "controller": "StoryMediaController",
       "handler": "media",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 145,
+      "line": 148,
       "swaggerVisible": true,
       "guards": [],
       "parameters": [
@@ -1907,7 +2025,7 @@
       "controller": "TelegramStoryController",
       "handler": "page",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 202,
+      "line": 205,
       "swaggerVisible": false,
       "guards": [],
       "parameters": [
@@ -1925,7 +2043,7 @@
       "controller": "TelegramStoryController",
       "handler": "feed",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 216,
+      "line": 219,
       "swaggerVisible": false,
       "guards": [],
       "parameters": [
@@ -1944,7 +2062,7 @@
       "controller": "PublishingConsoleController",
       "handler": "page",
       "file": "src/app/module/publishing/publishing.controller.ts",
-      "line": 235,
+      "line": 238,
       "swaggerVisible": false,
       "guards": [],
       "parameters": [
@@ -2087,10 +2205,10 @@
       ],
       "decorators": [
         "@Get('status/:companionId')",
-        "@ApiOperation({\n    summary: 'Get Telegram linking/subscription status and return-to-bot URL',\n    description:\n      'Use after payment confirmation. Credit balance is available from the credit wallet API. This endpoint does not grant credits or activate subscriptions.',\n  })",
+        "@ApiOperation({\r\n    summary: 'Get Telegram linking/subscription status and return-to-bot URL',\r\n    description:\r\n      'Use after payment confirmation. Credit balance is available from the credit wallet API. This endpoint does not grant credits or activate subscriptions.',\r\n  })",
         "@ApiParam({ name: 'companionId', format: 'uuid' })"
       ],
-      "handlerSource": "{\n    return { data: await this.ai.status(request.user!.id, companionId) };\n  }"
+      "handlerSource": "{\r\n    return { data: await this.ai.status(request.user!.id, companionId) };\r\n  }"
     },
     {
       "method": "POST",
@@ -2109,11 +2227,11 @@
       ],
       "decorators": [
         "@Post('connect/:companionId')",
-        "@ApiOperation({\n    summary: 'Create a 10-minute, single-use Telegram account link',\n    description:\n      'Requires an approved adult user and active subscription. Open data.telegramUrl and press START in Telegram.',\n  })",
+        "@ApiOperation({\r\n    summary: 'Create a 10-minute, single-use Telegram account link',\r\n    description:\r\n      'Requires an approved adult user and active subscription. Open data.telegramUrl and press START in Telegram.',\r\n  })",
         "@ApiParam({ name: 'companionId', format: 'uuid' })",
-        "@ApiResponse({\n    status: 402,\n    description:\n      'Active subscription required. Subscribe on the website, then retry.',\n  })"
+        "@ApiResponse({\r\n    status: 402,\r\n    description:\r\n      'Active subscription required. Subscribe on the website, then retry.',\r\n  })"
       ],
-      "handlerSource": "{\n    return { data: await this.ai.connect(request.user!.id, companionId) };\n  }"
+      "handlerSource": "{\r\n    return { data: await this.ai.connect(request.user!.id, companionId) };\r\n  }"
     },
     {
       "method": "GET",
@@ -2131,7 +2249,7 @@
         "@Get()",
         "@SetMetadata('rawResponse', true)"
       ],
-      "handlerSource": "{\n    const nonce = randomBytes(18).toString('base64');\n    response\n      .set({\n        'Cache-Control': 'no-store',\n        'Referrer-Policy': 'no-referrer',\n        'X-Content-Type-Options': 'nosniff',\n        'Content-Security-Policy': `default-src 'none'; script-src 'nonce-${nonce}' https://telegram.org; style-src 'nonce-${nonce}'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors https://web.telegram.org https://*.telegram.org`,\n      })\n      .type('html')\n      .send(telegramLoginPage.replaceAll('__NONCE__', nonce));\n  }"
+      "handlerSource": "{\r\n    const nonce = randomBytes(18).toString('base64');\r\n    response\r\n      .set({\r\n        'Cache-Control': 'no-store',\r\n        'Referrer-Policy': 'no-referrer',\r\n        'X-Content-Type-Options': 'nosniff',\r\n        'Content-Security-Policy': `default-src 'none'; script-src 'nonce-${nonce}' https://telegram.org; style-src 'nonce-${nonce}'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors https://web.telegram.org https://*.telegram.org`,\r\n      })\r\n      .type('html')\r\n      .send(telegramLoginPage.replaceAll('__NONCE__', nonce));\r\n  }"
     },
     {
       "method": "GET",
@@ -2149,7 +2267,7 @@
         "@Get('settings/:companionId')",
         "@Header('Cache-Control', 'no-store')"
       ],
-      "handlerSource": "{\n    return { data: await this.app.settings(companionId) };\n  }"
+      "handlerSource": "{\r\n    return { data: await this.app.settings(companionId) };\r\n  }"
     },
     {
       "method": "POST",
@@ -2169,7 +2287,7 @@
         "@HttpCode(200)",
         "@Header('Cache-Control', 'no-store')"
       ],
-      "handlerSource": "{\n    return {\n      data: await this.app.login(\n        id,\n        body.initData,\n        body.email,\n        body.password,\n        body.confirmTransfer,\n      ),\n    };\n  }"
+      "handlerSource": "{\r\n    return {\r\n      data: await this.app.login(\r\n        id,\r\n        body.initData,\r\n        body.email,\r\n        body.password,\r\n        body.confirmTransfer,\r\n      ),\r\n    };\r\n  }"
     },
     {
       "method": "POST",
@@ -2189,7 +2307,7 @@
         "@HttpCode(200)",
         "@Header('Cache-Control', 'no-store')"
       ],
-      "handlerSource": "{\n    return { data: await this.app.status(id, body.initData) };\n  }"
+      "handlerSource": "{\r\n    return { data: await this.app.status(id, body.initData) };\r\n  }"
     },
     {
       "method": "POST",
@@ -2209,7 +2327,7 @@
         "@Post(':companionId')",
         "@HttpCode(200)"
       ],
-      "handlerSource": "{\n    const key = this.telegram.botKey(companionId);\n    this.telegram.verifySecret(secret, key);\n    await this.queue.receive(body, key);\n    return { ok: true };\n  }"
+      "handlerSource": "{\r\n    const key = this.telegram.botKey(companionId);\r\n    this.telegram.verifySecret(secret, key);\r\n    await this.queue.receive(body, key);\r\n    return { ok: true };\r\n  }"
     },
     {
       "method": "POST",
@@ -2228,7 +2346,7 @@
         "@Post()",
         "@HttpCode(200)"
       ],
-      "handlerSource": "{\n    this.telegram.verifySecret(secret);\n    await this.queue.receive(body);\n    return { ok: true };\n  }"
+      "handlerSource": "{\r\n    this.telegram.verifySecret(secret);\r\n    await this.queue.receive(body);\r\n    return { ok: true };\r\n  }"
     },
     {
       "method": "POST",
@@ -2236,7 +2354,7 @@
       "controller": "UserController",
       "handler": "createUser",
       "file": "src/app/module/user/user.controller.ts",
-      "line": 38,
+      "line": 43,
       "swaggerVisible": true,
       "guards": [],
       "parameters": [
@@ -2255,7 +2373,7 @@
       "controller": "UserController",
       "handler": "getAllUser",
       "file": "src/app/module/user/user.controller.ts",
-      "line": 52,
+      "line": 57,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -2288,7 +2406,7 @@
       "controller": "UserController",
       "handler": "getAllUserOverview",
       "file": "src/app/module/user/user.controller.ts",
-      "line": 138,
+      "line": 143,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -2309,7 +2427,7 @@
       "controller": "UserController",
       "handler": "myProfile",
       "file": "src/app/module/user/user.controller.ts",
-      "line": 151,
+      "line": 156,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
@@ -2332,21 +2450,21 @@
       "controller": "UserController",
       "handler": "UpdateMyProfile",
       "file": "src/app/module/user/user.controller.ts",
-      "line": 168,
+      "line": 173,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('user', 'admin'))"
       ],
       "parameters": [
         "@Req() req: Request",
-        "@Body() updateUserDto: UpdateUserDto",
+        "@Body() updateUserDto: UpdateProfileDto",
         "@UploadedFile() file?: Express.Multer.File"
       ],
       "decorators": [
         "@Put('my-profile')",
         "@ApiOperation({\r\n    summary: 'update my profile',\r\n  })",
         "@ApiConsumes('multipart/form-data')",
-        "@ApiBody({ type: UpdateUserDto })",
+        "@ApiBody({ type: UpdateProfileDto })",
         "@ApiBearerAuth('access-token')",
         "@UseGuards(AuthGuard('user', 'admin'))",
         "@UseInterceptors(FileInterceptor('profileImage', fileUpload.uploadConfig))",
@@ -2356,11 +2474,34 @@
     },
     {
       "method": "GET",
+      "path": "/api/v1/user/payments",
+      "controller": "UserController",
+      "handler": "myPayments",
+      "file": "src/app/module/user/user.controller.ts",
+      "line": 201,
+      "swaggerVisible": true,
+      "guards": [
+        "UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "parameters": [
+        "@Req() req: Request",
+        "@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number"
+      ],
+      "decorators": [
+        "@Get('payments')",
+        "@ApiOperation({ summary: 'Read your own paginated payment history' })",
+        "@ApiBearerAuth('access-token')",
+        "@UseGuards(AuthGuard('user', 'admin'))"
+      ],
+      "handlerSource": "{\r\n    if (page < 1 || page > 100000) throw new BadRequestException('Invalid page');\r\n    return { data: await this.userService.myPayments(req.user!.id, page) };\r\n  }"
+    },
+    {
+      "method": "GET",
       "path": "/api/v1/user/:id",
       "controller": "UserController",
       "handler": "getUserById",
       "file": "src/app/module/user/user.controller.ts",
-      "line": 196,
+      "line": 210,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -2383,7 +2524,7 @@
       "controller": "UserController",
       "handler": "updateUser",
       "file": "src/app/module/user/user.controller.ts",
-      "line": 212,
+      "line": 226,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -2409,7 +2550,7 @@
       "controller": "UserController",
       "handler": "deleteUser",
       "file": "src/app/module/user/user.controller.ts",
-      "line": 233,
+      "line": 247,
       "swaggerVisible": true,
       "guards": [
         "UseGuards(AuthGuard('admin'))"
@@ -2476,7 +2617,7 @@
       "decorators": [
         "@Get('live')"
       ],
-      "handlerSource": "{\n    return { status: 'ok' };\n  }"
+      "handlerSource": "{\r\n    return { status: 'ok' };\r\n  }"
     },
     {
       "method": "GET",
@@ -2491,7 +2632,7 @@
       "decorators": [
         "@Get('ready')"
       ],
-      "handlerSource": "{\n    try {\n      const rows = await this.prisma.$queryRaw<\n        { ready: boolean }[]\n      >`SELECT (to_regclass('request_limits') IS NOT NULL AND to_regclass('telegram_jobs') IS NOT NULL) AS ready`;\n      if (!rows[0]?.ready) throw new Error();\n      return { status: 'ready' };\n    } catch {\n      throw new ServiceUnavailableException('Service not ready');\n    }\n  }"
+      "handlerSource": "{\r\n    try {\r\n      const rows = await this.prisma.$queryRaw<\r\n        { ready: boolean }[]\r\n      >`SELECT (to_regclass('request_limits') IS NOT NULL AND to_regclass('telegram_jobs') IS NOT NULL) AS ready`;\r\n      if (!rows[0]?.ready) throw new Error();\r\n      return { status: 'ready' };\r\n    } catch {\r\n      throw new ServiceUnavailableException('Service not ready');\r\n    }\r\n  }"
     },
     {
       "method": "GET",
@@ -2581,7 +2722,7 @@
     {
       "name": "SendMessageDto",
       "file": "src/app/module/chat/dto/send-message.dto.ts",
-      "source": "export class SendMessageDto {\r\n  @ApiProperty({required:false,description:'UUID; reuse on retries to avoid duplicate replies and charges'})\r\n  @IsOptional()\r\n  @IsUUID()\r\n  requestId?: string;\r\n  @ApiProperty({\r\n    enum: ['text', 'voice'],\r\n    required: false,\r\n    description: 'Voice messages supply their transcript in message.',\r\n  })\r\n  @IsOptional()\r\n  @IsIn(['text', 'voice'])\r\n  type?: 'text' | 'voice';\r\n\r\n  @ApiProperty({ example: 'Hello, how are you?' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  @MaxLength(5000)\r\n  message!: string;\r\n}"
+      "source": "export class SendMessageDto {\n  @ApiProperty({\n    required: false,\n    description:\n      'UUID; reuse on retries to avoid duplicate replies and charges',\n  })\n  @IsOptional()\n  @IsUUID()\n  requestId?: string;\n  @ApiProperty({\n    enum: ['text', 'voice'],\n    required: false,\n    description: 'Voice messages supply their transcript in message.',\n  })\n  @IsOptional()\n  @IsIn(['text', 'voice'])\n  type?: 'text' | 'voice';\n\n  @ApiProperty({ example: 'Hello, how are you?' })\n  @IsString()\n  @IsNotEmpty()\n  @MaxLength(4000)\n  message!: string;\n}"
     },
     {
       "name": "CompanionPersonalityDto",
@@ -2721,7 +2862,7 @@
     {
       "name": "CreateGiftDto",
       "file": "src/app/module/gift/dto/gift.dto.ts",
-      "source": "export class CreateGiftDto {\r\n  @ApiProperty({ example: 'Rose' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  name!: string;\r\n\r\n  @ApiPropertyOptional({\r\n    example: 'https://example.com/rose.png',\r\n    type: 'string',\r\n    format: 'binary',\r\n  })\r\n  @IsOptional()\r\n  @IsString()\r\n  image?: string;\r\n\r\n  @ApiPropertyOptional({ example: 10 })\r\n  @IsInt()\r\n  @Min(1)\r\n  @Type(() => Number)\r\n  creditCost!: number;\r\n\r\n  @ApiPropertyOptional({ default: true })\r\n  @IsOptional()\r\n  @IsBoolean()\r\n  @Type(() => Boolean)\r\n  isActive?: boolean;\r\n}"
+      "source": "export class CreateGiftDto {\n  @ApiProperty({ example: 'Rose' })\n  @IsString()\n  @IsNotEmpty()\n  name!: string;\n\n  @ApiPropertyOptional({\n    example: 'https://example.com/rose.png',\n    type: 'string',\n    format: 'binary',\n  })\n  @IsOptional()\n  @IsString()\n  image?: string;\n\n  @ApiPropertyOptional({ example: 10 })\n  @IsInt()\n  @Min(1)\n  @Type(() => Number)\n  creditCost!: number;\n\n  @ApiPropertyOptional({ default: true })\n  @IsOptional()\n  @IsBoolean()\n  @Type(() => Boolean)\n  isActive?: boolean;\n}"
     },
     {
       "name": "UpdateGiftDto",
@@ -2731,47 +2872,47 @@
     {
       "name": "SendGiftDto",
       "file": "src/app/module/gift/dto/gift.dto.ts",
-      "source": "export class SendGiftDto {\r\n  @ApiProperty({ example: 'companion-id' })\r\n  @IsString()\r\n  @IsNotEmpty()\r\n  companionId!: string;\r\n}"
+      "source": "export class SendGiftDto {\n  @IsOptional()\n  @IsInt()\n  @Min(1)\n  expectedCreditCost?: number;\n\n  @IsOptional()\n  @IsUUID()\n  requestId?: string;\n\n  @ApiProperty({ example: 'companion-id' })\n  @IsString()\n  @IsNotEmpty()\n  companionId!: string;\n}"
     },
     {
       "name": "RoutineSlotDto",
       "file": "src/app/module/lifestyle/lifestyle.dto.ts",
-      "source": "export class RoutineSlotDto {\n  @ApiProperty({ description: 'ISO weekday: Monday=1, Sunday=7' })\n  @IsInt()\n  @Min(1)\n  @Max(7)\n  day!: number;\n  @ApiProperty({ example: '06:00' })\n  @Matches(/^([01]\\d|2[0-3]):[0-5]\\d$/)\n  start!: string;\n  @ApiProperty({ example: '12:00' })\n  @Matches(/^([01]\\d|2[0-3]):[0-5]\\d$/)\n  end!: string;\n  @ApiProperty() @IsString() @Matches(/\\S/) @MaxLength(500) activity!: string;\n  @ApiPropertyOptional()\n  @IsOptional()\n  @IsString()\n  @MaxLength(200)\n  location?: string;\n}"
+      "source": "export class RoutineSlotDto {\r\n  @ApiProperty({ description: 'ISO weekday: Monday=1, Sunday=7' })\r\n  @IsInt()\r\n  @Min(1)\r\n  @Max(7)\r\n  day!: number;\r\n  @ApiProperty({ example: '06:00' })\r\n  @Matches(/^([01]\\d|2[0-3]):[0-5]\\d$/)\r\n  start!: string;\r\n  @ApiProperty({ example: '12:00' })\r\n  @Matches(/^([01]\\d|2[0-3]):[0-5]\\d$/)\r\n  end!: string;\r\n  @ApiProperty() @IsString() @Matches(/\\S/) @MaxLength(500) activity!: string;\r\n  @ApiPropertyOptional()\r\n  @IsOptional()\r\n  @IsString()\r\n  @MaxLength(200)\r\n  location?: string;\r\n}"
     },
     {
       "name": "RoutineDto",
       "file": "src/app/module/lifestyle/lifestyle.dto.ts",
-      "source": "export class RoutineDto {\n  @ApiProperty({ example: 'Asia/Dubai' })\n  @IsString()\n  @MaxLength(80)\n  timezone!: string;\n  @ApiProperty({ type: [RoutineSlotDto] })\n  @IsArray()\n  @ArrayMaxSize(100)\n  @ValidateNested({ each: true })\n  @Type(() => RoutineSlotDto)\n  weekly!: RoutineSlotDto[];\n}"
+      "source": "export class RoutineDto {\r\n  @ApiProperty({ example: 'Asia/Dubai' })\r\n  @IsString()\r\n  @MaxLength(80)\r\n  timezone!: string;\r\n  @ApiProperty({ type: [RoutineSlotDto] })\r\n  @IsArray()\r\n  @ArrayMaxSize(100)\r\n  @ValidateNested({ each: true })\r\n  @Type(() => RoutineSlotDto)\r\n  weekly!: RoutineSlotDto[];\r\n}"
     },
     {
       "name": "LibraryPhotoDto",
       "file": "src/app/module/lifestyle/lifestyle.dto.ts",
-      "source": "export class LibraryPhotoDto {\n  @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(1000) caption =\n    '';\n  @ApiPropertyOptional({\n    description: 'Comma-separated tags, e.g. gym,morning,sporty',\n  })\n  @IsOptional()\n  @IsString()\n  @MaxLength(500)\n  tags = '';\n}"
+      "source": "export class LibraryPhotoDto {\r\n  @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(1000) caption =\r\n    '';\r\n  @ApiPropertyOptional({\r\n    description: 'Comma-separated tags, e.g. gym,morning,sporty',\r\n  })\r\n  @IsOptional()\r\n  @IsString()\r\n  @MaxLength(500)\r\n  tags = '';\r\n}"
     },
     {
       "name": "ApprovePhotoDto",
       "file": "src/app/module/lifestyle/lifestyle.dto.ts",
-      "source": "export class ApprovePhotoDto {\n  @ApiProperty() @IsBoolean() approved!: boolean;\n}"
+      "source": "export class ApprovePhotoDto {\r\n  @ApiProperty() @IsBoolean() approved!: boolean;\r\n}"
     },
     {
       "name": "DailyContentDto",
       "file": "src/app/module/lifestyle/lifestyle.dto.ts",
-      "source": "export class DailyContentDto {\n  @ApiProperty({ example: '2026-10-25' })\n  @Matches(/^\\d{4}-\\d{2}-\\d{2}$/)\n  day!: string;\n  @ApiProperty({ description: 'ISO instant including timezone' })\n  @IsDateString({ strict: true })\n  @Matches(/T.*(?:Z|[+-]\\d{2}:\\d{2})$/)\n  publishAt!: string;\n  @ApiProperty({\n    description: 'End of delivery window; missed content is skipped',\n  })\n  @IsDateString({ strict: true })\n  @Matches(/T.*(?:Z|[+-]\\d{2}:\\d{2})$/)\n  expiresAt!: string;\n  @ApiProperty() @IsUUID() photoId!: string;\n  @ApiProperty() @IsString() @Matches(/\\S/) @MaxLength(4000) text!: string;\n  @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(500) activity =\n    '';\n  @ApiPropertyOptional() @IsOptional() @IsBoolean() published = false;\n}"
+      "source": "export class DailyContentDto {\r\n  @ApiProperty({ example: '2026-10-25' })\r\n  @Matches(/^\\d{4}-\\d{2}-\\d{2}$/)\r\n  day!: string;\r\n  @ApiProperty({ description: 'ISO instant including timezone' })\r\n  @IsDateString({ strict: true })\r\n  @Matches(/T.*(?:Z|[+-]\\d{2}:\\d{2})$/)\r\n  publishAt!: string;\r\n  @ApiProperty({\r\n    description: 'End of delivery window; missed content is skipped',\r\n  })\r\n  @IsDateString({ strict: true })\r\n  @Matches(/T.*(?:Z|[+-]\\d{2}:\\d{2})$/)\r\n  expiresAt!: string;\r\n  @ApiProperty() @IsUUID() photoId!: string;\r\n  @ApiProperty() @IsString() @Matches(/\\S/) @MaxLength(4000) text!: string;\r\n  @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(500) activity =\r\n    '';\r\n  @ApiPropertyOptional() @IsOptional() @IsBoolean() published = false;\r\n}"
     },
     {
       "name": "DailyPreferenceDto",
       "file": "src/app/module/lifestyle/lifestyle.dto.ts",
-      "source": "export class DailyPreferenceDto {\n  @ApiProperty() @IsUUID() companionId!: string;\n  @ApiProperty() @IsBoolean() enabled!: boolean;\n}"
+      "source": "export class DailyPreferenceDto {\r\n  @ApiProperty() @IsUUID() companionId!: string;\r\n  @ApiProperty() @IsBoolean() enabled!: boolean;\r\n}"
     },
     {
       "name": "PhotoRequestDto",
       "file": "src/app/module/lifestyle/lifestyle.dto.ts",
-      "source": "export class PhotoRequestDto {\n  @ApiProperty({\n    description: 'Unique per user request; reuse on network retry',\n  })\n  @IsUUID()\n  requestId!: string;\n  @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(80) tag?: string;\n}"
+      "source": "export class PhotoRequestDto {\r\n  @ApiProperty({\r\n    description: 'Unique per user request; reuse on network retry',\r\n  })\r\n  @IsUUID()\r\n  requestId!: string;\r\n  @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(80) tag?: string;\r\n}"
     },
     {
       "name": "EntitlementPolicyDto",
       "file": "src/app/module/lifestyle/lifestyle.dto.ts",
-      "source": "export class EntitlementPolicyDto {\n  @ApiProperty({ enum: ['paid', 'trial'] }) @IsIn(['paid', 'trial']) kind!:\n    'paid' | 'trial';\n  @ApiPropertyOptional() @IsOptional() @IsBoolean() dailyPhoto = false;\n  @ApiPropertyOptional() @IsOptional() @IsBoolean() dailyText = false;\n  @ApiPropertyOptional({ default: 10 })\n  @IsOptional()\n  @IsInt()\n  @Min(1)\n  @Max(10)\n  trialRepliesPerDay = 10;\n  @ApiPropertyOptional({ default: 30 })\n  @IsOptional()\n  @IsInt()\n  @Min(1)\n  @Max(30)\n  trialRepliesTotal = 30;\n  @ApiPropertyOptional({ default: 3 })\n  @IsOptional()\n  @IsInt()\n  @Min(1)\n  @Max(3)\n  trialPhotosTotal = 3;\n}"
+      "source": "export class EntitlementPolicyDto {\r\n  @ApiProperty({ enum: ['paid', 'trial'] }) @IsIn(['paid', 'trial']) kind!:\r\n    'paid' | 'trial';\r\n  @ApiPropertyOptional() @IsOptional() @IsBoolean() dailyPhoto = false;\r\n  @ApiPropertyOptional() @IsOptional() @IsBoolean() dailyText = false;\r\n  @ApiPropertyOptional({ default: 10 })\r\n  @IsOptional()\r\n  @IsInt()\r\n  @Min(1)\r\n  @Max(10)\r\n  trialRepliesPerDay = 10;\r\n  @ApiPropertyOptional({ default: 30 })\r\n  @IsOptional()\r\n  @IsInt()\r\n  @Min(1)\r\n  @Max(30)\r\n  trialRepliesTotal = 30;\r\n  @ApiPropertyOptional({ default: 3 })\r\n  @IsOptional()\r\n  @IsInt()\r\n  @Min(1)\r\n  @Max(3)\r\n  trialPhotosTotal = 3;\r\n}"
     },
     {
       "name": "BroadcastNewsletterDto",
@@ -2806,22 +2947,22 @@
     {
       "name": "TelegramProfileDto",
       "file": "src/app/module/publishing/publishing.dto.ts",
-      "source": "export class TelegramProfileDto {\n  @ApiPropertyOptional({ maxLength: 64 })\n  @IsOptional()\n  @IsString()\n  @MinLength(1)\n  @MaxLength(64)\n  displayName?: string;\n\n  @ApiPropertyOptional({ maxLength: 120 })\n  @IsOptional()\n  @IsString()\n  @MaxLength(120)\n  about?: string;\n\n  @ApiPropertyOptional({ maxLength: 512 })\n  @IsOptional()\n  @IsString()\n  @MaxLength(512)\n  description?: string;\n}"
+      "source": "export class TelegramProfileDto {\r\n  @ApiPropertyOptional({ maxLength: 64 })\r\n  @IsOptional()\r\n  @IsString()\r\n  @MinLength(1)\r\n  @MaxLength(64)\r\n  displayName?: string;\r\n\r\n  @ApiPropertyOptional({ maxLength: 120 })\r\n  @IsOptional()\r\n  @IsString()\r\n  @MaxLength(120)\r\n  about?: string;\r\n\r\n  @ApiPropertyOptional({ maxLength: 512 })\r\n  @IsOptional()\r\n  @IsString()\r\n  @MaxLength(512)\r\n  description?: string;\r\n}"
     },
     {
       "name": "PublishMediaStoryDto",
       "file": "src/app/module/publishing/publishing.dto.ts",
-      "source": "export class PublishMediaStoryDto {\n  @ApiPropertyOptional({ maxLength: 2048 })\n  @IsOptional()\n  @IsString()\n  @MaxLength(2048)\n  caption?: string;\n}"
+      "source": "export class PublishMediaStoryDto {\r\n  @ApiPropertyOptional({ maxLength: 2048 })\r\n  @IsOptional()\r\n  @IsString()\r\n  @MaxLength(2048)\r\n  caption?: string;\r\n}"
     },
     {
       "name": "StorySessionDto",
       "file": "src/app/module/publishing/publishing.dto.ts",
-      "source": "export class StorySessionDto {\n  @ApiProperty()\n  @IsString()\n  @MinLength(1)\n  @MaxLength(8192)\n  initData!: string;\n}"
+      "source": "export class StorySessionDto {\r\n  @ApiProperty()\r\n  @IsString()\r\n  @MinLength(1)\r\n  @MaxLength(8192)\r\n  initData!: string;\r\n}"
     },
     {
       "name": "CreateSubscriptionDto",
       "file": "src/app/module/subscription/dto/create-subscription.dto.ts",
-      "source": "export class CreateSubscriptionDto {\n  @ApiPropertyOptional({ type: EntitlementPolicyDto })\n  @IsOptional()\n  @ValidateNested()\n  @Type(() => EntitlementPolicyDto)\n  entitlementPolicy?: EntitlementPolicyDto;\n  @ApiProperty({\n    example: 'Premium Plan',\n    description: 'Subscription plan name',\n  })\n  @IsString()\n  @IsNotEmpty({ message: 'Name is required' })\n  name!: string;\n\n  @ApiProperty({\n    example: '29.99',\n    description: 'Subscription plan price',\n  })\n  @IsString()\n  @IsNotEmpty({ message: 'Price is required' })\n  price!: string;\n\n  @ApiPropertyOptional({\n    example: 1000,\n    description: 'Deprecated: use creditAllowance',\n  })\n  @IsOptional()\n  @IsInt({ message: 'Message limit must be an integer' })\n  @Min(0, {\n    message: 'Message limit cannot be negative',\n  })\n  messageLimit?: number;\n\n  @ApiPropertyOptional({\n    example: 500,\n    description: 'Credits granted for each subscription period',\n  })\n  @IsOptional()\n  @IsInt({ message: 'Credit allowance must be an integer' })\n  @Min(0, { message: 'Credit allowance cannot be negative' })\n  creditAllowance?: number;\n\n  @ApiProperty({ example: 30, required: false, default: 30 })\n  @IsOptional()\n  @IsInt()\n  @Min(1)\n  durationDays?: number;\n\n  @ApiProperty({\n    example: [\n      '1000 messages per month',\n      'Priority support',\n      'Advanced AI features',\n    ],\n    description: 'List of subscription features',\n    type: [String],\n  })\n  @IsArray({\n    message: 'Features must be an array',\n  })\n  @IsString({\n    each: true,\n    message: 'Each feature must be a string',\n  })\n  features!: string[];\n\n  @ApiPropertyOptional({\n    example: true,\n    default: false,\n    description: 'Whether this plan is popular',\n  })\n  @IsOptional()\n  @IsBoolean({\n    message: 'isPopular must be a boolean',\n  })\n  isPopular?: boolean;\n\n  @ApiPropertyOptional({\n    example: true,\n    default: true,\n    description: 'Whether this subscription plan is active',\n  })\n  @IsOptional()\n  @IsBoolean({\n    message: 'isActive must be a boolean',\n  })\n  isActive?: boolean;\n}"
+      "source": "export class CreateSubscriptionDto {\r\n  @ApiPropertyOptional({ type: EntitlementPolicyDto })\r\n  @IsOptional()\r\n  @ValidateNested()\r\n  @Type(() => EntitlementPolicyDto)\r\n  entitlementPolicy?: EntitlementPolicyDto;\r\n  @ApiProperty({\r\n    example: 'Premium Plan',\r\n    description: 'Subscription plan name',\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Name is required' })\r\n  name!: string;\r\n\r\n  @ApiProperty({\r\n    example: '29.99',\r\n    description: 'Subscription plan price',\r\n  })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Price is required' })\r\n  price!: string;\r\n\r\n  @ApiPropertyOptional({\r\n    example: 1000,\r\n    description: 'Deprecated: use creditAllowance',\r\n  })\r\n  @IsOptional()\r\n  @IsInt({ message: 'Message limit must be an integer' })\r\n  @Min(0, {\r\n    message: 'Message limit cannot be negative',\r\n  })\r\n  messageLimit?: number;\r\n\r\n  @ApiPropertyOptional({\r\n    example: 500,\r\n    description: 'Credits granted for each subscription period',\r\n  })\r\n  @IsOptional()\r\n  @IsInt({ message: 'Credit allowance must be an integer' })\r\n  @Min(0, { message: 'Credit allowance cannot be negative' })\r\n  creditAllowance?: number;\r\n\r\n  @ApiProperty({ example: 30, required: false, default: 30 })\r\n  @IsOptional()\r\n  @IsInt()\r\n  @Min(1)\r\n  durationDays?: number;\r\n\r\n  @ApiProperty({\r\n    example: [\r\n      '1000 messages per month',\r\n      'Priority support',\r\n      'Advanced AI features',\r\n    ],\r\n    description: 'List of subscription features',\r\n    type: [String],\r\n  })\r\n  @IsArray({\r\n    message: 'Features must be an array',\r\n  })\r\n  @IsString({\r\n    each: true,\r\n    message: 'Each feature must be a string',\r\n  })\r\n  features!: string[];\r\n\r\n  @ApiPropertyOptional({\r\n    example: true,\r\n    default: false,\r\n    description: 'Whether this plan is popular',\r\n  })\r\n  @IsOptional()\r\n  @IsBoolean({\r\n    message: 'isPopular must be a boolean',\r\n  })\r\n  isPopular?: boolean;\r\n\r\n  @ApiPropertyOptional({\r\n    example: true,\r\n    default: true,\r\n    description: 'Whether this subscription plan is active',\r\n  })\r\n  @IsOptional()\r\n  @IsBoolean({\r\n    message: 'isActive must be a boolean',\r\n  })\r\n  isActive?: boolean;\r\n}"
     },
     {
       "name": "UpdateSubscriptionDto",
@@ -2831,17 +2972,22 @@
     {
       "name": "TelegramSessionDto",
       "file": "src/app/module/telegram/telegram-mini-app.controller.ts",
-      "source": "class TelegramSessionDto {\n  @IsString() @MinLength(1) @MaxLength(8192) initData!: string;\n}"
+      "source": "class TelegramSessionDto {\r\n  @IsString() @MinLength(1) @MaxLength(8192) initData!: string;\r\n}"
     },
     {
       "name": "TelegramLoginDto",
       "file": "src/app/module/telegram/telegram-mini-app.controller.ts",
-      "source": "class TelegramLoginDto extends TelegramSessionDto {\n  @IsOptional() @IsBoolean() confirmTransfer?: boolean;\n  @IsEmail() @MaxLength(254) email!: string;\n  @IsString() @MinLength(1) @MaxLength(256) password!: string;\n}"
+      "source": "class TelegramLoginDto extends TelegramSessionDto {\r\n  @IsOptional() @IsBoolean() confirmTransfer?: boolean;\r\n  @IsEmail() @MaxLength(254) email!: string;\r\n  @IsString() @MinLength(1) @MaxLength(256) password!: string;\r\n}"
     },
     {
       "name": "CreateUserDto",
       "file": "src/app/module/user/dto/create-user.dto.ts",
       "source": "export class CreateUserDto {\r\n  @ApiPropertyOptional({ example: '' })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Name is requried' })\r\n  name!: string;\r\n\r\n  @ApiPropertyOptional({ example: '' })\r\n  @IsEmail()\r\n  @IsNotEmpty({ message: 'Email is requried' })\r\n  email!: string;\r\n\r\n  @ApiPropertyOptional({ example: '' })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Password is requried' })\r\n  password!: string;\r\n\r\n  @ApiPropertyOptional({ example: '' })\r\n  @IsString()\r\n  @IsNotEmpty({ message: 'Phone number is requried' })\r\n  phoneNumber!: string;\r\n\r\n  @ApiPropertyOptional({ type: 'string', format: 'binary' })\r\n  @IsString()\r\n  @IsOptional()\r\n  profileImage?: string;\r\n}"
+    },
+    {
+      "name": "UpdateProfileDto",
+      "file": "src/app/module/user/dto/update-profile.dto.ts",
+      "source": "export class UpdateProfileDto {\n  @ApiPropertyOptional()\n  @IsOptional()\n  @IsString()\n  @Matches(/\\S/)\n  @MaxLength(100)\n  name?: string;\n  @ApiPropertyOptional()\n  @IsOptional()\n  @IsString()\n  @MaxLength(30)\n  phoneNumber?: string;\n}"
     },
     {
       "name": "UpdateUserDto",

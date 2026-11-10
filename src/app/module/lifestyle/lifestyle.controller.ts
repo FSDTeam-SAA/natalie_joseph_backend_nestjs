@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   DefaultValuePipe,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -31,6 +32,7 @@ import {
   RoutineDto,
 } from './lifestyle.dto';
 import { PrismaService } from '../../../prisma/prisma.service';
+import { ChatService } from '../chat/chat.service';
 function pageNumber(page: number) {
   if (page < 1 || page > 100000) throw new BadRequestException('Invalid page');
   return page;
@@ -68,6 +70,11 @@ export class LifestyleAdminController {
   ) {
     return { data: await this.service.photos(id, pageNumber(page)) };
   }
+  @Post('photos/import-gallery') async importGallery(
+    @Param('companionId', ParseUUIDPipe) id: string,
+  ) {
+    return { data: await this.service.importGallery(id) };
+  }
   @Post('photos')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -95,6 +102,19 @@ export class LifestyleAdminController {
     @Body() dto: ApprovePhotoDto,
   ) {
     return { data: await this.service.approve(id, photoId, dto.approved) };
+  }
+  @Put('photos/:photoId') async editPhoto(
+    @Param('companionId', ParseUUIDPipe) id: string,
+    @Param('photoId', ParseUUIDPipe) photoId: string,
+    @Body() dto: LibraryPhotoDto,
+  ) {
+    return { data: await this.service.editPhoto(id, photoId, dto) };
+  }
+  @Delete('photos/:photoId') async removePhoto(
+    @Param('companionId', ParseUUIDPipe) id: string,
+    @Param('photoId', ParseUUIDPipe) photoId: string,
+  ) {
+    return { data: await this.service.removePhoto(id, photoId) };
   }
   @Get('daily-content') async daily(
     @Param('companionId', ParseUUIDPipe) id: string,
@@ -136,6 +156,7 @@ export class LifestyleController {
   constructor(
     private readonly service: LifestyleService,
     private readonly prisma: PrismaService,
+    private readonly chat: ChatService,
   ) {}
   @Get('preference') async preference(@Req() req: Request) {
     return { data: await this.service.preference(req.user!.id) };
@@ -154,7 +175,15 @@ export class LifestyleController {
     @Param('companionId', ParseUUIDPipe) id: string,
     @Body() dto: PhotoRequestDto,
   ) {
-    return { data: await this.service.requestPhoto(req.user!.id, id, dto) };
+    const result = await this.chat.sendMessage(
+      req.user!.id,
+      id,
+      `/photo${dto.tag ? ` ${dto.tag}` : ''}`,
+      req.headers.authorization!,
+      'text',
+      `library:${req.user!.id}:${id}:${dto.requestId}`,
+    );
+    return { data: result.message };
   }
   @Get('inbox') async inbox(
     @Req() req: Request,

@@ -34,7 +34,7 @@ describe('Telegram retry and durable ingress', () => {
     expect(post).toHaveBeenCalledTimes(1);
     expect(wait).not.toHaveBeenCalled();
   });
-  it('stores an update before acknowledgement and leaves processing to the worker', async () => {
+  it('stores an update before acknowledgement and wakes the worker immediately', async () => {
     const prisma = { $executeRaw: jest.fn().mockResolvedValue(1) };
     const telegram = { receive: jest.fn() };
     const queue = new TelegramQueueService(
@@ -49,11 +49,18 @@ describe('Telegram retry and durable ingress', () => {
       update_id: 1,
       message: { text: 'hello', chat: { id: 123, type: 'private' } },
     };
+    const drain = jest.spyOn(queue, 'drain').mockResolvedValue(undefined);
     await queue.receive(update);
     expect(prisma.$executeRaw).toHaveBeenCalled();
     expect(telegram.receive).not.toHaveBeenCalled();
+    expect(drain).not.toHaveBeenCalled();
+    await new Promise<void>((resolve) => setImmediate(resolve));
+    expect(drain).toHaveBeenCalledTimes(1);
+    drain.mockClear();
     prisma.$executeRaw.mockRejectedValue(new Error('database down'));
     await expect(queue.receive(update)).rejects.toThrow('database down');
+    await new Promise<void>((resolve) => setImmediate(resolve));
+    expect(drain).not.toHaveBeenCalled();
   });
   it('never queues unsupported/group updates', async () => {
     const prisma = { $executeRaw: jest.fn() };
@@ -71,6 +78,14 @@ describe('Telegram retry and durable ingress', () => {
     });
     await queue.receive(null);
     expect(prisma.$executeRaw).not.toHaveBeenCalled();
+  });
+  it('casts the advisory lock result so Prisma never deserializes PostgreSQL void', async () => {
+    const tx = { $queryRaw: jest.fn().mockResolvedValue([]), $executeRaw: jest.fn().mockResolvedValue(0) };
+    const prisma = { $transaction: async (fn: (value: typeof tx) => unknown) => fn(tx) };
+    const queue = new TelegramQueueService(prisma as unknown as PrismaService, {} as TelegramService, new ConfigService({ TELEGRAM_QUEUE_ENABLED: 'true', TELEGRAM_AUTO_REPLY_ENABLED: 'true' }));
+    await queue.drain();
+    const sql = tx.$queryRaw.mock.calls[0][0].join('');
+    expect(sql).toContain('pg_advisory_xact_lock(193811, 1)::text');
   });
   it('rate-limits canonical login paths using shared database counters', async () => {
     const prisma = { $queryRaw: jest.fn().mockResolvedValue([{ count: 31 }]) };

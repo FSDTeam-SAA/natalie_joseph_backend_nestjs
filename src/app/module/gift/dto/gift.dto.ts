@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
   Min,
 } from 'class-validator';
 
@@ -40,6 +41,15 @@ export class CreateGiftDto {
 export class UpdateGiftDto extends PartialType(CreateGiftDto) {}
 
 export class SendGiftDto {
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  expectedCreditCost?: number;
+
+  @IsOptional()
+  @IsUUID()
+  requestId?: string;
+
   @ApiProperty({ example: 'companion-id' })
   @IsString()
   @IsNotEmpty()

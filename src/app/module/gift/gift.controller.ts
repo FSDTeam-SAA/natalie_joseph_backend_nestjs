@@ -1,5 +1,9 @@
 import {
   Body,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
+  BadRequestException,
   Controller,
   Delete,
   Get,
@@ -68,6 +72,28 @@ export class GiftController {
     };
   }
 
+  @Get('admin')
+  @UseGuards(AuthGuard('admin'))
+  async adminGifts(@Req() req: Request) {
+    const result = await this.giftService.getActiveGifts(
+      pick(req.query, ['searchTerm', 'name']),
+      pick(req.query, ['sortBy', 'sortOrder', 'limit', 'page']),
+      true,
+    );
+    return { data: result.data, meta: result.meta };
+  }
+
+  @Get('history')
+  @UseGuards(AuthGuard('user'))
+  async history(
+    @Req() req: Request,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  ) {
+    if (page < 1 || page > 100000)
+      throw new BadRequestException('Invalid page');
+    return { data: await this.giftService.history(req.user!.id, page) };
+  }
+
   @Patch(':id')
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('admin'))
@@ -100,6 +126,8 @@ export class GiftController {
       request.user.id,
       payload.companionId,
       giftId,
+      payload.requestId,
+      payload.expectedCreditCost,
     );
     return { message: 'Gift sent successfully', data };
   }

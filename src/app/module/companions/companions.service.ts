@@ -13,6 +13,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import type { Prisma } from '../../../../prisma/generated/prisma/client';
 import { TelegramProfileService } from '../publishing/telegram-profile.service';
 import { companionProfileSelect } from './companion-profile';
+import { storyMime } from '../publishing/media-story.service';
 import {
   CompanionBackgroundDto,
   CompanionCommunicationStyleDto,
@@ -332,24 +333,84 @@ export class CompanionsService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    if (files.some((file) => !file.mimetype.startsWith('image/'))) {
-      throw new HttpException(
-        'Only image files are allowed',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const images = await Promise.all(
+    const mimeTypes = files.map((file) => {
+      if (!file.buffer?.length || file.buffer.length > 10 * 1024 * 1024)
+        throw new HttpException(
+          'Upload images up to 10 MB',
+          HttpStatus.BAD_REQUEST,
+        );
+      const mime = storyMime(file.buffer);
+      if (!mime.startsWith('image/'))
+        throw new HttpException(
+          'Only images are allowed',
+          HttpStatus.BAD_REQUEST,
+        );
+      return mime;
+    });
+    const uploads = await Promise.allSettled(
       files.map((file) => fileUpload.uploadToCloudinary(file)),
     );
+    const images = uploads.flatMap((upload) =>
+      upload.status === 'fulfilled' ? [upload.value] : [],
+    );
+    const failed = uploads.find((upload) => upload.status === 'rejected');
+    if (failed?.status === 'rejected') {
+      await Promise.allSettled(
+        images.map((image) => fileUpload.deleteFromCloudinary(image.public_id)),
+      );
+      throw failed.reason;
+    }
     const urls = images.map((image) => image.url);
-    const updated = await this.prisma.companions.update({
+    const update = {
       where: { id },
       data:
         field === 'galleryImages'
           ? { galleryImages: append ? { push: urls } : { set: urls } }
           : { [field]: urls[0] },
       select: companionProfileSelect,
-    });
+    };
+    let updated;
+    try {
+      updated =
+        field === 'galleryImages'
+          ? await this.prisma.$transaction(async (tx) => {
+              await tx.$queryRaw`SELECT id FROM companions WHERE id=${id} FOR UPDATE`;
+              if (!append) {
+                const previous = await tx.companions.findUnique({
+                  where: { id },
+                  select: { galleryImages: true },
+                });
+                const removed =
+                  previous?.galleryImages.filter(
+                    (url) => !urls.includes(url),
+                  ) || [];
+                if (removed.length)
+                  await tx.libraryPhoto.updateMany({
+                    where: { companionId: id, url: { in: removed } },
+                    data: { approved: false },
+                  });
+              }
+              const profile = await tx.companions.update(update);
+              await tx.libraryPhoto.createMany({
+                data: images.map((image, index) => ({
+                  companionId: id,
+                  url: image.url,
+                  publicId: image.public_id,
+                  mimeType: mimeTypes[index],
+                  tags: [],
+                  approved: false,
+                  caption: 'Companion gallery photo',
+                })),
+              });
+              return profile;
+            })
+          : await this.prisma.companions.update(update);
+    } catch (error) {
+      await Promise.allSettled(
+        images.map((image) => fileUpload.deleteFromCloudinary(image.public_id)),
+      );
+      throw error;
+    }
     const telegramSync =
       field === 'profileImage'
         ? await this.profiles.automatic(id, undefined, urls[0])
@@ -358,29 +419,28 @@ export class CompanionsService {
   }
 
   async removedOneGallaryImage(id: string, url: string) {
-    const companion = await this.prisma.companions.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        galleryImages: true,
-      },
-    });
-
-    if (!companion) {
-      throw new NotFoundException('Companion not found');
-    }
-
-    if (!companion.galleryImages.includes(url)) {
-      throw new NotFoundException('Gallery image not found');
-    }
-
-    const updatedCompanion = await this.prisma.companions.update({
-      where: { id },
-      data: {
-        galleryImages: {
-          set: companion.galleryImages.filter((image) => image !== url),
+    const updatedCompanion = await this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM companions WHERE id=${id} FOR UPDATE`;
+      const companion = await tx.companions.findUnique({
+        where: { id },
+        select: { galleryImages: true },
+      });
+      if (!companion) throw new NotFoundException('Companion not found');
+      if (!companion.galleryImages.includes(url))
+        throw new NotFoundException('Gallery image not found');
+      const updated = await tx.companions.update({
+        where: { id },
+        data: {
+          galleryImages: {
+            set: companion.galleryImages.filter((image) => image !== url),
+          },
         },
-      },
+      });
+      await tx.libraryPhoto.updateMany({
+        where: { companionId: id, url },
+        data: { approved: false },
+      });
+      return updated;
     });
 
     return updatedCompanion;

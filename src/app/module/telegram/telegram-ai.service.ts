@@ -22,7 +22,6 @@ import { MediaStoryService } from '../publishing/media-story.service';
 import type { AiReply, AiAudio } from '../../helper/ai/aiapi';
 import { AiVoiceFailure } from '../../helper/ai/ai-failure';
 import { LifestyleService } from '../lifestyle/lifestyle.service';
-import { aiIdempotencyKey } from '../../helper/ai/aiapi';
 
 @Injectable()
 export class TelegramAiService {
@@ -179,14 +178,6 @@ export class TelegramAiService {
         });
         return 'Daily updates are now turned off.';
       }
-      if (/^\/photo(?:@\w+)?(?:\s|$)/.test(text.trim())) {
-        const saved = await this.lifestyle.requestPhoto(user.id, companionId, {
-          requestId: aiIdempotencyKey(messageKey),
-          tag: text.trim().replace(/^\/photo(?:@\w+)?\s*/, '') || undefined,
-        });
-        const payload = saved.aiPayload as unknown as AiReply;
-        return { response: saved.response || '', media: payload.media! };
-      }
       // Mint a short-lived token for this linked user; never store a login JWT.
       const token = this.jwt.sign(
         {
@@ -232,7 +223,8 @@ export class TelegramAiService {
       // The upstream has persisted this failed attempt and explicitly rejects
       // retries with the same key. Acknowledge it instead of blocking the bot queue.
       if (error instanceof AiVoiceFailure) return error.message;
-      if (error instanceof BadGatewayException) return 'I am having a brief connection issue right now. Please try sending your message again in a moment!';
+      if (error instanceof BadGatewayException)
+        return 'I am having a brief connection issue right now. Please try sending your message again in a moment!';
       if (
         error instanceof HttpException &&
         [400, 402, 403, 404, 429].includes(error.getStatus())

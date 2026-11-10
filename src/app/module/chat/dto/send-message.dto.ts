@@ -9,7 +9,11 @@ import {
 } from 'class-validator';
 
 export class SendMessageDto {
-  @ApiProperty({required:false,description:'UUID; reuse on retries to avoid duplicate replies and charges'})
+  @ApiProperty({
+    required: false,
+    description:
+      'UUID; reuse on retries to avoid duplicate replies and charges',
+  })
   @IsOptional()
   @IsUUID()
   requestId?: string;
@@ -25,6 +29,6 @@ export class SendMessageDto {
   @ApiProperty({ example: 'Hello, how are you?' })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(5000)
+  @MaxLength(4000)
   message!: string;
 }

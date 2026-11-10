@@ -31,6 +31,7 @@ export class BillingService {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: {
+        stripeAccountId: true,
         billingSubscriptionId: true,
         billingStatus: true,
         cancelAtPeriodEnd: true,
@@ -47,7 +48,8 @@ export class BillingService {
       },
     });
     if (!user) throw new NotFoundException('User not found');
-    return user;
+    const { stripeAccountId, ...status } = user;
+    return { ...status, hasBillingCustomer: !!stripeAccountId };
   }
 
   async sync(userId: string) {
@@ -92,7 +94,7 @@ export class BillingService {
       throw new BadRequestException('No billing customer exists');
     const session = await this.gateway().billingPortal.sessions.create({
       customer: user.stripeAccountId,
-      return_url: config.frontendUrl,
+      return_url: `${config.frontendUrl.replace(/\/+$/, '')}/account?tab=subscription`,
     });
     return { url: session.url };
   }
