@@ -1,917 +1,362 @@
-# Meet Elysia — সম্পূর্ণ Frontend ও Admin API README
+# Meet Elysia - Complete frontend and admin API handbook
 
-**তারিখ: ২৯ অক্টোবর ২০২৬ • Source-derived handover • 119টি route • 61টি DTO class**
+English handoff generated from local source: **126 routes**, **62 DTO classes**. Legacy filenames containing BN are retained for link compatibility; all document text is English. This is not a live deployment certificate.
 
-Frontend engineer-কে **এই একটি ফাইল** দিলেই website এবং admin dashboard-এর API mapping, flow, upload, DTO, access ও response mapping পড়তে পারবেন। এটি বর্তমান local backend source-এর contract; deployed server একই version চালাচ্ছে কি না rollout team যাচাই করবে। কোনো credentials এই ফাইলে নেই।
+Local base: `http://localhost:8080/api/v1`. Swagger: `/api/docs` when enabled. Browser environment variables may contain public API origins and publishable payment keys, never server secrets.
 
-## পড়ার ক্রম
+## Reading order
 
-1. [Website ও dashboard page map](#screens)
-2. [সব API কোন কাজ করে](#routes)
-3. [Login, payment, chat ও implementation guide](#flows)
-4. [Profile sync ও 24-hour media Story](#publishing)
-5. [Routine, image library, daily content ও trial](#lifestyle)
-6. [প্রতিটি API-এর exact input/response mapping](#exact)
-7. [সব DTO field ও validation](#dto)
+1. Integration flow guide
+2. Profile publishing and 24-hour media stories
+3. Lifestyle, library, billing and allowances
+4. Endpoint index and exact source mapping
+5. DTO validation and enum appendix
 
-Base URL উদাহরণ: local `http://localhost:8080/api/v1`; project-এর দেওয়া deployed URL `https://natalieapi.duckdns.org/api/v1` (এই documentation task-এ live availability পরীক্ষা হয়নি)। Swagger `/api/docs`, deployment-এ enabled থাকতে হবে। Frontend-এর public ENV-তে শুধু API base ও প্রযোজ্য publishable payment key; server secrets নয়।
 
-<a id="screens"></a>
-## Website page map
+# Integration flow guide
 
-| Page / component | API group | UI কী করবে |
+# Frontend and admin integration guide
+
+English handoff updated 10 November 2026. This is a source-based implementation guide, not a live release certificate. Legacy filenames are retained to preserve links.
+
+## References and API client
+
+- `api-reference-bn.md`: generated controller routes, request decorators, response mapping and exact DTO validation.
+- `api-contract.json`: machine-readable source inventory, not OpenAPI.
+- `README-FRONTEND-FULL-BN.md`: this guide, publishing/lifestyle guidance and exact API appendices combined.
+- `frontend-integration-bn.html`: browser-readable guide/reference.
+
+Local API base: `http://localhost:8080/api/v1`. Production uses the configured HTTPS backend origin. Append the API prefix only once. Public browser environment variables must never contain bot tokens, signing secrets, database credentials or AI keys.
+
+Protected JSON requests use `Authorization: Bearer <accessToken>` and `Content-Type: application/json`. Browser FormData uploads must set their own multipart boundary. Normal JSON responses use the global `statusCode`, `success`, `message`, optional `meta`, and `data` envelope. Data may be an object, array or null; raw HTML/media/webhook responses differ.
+
+Follow runtime DTO decorators and query allowlists. User, companion, conversation, message, local plan, credit package and provider subscription IDs are different identifiers. Payment routes usually accept a local plan ID, not a Stripe `sub_...` ID.
+
+## Website and dashboard screen map
+
+| Screen | API group | UI responsibilities |
 |---|---|---|
-| Home, companion cards | GET /companions, GET /media-stories/summary (authenticated) | Cards, filters, pagination, active Story ring |
-| Companion detail | GET /companions/:id | Bio/personality/gallery, chat ও Telegram CTA |
-| Register / login / reset | /auth/* | Account creation, token/cookie session, OTP reset |
-| My account | /user/my-profile, /auth/change-password | Profile ও password forms; known update limitation দেখুন |
-| Plans / checkout | GET /subscription, POST /payment/subscription/:subscriptionId | Plan select ও free/paid flow |
-| Billing | /payment/subscription/status, /sync, /cancel, /:subscriptionId/upgrade, /payment/billing-portal | Current state, reconciliation, cancel/upgrade/manage billing |
-| Wallet / buy credits | /credits/wallet, /credits/packages, /credits/costs, /credits/ledger, POST /payment/credits | Balance, costs, expiry, checkout, history |
-| Chat | /chat/conversations, /chat/:companionId/messages, /chat/usage | Text/media result, history, loading, retry requestId |
-| Photo library request | POST /lifestyle/companions/:companionId/photo | Approved image, optional tag, requestId |
-| Daily feed & preferences | /lifestyle/preference, /lifestyle/allowances, /lifestyle/inbox | Opt-in, selected companion, allowance, daily content |
-| 24-hour Story viewer | /media-stories/summary, /media-stories/companions/:companionId | Feed, signed media, expiry, next/previous |
-| Life events | /companions/:companionId/stories | Published dated text events; media Story নয় |
-| Gallery unlock / history | /companions/:companionId/photos/view, /photos/history | Existing gallery item unlock; library upload নয় |
-| Gifts / relationship | /gifts, /gifts/:giftId/send, /relationships | Catalogue, gift debit, nickname/notes |
-| Notifications | /notifications, /notifications/:id/read | List ও read state |
-| Continue in Telegram | /telegram/status/:companionId, /telegram/connect/:companionId | Login/subscribe/connect/return flow |
-| Newsletter / legal | POST /newsletter; /privacy-policy, /terms, /data-deletion | Subscribe ও legal pages; legal paths API prefix-এর বাইরে |
+| Registration/session/reset | `/auth/*`, `/user/my-profile` | Form errors, token/cookie session and reset flow |
+| Companion cards/details | `/companions`, `/companions/:id` | Filters, pagination, profile/gallery and Telegram CTA |
+| Plans/billing | `/subscription`, `/payment/subscription/*`, `/payment/billing-portal` | Checkout, reconciliation, cancellation and upgrade state |
+| Wallet/packages | `/credits/wallet`, `/credits/packages`, `/credits/costs`, `/credits/ledger` | Balances, expiry, prices and history |
+| Chat | `/chat/conversations`, `/chat/:companionId/messages`, `/chat/usage` | Text/media, saved history, loading and stable retry ID |
+| Photo request | `/lifestyle/companions/:companionId/photo` | Library-first response, trial/credit errors |
+| Daily feed | `/lifestyle/preference`, `/allowances`, `/inbox` | Selected companion, opt-in and remaining allowance |
+| Media Story viewer | `/media-stories/summary`, `/media-stories/companions/:id` | Rings, expiry, signed media and next/previous |
+| Text life events | `/companions/:id/stories` | Published dated text context |
+| Gallery unlock/history | `/companions/:id/photos/view`, `/photos/history` | Existing gallery item unlock and history |
+| Gifts/relationships | `/gifts`, `/gifts/:id/send`, `/relationships` | Catalogue, debit, nickname and notes |
+| Notifications | `/notifications`, `/notifications/:id/read` | List and read state |
+| Telegram return | `/telegram/status/:id`, `/telegram/connect/:id` | Authentication, plan, connection and return buttons |
+| Admin overview/users | `/dashboard/overview`, `/user`, `/admin/users/:id/details`, `/ledger` | Metrics, search and financial detail |
+| Admin companion editor | `/companions`, image/voice routes | Nested metadata, uploads and gallery append/replace |
+| Admin lifestyle | `/admin/companions/:id/lifestyle/*` | Routine, library, approval and daily scheduling |
+| Admin publishing | Telegram-profile/media-story routes | Sync state, retry, publication and removal |
+| Admin support | `/admin/conversations/*` | Monitoring, AI/human mode and human reply persistence |
+| Admin finance/content | Package, plan, gift, cost and text-story routes | Validated management forms |
 
-## Admin dashboard page map
+Newsletter subscription, legal HTML and explicit admin broadcast actions remain separate. Do not expose subscriber management merely because a controller has no JWT guard; review service/access behavior before release.
 
-| Screen | API | বাস্তব কাজ |
-|---|---|---|
-| Overview | GET /dashboard/overview | Summary cards; date-series chart API নেই |
-| Users | /user + /admin/users/:id/details + /admin/users/:id/ledger | Search, details, existing edit/delete, financial history |
-| Companion editor | /companions + /:id/voice | Nested profile/personality/background/voice fields |
-| Images | /companions/:id/profile-image, /cover-image, /gallery | Upload; gallery POST append বনাম PUT replace |
-| Telegram branding | /admin/companions/:companionId/telegram-profile + /retry | Desired name/about/description ও pending/synced/failed |
-| Photo library | /admin/companions/:companionId/lifestyle/photos | Frontend file upload → approve/revoke → list |
-| Weekly routine | .../lifestyle/routine, .../lifestyle/context | Timezone, weekly slots, current activity preview |
-| Daily schedule | .../lifestyle/daily-content, .../deliveries | Approved photo+text schedule, unpublish, delivery status |
-| Media Stories | /admin/companions/:companionId/media-stories | Photo/video upload, list/remove |
-| Text life events | /admin/companions/:companionId/stories | day/title/content/published |
-| Plans | /subscription | Price, allowance, duration, features, policy |
-| Extra packages / rates | /credits/packages, /admin/credit-costs/:action | Package CRUD; message/photo/voice/transcription costs |
-| Gifts | /gifts | Catalogue CRUD/deactivation |
-| Conversation support | /admin/conversations, /:id, /:id/mode, /:id/replies | Monitoring/takeover/human reply; outbound limitation দেখুন |
-| Notifications/newsletter | /admin/notifications, /newsletter/broadcast | Explicit notification/email action |
+## Authentication and reset
 
-Admin overview data keys: `totalUsers, totalSubscriptionPlans, activeSubscriptions, activeSubscribers, totalMessages, totalConversations, totalRevenue`। Legacy `totalSubscriptions` = plan count, `totalConversions` = message count। এগুলো conversion-rate chart নয়। Revenue currency conversion করে না; mixed-currency financial chart অনুমান করবেন না।
-
-## চার ধরনের content গুলিয়ে ফেলবেন না
-
-| Content | উদ্দেশ্য | Contract |
-|---|---|---|
-| Companion gallery | Profile-এর existing image collection ও unlock | /companions/:id/gallery; /photos/view |
-| Text StoryEvent | দিনভিত্তিক life-event context | /admin/companions/:id/stories |
-| 24h media Story | Expiring photo/video viewer | /media-stories/... |
-| Daily subscription content | Included daily approved photo+text | /lifestyle/... |
-
-একটির upload করলে অন্যটিতে automatic publish হয় না। Client-approved image frontend থেকে পাঠাতে হবে; backend admin-এর বদলে ছবি নির্বাচন করে upload করে না।
-
-<a id="routes"></a>
-## সব API-এর কাজ ও access
-
-নিচের path **সম্পূর্ণ**; API base-এ ইতিমধ্যে /api/v1 থাকলে সেটি আবার যোগ করবেন না। Guard নেই মানে সব public নয়—signed media ticket, Telegram initData এবং provider webhook signatures আলাদাভাবে যাচাই হয়। User/admin উভয় role লেখা থাকলেও সাধারণত resource authenticated user-এর; arbitrary userId permission নয়।
-
-## Response data কোথা থেকে পড়বেন
-
-সব response-এ একই list shape ধরে frontend hook লিখবেন না। নিচে HTTP JSON response-কে `result` বলা হয়েছে।
-
-| API | UI data path | Pagination/নোট |
-|---|---|---|
-| GET /companions, /subscription, /user, /newsletter | result.data = array | result.meta.page/limit/total |
-| GET /credits/packages, /gifts | result.data = array | Collection-এর actual fields অনুসরণ করুন |
-| GET /chat/:companionId/messages | result.data.messages | result.data.total/page/limit |
-| POST /chat/:companionId/messages | result.data.response, .message_type, .media | Saved row আলাদা result.data.message |
-| POST /lifestyle/companions/:companionId/photo | result.data.response, result.data.aiPayload.media.url | এটি saved ChatMessage; সাধারণ chat POST-এর মতো .media সরাসরি নয় |
-| GET /lifestyle/inbox | result.data = delivery array | item.kind অনুযায়ী item.content.text বা item.content.photo.url |
-| GET /lifestyle/allowances | result.data.policy, .usage, .periodStart, .periodEnd | Trial/included quota credits থেকে আলাদা |
-| GET /lifestyle/preference | result.data object অথবা null | null = preference এখনও save হয়নি |
-| GET /media-stories/summary | result.data = array | companionId, count, latestPublishedAt, expiresAt |
-| GET /media-stories/companions/:companionId | result.data.stories | .companion, .serverTime, .hasActiveStory; signed mediaPath |
-| GET /dashboard/overview | result.data = metrics object | Time-series graph data নয় |
-| GET /relationships, /notifications, /credits/ledger | result.data = array | PageDto; সবগুলোতে total/meta নেই |
-| GET .../lifestyle/photos, /daily-content, /deliveries | result.data = array | page query, fixed 50; total count নেই |
-
-**Trial UI caveat:** current Telegram Mini App status code totalCredits<=0 দেখে credits_required দেয়; নতুন zero-credit trial allowance সেখানে পৃথকভাবে বিবেচিত হয় না। Trial launch-এর আগে backend Mini App state integration ঠিক করতে হবে। Website-এ /lifestyle/allowances-এর policy/usage ব্যবহার করুন; zero wallet মানেই trial reply বন্ধ নয়।
-
-**Request retry:** chat-এর optional requestId এবং library-এর required requestId একই action retry-তে reuse করুন। Payment, gift, broadcast বা অন্য mutation-এ এই protection আছে ধরে automatic retry চালাবেন না।
-
-### Website: public/auth ও user API
-
-| Method | Path | কাজ | Controller access |
-|---|---|---|---|
-| POST | `/api/v1/auth/register` | নতুন website account তৈরি; এরপর login | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/auth/login` | Email/password login, accessToken ও refresh cookie | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/api/v1/auth/refresh` | HttpOnly refresh cookie দিয়ে নতুন access token | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/auth/forgot-password` | Password reset OTP পাঠানো | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/auth/verify-otp` | OTP যাচাই করে resetToken নেওয়া | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/auth/reset-password` | resetToken দিয়ে নতুন password | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/auth/change-password` | বর্তমান password যাচাই করে পরিবর্তন | UseGuards(AuthGuard('admin', 'user')) |
-| POST | `/api/v1/auth/logout` | Session logout ও refresh cookie clear | UseGuards(AuthGuard('admin', 'user')) |
-| GET | `/api/v1/chat/conversations` | নিজের conversation list | UseGuards(AuthGuard('user')) |
-| GET | `/api/v1/chat/:companionId/messages` | নির্বাচিত companion-এর paginated message history | UseGuards(AuthGuard('user')) |
-| GET | `/api/v1/chat/usage` | Active subscription, ব্যবহৃত/বাকি credits ও purchased balance | UseGuards(AuthGuard('user')) |
-| POST | `/api/v1/chat/:companionId/messages` | Text/transcript পাঠিয়ে AI reply; requestId retry support | UseGuards(AuthGuard('user')) |
-| GET | `/api/v1/relationships` | নিজের relationship list | UseGuards(AuthGuard('user', 'admin')) |
-| PATCH | `/api/v1/relationships/:companionId` | নিজের nickname/notes edit | UseGuards(AuthGuard('user', 'admin')) |
-| GET | `/api/v1/companions/:companionId/stories` | Published dated text/life events; 24h media Story নয় | UseGuards(AuthGuard('user', 'admin')) |
-| POST | `/api/v1/companions/:companionId/photos/view` | Existing gallery photo unlock/view; library request নয় | UseGuards(AuthGuard('user', 'admin')) |
-| GET | `/api/v1/photos/history` | নিজের viewed-photo history | UseGuards(AuthGuard('user', 'admin')) |
-| GET | `/api/v1/credits/ledger` | নিজের credit transaction history | UseGuards(AuthGuard('user', 'admin')) |
-| GET | `/api/v1/credits/costs` | বর্তমান per-action credit rates | UseGuards(AuthGuard('user', 'admin')) |
-| GET | `/api/v1/notifications` | নিজের notification list | UseGuards(AuthGuard('user', 'admin')) |
-| PATCH | `/api/v1/notifications/:id/read` | নিজের notification read করা | UseGuards(AuthGuard('user', 'admin')) |
-| GET | `/api/v1/lifestyle/preference` | Daily update preference পড়া | UseGuards(AuthGuard('user')) |
-| PUT | `/api/v1/lifestyle/preference` | এক companion নির্বাচন ও daily opt-in/out | UseGuards(AuthGuard('user')) |
-| GET | `/api/v1/lifestyle/allowances` | Trial/paid included allowances ও usage | UseGuards(AuthGuard('user')) |
-| POST | `/api/v1/lifestyle/companions/:companionId/photo` | Unseen approved library photo request; requestId required | UseGuards(AuthGuard('user')) |
-| GET | `/api/v1/lifestyle/inbox` | নিজের included daily photo/text inbox | UseGuards(AuthGuard('user')) |
-| GET | `/api/v1/telegram/status/:companionId` | Companion Telegram link ও subscription state | UseGuards(AuthGuard('user')) |
-| POST | `/api/v1/telegram/connect/:companionId` | Single-use, 10-minute Telegram connect URL | UseGuards(AuthGuard('user')) |
-
-### Admin dashboard API
-
-| Method | Path | কাজ | Controller access |
-|---|---|---|---|
-| GET | `/api/v1/dashboard/overview` | Admin summary cards—users, subscriptions, messages, conversations, revenue | UseGuards(AuthGuard('admin')) |
-| PUT | `/api/v1/admin/credit-costs/:action` | Action credit rate পরিবর্তন | UseGuards(AuthGuard('admin')) |
-| PUT | `/api/v1/admin/companions/:companionId/stories` | Companion/day অনুযায়ী text life event upsert | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/admin/companions/:companionId/stories` | সব text life events, future/draft সহ | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/admin/conversations` | Conversation monitoring list | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/admin/conversations/:id` | Conversation details ও messages | UseGuards(AuthGuard('admin')) |
-| PATCH | `/api/v1/admin/conversations/:id/mode` | AI/human mode ও admin takeover | UseGuards(AuthGuard('admin')) |
-| POST | `/api/v1/admin/conversations/:id/replies` | Human reply DB-তে save; Telegram push নয় | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/admin/users/:id/details` | User finance/relationship detail | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/admin/users/:id/ledger` | নির্বাচিত user-এর ledger | UseGuards(AuthGuard('admin')) |
-| POST | `/api/v1/admin/notifications` | নির্বাচিত user-এর in-app notification তৈরি | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/admin/companions/:companionId/lifestyle/routine` | Weekly routine পড়া | UseGuards(AuthGuard('admin')) |
-| PUT | `/api/v1/admin/companions/:companionId/lifestyle/routine` | Timezone ও পুরো weekly routine replace | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/admin/companions/:companionId/lifestyle/context` | বর্তমান local activity/context preview | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/admin/companions/:companionId/lifestyle/photos` | Approved/unapproved library list | UseGuards(AuthGuard('admin')) |
-| POST | `/api/v1/admin/companions/:companionId/lifestyle/photos` | Frontend image upload; প্রথমে unapproved | UseGuards(AuthGuard('admin')) |
-| PATCH | `/api/v1/admin/companions/:companionId/lifestyle/photos/:photoId` | Library photo approval/revoke | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/admin/companions/:companionId/lifestyle/daily-content` | Daily photo/text schedule list | UseGuards(AuthGuard('admin')) |
-| PUT | `/api/v1/admin/companions/:companionId/lifestyle/daily-content` | নির্দিষ্ট local day-এর daily content draft/publish | UseGuards(AuthGuard('admin')) |
-| POST | `/api/v1/admin/companions/:companionId/lifestyle/daily-content/:contentId/unpublish` | Daily content-এর নতুন delivery বন্ধ | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/admin/companions/:companionId/lifestyle/deliveries` | Daily delivery status ও safe error দেখানো | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/admin/companions/:companionId/telegram-profile` | Telegram profile desired fields ও sync status | UseGuards(AuthGuard('admin')) |
-| PUT | `/api/v1/admin/companions/:companionId/telegram-profile` | Display name/about/description save ও sync queue | UseGuards(AuthGuard('admin')) |
-| POST | `/api/v1/admin/companions/:companionId/telegram-profile/retry` | Failed profile sync requeue | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/admin/companions/:companionId/media-stories` | 24h photo/video Story admin metadata list | UseGuards(AuthGuard('admin')) |
-| POST | `/api/v1/admin/companions/:companionId/media-stories` | media upload করে 24h Story publish | UseGuards(AuthGuard('admin')) |
-| DELETE | `/api/v1/admin/companions/:companionId/media-stories/:storyId` | Story remove | UseGuards(AuthGuard('admin')) |
-
-### Website listing + admin CRUD
-
-| Method | Path | কাজ | Controller access |
-|---|---|---|---|
-| POST | `/api/v1/companions` | Nested metadata দিয়ে companion তৈরি | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/companions` | Public companion cards, filter ও pagination | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/api/v1/companions/:id` | Companion details page data | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| PUT | `/api/v1/companions/:id` | Companion metadata edit | UseGuards(AuthGuard('admin')) |
-| PUT | `/api/v1/companions/:id/profile-image` | Profile picture upload; configured হলে Telegram sync queue | UseGuards(AuthGuard('admin')) |
-| PUT | `/api/v1/companions/:id/cover-image` | Cover image upload | UseGuards(AuthGuard('admin')) |
-| POST | `/api/v1/companions/:id/gallery` | Gallery-তে ছবি যোগ | UseGuards(AuthGuard('admin')) |
-| DELETE | `/api/v1/companions/:id/gallery` | URL দিয়ে একটি gallery image সরানো | UseGuards(AuthGuard('admin')) |
-| PUT | `/api/v1/companions/:id/gallery` | Gallery replace—append নয় | UseGuards(AuthGuard('admin')) |
-| DELETE | `/api/v1/companions/:id` | Companion delete action; confirmation আবশ্যক | UseGuards(AuthGuard('admin')) |
-| PUT | `/api/v1/companions/:id/voice` | Companion voiceId বদলানো | UseGuards(AuthGuard('admin')) |
-| POST | `/api/v1/credits/packages` | Extra credit package তৈরি | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/credits/packages` | Active packages দিয়ে purchase cards | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| PATCH | `/api/v1/credits/packages/:id` | Package price/credits/active state edit | UseGuards(AuthGuard('admin')) |
-| DELETE | `/api/v1/credits/packages/:id` | Package deactivate | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/credits/wallet` | নিজের effective wallet, credit lots/expiry ও recent ledger | UseGuards(AuthGuard('user')) |
-| POST | `/api/v1/gifts` | Gift item ও image তৈরি | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/gifts` | Gift catalogue | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| PATCH | `/api/v1/gifts/:id` | Gift metadata edit; file PATCH নয় | UseGuards(AuthGuard('admin')) |
-| DELETE | `/api/v1/gifts/:id` | Gift deactivate | UseGuards(AuthGuard('admin')) |
-| POST | `/api/v1/gifts/:giftId/send` | Companion-কে gift পাঠানো, backend credit debit | UseGuards(AuthGuard('user')) |
-| POST | `/api/v1/newsletter` | Newsletter subscribe form | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/newsletter/broadcast` | Newsletter email broadcast; explicit admin action | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/newsletter` | Subscriber list—বর্তমান code-এ guard নেই, public UI নয় | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/api/v1/newsletter/:id` | Subscriber detail—বর্তমান code-এ guard নেই, public UI নয় | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/api/v1/payment/subscription/status` | Recurring billing/subscription status | UseGuards(AuthGuard('user', 'admin')) |
-| POST | `/api/v1/payment/subscription/sync` | Verified provider status দিয়ে subscription reconcile; credit-purchase sync নয় | UseGuards(AuthGuard('user', 'admin')) |
-| POST | `/api/v1/payment/billing-portal` | Billing portal URL তৈরি | UseGuards(AuthGuard('user', 'admin')) |
-| POST | `/api/v1/payment/subscription/cancel` | Recurring subscription cancellation request | UseGuards(AuthGuard('user', 'admin')) |
-| POST | `/api/v1/payment/subscription/:subscriptionId/upgrade` | নতুন local plan ID দিয়ে upgrade | UseGuards(AuthGuard('user', 'admin')) |
-| POST | `/api/v1/payment/subscription/:subscriptionId` | Plan activation/payment শুরু; free ও paid branch আলাদা | UseGuards(AuthGuard('admin', 'user')) |
-| POST | `/api/v1/payment/credits` | packageId দিয়ে credit purchase payment শুরু | UseGuards(AuthGuard('user')) |
-| GET | `/api/v1/media-stories/summary` | Website avatar Story ring-এর active count/expiry | UseGuards(AuthGuard('user', 'admin')) |
-| GET | `/api/v1/media-stories/companions/:companionId` | Active media Story feed ও signed mediaPath | UseGuards(AuthGuard('user', 'admin')) |
-| POST | `/api/v1/subscription` | Subscription plan তৈরি | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/subscription` | Plan listing/filter | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/api/v1/subscription/:id` | Plan details | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| PUT | `/api/v1/subscription/:id` | Plan settings ও entitlementPolicy edit | UseGuards(AuthGuard('admin')) |
-| DELETE | `/api/v1/subscription/:id` | Plan deactivate | UseGuards(AuthGuard('admin')) |
-| POST | `/api/v1/user` | Legacy account creation; website signup-এ /auth/register ব্যবহার | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/api/v1/user` | Admin user list/search | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/user//overview` | Admin user summary counts—total, approved, subscribed ও free users | UseGuards(AuthGuard('admin')) |
-| GET | `/api/v1/user/my-profile` | নিজের current profile | UseGuards(AuthGuard('user', 'admin')) |
-| PUT | `/api/v1/user/my-profile` | নিজের profile update; password-only limitation নিচে দেখুন | UseGuards(AuthGuard('user', 'admin')) |
-| GET | `/api/v1/user/:id` | Admin user detail | UseGuards(AuthGuard('admin')) |
-| PUT | `/api/v1/user/:id` | Admin user edit; DTO permissions অনুসরণ করুন | UseGuards(AuthGuard('admin')) |
-| DELETE | `/api/v1/user/:id` | Admin user delete; destructive action confirmation | UseGuards(AuthGuard('admin')) |
-
-### Mini App, media, webhook ও infrastructure
-
-| Method | Path | কাজ | Controller access |
-|---|---|---|---|
-| GET | `/api/v1/media-stories/:storyId/media` | Signed ticket দিয়ে image/video bytes; Range support | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/api/v1/telegram/stories` | Telegram Story Mini App HTML shell | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/telegram/stories/:companionId/feed` | Telegram signed initData দিয়ে linked-user Story feed | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/api/v1/publishing/admin` | Backend test/admin publishing HTML; final dashboard নয় | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/api/v1/telegram/app` | Telegram login Mini App HTML | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/api/v1/telegram/app/settings/:companionId` | Companion ও website register/reset links | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/telegram/app/login/:companionId` | Signed Telegram initData + website credentials দিয়ে account link | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/telegram/app/status/:companionId` | Signed Telegram session-এর connection/access status | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/webhooks/telegram/:companionId` | Telegram provider update, companion-specific secret | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/webhooks/telegram` | Legacy/default Telegram provider webhook | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| POST | `/api/v1/webhook` | Stripe signed webhook; frontend থেকে call নয় | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/` | Backend root response | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/api/v1/health/live` | Process liveness | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/api/v1/health/ready` | Backend readiness check; সব provider tested বোঝায় না | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/privacy-policy` | Privacy policy HTML | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/terms` | Terms HTML | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-| GET | `/data-deletion` | Data-deletion instructions HTML | JWT guard নেই; বিশেষ validation/নিচের নোট দেখুন |
-
-<a id="flows"></a>
-# Implementation flow guide
-
-## ২. API connection ও response
-
-Local base: `http://localhost:8080/api/v1`। Deployed base: `https://<backend-domain>/api/v1`। Frontend-এ একটি public environment variable-এ base URL রাখুন। Bot token, Stripe secret, database URL, JWT signing secret বা AI credentials frontend-এ যাবে না।
-
-Protected request:
-
-```http
-Authorization: Bearer <accessToken>
-Content-Type: application/json
-```
-
-Normal JSON response:
-
-```json
-{
-  "statusCode": 200,
-  "success": true,
-  "message": "...",
-  "meta": {"page": 1, "limit": 10, "total": 20},
-  "data": {}
-}
-```
-
-`meta` সব endpoint-এ থাকে না। `data` object, array বা null হতে পারে। Response-এর success boolean ও HTTP status দেখুন; শুধু message string দিয়ে success নির্ধারণ করবেন না। Controller সরাসরি object return করলেও interceptor সাধারণত `data`-তে সেটি রাখে। HTML/legal pages ও raw webhook response আলাদা।
-
-Request body-তে validation DTO অনুসরণ করুন। Whitelist চালু: অতিরিক্ত field পাঠালে persist হবে ধরে নেবেন না। IDs আলাদা: userId, companionId, conversationId, messageId, subscription plan ID, credit package ID ও Stripe subscription ID এক জিনিস নয়। Payment route-এর `subscriptionId` সাধারণত local **plan ID**; `sub_...` নয়।
-
-## ৩. কোন screen-এ কোন API
-
-এই guide-এর নিচের path-গুলোর আগে `/api/v1` যোগ হবে, যদি আলাদা করে না বলা থাকে।
-
-| Screen/কাজ | API | Frontend-এর কাজ |
-|---|---|---|
-| Registration | POST `/auth/register` | নাম, email, phoneNumber, password, adultEligible |
-| Login | POST `/auth/login` | accessToken ও sanitized user ব্যবহার |
-| Session restore | GET `/auth/refresh`, GET `/user/my-profile` | cookie দিয়ে refresh; current role/status দেখুন |
-| Forgot password | POST `/auth/forgot-password`, `/auth/verify-otp`, `/auth/reset-password` | ৩ ধাপ; resetToken ধরে শেষ request |
-| Profile | GET/PUT `/user/my-profile` | profile form + optional profileImage |
-| Companion listing | GET `/companions` | filters, pagination, profile cards |
-| Companion details | GET `/companions/:id` | bio, personality, gallery, chat/connect CTA |
-| Plans | GET `/subscription`, GET `/subscription/:id` | active plans, price, allowance, duration |
-| Subscription payment | POST `/payment/subscription/:subscriptionId` | free activation বা Stripe clientSecret flow |
-| Billing settings | GET `/payment/subscription/status`, POST `/payment/billing-portal` | current plan/status ও manage billing link |
-| Wallet | GET `/credits/wallet`, `/chat/usage`, `/credits/costs` | effective balance, expiry, action costs |
-| Buy credits | GET `/credits/packages`, POST `/payment/credits` | packageId দিয়ে payment শুরু |
-| Ledger | GET `/credits/ledger` | paginated credit transaction history |
-| Chat list | GET `/chat/conversations` | conversation cards |
-| Chat room | GET/POST `/chat/:companionId/messages` | messages, reply, image/audio render |
-| Relationships | GET `/relationships`, PATCH `/relationships/:companionId` | nickname, notes, interaction data |
-| Stories | GET `/companions/:companionId/stories` | প্রকাশিত current/past story |
-| Gallery unlock | POST `/companions/:companionId/photos/view` | photoUrl পাঠিয়ে unlock/charge ফলাফল |
-| Photo history | GET `/photos/history` | আগে দেখা gallery items |
-| Gifts | GET `/gifts`, POST `/gifts/:giftId/send` | companionId দিয়ে gift পাঠানো |
-| Notifications | GET `/notifications`, PATCH `/notifications/:id/read` | list ও read state |
-| Telegram connection | POST `/telegram/connect/:companionId`, GET `/telegram/status/:companionId` | secure link ও return-to-bot |
-| Newsletter | POST `/newsletter` | email subscription form |
-
-## ৪. Registration, login ও password reset
-
-Registration example (dummy data):
+Registration example:
 
 ```json
 {"name":"Demo User","email":"demo@example.com","phoneNumber":"+8801700000000","password":"ExampleOnly123!","adultEligible":true}
 ```
 
-`adultEligible` user-এর confirmation থেকে নিন; silently true করবেন না। Register response-এ account data আসে, accessToken নয়; তারপর login করুন। `/user`-এও legacy create endpoint আছে; সাধারণ signup-এ `/auth/register` ব্যবহার করুন।
+Adult confirmation must come from the user. Registration returns account data rather than a login token; log in next. Use `/auth/register` rather than the legacy `/user` creation route for normal signup.
 
-Login body:
+Login body is email/password. Use `data.accessToken` for API requests and sanitized `data.user` for navigation. Backend guards remain authoritative. Do not infer current balance or entitlement from an old JWT.
 
-```json
-{"email":"demo@example.com","password":"ExampleOnly123!"}
-```
+Refresh uses an HttpOnly cookie; requests may need credentials/include or withCredentials. Current secure/same-site cookie behavior requires appropriate HTTPS and same-site/reverse-proxy deployment. CORS alone does not fix cross-site cookie restrictions. Do not store passwords, OTPs or reset tokens in localStorage.
 
-`data.accessToken` API call-এ ব্যবহার করুন; `data.user.role` অনুযায়ী user/admin navigation দিন। Frontend route guard UX-এর জন্য; backend guard চূড়ান্ত authority। Login/subscription-এর পুরোনো JWT claim দিয়ে balance বা subscription সক্রিয় ধরে রাখবেন না।
+Reset sequence:
 
-Refresh token HttpOnly cookie-তে আসে। Login ও refresh request-এ `credentials: 'include'` বা Axios `withCredentials: true` লাগবে। বর্তমান cookie `secure:true`, `sameSite:'strict'`। আলাদা site/domain-এ frontend/backend বসালে refresh cookie block হতে পারে; HTTPS এবং same-site deployment/reverse proxy staging-এ যাচাই করুন। শুধু CORS চালু করলেই cross-site cookie ঠিক হয় না। Access token memory-তে রাখার design ব্যবহার করা যায়; password/OTP/resetToken localStorage-এ রাখবেন না।
+1. POST `/auth/forgot-password` with email.
+2. POST `/auth/verify-otp` with email and the six-character OTP string.
+3. POST `/auth/reset-password` with email, password and returned `data.resetToken`.
+4. Clear sensitive form state and log in again. Password changes invalidate older sessions.
 
-Password reset:
+Change password uses `/auth/change-password` with email/oldPassword/newPassword. Logout uses `/auth/logout` followed by client session cleanup.
 
-1. POST `/auth/forgot-password`: `{"email":"demo@example.com"}`।
-2. POST `/auth/verify-otp`: `{"email":"demo@example.com","otp":"123456"}`। OTP ছয় অক্ষরের string।
-3. Response-এর `data.resetToken` নিয়ে POST `/auth/reset-password`: `{"email":"demo@example.com","password":"NewExample123!","resetToken":"<returned-token>"}`।
-4. সফল হলে sensitive form state clear করে আবার login। Password পরিবর্তন/reset হলে পুরোনো session invalid হয়।
+## Subscription, payment and wallet
 
-Change password: POST `/auth/change-password`, body `email`, `oldPassword`, `newPassword`। Logout: POST `/auth/logout`; UI token/state clear করুন।
+Select a local plan ID and POST `/payment/subscription/:subscriptionId`.
 
-## ৫. Subscription, payment ও wallet flow
+- Free activation may return `activated:true` and `clientSecret:null`; refetch usage rather than opening payment UI. One-use trial/activation restrictions remain server-side.
+- Paid checkout returns a clientSecret for payment confirmation. Other response fields can vary by branch; handle optional/null values.
+- An existing plan may return `alreadySubscribed:true`; do not repeatedly create subscriptions.
+- Upgrade uses `/payment/subscription/:subscriptionId/upgrade`; cancellation uses `/payment/subscription/cancel`. Display returned/status state rather than assuming immediate expiry.
+- `/payment/billing-portal` returns a URL for provider-managed billing.
 
-Plan list থেকে local plan `id` নির্বাচন → POST `/payment/subscription/:subscriptionId`।
+Payment UI success alone does not establish backend activation. Reconcile subscription state with `/payment/subscription/sync`, status, usage and wallet reads. Sync is not a generic purchased-credit settlement API.
 
-- Free plan: `data.activated:true`, `clientSecret:null` হলে payment form খুলবেন না। Usage/status refetch করুন। Free trial আবার নেওয়া বা existing subscription replace করা backend আটকায়।
-- Paid plan: `data.clientSecret` দিয়ে Stripe frontend payment UI-তে confirmation সম্পন্ন করুন। Response-এর `stripeSubscriptionId`, `status`, `activated` fields optional/branch-dependent; missing field ধরে crash করবেন না।
-- একই active plan থাকলে `alreadySubscribed:true` আসতে পারে। Existing recurring plan-এর জন্য নতুন subscription creation বারবার করবেন না।
-- Plan বদলাতে POST `/payment/subscription/:subscriptionId/upgrade`; cancellation POST `/payment/subscription/cancel`। Cancellation-এর effective state response/status থেকে দেখান; সঙ্গে সঙ্গে expiry ধরে নেবেন না।
-- Billing portal: POST `/payment/billing-portal` → `data.url` খুলুন।
+Credit checkout uses only `POST /payment/credits` with packageId. The server determines price/credits. After confirmation, use bounded wallet polling and a pending state; never instruct repeated Pay clicks while a webhook is delayed.
 
-**Payment success screen subscription/credit activation-এর প্রমাণ নয়।** Stripe webhook backend-এ state update করে। Confirmation-এর পরে POST `/payment/subscription/sync` (subscription-এর জন্য) → GET `/payment/subscription/status` → GET `/chat/usage` এবং `/credits/wallet`। Sync আবার charge করে না; purchased credit payment-এর generic sync API নয়।
+Usage includes active subscription, dates, creditAllowance/creditsUsed, remaining subscription credits, purchasedCredits/creditBalance, totalCredits and lowCredit/threshold. A zero legacy message count alone must not block purchased-credit usage. Expired subscriptions may still restrict access even when purchased credits remain.
 
-Credit purchase:
+Read action rates from `/credits/costs`. Wallet returns recent ledger entries and purchased lots with remainingAmount/expiresAt; use the ledger endpoint for history. Format UTC dates in the user's timezone and handle decimal price strings deliberately.
 
-```http
-POST /api/v1/payment/credits
-```
-```json
-{"packageId":"<credit-package-id>"}
-```
+## Telegram connection
 
-`data.clientSecret` দিয়ে payment confirm করুন। `/payment/credits` হলো credit purchase-এর একমাত্র endpoint। Payment-এর পরে wallet সীমিত সময় poll করুন (যেমন ২–৩ সেকেন্ড interval, সর্বোচ্চ ৩০ সেকেন্ড; এটি frontend প্রস্তাব, backend guarantee নয়)। Pending থাকলে “Payment received; balance update pending” এবং Refresh/Support দেখান; আবার Pay চাপিয়ে duplicate purchase করাবেন না।
+Preserve the selected companion through login/registration/payment. Refetch usage and `/telegram/status/:companionId`. If unlinked, create a connection URL only on an explicit button click. The link is single-use and expires after ten minutes. The user must open Telegram and press Start; a backend cannot bypass that action. Refetch status on return and provide expired-link recovery.
 
-Usage response-এর fields:
+Status includes companion identity, linked state, active-subscription state and Telegram/credit/subscription URLs. A returned URL alone does not prove linking. Provide an explicit Continue in Telegram fallback if automatic navigation is blocked.
 
-| Field | ব্যবহার |
+The login Mini App requires signed Telegram initData. A normal browser without it is not an equivalent login environment. Account-transfer/connection decisions require their existing backend consent flow; do not silently reassign identities.
+
+## Chat, library and response data
+
+Use a stable UUID requestId per action; reuse it for network retries of that same action. Different content needs a new ID. Render message_type/media, handle null text and refresh saved history after errors. No general realtime socket/SSE implementation is established by this guide.
+
+| Endpoint | Read data from |
 |---|---|
-| subscription | active subscription object; না থাকলে null |
-| subscription.startsAt/endsAt/createdAt | শুরু, শেষ ও record creation date |
-| subscription.creditAllowance/creditsUsed/subscriptionCreditsRemaining | plan credit progress |
-| purchasedCredits / creditBalance | effective purchased credit balance |
-| totalCredits | plan remainder + purchased credits |
-| lowCredit / threshold | low credit banner |
+| GET companion/plan/user collections | `result.data` and optional `result.meta` |
+| GET chat messages | `result.data.messages`, total/page/limit |
+| POST general chat | `result.data.response`, message_type, media; saved row in message |
+| POST lifestyle photo | Saved row: `result.data.aiPayload.media`, response |
+| GET daily inbox | Delivery array and content text/photo fields |
+| GET allowances | policy, usage, periodStart/periodEnd |
+| GET preference | Object or null |
+| GET media Story feed | stories, companion, serverTime, hasActiveStory |
+| GET overview | Metrics object; not a time-series dataset |
 
-`messagesRemaining=0` দেখেই chat block করবেন না। Active subscription + যথেষ্ট purchased credits থাকলে backend credits ব্যবহার করতে পারে। UI-তে action-specific cost `/credits/costs` থেকে নিন; image/voice-কে text-এর সমান cost ধরবেন না। Active subscription না থাকলে purchased credits থাকলেও access-এর নিয়ম backend নির্ধারণ করে।
+Typed image requests now use approved unseen library matching before paid generation. New gallery images enter the library pending approval. Generic reusable generations can be saved pending only when safe/durable; private/custom content is excluded. Spoken image requests retain the existing AI route.
 
-Wallet-এর `creditTransactions` recent ৫০টি; সব history চাইলে `/credits/ledger?page=1&limit=50`। `purchasedCreditLots`-এ `remainingAmount`, `expiresAt` পাওয়া যায়। Date UTC থেকে user timezone-এ format করুন। Amount decimal string আসতে পারে; display-এর জন্য সচেতনভাবে convert করুন। Client পাঠানো price/credit amount দিয়ে payment তৈরি হয় না—package/plan ID পাঠাতে হবে।
+Trial included allowances are distinct from wallet credits. Use policy/usage, not zero wallet alone, to explain trial access. Verify Mini App trial state handling before release; older status logic may still classify zero credit as credit-required. Images use photo rates, while response-billing mode also measures voice/transcription units. See the lifestyle guide for exact rules.
 
-## ৬. Website থেকে Telegram—সঠিক end-to-end flow
+Human-mode input is stored without automatic AI generation. An admin reply being saved does not prove an outbound Telegram push. Do not automatically retry payments, gifts or broadcasts merely because chat has request-ID replay protection.
 
-1. Companion select → companionId ধরে রাখুন।
-2. Login না থাকলে website login/register → সফল হলে আগের companion-এ ফিরুন।
-3. GET `/chat/usage` ও `/telegram/status/:companionId`।
-4. Subscription না থাকলে plan/payment flow শেষ করুন, তারপর status refetch।
-5. Linked এবং active হলে status response-এর `data.telegramUrl` খুলুন। Credits পর্যাপ্ত কি না wallet/usage-এ আলাদা দেখুন।
-6. Unlinked হলে POST `/telegram/connect/:companionId` (empty body)। Response `data.telegramUrl`, `data.expiresAt`।
-7. Returned URL খুলে Telegram-এ Start চাপতে বলুন। Link ১০ মিনিট, single-use; page load-এ বারবার link তৈরি নয়, explicit button click-এ করুন।
-8. Website-এ ফেরার পরে status refetch করে linked state দেখান। Expired/used link হলে নতুন link দিন।
+## Admin editing and uploads
 
-Telegram status response fields: `companionId`, `companionName`, `linked`, `hasActiveSubscription`, `telegramUrl`, `creditsUrl`, `subscriptionUrl`। শুধু URL পাওয়া মানেই linked নয়।
+Follow nested DTOs for personality, communication, background, visual identity and voice. Gallery append and replacement are distinct operations. Photo Library now supports import, caption/tags, approval, pagination and removal. Daily content requires an approved companion photo and valid companion-local dates/window.
 
-**Automatic redirect-এর অর্থ:** website authentication/payment শেষে user-কে একটি স্পষ্ট “Continue in Telegram” button দিন। ইচ্ছা করলে সফল state-এ navigation চেষ্টা করা যায়, কিন্তু browser/app opening fail হলে button fallback রাখুন। Backend নিজে user-এর browser খুলে দেয় না এবং user-এর Start action bypass করে না।
+Overview keys include totalUsers, totalSubscriptionPlans, activeSubscriptions, activeSubscribers, totalMessages, totalConversations and totalRevenue. Legacy totalSubscriptions/totalConversions refer to plan/message counts, not conversion rates. Do not invent trend charts or currency conversions from aggregate metrics.
 
-### Telegram Mini App থেকে website-এ আসা
+Read current DTO/service permissions before creating role/status/account-approval controls. Older self-profile update paths had a password-only update limitation; do not send dummy passwords as a workaround. Payment export/refund/manual top-up and bot token/username editing are not implied by existing general admin forms.
 
-Existing backend login window: GET `/telegram/app?companionId=<uuid>`। Telegram-এর button থেকে খোলে। Signed `initData` ছাড়া সাধারণ browser-এ সেটিকে login page হিসেবে চালাবেন না।
+## Errors and deployment
 
-- GET `/telegram/app/settings/:companionId`: companionName, botUrl, registerUrl, forgotPasswordUrl।
-- POST `/telegram/app/login/:companionId`: `initData`, `email`, `password`, optional `confirmTransfer`।
-- POST `/telegram/app/status/:companionId`: `{"initData":"<Telegram signed value>"}`।
-- `linked:false`: login প্রয়োজন। `transferRequired:true` এলে পুরোনো Telegram binding বদলানোর স্পষ্ট consent এবং password re-entry ছাড়া confirmTransfer পাঠাবেন না।
-- Linked হলে state `ready`, `subscription_required`, `credits_required`; `totalCredits`, `endsAt`, `actionUrl` দিয়ে UI দেখান। `ready` মানে সব ধরনের request-এর পর্যাপ্ত cost আছে এমন guarantee নয়।
-
-Registration/reset/payment links-এ `companionId`, `source=telegram`, `returnTo` query আসতে পারে। Frontend auth ও payment navigation জুড়ে context ধরে রাখবে। `returnTo` untrusted input—শুধু নিজস্ব configured HTTPS backend/app URL allowlist করুন; arbitrary redirect করবেন না। Password/token query string-এ দেবেন না। Registration/login শেষে website bearer session তৈরি করে উপরের connect flow শেষ করুন। Telegram Mini App-এর signed session website bearer session-এর বিকল্প নয়।
-
-## ৭. Chat, image, voice ও history
-
-Text request:
-
-```json
-{"message":"Hi, how are you today?","type":"text","requestId":"11111111-1111-4111-8111-111111111111"}
-```
-
-POST `/chat/:companionId/messages` response-এর `data`:
-
-```json
-{
-  "message_type":"text",
-  "media":null,
-  "transcript":null,
-  "mode":"ai",
-  "message":{"id":"<saved-message-id>"},
-  "response":"<companion reply>",
-  "conversationId":"<conversation-id>",
-  "usage":{"chargedFrom":"subscription","creditBalance":200}
-}
-```
-
-এটি shape বোঝানোর সংক্ষিপ্ত example; সব saved message/usage field এখানে দেখানো হয়নি। `media` থাকলে `id`, `kind` (`image`/`audio`), `url`, `mime_type`, `byte_size` আসে। `message_type` অনুযায়ী text/image/audio render করুন; response null হতে পারে, বিশেষ করে human mode-এ। History-তে saved row-এর field ব্যবহার করুন; POST response ও history shape এক নয়।
-
-- Image request একই text message endpoint দিয়ে natural-language request; request DTO-তে `type:"image"` নেই। AI image result না দিলে fake image success দেখাবেন না।
-- `AI_RESPONSE_BILLING_ENABLED=false` হলে legacy type-based charge থাকে। Flag=true হলে actual reply type অনুযায়ী image/voice/text ও incoming transcription units charge হয়; নতুন AI contract দরকার। নিচের lifestyle অংশের billing নিয়ম অনুসরণ করুন।
-- Website voice request DTO: `type:"voice"` এবং `message`-এ **transcript**। এই route multipart microphone file নেয় না। Website raw-audio upload/transcription-এর আলাদা API বর্তমানে নেই; প্রয়োজন হলে backend/AI integration কাজ লাগবে। Telegram voice pipeline আলাদা।
-- Audio media URL যদি protected upstream হয়, browser playback authorization/CORS পরীক্ষা করতে হবে। বর্তমানে website-এর জন্য আলাদা media proxy endpoint controller-এ নেই।
-- GET messages: `?page=1`; `data.messages`, `data.total`, `data.page`, `data.limit` (৫০)। Page-এর messages chronological order-এ আসে; পুরোনো page prepend করে ID অনুযায়ী dedupe করুন।
-- Send চলাকালে button disable/loading দিন। Timeout হলে blind automatic POST retry করবেন না: website route-এ client-supplied idempotency field নেই। History refresh করে message save হয়েছে কি না বুঝে retry দিন।
-- WebSocket/SSE controller নেই। New reply/notification চাইলে controlled polling বা নতুন realtime backend কাজ লাগবে। Telegram delivery আর website message save একই বিষয় নয়।
-
-## ৮. Gifts, gallery, stories, relationships, notifications
-
-- Gift send: POST `/gifts/:giftId/send`, `{"companionId":"<uuid>"}`। Cost ও wallet backend নির্ধারণ করে। Success-এর পরে wallet/history refetch।
-- Gallery view/unlock: POST `/companions/:companionId/photos/view`, `{"photoUrl":"<galleryImages থেকে URL>"}`। Arbitrary URL নয়। আগে unlock করা একই photo আবার view করলে দ্বিতীয়বার charge হয় না। শুধু image render করলেই view API call হয় না।
-- Gallery URL public response-এ পাওয়া গেলে blur UI-কে secure media paywall হিসেবে দাবি করবেন না; protected media delivery আলাদা কাজ।
-- Relationship PATCH body: optional `nickname`, `notes`; আলাদা user/companion relationship।
-- Stories user list শুধু published এবং current/past day; admin list unpublished/future-ও দেখতে পারে। একই companion/day admin save করলে upsert হয়।
-- Notifications: list, mark-read; notification create করা Telegram push পাঠানোর সমান নয়।
-- Engagement pagination `page` >=1, `limit` 1–100, default50। সব list-এ total/meta নেই; collection ছোট হলে next-page UX accordingly করুন।
-
-## ৯. Admin panel—সম্পূর্ণ screen map
-
-| Admin screen | Endpoint | Controls |
-|---|---|---|
-| Overview | GET `/dashboard/overview` | user, active subscriber, revenue, message ও conversation metrics |
-| Users | GET `/user`, GET `/user/:id`, PUT `/user/:id`, DELETE `/user/:id` | search/filter, details, edit, delete |
-| User finance/details | GET `/admin/users/:id/details`, `/admin/users/:id/ledger` | wallet, recent payments/subscriptions, relationships, ledger |
-| Companions | GET/POST `/companions`, GET/PUT/DELETE `/companions/:id` | profile/personality/style/status forms |
-| Companion images | PUT `.../:id/profile-image`, PUT `.../:id/cover-image`, POST/PUT `.../:id/gallery` | upload, append বনাম replace |
-| Voice settings | PUT `/companions/:id/voice` | `voiceId` |
-| Plan management | POST `/subscription`, PUT/DELETE `/subscription/:id` | price, allowance, duration, features, active/popular |
-| Credit packages | POST `/credits/packages`, PATCH/DELETE `/credits/packages/:id` | name, credits, price, currency, active |
-| Credit costs | PUT `/admin/credit-costs/:action` | message/photo/voice/transcription/low_credit_threshold |
-| Gift management | POST `/gifts`, PATCH/DELETE `/gifts/:id` | gift fields, initial image upload, deactivate |
-| Stories | GET/PUT `/admin/companions/:companionId/stories` | day, title, content, published |
-| Conversations | GET `/admin/conversations`, GET `/admin/conversations/:id` | user/companion context ও messages |
-| AI/human control | PATCH `/admin/conversations/:id/mode` | `{"mode":"human"}` বা `{"mode":"ai"}` |
-| Human reply | POST `/admin/conversations/:id/replies` | messageId এবং message |
-| Notification create | POST `/admin/notifications` | userId, title, body |
-| Newsletter | GET `/newsletter`, GET `/newsletter/:id`, POST `/newsletter/broadcast` | subscribers ও email broadcast |
-
-Overview-তে `totalSubscriptionPlans`, `activeSubscriptions`, `activeSubscribers`, `totalMessages`, `totalConversations`, `totalRevenue`, `totalUsers` ব্যবহার করুন। Legacy `totalConversions` আসলে message count; conversion-rate হিসেবে দেখাবেন না।
-
-Human takeover: প্রথমে mode=human সেট করুন, তারপর নির্বাচিত unanswered user message-এর messageId দিয়ে reply করুন। Reply-কারী admin-এর assignment মিলতে হবে; answered message-এ 409 আসতে পারে। Current `humanReply` method response database-এ save করে এবং in-app notification তৈরি করে; **Telegram outbound send করে না**। তাই “Reply delivered to Telegram” success label এখন দেবেন না।
-
-Plan create example:
-
-```json
-{"name":"Premium","price":"29.99","creditAllowance":500,"durationDays":30,"features":["Text conversations","Voice replies"],"isPopular":true,"isActive":true}
-```
-
-Credit package create example:
-
-```json
-{"name":"Extra Credits","credits":200,"price":"4.99","currency":"usd","isActive":true}
-```
-
-Credit cost update body: `{"credits":5}`। Action path values: `message`, `photo`, `voice`, `transcription`, `low_credit_threshold`। Arbitrary action তৈরি করা যাবে না। Package ও gift DELETE deactivation করে; user/companion/plan delete-এর জন্য confirmation UI দিন এবং server restriction/error দেখান, cascading effect অনুমান করবেন না।
-
-**DTO-তে থাকা সব field-এর exact spelling ও nested structures reference document-এ আছে।** Companion create-এর nested personality, communication, relationship/style fields বাদ দিয়ে শুধু name পাঠালে পূর্ণ model তৈরি হবে ধরে নেবেন না। API model অনুযায়ী tabbed admin form তৈরি করুন।
-
-## ১০. Upload ও list contract
-
-| কাজ | Encoding | File field |
-|---|---|---|
-| Own/admin user profile | multipart/form-data | profileImage |
-| Companion create/update metadata | application/json | file নয়; আলাদা image endpoints |
-| Companion profile | multipart/form-data | profileImage, ১টি |
-| Companion cover | multipart/form-data | coverImage, ১টি |
-| Gallery append/replace | multipart/form-data | galleryImages, সর্বোচ্চ১০টি |
-| Gift create | multipart/form-data | image |
-
-FormData পাঠানোর সময় Content-Type boundary browser-কে বানাতে দিন। Upload helper-এর per-file limit ১০MB; frontend-এও যাচাই করুন। Companion gallery POST append, PUT replace। ভুল করে PUT দিয়ে পুরোনো gallery মুছবেন না। Gift PATCH controller-এ upload interceptor নেই; create upload-এর মতো file PATCH করবেন না।
-
-Query names exact reference-এ আছে। Common `page`, `limit`, `sortBy`, `sortOrder` সব route-এ নেই। User list filters: searchTerm/role/email/name। Subscription: searchTerm/name/features/isPopular/isActive। Companion list controller-এর pick allowlist ও ApiQuery metadata দুটো reference-এ দেখুন; unchecked arbitrary sort field দেবেন না।
-
-## ১১. Webhook ও infrastructure route—frontend button নয়
-
-সব exact webhook route reference-এর inventory-তে আছে। Stripe POST `/webhook` raw body ও `stripe-signature` দিয়ে provider call করবে। Frontend fake webhook বা payment success লিখে subscription/credit grant করতে পারবে না। Telegram webhook-এ bot-specific secret validation হয়। Bot secrets browser-এ দেওয়া যাবে না।
-
-GET `/health/live` process health; GET `/health/ready` database/runtime-table readiness। Ready সফল মানে AI, mail, Stripe সব tested নয়। Root `/`, `/privacy-policy`, `/terms`, `/data-deletion` global API prefix-এর বাইরে। Backend-এ থাকা legal text publish-এর আগে owner review করবেন।
-
-Messaging channel এখন Telegram; WhatsApp integration সরানো হয়েছে।
-
-## ১২. Error ও UX handling
-
-| Status | UI আচরণ |
+| Status | UX |
 |---|---|
-| 400 | validation/operation message দেখান; field value ঠিক করতে দিন |
-| 401 | refresh একবার চেষ্টা; ব্যর্থ হলে login, redirect loop নয় |
-| 402 | usage refetch; subscription নেই হলে Subscribe, active কিন্তু credit কম হলে Buy Credits |
-| 403 | approved/adult/account permission সমস্যা; আবার payment নয় |
-| 404 | item নেই বা companion unavailable |
-| 409 | account conflict/already answered/takeover conflict; state refetch |
-| 429 | retry-after থাকলে মানুন; cooldown দেখান, loop নয় |
-| 502/503 | upstream/database temporarily unavailable; retry option, raw stack নয় |
+| 400 | Explain validation/operation errors and preserve editable fields |
+| 401 | Attempt one controlled refresh, then login without redirect loops |
+| 402 | Refetch entitlement/usage and offer subscription or credit purchase |
+| 403 | Explain eligibility/permission/trial restriction; do not simply request payment |
+| 404 | Show unavailable/missing item state |
+| 409 | Refetch conflicting/account/takeover state |
+| 429 | Respect retry guidance and show cooldown |
+| 502/503 | Show a safe temporary-error/retry state, never a raw stack |
 
-Error body সাধারণত `success:false`, `statusCode`, `message`, `errorSources`। Production stack user-কে দেখাবেন না। Rate limits-এর কারণে repeated login retry এড়িয়ে চলুন। Paid POST request auto-retry নয়। UI loading, empty, pending-payment, failed, expired-link, insufficient-credit—সব state design করুন।
+Design loading, empty, pending-payment, failed, expired-link and insufficient-credit states. Do not retry paid mutations blindly.
 
-## ১৩. Frontend URL ও deployment সমন্বয়
+Coordinate exact HTTPS website/admin origins and backend CORS settings. Telegram connect/register/reset/subscription/credit URL settings must point to actual frontend pages, not Swagger. Public environment changes require restart/rebuild. Legal HTML lives outside the API prefix. Production rollouts and migrations require the reviewed deployment workflow.
 
-| Backend env | Frontend engineer কী দেবে |
-|---|---|
-| FRONTEND_URL | website HTTPS origin |
-| CORS_ORIGINS | user website/admin-এর exact allowed origins |
-| TELEGRAM_CONNECT_URL | website login/connect page |
-| TELEGRAM_REGISTER_URL | registration page |
-| TELEGRAM_FORGOT_PASSWORD_URL | reset flow entry page |
-| TELEGRAM_SUBSCRIPTION_URL | plan/checkout page |
-| TELEGRAM_CREDITS_URL | credit-package checkout page |
+Before release verify authentication/reset, role isolation, trial/paid checkout, pending webhooks, credit expiry/rates, connection/recovery, media playback/history, human mode, uploads/schedules, Android/iOS/Desktop/Web and original client reference matching. Live provider behavior and nullability require staging acceptance; source-derived routes and passing unit tests are not certification.
 
-Paths design প্রস্তাব: `/login`, `/register`, `/forgot-password`, `/subscriptions`, `/credits`, `/companions/:id`, `/chat/:id`, `/account`, `/admin`। এগুলো API route নয় এবং এখন deploy করা frontend page হিসেবে যাচাই করা হয়নি। Actual route তৈরি করে URL backend engineer-কে দিন। `/api/docs` কখনো user checkout/register page নয়। Frontend URL changing-এ env update ও backend restart লাগে। Mini App-এ পুরোনো button থাকলে নতুন `/login` button নিন।
-
-Production backend rollout/migration/queue/HTTPS নির্দেশনা repo-এর `docs/production-deployment.md`-এ আছে। Frontend credentials দিয়ে migration বা bot setup করবে না। Telegram-এর digital purchase policy সিদ্ধান্ত backend/payment owner-এর সঙ্গে confirm করতে হবে; website Stripe flow থাকা মানেই Telegram in-app sales release অনুমোদিত ধরে নেবেন না।
-
-## ১৪. জানা সীমাবদ্ধতা ও handoff blockers
-
-1. Website raw voice upload/transcription route নেই; transcript-only chat contract আছে।
-2. Website realtime socket/SSE route নেই; controlled polling বা নতুন backend কাজ লাগবে।
-3. Admin human reply Telegram-এ push হয় না।
-4. Website profile image/name update configured Telegram profile-sync queue-তে যায়; about/description-এর publishing API আছে। Feature flag/token mapping ও sync status যাচাই করুন। Bot username edit এই API-তে নেই।
-5. Bot token/username/env পরিবর্তনের public admin endpoint নেই। Frontend-এ এমন Save button বানাবেন না যার API নেই।
-6. User self-service Telegram unlink endpoint নেই; transfer flow আলাদা।
-7. General all-payments export, refund API, manual wallet top-up API এই controller set-এ নেই। Admin user details-এ recent payment data আছে; এর বাইরে feature হলে backend contract লাগবে।
-8. Newsletter GET list/detail controller-এ JWT guard নেই। Subscriber data public হওয়া launch-এর আগে backend review/fix দরকার; শুধু UI লুকানো protection নয়।
-9. Credit purchase-এর জন্য শুধু POST `/payment/credits` ব্যবহার করুন।
-10. Cookie same-site deployment, registration/payment return handling, protected audio playback, real checkout URLs ও mobile test এখনো frontend integration-এর acceptance কাজ।
-11. Response inventory source-derived; provider-dependent live response ও field nullability staging-এ verify করতে হবে। কোনো route list মানেই feature live-tested নয়।
-12. User update service বর্তমানে optional password না থাকলেও bcrypt.hash call করে। তাই name/photo-only profile update fail হতে পারে। Frontend থেকে dummy password পাঠিয়ে workaround করবেন না; backend fix প্রয়োজন।
-13. UpdateUserDto-তে role/status/adultEligible নেই। এই fields দিয়ে admin approve/block/role-change control বর্তমানে কাজ করবে ধরে UI বানাবেন না; আলাদা backend contract লাগবে।
-
-## ১৫. Implementation order ও acceptance checklist
-
-প্রথমে shared API client + authentication → companion pages → subscription/wallet/payment → Telegram return flow → website chat/media → user account/history → admin management → device/error-state tests।
-
-- [ ] Registration, login, refresh, logout; wrong password এবং blocked user।
-- [ ] OTP → resetToken → password reset; পুরোনো token invalid।
-- [ ] User role দিয়ে admin request rejected; admin-কে user-only chat endpoint access ধরে নেওয়া হয়নি।
-- [ ] Free trial একবার; paid plan success/cancel/failure/incomplete এবং renew/cancel state।
-- [ ] Stripe success কিন্তু webhook pending UI; duplicate Pay prevention।
-- [ ] Plan credits শেষ, purchased credits আছে—chat চালু। Subscription expired হলে সঠিক CTA।
-- [ ] Credit expiry ও ledger; image/voice/gift costs, no double charge on photo re-view।
-- [ ] Website → Telegram fresh link → Start → linked; expired link recovery।
-- [ ] Mini App → registration/payment → website session → Continue in Telegram।
-- [ ] Wrong Telegram account transfer consent; no silent reassignment।
-- [ ] Text/media/history, null response, loading, timeout, retry এবং human mode।
-- [ ] Admin companion nested fields, append/replace gallery, plan/package/story/cost update।
-- [ ] Newsletter/test-route access blockers owner resolved।
-- [ ] Android/iOS/Desktop/Web; website HTTPS cookie ও cross-origin media।
-- [ ] Final URLs, production payment mode, webhooks, backups/migrations deployment team verified।
-
-## ১৬. ছোট frontend request example
-
-```typescript
-// BASE আপনার public frontend environment থেকে আসবে।
-async function request(path: string, token?: string, body?: unknown) {
-  const response = await fetch(`${BASE}${path}`, {
-    method: body === undefined ? 'GET' : 'POST',
-    credentials: 'include',
-    headers: {
-      ...(body === undefined ? {} : {'Content-Type': 'application/json'}),
-      ...(token ? {Authorization: `Bearer ${token}`} : {}),
-    },
-    ...(body === undefined ? {} : {body: JSON.stringify(body)}),
-  });
-  const result = await response.json();
-  if (!response.ok || result.success === false) {
-    throw Object.assign(new Error(result.message || 'Request failed'), {
-      status: response.status, details: result.errorSources,
-    });
-  }
-  return result; // data ও optional meta caller আলাদাভাবে ব্যবহার করবে।
-}
-
-// Click handler-এ call; page mount-এ বারবার connect token তৈরি করবেন না।
-const connected = await request(`/telegram/connect/${companionId}`, token, {});
-window.location.assign(connected.data.telegramUrl);
-```
-
-এটি minimal example; production API client-এ abort/loading, একবার refresh, form field error mapping এবং safe redirect allowlist যোগ করুন। PATCH/PUT/DELETE/upload-এর জন্য method-aware wrapper লাগবে।
+See [publishing guidance](companion-publishing-bn.md), [lifestyle guidance](../README-lifestyle-handoff-bn.md) and the root `RUN_PROJECT.md`. The root photo-library handoff records known verification limits and content readiness.
 
 
-## Publishing integration
+# Profile publishing and media stories
 
-Profile sync ও photo/video Story integration-এর সম্পূর্ণ নির্দেশনা: companion-publishing-bn.md (এই README-তেই সংশ্লিষ্ট section আছে)। Backend API ও Telegram viewer তৈরি; website Story ring frontend team-কে integrate করতে হবে।
+# Telegram profile sync and 24-hour media Stories
 
+English handoff. These publishing features are separate from approved library delivery and scheduled daily subscription content.
 
-<a id="publishing"></a>
-# Meet Elysia — Profile sync ও ২৪ ঘণ্টার Story
+## Behavior
 
-## এখন যা আছে
+Saving a companion name/profile photo updates the website first and queues Telegram synchronization when enabled/configured. Publishing APIs also manage About and Description. Bot username editing is not supported. Upload the profile photo through the backend/Cloudinary flow; the worker converts it to JPEG for Telegram. No client OTP is needed.
 
-Admin থেকে companion-এর নাম বা profile photo পরিবর্তন করলে website save হওয়ার পরে Telegram update queue হবে। About ও Description নতুন publishing API দিয়ে পরিবর্তন করা যায়। Bot username পরিবর্তন এই feature-এর অংশ নয়। ছবি Cloudinary-তে এই backend দিয়ে upload করতে হবে; worker সেটিকে JPEG করে Telegram-এ পাঠায়। Client-এর OTP লাগে না।
+Media Stories remain available for 24 hours after publication through website APIs and the Telegram Mini App viewer. This is not Telegram's native Story bar. An approved adult account is required, with account linking for Telegram. Viewing does not consume chat/subscription credits.
 
-Photo/video Story প্রকাশের সময় থেকে ঠিক ২৪ ঘণ্টা website API ও Telegram Mini App-এ দেখা যাবে। এটি Telegram-এর native Story bar নয়। Story দেখার জন্য approved adult account এবং Telegram থেকে দেখলে account connection প্রয়োজন; Story দেখায় subscription credit কাটা হয় না। Chat-এর আগের subscription/credit নিয়ম অপরিবর্তিত।
+## Initial acceptance flow
 
-## প্রথমবার পরীক্ষা
+1. Review/apply required migrations for the target environment, then restart the intended backend instance.
+2. If the optional publishing console is enabled, open `http://localhost:8080/api/v1/publishing/admin` and log in with an existing admin account.
+3. Select a companion, edit display name/About/Description and choose **Save profile & queue sync**.
+4. Upload a profile image. Status moves through pending/processing to synced or failed. The worker checks approximately every 15 seconds; multiple bots may take longer. Check Telegram and refresh cached profiles. Correct configuration before retrying. Automatic attempts are bounded at three.
+5. Publish JPEG/PNG/WebP or MP4 media with an optional caption. Default upload limit is 10 MB; H.264/AAC is appropriate for browser MP4 playback.
+6. A connected Telegram user can use Menu > Stories or `/stories` and choose the viewer. Next/previous, captions, video playback and refresh need device testing.
+7. Removing/expiring a Story makes subsequent feed/media requests unavailable. Already downloaded content cannot be recalled. Signed media links last five minutes; refresh/reopen the viewer when necessary.
 
-1. Backend restart করুন। Target deployment-এ publishing ও lifestyle migrations আছে কি না deployment team যাচাই করবে; এই README live migration claim করে না।
-2. Browser-এ `http://localhost:8080/api/v1/publishing/admin` খুলুন। Existing **admin** account দিয়ে login করুন।
-3. Elena বা অন্য companion নির্বাচন করুন। Display name, About, Description লিখে **Save profile & queue sync** চাপুন।
-4. **Upload profile photo** দিয়ে ছবি দিন। Status প্রথমে `pending`, পরে `processing`, সফল হলে `synced` হবে। Worker প্রতি ১৫ সেকেন্ডে queue পরীক্ষা করে। পাঁচটি bot থাকলে completion-এ আরও সময় লাগতে পারে।
-5. Telegram-এ profile খুলে নাম, ছবি ও পরিচিতি যাচাই করুন। Cache থাকলে profile আবার খুলুন। Failure হলে status-এর কারণ দেখুন, configuration ঠিক করে **Retry Telegram sync** চাপুন। Automatic সর্বোচ্চ তিনবার চেষ্টা হয়।
-6. **Publish a story** থেকে JPEG/PNG/WebP বা MP4 এবং caption দিন। Default limit ১০ MB; MP4-এর browser playback codec-compatible হতে হবে (H.264/AAC ব্যবহার করুন)।
-7. Connected Telegram account দিয়ে companion-কে `/stories` পাঠান। **View … Stories** চাপলে Telegram-এর ভিতরে viewer খুলবে। `/start`-এর welcome message-এও button আছে। Unconnected user-কে আগে login করতে হবে।
-8. Next/Previous, video playback, caption এবং Refresh পরীক্ষা করুন। Admin থেকে **Remove story** করলে পরের request-এ সেটি unavailable হবে। মেয়াদ শেষ হলে নতুন feed/media request-এও unavailable হবে। ইতিমধ্যে download করা ছবি/video ফিরিয়ে মুছে দেওয়া যায় না।
+Publishing does not broadcast unsolicited messages to every user. Menu setup commands are deliberate administrative actions: `node scripts/telegram.cjs menu` configures five bots, or append `ELENA` for one bot. This menu command does not change webhooks or send user messages; existing more-specific Telegram menu overrides may take precedence.
 
-Publish করলে সব user-কে unsolicited message পাঠানো হয় না। Story viewer খোলা অবস্থায় expiry পরীক্ষা করে; signed media link পাঁচ মিনিটের, প্রয়োজন হলে Refresh বা viewer পুনরায় খুলুন।
-
-## ENV ও deployment
-
-Deployment environment-এ নিচের settings এবং signing secret backend engineer দেবেন। Secret অন্য কারও সঙ্গে share করবেন না। VPS-এর সব instance-এ একই persistent secret রাখতে হবে।
+## Configuration
 
 ```dotenv
 TELEGRAM_PROFILE_SYNC_ENABLED=true
 COMPANION_MEDIA_STORIES_ENABLED=true
 PUBLISHING_ADMIN_CONSOLE_ENABLED=true
 STORY_MAX_UPLOAD_MB=10
-STORY_MEDIA_SIGNING_SECRET=<strong-random-secret>
+STORY_MEDIA_SIGNING_SECRET=<strong-persistent-random-secret>
 TELEGRAM_PUBLIC_BASE_URL=https://your-backend-domain.example
 ```
 
-Existing পাঁচটি companion-এর bot token ও companion ID mapping এবং Cloudinary credentials ঠিক থাকতে হবে। `TELEGRAM_PUBLIC_BASE_URL` backend-এর public HTTPS origin। ngrok URL বদলালে এটি ও আগের webhook configuration update করে server restart করতে হবে। VPS-এ স্থায়ী HTTPS domain ব্যবহার করুন। Existing website registration/subscription URL settings এই feature পরিবর্তন করে না।
+Keep signing secrets persistent and consistent across replicas. Existing bot-token/companion-ID mappings and Cloudinary credentials are required. A changing tunnel URL requires deliberate public-base/webhook updates and restart; use stable HTTPS origins in production. Registration/payment website URL settings remain separate.
 
-নতুন server/database-এ deployment order:
+## API map
 
-```powershell
-cd D:\BACKEND\natalie_joseph_backend_nestjs
-npm ci
-npx prisma generate
-npx prisma migrate deploy
-npm run build
-npm run start:prod
-```
+Prefix routes with `/api/v1`; normal payloads are in `data`. Admin mutations require an admin Bearer token.
 
-Production process manager দিয়ে service চালু রাখুন। Database migration ছাড়া নতুন build চালাবেন না। Frontend admin integration হয়ে গেলে `PUBLISHING_ADMIN_CONSOLE_ENABLED=false` দিয়ে test console বন্ধ করা যায়; admin APIs তখনও role-protected থাকবে। Upload memory-তে পড়ে এবং Story bytes database-এ থাকে; বড় traffic/media library-তে private object storage ও streaming যোগ করা উচিত। Expired bytes প্রতি ১০ মিনিটে cleanup হয়; metadata থাকে। Basic file signatures যাচাই করা হয়, malware scan/transcoding করা হয় না।
-
-## Frontend developer-এর API
-
-সব path-এর আগে `/api/v1`। Normal response-এর `data` ব্যবহার করুন। Admin route-এ admin Bearer token আবশ্যক।
-
-| Method | Path | ব্যবহার |
+| Method | Path | Use |
 |---|---|---|
-| GET | `/admin/companions/:companionId/telegram-profile` | Sync status, desired fields, lastError |
-| PUT | `/admin/companions/:companionId/telegram-profile` | JSON `displayName` (64), `about` (120), `description` (512 characters) |
-| POST | `/admin/companions/:companionId/telegram-profile/retry` | Failed/pending profile পুনরায় queue |
-| PUT | `/companions/:id/profile-image` | Existing multipart field `profileImage`; website save + Telegram queue |
-| GET | `/admin/companions/:companionId/media-stories` | শেষ ১০০টি Story metadata, expired/deleted সহ |
-| POST | `/admin/companions/:companionId/media-stories` | multipart `media` file এবং optional `caption` (2048 characters) |
-| DELETE | `/admin/companions/:companionId/media-stories/:storyId` | Story সরিয়ে media bytes clear |
-| GET | `/media-stories/summary` | Approved adult user/admin JWT; active Story count ও expiry, website ring-এর জন্য |
-| GET | `/media-stories/companions/:companionId` | User/admin JWT; active Story feed ও signed `mediaPath` |
-| GET | `/media-stories/:storyId/media?ticket=...` | Feed থেকে পাওয়া signed URL; video Range request সমর্থিত |
-| GET | `/telegram/stories?companionId=...` | Telegram Mini App viewer shell |
-| POST | `/telegram/stories/:companionId/feed` | JSON `initData`; server Telegram signature ও account connection যাচাই করে |
+| GET | `/admin/companions/:companionId/telegram-profile` | Desired fields, status and safe lastError |
+| PUT | `/admin/companions/:companionId/telegram-profile` | displayName (64), about (120), description (512 characters) |
+| POST | `/admin/companions/:companionId/telegram-profile/retry` | Requeue eligible profile sync |
+| PUT | `/companions/:id/profile-image` | Multipart profileImage; website save plus configured sync |
+| GET / POST | `/admin/companions/:companionId/media-stories` | Recent metadata or multipart media plus caption (2048 characters) |
+| DELETE | `/admin/companions/:companionId/media-stories/:storyId` | Remove a Story and clear stored media bytes |
+| GET | `/media-stories/summary` | Authenticated active counts and expiry for avatar rings |
+| GET | `/media-stories/companions/:companionId` | Authenticated active feed with signed mediaPath |
+| GET | `/media-stories/:storyId/media?ticket=...` | Signed media bytes, including video Range support |
+| GET | `/telegram/stories?companionId=...` | Mini App viewer shell |
+| POST | `/telegram/stories/:companionId/feed` | Signed initData/account-validated feed |
 
-Website ring নিজে frontend-এ implement করতে হবে: summary-তে `count > 0` হলে ring দেখান; click করলে feed পড়ুন, caption ও media render করুন। `mediaPath` ইতিমধ্যে `/api/v1` দিয়ে শুরু—backend origin-এর সঙ্গে যোগ করবেন, API prefix দ্বিতীয়বার যোগ করবেন না। `serverTime` ও `expiresAt` দিয়ে countdown হিসাব করুন এবং expiry-তে refresh করুন।
+A mediaPath already begins with `/api/v1`; prepend only the backend origin. Use serverTime/expiresAt for countdown and refresh at expiry. Public companion data may expose display fields; private queue status remains in admin APIs. A failed Telegram sync does not roll back saved website fields.
 
-Website companion profile response-এ `telegramProfileSync`-এর public displayName/about/description আছে। Private queue state admin API-তেই থাকে। Status UI-তে Pending / Updating / Updated / Failed ও Retry দেখান। Telegram ব্যর্থ হলেও ইতিমধ্যে saved website data rollback হবে না।
+## Operations and limits
 
-## যাচাইয়ের সীমা
+Use the reviewed deployment workflow: install dependencies, generate Prisma, review/apply pending migrations, build, then start under the deployment process manager. The optional test console can be disabled after dashboard integration while keeping role-protected APIs available.
 
-Local automated tests-এ expiry, access control, signed media link, version/lease concurrency, retry, range request এবং browser script parsing যাচাই করা হয়েছে। Live Telegram profile পরিবর্তন বা বাস্তব account দিয়ে Story publish এই test run-এ করা হয়নি; উপরের ধাপগুলো দিয়ে নিজের approved content পরীক্ষা করুন। Final website/Figma pages এই backend repository-তে তৈরি করা হয়নি; frontend team-এর integration দরকার।
+Uploads are memory-buffered and Story bytes use the database. Higher-volume media requires an appropriate object-storage/streaming design. Expired bytes are cleaned periodically (approximately every ten minutes), with metadata retained. Basic signatures are checked; malware scanning/transcoding are not included.
 
-<a id="lifestyle"></a>
-# Meet Elysia — backend, frontend ও AI handover
+Automated tests cover expiry, access, signed links, leases/retries, ranges and browser script parsing. Live profile mutation and real-account Story publishing were not performed as part of those tests. Exact website/Figma integration and device acceptance remain separate work.
 
-আপডেট: ২৫ অক্টোবর ২০২৬। এই ফাইল বর্তমান source change-এর নির্দেশনা; production deployment বা external AI acceptance test-এর প্রমাণ নয়।
 
-## ১. প্রোজেক্ট ও ক্লায়েন্টের মূল চাহিদা
+# Lifestyle and photo-library integration
 
-Meet Elysia-তে Elena, Chloé, Lina, Luna ও Thalia নামের পাঁচটি fictional AI companion আছে। Website account, subscription ও credits ব্যবহার করে Telegram এবং website-এ কথা বলা যাবে। Companion-এর routine, approved daily content ও conversation একই জীবনধারার সঙ্গে মিলবে। ক্লায়েন্ট বলেছেন এই consistency মূল concept-এর অংশ।
+# Lifestyle, photo library, daily content and allowances
 
-চাহিদা: weekly routine/timezone; দিনে একটি পূর্বনির্ধারিত photo এবং একটি text; একই companion-এর একই দিনের photo সব eligible subscriber-কে; generic photo-র জন্য approved library; specific request-এর জন্য AI generation; trial ও paid allowance আলাদা। ছবি **frontend থেকে upload হবে**, backend নতুন library ছবি নিজে বানায় না।
+English source handoff updated 10 November 2026. This describes local implementation, not completed production acceptance. See the root photo-library handoff for the latest verification snapshot.
 
-## ২. আগে থেকেই থাকা কাজ
+## Ownership and content types
 
-Source-এ account/auth, companion CRUD, Telegram account linking ও Mini App login, external AI chat/audio integration, subscription/Stripe webhook, purchased-credit expiry/ledger, relationship notes, dated StoryEvent, notifications, human takeover, ২৪ ঘণ্টার media stories ও Telegram profile sync আছে। এগুলো থাকা মানেই সব production configuration বা external service যাচাই হয়ে গেছে—এমন নয়।
+The main backend owns identity, adult/account eligibility, subscription policy, credits, scheduling and delivery. The AI service owns generation, persona, routine-grounded responses, memory, image and voice processing.
 
-## ৩. এই পরিবর্তনে যুক্ত কাজ
+Five companions are configured: Elena, Chloe, Lina, Luna and Thalia. Weekly routine and approved content provide consistent fictional activity context. Keep these distinct:
 
-| অংশ | backend আচরণ |
-|---|---|
-| Weekly routine | IANA timezone, ISO weekday, overnight activity ও overlap validation |
-| Photo library | frontend multipart upload, signature-based image type check, tags, admin approval, unseen-photo selection |
-| Daily publishing | companion/local-date অনুযায়ী একটি approved photo + text, publish/expiry window |
-| Daily delivery | opt-in, active plan, included allowance, website inbox এবং linked Telegram delivery |
-| Duplicate protection | user/content/kind unique reservation; uncertain Telegram send auto-retry হয় না |
-| Trial | explicit trial policy হলে ৩ দিন, সর্বোচ্চ ১০ reply/২৪h ও ৩০ মোট; ১ photo/২৪h ও ৩ মোট; voice blocked |
-| Plan policy | plan থেকে membership-এ snapshot; plan edit পুরোনো membership বদলায় না |
-| Billing | response-based charging প্রস্তুত, আলাদা flag; actual AI output ও measured voice/transcription units |
-| Retry | website chat ও library request-এ requestId; একই request retry-তে নতুন charge নয় |
-| AI context | opt-in contract দিয়ে approved routine/events/day-content; private relationship notes পাঠানো হয় না |
+- Profile gallery: public companion reference/gallery assets.
+- Approved photo library: tagged assets selected for user requests.
+- Text StoryEvent: dated global life-event context.
+- Media Story: expiring photo/video viewer content.
+- Daily subscription content: scheduled approved photo and text delivered to opted-in eligible users.
 
-## ৪. নতুন API তালিকা
+New gallery uploads create pending library entries; they do not publish daily content or a media Story automatically.
 
-সব path-এর আগে `/api/v1`। Admin API-তে admin JWT, user API-তে user JWT দিন। Swagger `/api/docs`। Global response envelope-এর `data` পড়ুন। List-এ `?page=1`, প্রতি page ৫০টি।
+## Routes
 
-Admin base: `/admin/companions/{companionId}/lifestyle`
+Prefix every path below with `/api/v1`. Admin routes require an admin Bearer token; user routes require a user token. Normal response payloads are inside `data`. Library/schedule/delivery lists use `page` with fixed pages of 50.
 
-| Method | Base-এর পরে | কাজ |
+Admin base: `/admin/companions/{companionId}/lifestyle`.
+
+| Method | Suffix | Behavior |
 |---|---|---|
-| GET / PUT | `/routine` | weekly routine পড়া/সম্পূর্ণ replace |
-| GET | `/context` | এখনকার local time, activity ও published events preview |
-| POST | `/photos` | image upload; default unapproved |
-| GET | `/photos` | library list |
-| PATCH | `/photos/{photoId}` | approve/revoke: `{"approved":true}` |
-| PUT | `/daily-content` | day অনুযায়ী draft তৈরি বা replace/publish |
-| GET | `/daily-content` | schedules list |
-| POST | `/daily-content/{contentId}/unpublish` | ভবিষ্যৎ reservation বন্ধ; already-sent message মুছে দেয় না |
-| GET | `/deliveries` | sent/available/skipped/failed/unknown/sending record |
+| GET / PUT | `/routine` | Read or replace timezone and weekly slots |
+| GET | `/context` | Preview current local activity and approved context |
+| GET / POST | `/photos` | List or upload pending library images |
+| POST | `/photos/import-gallery` | Import missing gallery URLs for review |
+| PATCH | `/photos/{photoId}` | Approve/revoke with `approved` |
+| PUT | `/photos/{photoId}` | Edit caption/tags |
+| DELETE | `/photos/{photoId}` | Remove the library entry, preserving delivered assets |
+| GET / PUT | `/daily-content` | List or draft/publish a daily schedule |
+| POST | `/daily-content/{contentId}/unpublish` | Stop future reservations |
+| GET | `/deliveries` | Inspect delivery states |
 
-| User method | Path | কাজ |
+| User method | Path | Behavior |
 |---|---|---|
-| GET / PUT | `/lifestyle/preference` | daily content-এর companion ও opt-in |
-| GET | `/lifestyle/allowances` | subscription policy এবং consumed allowance |
-| GET | `/lifestyle/inbox` | নিজের available daily content; active adult subscription required |
-| POST | `/lifestyle/companions/{companionId}/photo` | approved unseen library image; requestId required |
-| POST | `/chat/{companionId}/messages` | existing chat; optional requestId যোগ হয়েছে |
+| GET / PUT | `/lifestyle/preference` | Select one companion and opt in/out |
+| GET | `/lifestyle/allowances` | Read policy and included/trial usage |
+| GET | `/lifestyle/inbox` | Read eligible available daily content |
+| POST | `/lifestyle/companions/{companionId}/photo` | Library-first photo request; requestId required |
+| POST | `/chat/{companionId}/messages` | General chat; preserve optional requestId on retry |
 
-### Routine request
+## Routine example
 
 ```json
-{
-  "timezone": "Asia/Dubai",
-  "weekly": [
-    {"day":1,"start":"06:00","end":"12:00","activity":"Coffee at home, then gym","location":"Dubai"},
-    {"day":1,"start":"12:00","end":"18:00","activity":"Work on laptop at a cafe"},
-    {"day":1,"start":"18:00","end":"23:00","activity":"Dinner with friends"},
-    {"day":1,"start":"23:00","end":"06:00","activity":"Sleep"}
-  ]
-}
+{"timezone":"Asia/Dubai","weekly":[{"day":1,"start":"06:00","end":"12:00","activity":"Coffee at home, then gym","location":"Dubai"},{"day":1,"start":"12:00","end":"18:00","activity":"Work at a cafe"},{"day":1,"start":"18:00","end":"23:00","activity":"Dinner with friends"},{"day":1,"start":"23:00","end":"06:00","activity":"Sleep"}]}
 ```
 
-Monday=1, Sunday=7। উদাহরণে শুধু Monday; frontend অন্য ছয় দিনের slot-ও পাঠাবে। `23:00→06:00` পরের দিন শেষ হয়। পাশের slot overlap করলে 400। Unscheduled সময় currentActivity=null; AI-কে বানিয়ে activity বলার নির্দেশ দেওয়া হয়নি।
+Monday=1 and Sunday=7. Overnight slots end the next day. Overlap is rejected. Supply the other days as needed. Unscheduled time produces no resolved activity rather than inventing one.
 
-### Frontend image upload
+## Image upload and approval
 
 ```javascript
 const body = new FormData();
 body.append('image', selectedFile);
 body.append('caption', 'A quiet morning before the gym.');
 body.append('tags', 'gym,morning,sporty');
-const response = await fetch(`${API}/admin/companions/${companionId}/lifestyle/photos`, {
+await fetch(`${API}/admin/companions/${companionId}/lifestyle/photos`, {
   method: 'POST', headers: { Authorization: `Bearer ${adminToken}` }, body
 });
 ```
 
-`API`-তে backend URL + `/api/v1`। Browser-এ Content-Type নিজে বসাবেন না; multipart boundary browser বসাবে। JPEG/PNG/WebP, সর্বোচ্চ ১০ MB। Existing Cloudinary uploader ব্যবহার হয় এবং সর্বোচ্চ 500×500 fit করে; full-resolution originals রাখার ব্যবস্থা এই endpoint নয়। Response-এর `id` রেখে PATCH approval দিন। অন্য companion-এর photoId ব্যবহার করা যাবে না।
+`API` includes the backend origin and `/api/v1`. Let the browser set the multipart boundary. JPEG/PNG/WebP and a 10 MB limit are enforced. The existing uploader fits assets within 500x500; it is not a full-resolution-original archive. Save the returned ID, edit tags and approve explicitly. Ownership is scoped to the selected companion.
 
-### Daily content schedule
+Typed natural-language requests and `/photo` first search approved unseen assets. Every explicit tag constraint must match. A paid miss falls back to AI generation; a trial miss does not start paid generation. Generic durable generated output may be retained pending review with private history excluded. Personal requests stay out of the shared library.
+
+## Daily schedule example
 
 ```json
-{
-  "day":"2026-11-01",
-  "publishAt":"2026-11-01T08:00:00+04:00",
-  "expiresAt":"2026-11-01T23:59:00+04:00",
-  "photoId":"APPROVED-PHOTO-UUID",
-  "text":"Good morning! Coffee first, then a little time at the gym.",
-  "activity":"Morning coffee and gym",
-  "published":true
-}
+{"day":"2026-11-01","publishAt":"2026-11-01T08:00:00+04:00","expiresAt":"2026-11-01T23:59:00+04:00","photoId":"APPROVED-PHOTO-UUID","text":"Good morning! Coffee first, then the gym.","activity":"Morning coffee and gym","published":true}
 ```
 
-Real UUID দিন। Timestamp-এ timezone/offset দিন। `day` companion local date-এর সঙ্গে মিলতে হবে। Delivery window positive এবং সর্বোচ্চ ২৪ ঘণ্টা। আগের দিনের content catch-up করে পাঠানো হয় না। Delivery record তৈরি হলে সেই content edit করা বন্ধ থাকে; আগে draft preview করুন।
+Use real UUIDs and explicit offsets. The day must match the companion-local publication date. The positive delivery window cannot exceed 24 hours. Missed previous-day content is not caught up. Editing is blocked once delivery records exist; preview drafts first.
 
-Frontend daily opt-in:
+Opt-in body:
 
 ```json
 {"companionId":"COMPANION-UUID","enabled":true}
 ```
 
-Library request:
+Photo request body:
 
 ```json
 {"requestId":"NEW-UUID-PER-ACTION","tag":"gym"}
 ```
 
-Retry-তে একই UUID; নতুন action-এ নতুন UUID। Empty tag দিলে যেকোনো unseen approved photo। নতুন ছবি না থাকলে 404, কোনো debit নয়। Paid extra library request-এ configured `photo` rate লাগে; trial-এ included photo allowance লাগে। Scheduled included photo আলাদা করে credit কাটে না।
+## Policies and billing
 
-## ৫. Telegram ব্যবহার
+Plan entitlement policy is copied to a membership snapshot. Editing a plan does not retroactively rewrite existing memberships. An empty legacy policy is treated as paid without implicit daily inclusion. No automatic trial-to-paid conversion or historical financial backfill was introduced.
 
-- `/photo` বা `/photo gym`: library image; menu থেকেও নির্বাচন করা যায়।
-- `/daily`: ওই companion-এর daily update opt-in।
-- `/daily_off`: daily update বন্ধ।
-- `/stories`: আগের ২৪ ঘণ্টার story viewer। **Daily subscription photo ও ২৪ ঘণ্টার Story পৃথক feature।**
-- নতুন menu register: project root থেকে `node scripts/telegram.cjs menu`। এটি live bot settings বদলায়; এই implementation-এর tests-এ command চালানো হয়নি।
+An explicit trial policy supports a three-day trial, capped at 10 replies per rolling 24 hours and 30 total, plus one included photo per rolling day and three total. Voice is excluded. Library requests and scheduled trial photos share the included-photo allowance. Existing free-activation one-use checks remain.
 
-Natural-language chat যেমন “send me a gym photo” স্বয়ংক্রিয়ভাবে library endpoint-এ route করে না। External AI/intent layer-এ routing যোগ করতে হবে, অথবা frontend/Telegram menu-এর explicit photo action ব্যবহার করতে হবে। Specific AI image আগের AI chat flow-তে যায়।
+Paid policy can enable `dailyPhoto` and `dailyText`. One account selects one daily companion; allowance is not multiplied by five companions. Paid inclusion uses UTC calendar days; routine/content dates use the companion timezone.
 
-## ৬. Subscription ও credit configuration
+Read rates from `/credits/costs`; update through `PUT /admin/credit-costs/{action}` with `{"credits":10}`. Do not overwrite existing financial settings merely to match a proposal. Package CRUD supports the business owner's selected pricing.
 
-Admin `POST /subscription`, existing plan `PUT /subscription/{id}`। নতুন field:
+With `AI_RESPONSE_BILLING_ENABLED=true`:
 
-```json
-{
-  "name":"Premium",
-  "price":"29",
-  "durationDays":30,
-  "creditAllowance":500,
-  "messageLimit":0,
-  "features":["Daily photo and text","500 credits"],
-  "entitlementPolicy":{"kind":"paid","dailyPhoto":true,"dailyText":true}
-}
-```
+- Text output uses the message rate.
+- Images use the photo rate, including captions.
+- Voice uses `ceil(voice_characters/500) * voice`.
+- Incoming audio adds `ceil(transcription_seconds/60) * transcription`.
+- Human-mode input and failed AI responses do not incur content debit.
+- Missing/invalid required measurements cause an error and wallet-transaction rollback.
 
-VIP-তে client proposal: price=59, creditAllowance=1200। Trial configuration:
+Legacy mode retains fixed voice/message charging, with actual image output using the photo rate. Ledger expiry and subscription-first credit consumption remain. User upgrade creates a new membership snapshot.
 
-```json
-{
-  "name":"Trial",
-  "price":"0",
-  "durationDays":3,
-  "creditAllowance":0,
-  "messageLimit":0,
-  "features":["10 replies and one photo per trial day"],
-  "entitlementPolicy":{"kind":"trial","trialRepliesPerDay":10,"trialRepliesTotal":30,"trialPhotosTotal":3}
-}
-```
+## Delivery semantics
 
-Trial নতুন AI contract সমর্থিত হলে চালু করুন। Existing zero-price activation-এর one-use account check বহাল আছে। Trial স্বয়ংক্রিয় paid conversion যোগ করা হয়নি। পুরোনো `{}` policy-কে paid legacy হিসেবে ধরা হয়; সেটি daily inclusion দেয় না। পুরোনো membership backfill/financial balance migration এই patch নিজে চালায় না।
+The worker runs each minute with a bounded batch, not exact-second guarantees. Website-only users receive inbox availability; linked Telegram users may receive delivery.
 
-Rates: `PUT /admin/credit-costs/{action}` body `{"credits":10}`। Read `/credits/costs`। Client proposal অনুযায়ী `message=1`, `photo=10`, `voice=5`, `transcription=1` set করা যায়। বর্তমান DB rates overwrite করা হয়নি; fallback defaults message1/photo5/voice3/transcription1 আগের pricing-compatible রাখা হয়েছে। Extra package proposal: 100/$7.99, 250/$17.99, 500/$32.99—existing package CRUD ব্যবহার করুন।
+States: `available` (website inbox), `sent` (confirmed Telegram send), `failed` (definitive rejection), `unknown` (ambiguous outcome), `skipped` (ineligible/no allowance), and `sending` (in progress).
 
-`AI_RESPONSE_BILLING_ENABLED=true` হলে:
+Failed/unknown delivery retains inbox content. Ambiguous Telegram sends are not automatically repeated. Unpublishing/revoking content cannot erase already-downloaded media or sent messages. Library Cloudinary assets use the existing public URL model, not DRM.
 
-- Text reply: `message` credits; user text-এর জন্য আলাদা debit নয়।
-- Generated photo: `photo` credits; caption-এর জন্য অতিরিক্ত text charge নয়।
-- Generated voice: `ceil(voice_characters/500) × voice`।
-- Incoming audio: উপরের output charge-এর সঙ্গে `ceil(transcription_seconds/60) × transcription`।
-- Human-mode input বা failed AI response: কোনো content debit নয়।
-- Missing/invalid AI billing measurement হলে 502, wallet transaction rollback।
+## Deployment and scope
 
-Flag false হলে legacy text/voice charge রাখা হয়; নতুন rates/UI চালু করার আগে AI contract test করে flag চালু করুন। Subscription-first, purchased expiry ordering আগের ledger-এ আছে। User upgrade-এ নতুন membership snapshot তৈরি হয়। Existing unused subscription-credit expiry নিয়ম অপরিবর্তিত।
+Relevant flags are `DAILY_CONTENT_DELIVERY_ENABLED`, `AI_LIFESTYLE_CONTEXT_ENABLED` and `AI_RESPONSE_BILLING_ENABLED`. Enable daily delivery only for the intended worker/deployment; it can send due content to eligible opted-in users.
 
-## ৭. Daily quota ও delivery-এর সীমা
+Deploy the updated AI service before the backend: `/chat` must validate/acknowledge `lifestyle-v1`, support voice mode and return billing measurements. Public lifestyle grounding is optional; this caller's own library delivery context supports conversation continuity. Context cannot expand a signed authorization grant. Private relationship notes and other users' histories are not shared.
 
-- Account প্রতি এক নির্বাচিত companion-এর daily feed—পাঁচজনের প্রতিটির জন্য আলাদা free allowance নয়। Client চাইলে এই business rule পরে নির্দিষ্টভাবে বদলাতে হবে।
-- Paid included allowance UTC calendar day; trial day startsAt থেকে rolling ২৪ ঘণ্টা। Routine ও content date companion timezone-এ।
-- Trial library request ও scheduled daily photo একই included_photo allowance ব্যবহার করে।
-- Website-only opt-in user-ও inbox পায়; Telegram linked থাকলে send হয়। Daily worker প্রতি মিনিটে চলে, bounded batch ব্যবহার করে; ঠিক নির্দিষ্ট সেকেন্ডে delivery guarantee নয়।
-- `available`: website inbox-এ আছে; `sent`: Telegram send confirmed; `failed`: definitive rejection; `unknown`: outcome ambiguous; `skipped`: entitlement/quota নেই।
-- Failed/unknown Telegram send-এ content inbox-এ থাকে। Automatic resend নেই, যাতে duplicate message না যায়। Manual operational review দরকার; bulk retry endpoint যোগ করা হয়নি।
-- Unpublish/revoke already-downloaded photo বা sent Telegram message সরায় না। Cloudinary URLs existing public asset model ব্যবহার করে; এটি DRM/private expiring-media implementation নয়।
+Existing database migrations must be applied to a new environment after review/backups. This library-first feature introduced no additional migration. Generate Prisma, build/test, restart, configure approved content and perform staging acceptance. Read [the AI contract](ai-lifestyle-contract.md), [the full handbook](frontend-handoff/README-FRONTEND-FULL-BN.md), and the root `RUN_PROJECT.md`.
 
-## ৮. ENV ও deployment
+Instagram/social auto-posting, short-video generation, new payment gateways and provider approval were not implemented by this feature. Frontend screens, authenticated media playback, exact original reference matching and live multi-user/payment/voice acceptance must be verified separately. Passing mocked unit tests is not production certification.
 
-Local `.env`-এ missing keys false হিসেবে যোগ করা হয়েছে:
 
-```dotenv
-DAILY_CONTENT_DELIVERY_ENABLED=false
-AI_LIFESTYLE_CONTEXT_ENABLED=false
-AI_RESPONSE_BILLING_ENABLED=false
-```
-
-Deployment order:
-
-1. Database backup ও migration review করুন। এই কাজের সময় production DB migration চালানো হয়নি।
-2. `npm ci`
-3. `npx prisma migrate deploy` — নতুন additive migration `20261024120000_lifestyle_content_allowances`।
-4. `npx prisma generate`
-5. `npm run build` এবং `npm test -- --runInBand`
-6. Server restart করুন; প্রথমে flags=false রাখুন। Code নতুন columns select করে, তাই migration ছাড়া নতুন build চালাবেন না।
-7. Test admin দিয়ে routine → photo upload → approve → schedule করুন; test user membership policy/opt-in সেট করুন।
-8. Controlled staging environment-এ daily flag true করে inbox/Telegram যাচাই করুন। Production daily flag true করলে সব eligible opted-in user-এর due content যাবে।
-9. AI team contract implement/verify করার পরে context ও billing flags true করুন।
-10. স্থায়ী HTTPS base/frontend URLs এবং existing Telegram/Cloudinary credentials ঠিক রাখুন। Ngrok URL production base নয়।
-
-নতুন কোনো bot token লাগে না। Existing `TELEGRAM_{NAME}_COMPANION_ID`, `TELEGRAM_{NAME}_BOT_TOKEN` এবং Cloudinary settings ব্যবহৃত হয়। কোনো secret এই document-এ রাখবেন না।
-
-## ৯. External AI team-এর কাজ
-
-AI contract appendix নিচে দেওয়া আছে। এই NestJS repo-তে model training বা AI model source নেই। Routine ব্যবহার, character identity/appearance consistency, long-term user memory এবং natural-language library routing external AI team-কে implement/verify করতে হবে। Client-এর private notes অন্য service-এ পাঠানো এই change-এর অংশ নয়।
-
-Instagram/social auto-posting, short-video generation, CCBill/Segpay gateway ও payment-provider approval এই change-এ করা হয়নি। Existing project-এ এগুলো “done” ধরে নেবেন না।
-
-## ১০. Frontend team-এর checklist
-
-- Admin routine editor, timezone selector, photo upload/approval list, daily schedule draft/preview/publish।
-- User daily opt-in companion selector, inbox, allowance display, library-photo button, insufficient-credit/trial-limit UI।
-- FormData image upload; Bearer token; retries-এ requestId reuse। 400/402/403/404/429/502 স্পষ্টভাবে দেখান।
-- Failed/unknown Telegram delivery status admin-এ দেখান; user-কে নতুন charge দিয়ে automatic retry করাবেন না।
-- Existing account, subscription, wallet, Mini App ও stories pages যুক্ত করুন। API docs frontend implementation নিজে তৈরি করে না।
-
-Source contract index: সম্পূর্ণ API reference (এই README-তেই সংশ্লিষ্ট section আছে)।
-
-## ১১. পরবর্তী developer/AI agent-এর নির্দেশনা
-
-প্রথমে `git diff`, Prisma migration, `lifestyle` module, `chat.service.ts`, `aiapi.ts` এবং tests পড়ুন। `.env` values, JWT, OTP, password বা bot token document/log-এ লিখবেন না। Test ছাড়া live broadcast/payment/plan mutation করবেন না। External AI acknowledgement পেলে সেটিকে model quality প্রমাণ ধরে নেবেন না—routine, timezone, birthday/memory ও multi-user consistency-এর বাস্তব acceptance test আলাদা করুন।
-
-## ১২. যাচাইয়ের ফল
-
-Nest build ও Prisma schema validation পাস। Automated tests: ১৩টি suite, ৮৩টি test পাস; changed implementation-এর targeted ESLint পাস। এগুলো mocked service/unit tests—live Telegram delivery, Cloudinary upload, production migration বা external AI compatibility test নয়। Production enable করার আগে উপরের staging flow সম্পন্ন করুন।
-
-# External AI contract appendix
+# External AI contract
 
 # External AI contract: lifestyle-v1
 
@@ -976,20 +421,151 @@ These fields are added to the existing full reply, not a replacement for it. In 
 - Human-mode inputs bypass AI and content charging.
 - Confirm identity/appearance and user-memory quality with representative conversations. A version string alone is not this validation.
 
-<a id="exact"></a>
-# Exact API request ও response mapping
 
-প্রতিটি route-এর input decorator, DTO এবং controller response mapping নিচে। Body DTO-এর সব field পরের appendix-এ। Controller source **response example নয়**; service result variable ও nullability নির্দিষ্ট flow অনুযায়ী দেখুন। Global JSON envelope আগের section-এর মতো। GET raw HTML/media এই envelope নয়।
+# Endpoint index
+
+| Method | Full path | Purpose | Access |
+|---|---|---|---|
+| POST | `/api/v1/auth/register` | Register (Auth). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| POST | `/api/v1/auth/login` | Login (Auth). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/api/v1/auth/refresh` | Refresh Token (Auth). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| POST | `/api/v1/auth/forgot-password` | Forgot Password (Auth). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| POST | `/api/v1/auth/verify-otp` | Verify Otp (Auth). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| POST | `/api/v1/auth/reset-password` | Reset Password (Auth). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| POST | `/api/v1/auth/change-password` | Change Password (Auth). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin', 'user')) |
+| POST | `/api/v1/auth/logout` | Logout (Auth). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin', 'user')) |
+| GET | `/api/v1/chat/conversations` | Get Conversations (Chat). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user')) |
+| GET | `/api/v1/chat/:companionId/messages` | Get Messages (Chat). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user')) |
+| GET | `/api/v1/chat/usage` | Get Usage (Chat). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user')) |
+| POST | `/api/v1/chat/:companionId/messages` | Send a text or voice-mode request; preserve requestId on retry. Approved library matches bypass generation. | UseGuards(AuthGuard('user')) |
+| POST | `/api/v1/companions` | Create Companion (Companions). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/companions` | Get All Companions (Companions). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/api/v1/companions/:id` | Get Companion By Id (Companions). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| PUT | `/api/v1/companions/:id` | Update Companion (Companions). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| PUT | `/api/v1/companions/:id/profile-image` | Update Profile Image (Companions). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| PUT | `/api/v1/companions/:id/cover-image` | Update Cover Image (Companions). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| POST | `/api/v1/companions/:id/gallery` | Append gallery uploads and create pending photo-library entries. | UseGuards(AuthGuard('admin')) |
+| DELETE | `/api/v1/companions/:id/gallery` | Remove a gallery URL and revoke matching library approval. | UseGuards(AuthGuard('admin')) |
+| PUT | `/api/v1/companions/:id/gallery` | Replace the gallery, revoke removed library approvals and import new uploads as pending. | UseGuards(AuthGuard('admin')) |
+| DELETE | `/api/v1/companions/:id` | Delete Companion (Companions). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| PUT | `/api/v1/companions/:id/voice` | Update Voice (Companions). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| POST | `/api/v1/credits/packages` | Create Package (Credit). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/credits/packages` | Get Packages (Credit). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| PATCH | `/api/v1/credits/packages/:id` | Update Package (Credit). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| DELETE | `/api/v1/credits/packages/:id` | Deactivate Package (Credit). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/credits/wallet` | Get Wallet (Credit). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user')) |
+| GET | `/api/v1/dashboard/overview` | Dashboard Overview (Dashboard). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/relationships` | Relationships (Engagement). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| PATCH | `/api/v1/relationships/:companionId` | Relationship (Engagement). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| GET | `/api/v1/companions/:companionId/stories` | Stories (Engagement). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| POST | `/api/v1/companions/:companionId/photos/view` | Photo (Engagement). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| GET | `/api/v1/photos/history` | Photos (Engagement). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| GET | `/api/v1/credits/ledger` | Ledger (Engagement). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| GET | `/api/v1/credits/costs` | Costs (Engagement). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| GET | `/api/v1/notifications` | Notifications (Engagement). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| PATCH | `/api/v1/notifications/:id/read` | Read (Engagement). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| PUT | `/api/v1/admin/credit-costs/:action` | Cost (EngagementAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| PUT | `/api/v1/admin/companions/:companionId/stories` | Story (EngagementAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/admin/companions/:companionId/stories` | Stories (EngagementAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/admin/conversations` | Conversations (EngagementAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/admin/conversations/:id` | Conversation (EngagementAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| PATCH | `/api/v1/admin/conversations/:id/mode` | Mode (EngagementAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| POST | `/api/v1/admin/conversations/:id/replies` | Save an admin human-mode reply; do not assume an outbound Telegram push. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/admin/users/:id/details` | User (EngagementAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/admin/users/:id/ledger` | Ledger (EngagementAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| POST | `/api/v1/admin/notifications` | Notification (EngagementAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| POST | `/api/v1/gifts` | Create Gift (Gift). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/gifts` | Get Gifts (Gift). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/api/v1/gifts/admin` | Admin Gifts (Gift). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/gifts/history` | History (Gift). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user')) |
+| PATCH | `/api/v1/gifts/:id` | Update Gift (Gift). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| DELETE | `/api/v1/gifts/:id` | Deactivate Gift (Gift). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| POST | `/api/v1/gifts/:giftId/send` | Send Gift (Gift). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user')) |
+| GET | `/api/v1/admin/companions/:companionId/lifestyle/routine` | Routine (LifestyleAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| PUT | `/api/v1/admin/companions/:companionId/lifestyle/routine` | Save Routine (LifestyleAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/admin/companions/:companionId/lifestyle/context` | Context (LifestyleAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/admin/companions/:companionId/lifestyle/photos` | Photos (LifestyleAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| POST | `/api/v1/admin/companions/:companionId/lifestyle/photos/import-gallery` | Import missing companion gallery URLs as pending library entries. | UseGuards(AuthGuard('admin')) |
+| POST | `/api/v1/admin/companions/:companionId/lifestyle/photos` | Upload an image to the companion photo library for review. | UseGuards(AuthGuard('admin')) |
+| PATCH | `/api/v1/admin/companions/:companionId/lifestyle/photos/:photoId` | Approve a library photo or return it to pending. | UseGuards(AuthGuard('admin')) |
+| PUT | `/api/v1/admin/companions/:companionId/lifestyle/photos/:photoId` | Edit a library photo caption and normalized tags. | UseGuards(AuthGuard('admin')) |
+| DELETE | `/api/v1/admin/companions/:companionId/lifestyle/photos/:photoId` | Remove a library entry while retaining assets used by delivered chat history. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/admin/companions/:companionId/lifestyle/daily-content` | Daily (LifestyleAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| PUT | `/api/v1/admin/companions/:companionId/lifestyle/daily-content` | Save (LifestyleAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| POST | `/api/v1/admin/companions/:companionId/lifestyle/daily-content/:contentId/unpublish` | Unpublish (LifestyleAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/admin/companions/:companionId/lifestyle/deliveries` | Deliveries (LifestyleAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/lifestyle/preference` | Preference (Lifestyle). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user')) |
+| PUT | `/api/v1/lifestyle/preference` | Save (Lifestyle). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user')) |
+| GET | `/api/v1/lifestyle/allowances` | Allowances (Lifestyle). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user')) |
+| POST | `/api/v1/lifestyle/companions/:companionId/photo` | Request an approved unseen library photo; paid users fall back to generation when no match exists. | UseGuards(AuthGuard('user')) |
+| GET | `/api/v1/lifestyle/inbox` | Inbox (Lifestyle). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user')) |
+| POST | `/api/v1/newsletter` | Send Mail (Newsletter). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| POST | `/api/v1/newsletter/broadcast` | Broadcast Newsletter (Newsletter). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/newsletter` | Get All Newsletter (Newsletter). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/api/v1/newsletter/:id` | Get Newsletter By Id (Newsletter). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/api/v1/payment/config` | Config (Payment). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/api/v1/payment/subscription/status` | Status (Payment). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| POST | `/api/v1/payment/subscription/sync` | Sync (Payment). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| POST | `/api/v1/payment/billing-portal` | Portal (Payment). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| POST | `/api/v1/payment/subscription/cancel` | Cancel (Payment). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| POST | `/api/v1/payment/subscription/:subscriptionId/upgrade` | Upgrade (Payment). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| POST | `/api/v1/payment/subscription/:subscriptionId` | Start local-plan activation or recurring subscription checkout. | UseGuards(AuthGuard('admin', 'user')) |
+| POST | `/api/v1/payment/credits` | Start credit-package checkout using packageId; never trust a client-supplied price. | UseGuards(AuthGuard('user')) |
+| GET | `/api/v1/admin/companions/:companionId/telegram-profile` | Status (PublishingAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| PUT | `/api/v1/admin/companions/:companionId/telegram-profile` | Profile (PublishingAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| POST | `/api/v1/admin/companions/:companionId/telegram-profile/retry` | Retry (PublishingAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/admin/companions/:companionId/media-stories` | List (PublishingAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| POST | `/api/v1/admin/companions/:companionId/media-stories` | Publish (PublishingAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| DELETE | `/api/v1/admin/companions/:companionId/media-stories/:storyId` | Remove (PublishingAdmin). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/media-stories/summary` | Summary (MediaStory). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| GET | `/api/v1/media-stories/companions/:companionId` | Feed (MediaStory). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| GET | `/api/v1/media-stories/:storyId/media` | Media (StoryMedia). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/api/v1/telegram/stories` | Page (TelegramStory). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| POST | `/api/v1/telegram/stories/:companionId/feed` | Feed (TelegramStory). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/api/v1/publishing/admin` | Page (PublishingConsole). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| POST | `/api/v1/subscription` | Create Subscription (Subscription). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/subscription` | Get All Subscription (Subscription). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/api/v1/subscription/:id` | Get Subscription By Id (Subscription). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| PUT | `/api/v1/subscription/:id` | Update Subscription (Subscription). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| DELETE | `/api/v1/subscription/:id` | Delete Subscription (Subscription). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/telegram/status/:companionId` | Status (TelegramConnect). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user')) |
+| POST | `/api/v1/telegram/connect/:companionId` | Create a short-lived, single-use link for the selected companion. | UseGuards(AuthGuard('user')) |
+| GET | `/api/v1/telegram/app` | Page (TelegramMiniApp). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/api/v1/telegram/app/settings/:companionId` | Settings (TelegramMiniApp). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| POST | `/api/v1/telegram/app/login/:companionId` | Verify signed Telegram initData and website credentials before linking accounts. | Service, signature or provider validation applies |
+| POST | `/api/v1/telegram/app/status/:companionId` | Status (TelegramMiniApp). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| POST | `/api/v1/webhooks/telegram/:companionId` | Receive For Companion (TelegramWebhook). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| POST | `/api/v1/webhooks/telegram` | Receive (TelegramWebhook). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| POST | `/api/v1/user` | Create User (User). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/api/v1/user` | Get All User (User). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/user//overview` | Get All User Overview (User). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| GET | `/api/v1/user/my-profile` | My Profile (User). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| PUT | `/api/v1/user/my-profile` | Update My Profile (User). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| GET | `/api/v1/user/payments` | My Payments (User). Follow the exact handler and DTO below. | UseGuards(AuthGuard('user', 'admin')) |
+| GET | `/api/v1/user/:id` | Get User By Id (User). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| PUT | `/api/v1/user/:id` | Update User (User). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| DELETE | `/api/v1/user/:id` | Delete User (User). Follow the exact handler and DTO below. | UseGuards(AuthGuard('admin')) |
+| POST | `/api/v1/webhook` | Process the signed payment-provider webhook; this is not a frontend endpoint. | Service, signature or provider validation applies |
+| GET | `/` | Get Hello (App). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/api/v1/health/live` | Live (Health). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/api/v1/health/ready` | Ready (Health). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/privacy-policy` | Privacy Policy (LegalPages). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/terms` | Terms (LegalPages). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+| GET | `/data-deletion` | Data Deletion (LegalPages). Follow the exact handler and DTO below. | Service, signature or provider validation applies |
+
+# Exact API request and response mapping
+
+Controller source is response mapping, not a live response example. Normal JSON responses receive the global success envelope. Raw HTML/media and provider webhook responses may differ. An absent JWT guard does not bypass service-level signatures, initData validation or resource ownership checks.
 
 ## POST /api/v1/auth/register
 
-**কাজ:** নতুন website account তৈরি; এরপর login
+Register (Auth). Follow the exact handler and DTO below.
 
 Source: `src/app/module/auth/auth.controller.ts:39`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() createAuthDto: CreateAuthDto
@@ -1028,13 +604,13 @@ Controller response mapping:
 
 ## POST /api/v1/auth/login
 
-**কাজ:** Email/password login, accessToken ও refresh cookie
+Login (Auth). Follow the exact handler and DTO below.
 
 Source: `src/app/module/auth/auth.controller.ts:62`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() loginAuthDto: LoginAuthDto
@@ -1074,13 +650,13 @@ Controller response mapping:
 
 ## GET /api/v1/auth/refresh
 
-**কাজ:** HttpOnly refresh cookie দিয়ে নতুন access token
+Refresh Token (Auth). Follow the exact handler and DTO below.
 
 Source: `src/app/module/auth/auth.controller.ts:88`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -1120,13 +696,13 @@ Controller response mapping:
 
 ## POST /api/v1/auth/forgot-password
 
-**কাজ:** Password reset OTP পাঠানো
+Forgot Password (Auth). Follow the exact handler and DTO below.
 
 Source: `src/app/module/auth/auth.controller.ts:112`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() forgotPasswordAuthDto: ForgotPasswordAuthDto
@@ -1167,13 +743,13 @@ Controller response mapping:
 
 ## POST /api/v1/auth/verify-otp
 
-**কাজ:** OTP যাচাই করে resetToken নেওয়া
+Verify Otp (Auth). Follow the exact handler and DTO below.
 
 Source: `src/app/module/auth/auth.controller.ts:137`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() verifyOtpAuthDto: VerifyOtpAuthDto
@@ -1215,13 +791,13 @@ Controller response mapping:
 
 ## POST /api/v1/auth/reset-password
 
-**কাজ:** resetToken দিয়ে নতুন password
+Reset Password (Auth). Follow the exact handler and DTO below.
 
 Source: `src/app/module/auth/auth.controller.ts:163`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() resetPasswordAuthDto: ResetPasswordAuthDto
@@ -1264,13 +840,13 @@ Controller response mapping:
 
 ## POST /api/v1/auth/change-password
 
-**কাজ:** বর্তমান password যাচাই করে পরিবর্তন
+Change Password (Auth). Follow the exact handler and DTO below.
 
 Source: `src/app/module/auth/auth.controller.ts:190`
 
 Access: `UseGuards(AuthGuard('admin', 'user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -1317,13 +893,13 @@ Controller response mapping:
 
 ## POST /api/v1/auth/logout
 
-**কাজ:** Session logout ও refresh cookie clear
+Logout (Auth). Follow the exact handler and DTO below.
 
 Source: `src/app/module/auth/auth.controller.ts:223`
 
 Access: `UseGuards(AuthGuard('admin', 'user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -1362,13 +938,13 @@ Controller response mapping:
 
 ## GET /api/v1/chat/conversations
 
-**কাজ:** নিজের conversation list
+Get Conversations (Chat). Follow the exact handler and DTO below.
 
 Source: `src/app/module/chat/chat.controller.ts:28`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -1393,13 +969,13 @@ Controller response mapping:
 
 ## GET /api/v1/chat/:companionId/messages
 
-**কাজ:** নির্বাচিত companion-এর paginated message history
+Get Messages (Chat). Follow the exact handler and DTO below.
 
 Source: `src/app/module/chat/chat.controller.ts:36`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -1433,13 +1009,13 @@ Controller response mapping:
 
 ## GET /api/v1/chat/usage
 
-**কাজ:** Active subscription, ব্যবহৃত/বাকি credits ও purchased balance
+Get Usage (Chat). Follow the exact handler and DTO below.
 
 Source: `src/app/module/chat/chat.controller.ts:55`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -1466,13 +1042,13 @@ Controller response mapping:
 
 ## POST /api/v1/chat/:companionId/messages
 
-**কাজ:** Text/transcript পাঠিয়ে AI reply; requestId retry support
+Send a text or voice-mode request; preserve requestId on retry. Approved library matches bypass generation.
 
 Source: `src/app/module/chat/chat.controller.ts:65`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -1509,13 +1085,13 @@ Controller response mapping:
 
 ## POST /api/v1/companions
 
-**কাজ:** Nested metadata দিয়ে companion তৈরি
+Create Companion (Companions). Follow the exact handler and DTO below.
 
 Source: `src/app/module/companions/companions.controller.ts:39`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() payload: CreateCompanionDto
@@ -1543,13 +1119,13 @@ Controller response mapping:
 
 ## GET /api/v1/companions
 
-**কাজ:** Public companion cards, filter ও pagination
+Get All Companions (Companions). Follow the exact handler and DTO below.
 
 Source: `src/app/module/companions/companions.controller.ts:50`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -1560,7 +1136,11 @@ Upload/status/validation metadata:
 ```typescript
 @Get()
 @HttpCode(HttpStatus.OK)
-@ApiOperation({ summary: 'Get all companions' })
+@ApiOperation({
+    summary: 'Get all companions',
+    description:
+      'Returns each public companion profile with its routine (timezone and weekly slots). The routine is null until an admin creates it.',
+  })
 @ApiQuery({ name: 'searchTerm', required: false, type: String })
 @ApiQuery({ name: 'occupation', required: false, type: String })
 @ApiQuery({ name: 'location', required: false, type: String })
@@ -1609,13 +1189,13 @@ Controller response mapping:
 
 ## GET /api/v1/companions/:id
 
-**কাজ:** Companion details page data
+Get Companion By Id (Companions). Follow the exact handler and DTO below.
 
-Source: `src/app/module/companions/companions.controller.ts:93`
+Source: `src/app/module/companions/companions.controller.ts:97`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -1626,7 +1206,11 @@ Upload/status/validation metadata:
 ```typescript
 @Get(':id')
 @HttpCode(HttpStatus.OK)
-@ApiOperation({ summary: 'Get a companion by ID' })
+@ApiOperation({
+    summary: 'Get a companion by ID',
+    description:
+      'Returns the public companion profile with its routine (timezone and weekly slots). The routine is null until an admin creates it.',
+  })
 ```
 
 Controller response mapping:
@@ -1640,13 +1224,13 @@ Controller response mapping:
 
 ## PUT /api/v1/companions/:id
 
-**কাজ:** Companion metadata edit
+Update Companion (Companions). Follow the exact handler and DTO below.
 
-Source: `src/app/module/companions/companions.controller.ts:101`
+Source: `src/app/module/companions/companions.controller.ts:109`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -1675,13 +1259,13 @@ Controller response mapping:
 
 ## PUT /api/v1/companions/:id/profile-image
 
-**কাজ:** Profile picture upload; configured হলে Telegram sync queue
+Update Profile Image (Companions). Follow the exact handler and DTO below.
 
-Source: `src/app/module/companions/companions.controller.ts:115`
+Source: `src/app/module/companions/companions.controller.ts:123`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -1732,13 +1316,13 @@ Controller response mapping:
 
 ## PUT /api/v1/companions/:id/cover-image
 
-**কাজ:** Cover image upload
+Update Cover Image (Companions). Follow the exact handler and DTO below.
 
-Source: `src/app/module/companions/companions.controller.ts:151`
+Source: `src/app/module/companions/companions.controller.ts:159`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -1784,13 +1368,13 @@ Controller response mapping:
 
 ## POST /api/v1/companions/:id/gallery
 
-**কাজ:** Gallery-তে ছবি যোগ
+Append gallery uploads and create pending photo-library entries.
 
-Source: `src/app/module/companions/companions.controller.ts:182`
+Source: `src/app/module/companions/companions.controller.ts:190`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -1842,13 +1426,13 @@ Controller response mapping:
 
 ## DELETE /api/v1/companions/:id/gallery
 
-**কাজ:** URL দিয়ে একটি gallery image সরানো
+Remove a gallery URL and revoke matching library approval.
 
-Source: `src/app/module/companions/companions.controller.ts:219`
+Source: `src/app/module/companions/companions.controller.ts:227`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -1886,13 +1470,13 @@ Controller response mapping:
 
 ## PUT /api/v1/companions/:id/gallery
 
-**কাজ:** Gallery replace—append নয়
+Replace the gallery, revoke removed library approvals and import new uploads as pending.
 
-Source: `src/app/module/companions/companions.controller.ts:242`
+Source: `src/app/module/companions/companions.controller.ts:250`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -1944,13 +1528,13 @@ Controller response mapping:
 
 ## DELETE /api/v1/companions/:id
 
-**কাজ:** Companion delete action; confirmation আবশ্যক
+Delete Companion (Companions). Follow the exact handler and DTO below.
 
-Source: `src/app/module/companions/companions.controller.ts:279`
+Source: `src/app/module/companions/companions.controller.ts:287`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -1976,13 +1560,13 @@ Controller response mapping:
 
 ## PUT /api/v1/companions/:id/voice
 
-**কাজ:** Companion voiceId বদলানো
+Update Voice (Companions). Follow the exact handler and DTO below.
 
-Source: `src/app/module/companions/companions.controller.ts:287`
+Source: `src/app/module/companions/companions.controller.ts:295`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -2014,13 +1598,13 @@ Controller response mapping:
 
 ## POST /api/v1/credits/packages
 
-**কাজ:** Extra credit package তৈরি
+Create Package (Credit). Follow the exact handler and DTO below.
 
 Source: `src/app/module/credit/credit.controller.ts:29`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() payload: CreateCreditPackageDto
@@ -2046,13 +1630,13 @@ Controller response mapping:
 
 ## GET /api/v1/credits/packages
 
-**কাজ:** Active packages দিয়ে purchase cards
+Get Packages (Credit). Follow the exact handler and DTO below.
 
 Source: `src/app/module/credit/credit.controller.ts:38`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 // No explicit parameters
@@ -2076,13 +1660,13 @@ Controller response mapping:
 
 ## PATCH /api/v1/credits/packages/:id
 
-**কাজ:** Package price/credits/active state edit
+Update Package (Credit). Follow the exact handler and DTO below.
 
 Source: `src/app/module/credit/credit.controller.ts:45`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -2109,13 +1693,13 @@ Controller response mapping:
 
 ## DELETE /api/v1/credits/packages/:id
 
-**কাজ:** Package deactivate
+Deactivate Package (Credit). Follow the exact handler and DTO below.
 
 Source: `src/app/module/credit/credit.controller.ts:57`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -2141,13 +1725,13 @@ Controller response mapping:
 
 ## GET /api/v1/credits/wallet
 
-**কাজ:** নিজের effective wallet, credit lots/expiry ও recent ledger
+Get Wallet (Credit). Follow the exact handler and DTO below.
 
 Source: `src/app/module/credit/credit.controller.ts:66`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -2174,13 +1758,13 @@ Controller response mapping:
 
 ## GET /api/v1/dashboard/overview
 
-**কাজ:** Admin summary cards—users, subscriptions, messages, conversations, revenue
+Dashboard Overview (Dashboard). Follow the exact handler and DTO below.
 
 Source: `src/app/module/dashboard/dashboard.controller.ts:17`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 // No explicit parameters
@@ -2211,13 +1795,13 @@ Controller response mapping:
 
 ## GET /api/v1/relationships
 
-**কাজ:** নিজের relationship list
+Relationships (Engagement). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:39`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -2240,13 +1824,13 @@ Controller response mapping:
 
 ## PATCH /api/v1/relationships/:companionId
 
-**কাজ:** নিজের nickname/notes edit
+Relationship (Engagement). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:45`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -2272,13 +1856,13 @@ Controller response mapping:
 
 ## GET /api/v1/companions/:companionId/stories
 
-**কাজ:** Published dated text/life events; 24h media Story নয়
+Stories (Engagement). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:54`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId') id: string
@@ -2301,13 +1885,13 @@ Controller response mapping:
 
 ## POST /api/v1/companions/:companionId/photos/view
 
-**কাজ:** Existing gallery photo unlock/view; library request নয়
+Photo (Engagement). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:60`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -2333,13 +1917,13 @@ Controller response mapping:
 
 ## GET /api/v1/photos/history
 
-**কাজ:** নিজের viewed-photo history
+Photos (Engagement). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:69`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -2362,13 +1946,13 @@ Controller response mapping:
 
 ## GET /api/v1/credits/ledger
 
-**কাজ:** নিজের credit transaction history
+Ledger (Engagement). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:75`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -2391,13 +1975,13 @@ Controller response mapping:
 
 ## GET /api/v1/credits/costs
 
-**কাজ:** বর্তমান per-action credit rates
+Costs (Engagement). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:81`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 // No explicit parameters
@@ -2419,13 +2003,13 @@ Controller response mapping:
 
 ## GET /api/v1/notifications
 
-**কাজ:** নিজের notification list
+Notifications (Engagement). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:84`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -2448,13 +2032,13 @@ Controller response mapping:
 
 ## PATCH /api/v1/notifications/:id/read
 
-**কাজ:** নিজের notification read করা
+Read (Engagement). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:90`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -2477,13 +2061,13 @@ Controller response mapping:
 
 ## PUT /api/v1/admin/credit-costs/:action
 
-**কাজ:** Action credit rate পরিবর্তন
+Cost (EngagementAdmin). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:107`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('action') action: string
@@ -2506,13 +2090,13 @@ Controller response mapping:
 
 ## PUT /api/v1/admin/companions/:companionId/stories
 
-**কাজ:** Companion/day অনুযায়ী text life event upsert
+Story (EngagementAdmin). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:113`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId') id: string
@@ -2535,13 +2119,13 @@ Controller response mapping:
 
 ## GET /api/v1/admin/companions/:companionId/stories
 
-**কাজ:** সব text life events, future/draft সহ
+Stories (EngagementAdmin). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:119`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId') id: string
@@ -2564,13 +2148,13 @@ Controller response mapping:
 
 ## GET /api/v1/admin/conversations
 
-**কাজ:** Conversation monitoring list
+Conversations (EngagementAdmin). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:125`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Query() query: PageDto
@@ -2592,13 +2176,13 @@ Controller response mapping:
 
 ## GET /api/v1/admin/conversations/:id
 
-**কাজ:** Conversation details ও messages
+Conversation (EngagementAdmin). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:128`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -2621,13 +2205,13 @@ Controller response mapping:
 
 ## PATCH /api/v1/admin/conversations/:id/mode
 
-**কাজ:** AI/human mode ও admin takeover
+Mode (EngagementAdmin). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:134`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -2651,13 +2235,13 @@ Controller response mapping:
 
 ## POST /api/v1/admin/conversations/:id/replies
 
-**কাজ:** Human reply DB-তে save; Telegram push নয়
+Save an admin human-mode reply; do not assume an outbound Telegram push.
 
 Source: `src/app/module/engagement/engagement.controller.ts:141`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -2681,13 +2265,13 @@ Controller response mapping:
 
 ## GET /api/v1/admin/users/:id/details
 
-**কাজ:** User finance/relationship detail
+User (EngagementAdmin). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:148`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -2709,13 +2293,13 @@ Controller response mapping:
 
 ## GET /api/v1/admin/users/:id/ledger
 
-**কাজ:** নির্বাচিত user-এর ledger
+Ledger (EngagementAdmin). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:151`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -2738,13 +2322,13 @@ Controller response mapping:
 
 ## POST /api/v1/admin/notifications
 
-**কাজ:** নির্বাচিত user-এর in-app notification তৈরি
+Notification (EngagementAdmin). Follow the exact handler and DTO below.
 
 Source: `src/app/module/engagement/engagement.controller.ts:157`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() body: NotificationDto
@@ -2770,13 +2354,13 @@ Controller response mapping:
 
 ## POST /api/v1/gifts
 
-**কাজ:** Gift item ও image তৈরি
+Create Gift (Gift). Follow the exact handler and DTO below.
 
-Source: `src/app/module/gift/gift.controller.ts:37`
+Source: `src/app/module/gift/gift.controller.ts:41`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() payload: CreateGiftDto
@@ -2805,13 +2389,13 @@ Controller response mapping:
 
 ## GET /api/v1/gifts
 
-**কাজ:** Gift catalogue
+Get Gifts (Gift). Follow the exact handler and DTO below.
 
-Source: `src/app/module/gift/gift.controller.ts:51`
+Source: `src/app/module/gift/gift.controller.ts:55`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -2846,15 +2430,81 @@ Controller response mapping:
   }
 ```
 
-## PATCH /api/v1/gifts/:id
+## GET /api/v1/gifts/admin
 
-**কাজ:** Gift metadata edit; file PATCH নয়
+Admin Gifts (Gift). Follow the exact handler and DTO below.
 
-Source: `src/app/module/gift/gift.controller.ts:71`
+Source: `src/app/module/gift/gift.controller.ts:75`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
+
+```typescript
+@Req() req: Request
+```
+
+Upload/status/validation metadata:
+
+```typescript
+@Get('admin')
+@UseGuards(AuthGuard('admin'))
+```
+
+Controller response mapping:
+
+```typescript
+{
+    const result = await this.giftService.getActiveGifts(
+      pick(req.query, ['searchTerm', 'name']),
+      pick(req.query, ['sortBy', 'sortOrder', 'limit', 'page']),
+      true,
+    );
+    return { data: result.data, meta: result.meta };
+  }
+```
+
+## GET /api/v1/gifts/history
+
+History (Gift). Follow the exact handler and DTO below.
+
+Source: `src/app/module/gift/gift.controller.ts:86`
+
+Access: `UseGuards(AuthGuard('user'))`
+
+Request parameters and DTOs:
+
+```typescript
+@Req() req: Request
+@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number
+```
+
+Upload/status/validation metadata:
+
+```typescript
+@Get('history')
+@UseGuards(AuthGuard('user'))
+```
+
+Controller response mapping:
+
+```typescript
+{
+    if (page < 1 || page > 100000)
+      throw new BadRequestException('Invalid page');
+    return { data: await this.giftService.history(req.user!.id, page) };
+  }
+```
+
+## PATCH /api/v1/gifts/:id
+
+Update Gift (Gift). Follow the exact handler and DTO below.
+
+Source: `src/app/module/gift/gift.controller.ts:97`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -2881,13 +2531,13 @@ Controller response mapping:
 
 ## DELETE /api/v1/gifts/:id
 
-**কাজ:** Gift deactivate
+Deactivate Gift (Gift). Follow the exact handler and DTO below.
 
-Source: `src/app/module/gift/gift.controller.ts:80`
+Source: `src/app/module/gift/gift.controller.ts:106`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -2913,13 +2563,13 @@ Controller response mapping:
 
 ## POST /api/v1/gifts/:giftId/send
 
-**কাজ:** Companion-কে gift পাঠানো, backend credit debit
+Send Gift (Gift). Follow the exact handler and DTO below.
 
-Source: `src/app/module/gift/gift.controller.ts:89`
+Source: `src/app/module/gift/gift.controller.ts:115`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -2945,6 +2595,8 @@ Controller response mapping:
       request.user.id,
       payload.companionId,
       giftId,
+      payload.requestId,
+      payload.expectedCreditCost,
     );
     return { message: 'Gift sent successfully', data };
   }
@@ -2952,13 +2604,13 @@ Controller response mapping:
 
 ## GET /api/v1/admin/companions/:companionId/lifestyle/routine
 
-**কাজ:** Weekly routine পড়া
+Routine (LifestyleAdmin). Follow the exact handler and DTO below.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:48`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:50`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2980,13 +2632,13 @@ Controller response mapping:
 
 ## PUT /api/v1/admin/companions/:companionId/lifestyle/routine
 
-**কাজ:** Timezone ও পুরো weekly routine replace
+Save Routine (LifestyleAdmin). Follow the exact handler and DTO below.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:53`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:55`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3009,13 +2661,13 @@ Controller response mapping:
 
 ## GET /api/v1/admin/companions/:companionId/lifestyle/context
 
-**কাজ:** বর্তমান local activity/context preview
+Context (LifestyleAdmin). Follow the exact handler and DTO below.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:59`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:61`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3038,13 +2690,13 @@ Controller response mapping:
 
 ## GET /api/v1/admin/companions/:companionId/lifestyle/photos
 
-**কাজ:** Approved/unapproved library list
+Photos (LifestyleAdmin). Follow the exact handler and DTO below.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:65`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:67`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3065,15 +2717,43 @@ Controller response mapping:
   }
 ```
 
-## POST /api/v1/admin/companions/:companionId/lifestyle/photos
+## POST /api/v1/admin/companions/:companionId/lifestyle/photos/import-gallery
 
-**কাজ:** Frontend image upload; প্রথমে unapproved
+Import missing companion gallery URLs as pending library entries.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:71`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:73`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+```
+
+Upload/status/validation metadata:
+
+```typescript
+@Post('photos/import-gallery')
+```
+
+Controller response mapping:
+
+```typescript
+{
+    return { data: await this.service.importGallery(id) };
+  }
+```
+
+## POST /api/v1/admin/companions/:companionId/lifestyle/photos
+
+Upload an image to the companion photo library for review.
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:78`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3110,13 +2790,13 @@ Controller response mapping:
 
 ## PATCH /api/v1/admin/companions/:companionId/lifestyle/photos/:photoId
 
-**কাজ:** Library photo approval/revoke
+Approve a library photo or return it to pending.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:92`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:99`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3138,15 +2818,74 @@ Controller response mapping:
   }
 ```
 
-## GET /api/v1/admin/companions/:companionId/lifestyle/daily-content
+## PUT /api/v1/admin/companions/:companionId/lifestyle/photos/:photoId
 
-**কাজ:** Daily photo/text schedule list
+Edit a library photo caption and normalized tags.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:99`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:106`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Param('photoId', ParseUUIDPipe) photoId: string
+@Body() dto: LibraryPhotoDto
+```
+
+Upload/status/validation metadata:
+
+```typescript
+@Put('photos/:photoId')
+```
+
+Controller response mapping:
+
+```typescript
+{
+    return { data: await this.service.editPhoto(id, photoId, dto) };
+  }
+```
+
+## DELETE /api/v1/admin/companions/:companionId/lifestyle/photos/:photoId
+
+Remove a library entry while retaining assets used by delivered chat history.
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:113`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters and DTOs:
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Param('photoId', ParseUUIDPipe) photoId: string
+```
+
+Upload/status/validation metadata:
+
+```typescript
+@Delete('photos/:photoId')
+```
+
+Controller response mapping:
+
+```typescript
+{
+    return { data: await this.service.removePhoto(id, photoId) };
+  }
+```
+
+## GET /api/v1/admin/companions/:companionId/lifestyle/daily-content
+
+Daily (LifestyleAdmin). Follow the exact handler and DTO below.
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:119`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3169,13 +2908,13 @@ Controller response mapping:
 
 ## PUT /api/v1/admin/companions/:companionId/lifestyle/daily-content
 
-**কাজ:** নির্দিষ্ট local day-এর daily content draft/publish
+Save (LifestyleAdmin). Follow the exact handler and DTO below.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:105`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:125`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3198,13 +2937,13 @@ Controller response mapping:
 
 ## POST /api/v1/admin/companions/:companionId/lifestyle/daily-content/:contentId/unpublish
 
-**কাজ:** Daily content-এর নতুন delivery বন্ধ
+Unpublish (LifestyleAdmin). Follow the exact handler and DTO below.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:111`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:131`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3227,13 +2966,13 @@ Controller response mapping:
 
 ## GET /api/v1/admin/companions/:companionId/lifestyle/deliveries
 
-**কাজ:** Daily delivery status ও safe error দেখানো
+Deliveries (LifestyleAdmin). Follow the exact handler and DTO below.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:117`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:137`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3263,13 +3002,13 @@ Controller response mapping:
 
 ## GET /api/v1/lifestyle/preference
 
-**কাজ:** Daily update preference পড়া
+Preference (Lifestyle). Follow the exact handler and DTO below.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:140`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:161`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -3291,13 +3030,13 @@ Controller response mapping:
 
 ## PUT /api/v1/lifestyle/preference
 
-**কাজ:** এক companion নির্বাচন ও daily opt-in/out
+Save (Lifestyle). Follow the exact handler and DTO below.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:143`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:164`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -3320,13 +3059,13 @@ Controller response mapping:
 
 ## GET /api/v1/lifestyle/allowances
 
-**কাজ:** Trial/paid included allowances ও usage
+Allowances (Lifestyle). Follow the exact handler and DTO below.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:149`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:170`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -3348,13 +3087,13 @@ Controller response mapping:
 
 ## POST /api/v1/lifestyle/companions/:companionId/photo
 
-**কাজ:** Unseen approved library photo request; requestId required
+Request an approved unseen library photo; paid users fall back to generation when no match exists.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:152`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:173`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -3372,19 +3111,27 @@ Controller response mapping:
 
 ```typescript
 {
-    return { data: await this.service.requestPhoto(req.user!.id, id, dto) };
+    const result = await this.chat.sendMessage(
+      req.user!.id,
+      id,
+      `/photo${dto.tag ? ` ${dto.tag}` : ''}`,
+      req.headers.authorization!,
+      'text',
+      `library:${req.user!.id}:${id}:${dto.requestId}`,
+    );
+    return { data: result.message };
   }
 ```
 
 ## GET /api/v1/lifestyle/inbox
 
-**কাজ:** নিজের included daily photo/text inbox
+Inbox (Lifestyle). Follow the exact handler and DTO below.
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:159`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:188`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -3420,13 +3167,13 @@ Controller response mapping:
 
 ## POST /api/v1/newsletter
 
-**কাজ:** Newsletter subscribe form
+Send Mail (Newsletter). Follow the exact handler and DTO below.
 
 Source: `src/app/module/newsletter/newsletter.controller.ts:30`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() createNewsletterDto: CreateNewsletterDto
@@ -3454,13 +3201,13 @@ Controller response mapping:
 
 ## POST /api/v1/newsletter/broadcast
 
-**কাজ:** Newsletter email broadcast; explicit admin action
+Broadcast Newsletter (Newsletter). Follow the exact handler and DTO below.
 
 Source: `src/app/module/newsletter/newsletter.controller.ts:41`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() dto: BroadcastNewsletterDto
@@ -3491,13 +3238,13 @@ Controller response mapping:
 
 ## GET /api/v1/newsletter
 
-**কাজ:** Subscriber list—বর্তমান code-এ guard নেই, public UI নয়
+Get All Newsletter (Newsletter). Follow the exact handler and DTO below.
 
 Source: `src/app/module/newsletter/newsletter.controller.ts:55`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -3568,13 +3315,13 @@ Controller response mapping:
 
 ## GET /api/v1/newsletter/:id
 
-**কাজ:** Subscriber detail—বর্তমান code-এ guard নেই, public UI নয়
+Get Newsletter By Id (Newsletter). Follow the exact handler and DTO below.
 
 Source: `src/app/module/newsletter/newsletter.controller.ts:109`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -3601,15 +3348,47 @@ Controller response mapping:
   }
 ```
 
+## GET /api/v1/payment/config
+
+Config (Payment). Follow the exact handler and DTO below.
+
+Source: `src/app/module/payment/payment.controller.ts:30`
+
+Access: `Service/provider validation applies`
+
+Request parameters and DTOs:
+
+```typescript
+// No explicit parameters
+```
+
+Upload/status/validation metadata:
+
+```typescript
+@Get('config')
+@ApiOperation({ summary: 'Get public payment configuration' })
+```
+
+Controller response mapping:
+
+```typescript
+{
+    if (!config.stripe.publicKey) {
+      throw new ServiceUnavailableException('Stripe is not configured');
+    }
+    return { data: { publishableKey: config.stripe.publicKey } };
+  }
+```
+
 ## GET /api/v1/payment/subscription/status
 
-**কাজ:** Recurring billing/subscription status
+Status (Payment). Follow the exact handler and DTO below.
 
-Source: `src/app/module/payment/payment.controller.ts:28`
+Source: `src/app/module/payment/payment.controller.ts:39`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -3633,13 +3412,13 @@ Controller response mapping:
 
 ## POST /api/v1/payment/subscription/sync
 
-**কাজ:** Verified provider status দিয়ে subscription reconcile; credit-purchase sync নয়
+Sync (Payment). Follow the exact handler and DTO below.
 
-Source: `src/app/module/payment/payment.controller.ts:35`
+Source: `src/app/module/payment/payment.controller.ts:46`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -3667,13 +3446,13 @@ Controller response mapping:
 
 ## POST /api/v1/payment/billing-portal
 
-**কাজ:** Billing portal URL তৈরি
+Portal (Payment). Follow the exact handler and DTO below.
 
-Source: `src/app/module/payment/payment.controller.ts:46`
+Source: `src/app/module/payment/payment.controller.ts:57`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -3697,13 +3476,13 @@ Controller response mapping:
 
 ## POST /api/v1/payment/subscription/cancel
 
-**কাজ:** Recurring subscription cancellation request
+Cancel (Payment). Follow the exact handler and DTO below.
 
-Source: `src/app/module/payment/payment.controller.ts:53`
+Source: `src/app/module/payment/payment.controller.ts:64`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -3727,13 +3506,13 @@ Controller response mapping:
 
 ## POST /api/v1/payment/subscription/:subscriptionId/upgrade
 
-**কাজ:** নতুন local plan ID দিয়ে upgrade
+Upgrade (Payment). Follow the exact handler and DTO below.
 
-Source: `src/app/module/payment/payment.controller.ts:60`
+Source: `src/app/module/payment/payment.controller.ts:71`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -3758,13 +3537,13 @@ Controller response mapping:
 
 ## POST /api/v1/payment/subscription/:subscriptionId
 
-**কাজ:** Plan activation/payment শুরু; free ও paid branch আলাদা
+Start local-plan activation or recurring subscription checkout.
 
-Source: `src/app/module/payment/payment.controller.ts:67`
+Source: `src/app/module/payment/payment.controller.ts:78`
 
 Access: `UseGuards(AuthGuard('admin', 'user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -3803,13 +3582,13 @@ Controller response mapping:
 
 ## POST /api/v1/payment/credits
 
-**কাজ:** packageId দিয়ে credit purchase payment শুরু
+Start credit-package checkout using packageId; never trust a client-supplied price.
 
-Source: `src/app/module/payment/payment.controller.ts:91`
+Source: `src/app/module/payment/payment.controller.ts:102`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -3841,13 +3620,13 @@ Controller response mapping:
 
 ## GET /api/v1/admin/companions/:companionId/telegram-profile
 
-**কাজ:** Telegram profile desired fields ও sync status
+Status (PublishingAdmin). Follow the exact handler and DTO below.
 
 Source: `src/app/module/publishing/publishing.controller.ts:50`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3875,13 +3654,13 @@ Controller response mapping:
 
 ## PUT /api/v1/admin/companions/:companionId/telegram-profile
 
-**কাজ:** Display name/about/description save ও sync queue
+Profile (PublishingAdmin). Follow the exact handler and DTO below.
 
 Source: `src/app/module/publishing/publishing.controller.ts:60`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3910,13 +3689,13 @@ Controller response mapping:
 
 ## POST /api/v1/admin/companions/:companionId/telegram-profile/retry
 
-**কাজ:** Failed profile sync requeue
+Retry (PublishingAdmin). Follow the exact handler and DTO below.
 
 Source: `src/app/module/publishing/publishing.controller.ts:73`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3943,16 +3722,17 @@ Controller response mapping:
 
 ## GET /api/v1/admin/companions/:companionId/media-stories
 
-**কাজ:** 24h photo/video Story admin metadata list
+List (PublishingAdmin). Follow the exact handler and DTO below.
 
 Source: `src/app/module/publishing/publishing.controller.ts:82`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
+@Req() req: Request
 ```
 
 Upload/status/validation metadata:
@@ -3965,19 +3745,19 @@ Controller response mapping:
 
 ```typescript
 {
-    return { data: await this.stories.adminList(id) };
+    return { data: await this.stories.adminList(id, req.user!.id) };
   }
 ```
 
 ## POST /api/v1/admin/companions/:companionId/media-stories
 
-**কাজ:** media upload করে 24h Story publish
+Publish (PublishingAdmin). Follow the exact handler and DTO below.
 
-Source: `src/app/module/publishing/publishing.controller.ts:86`
+Source: `src/app/module/publishing/publishing.controller.ts:89`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -4018,13 +3798,13 @@ Controller response mapping:
 
 ## DELETE /api/v1/admin/companions/:companionId/media-stories/:storyId
 
-**কাজ:** Story remove
+Remove (PublishingAdmin). Follow the exact handler and DTO below.
 
-Source: `src/app/module/publishing/publishing.controller.ts:111`
+Source: `src/app/module/publishing/publishing.controller.ts:114`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -4047,13 +3827,13 @@ Controller response mapping:
 
 ## GET /api/v1/media-stories/summary
 
-**কাজ:** Website avatar Story ring-এর active count/expiry
+Summary (MediaStory). Follow the exact handler and DTO below.
 
-Source: `src/app/module/publishing/publishing.controller.ts:126`
+Source: `src/app/module/publishing/publishing.controller.ts:129`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -4076,13 +3856,13 @@ Controller response mapping:
 
 ## GET /api/v1/media-stories/companions/:companionId
 
-**কাজ:** Active media Story feed ও signed mediaPath
+Feed (MediaStory). Follow the exact handler and DTO below.
 
-Source: `src/app/module/publishing/publishing.controller.ts:131`
+Source: `src/app/module/publishing/publishing.controller.ts:134`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -4106,13 +3886,13 @@ Controller response mapping:
 
 ## GET /api/v1/media-stories/:storyId/media
 
-**কাজ:** Signed ticket দিয়ে image/video bytes; Range support
+Media (StoryMedia). Follow the exact handler and DTO below.
 
-Source: `src/app/module/publishing/publishing.controller.ts:145`
+Source: `src/app/module/publishing/publishing.controller.ts:148`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('storyId', ParseUUIDPipe) id: string
@@ -4178,13 +3958,13 @@ Controller response mapping:
 
 ## GET /api/v1/telegram/stories
 
-**কাজ:** Telegram Story Mini App HTML shell
+Page (TelegramStory). Follow the exact handler and DTO below.
 
-Source: `src/app/module/publishing/publishing.controller.ts:202`
+Source: `src/app/module/publishing/publishing.controller.ts:205`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Res() res: Response
@@ -4216,13 +3996,13 @@ Controller response mapping:
 
 ## POST /api/v1/telegram/stories/:companionId/feed
 
-**কাজ:** Telegram signed initData দিয়ে linked-user Story feed
+Feed (TelegramStory). Follow the exact handler and DTO below.
 
-Source: `src/app/module/publishing/publishing.controller.ts:216`
+Source: `src/app/module/publishing/publishing.controller.ts:219`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -4251,13 +4031,13 @@ Controller response mapping:
 
 ## GET /api/v1/publishing/admin
 
-**কাজ:** Backend test/admin publishing HTML; final dashboard নয়
+Page (PublishingConsole). Follow the exact handler and DTO below.
 
-Source: `src/app/module/publishing/publishing.controller.ts:235`
+Source: `src/app/module/publishing/publishing.controller.ts:238`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Res() res: Response
@@ -4291,13 +4071,13 @@ Controller response mapping:
 
 ## POST /api/v1/subscription
 
-**কাজ:** Subscription plan তৈরি
+Create Subscription (Subscription). Follow the exact handler and DTO below.
 
 Source: `src/app/module/subscription/subscription.controller.ts:26`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() createSubscriptionDto: CreateSubscriptionDto
@@ -4328,13 +4108,13 @@ Controller response mapping:
 
 ## GET /api/v1/subscription
 
-**কাজ:** Plan listing/filter
+Get All Subscription (Subscription). Follow the exact handler and DTO below.
 
 Source: `src/app/module/subscription/subscription.controller.ts:42`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -4419,13 +4199,13 @@ Controller response mapping:
 
 ## GET /api/v1/subscription/:id
 
-**কাজ:** Plan details
+Get Subscription By Id (Subscription). Follow the exact handler and DTO below.
 
 Source: `src/app/module/subscription/subscription.controller.ts:110`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -4453,13 +4233,13 @@ Controller response mapping:
 
 ## PUT /api/v1/subscription/:id
 
-**কাজ:** Plan settings ও entitlementPolicy edit
+Update Subscription (Subscription). Follow the exact handler and DTO below.
 
 Source: `src/app/module/subscription/subscription.controller.ts:121`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -4492,13 +4272,13 @@ Controller response mapping:
 
 ## DELETE /api/v1/subscription/:id
 
-**কাজ:** Plan deactivate
+Delete Subscription (Subscription). Follow the exact handler and DTO below.
 
 Source: `src/app/module/subscription/subscription.controller.ts:139`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -4527,13 +4307,13 @@ Controller response mapping:
 
 ## GET /api/v1/telegram/status/:companionId
 
-**কাজ:** Companion Telegram link ও subscription state
+Status (TelegramConnect). Follow the exact handler and DTO below.
 
 Source: `src/app/module/telegram/telegram-connect.controller.ts:28`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -4562,13 +4342,13 @@ Controller response mapping:
 
 ## POST /api/v1/telegram/connect/:companionId
 
-**কাজ:** Single-use, 10-minute Telegram connect URL
+Create a short-lived, single-use link for the selected companion.
 
 Source: `src/app/module/telegram/telegram-connect.controller.ts:42`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() request: Request
@@ -4602,13 +4382,13 @@ Controller response mapping:
 
 ## GET /api/v1/telegram/app
 
-**কাজ:** Telegram login Mini App HTML
+Page (TelegramMiniApp). Follow the exact handler and DTO below.
 
 Source: `src/app/module/telegram/telegram-mini-app.controller.ts:43`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Res() response: Response
@@ -4640,13 +4420,13 @@ Controller response mapping:
 
 ## GET /api/v1/telegram/app/settings/:companionId
 
-**কাজ:** Companion ও website register/reset links
+Settings (TelegramMiniApp). Follow the exact handler and DTO below.
 
 Source: `src/app/module/telegram/telegram-mini-app.controller.ts:58`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) companionId: string
@@ -4669,13 +4449,13 @@ Controller response mapping:
 
 ## POST /api/v1/telegram/app/login/:companionId
 
-**কাজ:** Signed Telegram initData + website credentials দিয়ে account link
+Verify signed Telegram initData and website credentials before linking accounts.
 
 Source: `src/app/module/telegram/telegram-mini-app.controller.ts:64`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -4708,13 +4488,13 @@ Controller response mapping:
 
 ## POST /api/v1/telegram/app/status/:companionId
 
-**কাজ:** Signed Telegram session-এর connection/access status
+Status (TelegramMiniApp). Follow the exact handler and DTO below.
 
 Source: `src/app/module/telegram/telegram-mini-app.controller.ts:82`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -4739,13 +4519,13 @@ Controller response mapping:
 
 ## POST /api/v1/webhooks/telegram/:companionId
 
-**কাজ:** Telegram provider update, companion-specific secret
+Receive For Companion (TelegramWebhook). Follow the exact handler and DTO below.
 
 Source: `src/app/module/telegram/telegram-webhook.controller.ts:24`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) companionId: string
@@ -4773,13 +4553,13 @@ Controller response mapping:
 
 ## POST /api/v1/webhooks/telegram
 
-**কাজ:** Legacy/default Telegram provider webhook
+Receive (TelegramWebhook). Follow the exact handler and DTO below.
 
 Source: `src/app/module/telegram/telegram-webhook.controller.ts:37`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() body: unknown
@@ -4805,13 +4585,13 @@ Controller response mapping:
 
 ## POST /api/v1/user
 
-**কাজ:** Legacy account creation; website signup-এ /auth/register ব্যবহার
+Create User (User). Follow the exact handler and DTO below.
 
-Source: `src/app/module/user/user.controller.ts:38`
+Source: `src/app/module/user/user.controller.ts:43`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Body() createUserDto: CreateUserDto
@@ -4842,13 +4622,13 @@ Controller response mapping:
 
 ## GET /api/v1/user
 
-**কাজ:** Admin user list/search
+Get All User (User). Follow the exact handler and DTO below.
 
-Source: `src/app/module/user/user.controller.ts:52`
+Source: `src/app/module/user/user.controller.ts:57`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -4951,13 +4731,13 @@ Controller response mapping:
 
 ## GET /api/v1/user//overview
 
-**কাজ:** Admin user summary counts—total, approved, subscribed ও free users
+Get All User Overview (User). Follow the exact handler and DTO below.
 
-Source: `src/app/module/user/user.controller.ts:138`
+Source: `src/app/module/user/user.controller.ts:143`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 // No explicit parameters
@@ -4987,13 +4767,13 @@ Controller response mapping:
 
 ## GET /api/v1/user/my-profile
 
-**কাজ:** নিজের current profile
+My Profile (User). Follow the exact handler and DTO below.
 
-Source: `src/app/module/user/user.controller.ts:151`
+Source: `src/app/module/user/user.controller.ts:156`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
@@ -5027,17 +4807,17 @@ Controller response mapping:
 
 ## PUT /api/v1/user/my-profile
 
-**কাজ:** নিজের profile update; password-only limitation নিচে দেখুন
+Update My Profile (User). Follow the exact handler and DTO below.
 
-Source: `src/app/module/user/user.controller.ts:168`
+Source: `src/app/module/user/user.controller.ts:173`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: Request
-@Body() updateUserDto: UpdateUserDto
+@Body() updateUserDto: UpdateProfileDto
 @UploadedFile() file?: Express.Multer.File
 ```
 
@@ -5049,7 +4829,7 @@ Upload/status/validation metadata:
     summary: 'update my profile',
   })
 @ApiConsumes('multipart/form-data')
-@ApiBody({ type: UpdateUserDto })
+@ApiBody({ type: UpdateProfileDto })
 @ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('user', 'admin'))
 @UseInterceptors(FileInterceptor('profileImage', fileUpload.uploadConfig))
@@ -5074,15 +4854,48 @@ Controller response mapping:
   }
 ```
 
+## GET /api/v1/user/payments
+
+My Payments (User). Follow the exact handler and DTO below.
+
+Source: `src/app/module/user/user.controller.ts:201`
+
+Access: `UseGuards(AuthGuard('user', 'admin'))`
+
+Request parameters and DTOs:
+
+```typescript
+@Req() req: Request
+@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number
+```
+
+Upload/status/validation metadata:
+
+```typescript
+@Get('payments')
+@ApiOperation({ summary: 'Read your own paginated payment history' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user', 'admin'))
+```
+
+Controller response mapping:
+
+```typescript
+{
+    if (page < 1 || page > 100000) throw new BadRequestException('Invalid page');
+    return { data: await this.userService.myPayments(req.user!.id, page) };
+  }
+```
+
 ## GET /api/v1/user/:id
 
-**কাজ:** Admin user detail
+Get User By Id (User). Follow the exact handler and DTO below.
 
-Source: `src/app/module/user/user.controller.ts:196`
+Source: `src/app/module/user/user.controller.ts:210`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -5115,13 +4928,13 @@ Controller response mapping:
 
 ## PUT /api/v1/user/:id
 
-**কাজ:** Admin user edit; DTO permissions অনুসরণ করুন
+Update User (User). Follow the exact handler and DTO below.
 
-Source: `src/app/module/user/user.controller.ts:212`
+Source: `src/app/module/user/user.controller.ts:226`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -5157,13 +4970,13 @@ Controller response mapping:
 
 ## DELETE /api/v1/user/:id
 
-**কাজ:** Admin user delete; destructive action confirmation
+Delete User (User). Follow the exact handler and DTO below.
 
-Source: `src/app/module/user/user.controller.ts:233`
+Source: `src/app/module/user/user.controller.ts:247`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Param('id') id: string
@@ -5196,13 +5009,13 @@ Controller response mapping:
 
 ## POST /api/v1/webhook
 
-**কাজ:** Stripe signed webhook; frontend থেকে call নয়
+Process the signed payment-provider webhook; this is not a frontend endpoint.
 
 Source: `src/app/module/webhook/webhook.controller.ts:14`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Req() req: RawBodyRequest<Request>
@@ -5227,13 +5040,13 @@ Controller response mapping:
 
 ## GET /
 
-**কাজ:** Backend root response
+Get Hello (App). Follow the exact handler and DTO below.
 
 Source: `src/app.controller.ts:11`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 @Res() res: Response
@@ -5255,13 +5068,13 @@ Controller response mapping:
 
 ## GET /api/v1/health/live
 
-**কাজ:** Process liveness
+Live (Health). Follow the exact handler and DTO below.
 
 Source: `src/health.controller.ts:14`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 // No explicit parameters
@@ -5283,13 +5096,13 @@ Controller response mapping:
 
 ## GET /api/v1/health/ready
 
-**কাজ:** Backend readiness check; সব provider tested বোঝায় না
+Ready (Health). Follow the exact handler and DTO below.
 
 Source: `src/health.controller.ts:17`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 // No explicit parameters
@@ -5319,13 +5132,13 @@ Controller response mapping:
 
 ## GET /privacy-policy
 
-**কাজ:** Privacy policy HTML
+Privacy Policy (LegalPages). Follow the exact handler and DTO below.
 
 Source: `src/legal-pages.controller.ts:40`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 // No explicit parameters
@@ -5371,13 +5184,13 @@ Controller response mapping:
 
 ## GET /terms
 
-**কাজ:** Terms HTML
+Terms (LegalPages). Follow the exact handler and DTO below.
 
 Source: `src/legal-pages.controller.ts:69`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 // No explicit parameters
@@ -5417,13 +5230,13 @@ Controller response mapping:
 
 ## GET /data-deletion
 
-**কাজ:** Data-deletion instructions HTML
+Data Deletion (LegalPages). Follow the exact handler and DTO below.
 
 Source: `src/legal-pages.controller.ts:92`
 
-Access: `Controller JWT guard নেই; service/provider validation প্রযোজ্য`
+Access: `Service/provider validation applies`
 
-Request parameters ও DTO:
+Request parameters and DTOs:
 
 ```typescript
 // No explicit parameters
@@ -5462,10 +5275,9 @@ Controller response mapping:
   }
 ```
 
-<a id="dto"></a>
-# সব DTO field, nested object ও validation
+# DTO fields, nested objects and runtime validation
 
-`IsOptional` optional; `PartialType(Base)` base fields optional করে। Nested object `Type`/`ValidateNested` দেখে form বানান। `ApiProperty` example production default নয়। `messageLimit` legacy field; creditAllowance/policy আলাদা। Body-এর extra field ValidationPipe whitelist-এ বাদ যেতে পারে—unsupported admin permission field পাঠাবেন না।
+IsOptional marks optional fields; PartialType makes inherited fields optional. Follow Type/ValidateNested and OmitType declarations. ApiProperty examples are not production defaults. TypeScript optional syntax alone does not establish runtime validation. Do not send unsupported permission fields.
 
 ## CreateAuthDto
 
@@ -5656,7 +5468,11 @@ Source: `src/app/module/chat/dto/send-message.dto.ts`
 
 ```typescript
 export class SendMessageDto {
-  @ApiProperty({required:false,description:'UUID; reuse on retries to avoid duplicate replies and charges'})
+  @ApiProperty({
+    required: false,
+    description:
+      'UUID; reuse on retries to avoid duplicate replies and charges',
+  })
   @IsOptional()
   @IsUUID()
   requestId?: string;
@@ -5672,7 +5488,7 @@ export class SendMessageDto {
   @ApiProperty({ example: 'Hello, how are you?' })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(5000)
+  @MaxLength(4000)
   message!: string;
 }
 ```
@@ -6363,6 +6179,15 @@ Source: `src/app/module/gift/dto/gift.dto.ts`
 
 ```typescript
 export class SendGiftDto {
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  expectedCreditCost?: number;
+
+  @IsOptional()
+  @IsUUID()
+  requestId?: string;
+
   @ApiProperty({ example: 'companion-id' })
   @IsString()
   @IsNotEmpty()
@@ -6811,6 +6636,26 @@ export class CreateUserDto {
 }
 ```
 
+## UpdateProfileDto
+
+Source: `src/app/module/user/dto/update-profile.dto.ts`
+
+```typescript
+export class UpdateProfileDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @Matches(/\S/)
+  @MaxLength(100)
+  name?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(30)
+  phoneNumber?: string;
+}
+```
+
 ## UpdateUserDto
 
 Source: `src/app/module/user/dto/update-user.dto.ts`
@@ -6821,9 +6666,9 @@ export class UpdateUserDto extends PartialType(
 ) {}
 ```
 
-# Response enum values
+# Response enums
 
-এগুলো database/response enum; সব value সব request DTO-তে allowed নয়। যেমন ChatMessageType-এ photo থাকলেও SendMessageDto.type কেবল text/voice নেয়।
+Database/response enum values are not automatically valid in every request DTO. For example, SendMessageDto accepts text/voice input while responses can contain images.
 
 ```prisma
 enum UserRole {
@@ -6875,13 +6720,14 @@ enum GiftTransactionStatus {
 
 ```
 
-# Documentation refresh
+# Refreshing this handbook
 
-Backend route/DTO পরিবর্তন হলে repository root থেকে:
+Run these commands from the backend repository after changing routes or DTOs:
 
 ```powershell
 node scripts/export-frontend-contract.cjs
 node scripts/build-full-frontend-readme.cjs
+node scripts/render-frontend-handoff.cjs
 ```
 
-Generator প্রতিটি endpoint-এর purpose mapping ও code-fence balance যাচাই করে। নতুন endpoint হলে generator-এর purpose map-ও হালনাগাদ করুন। Service-এর behavior বদলালে flow guide-ও review করতে হবে; শুধু route scan business logic যাচাই করে না।
+Review business-flow prose when services change; route extraction cannot verify billing, provider quality or live delivery.

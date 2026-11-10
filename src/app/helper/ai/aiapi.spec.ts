@@ -123,4 +123,53 @@ describe('AI chat request format', () => {
       post.mockRestore();
     }
   });
+  it('forwards explicit voice mode and requires the lifestyle acknowledgement', async () => {
+    const post = jest.spyOn(axios, 'post').mockResolvedValue({
+      data: {
+        message_id: 'm',
+        conversation_id: 'c',
+        companion_id: 'p',
+        response: 'Hello',
+        context_version: 'lifestyle-v1',
+      },
+    });
+    try {
+      await new AiApi().sendMessage(
+        'c',
+        'p',
+        'Hello',
+        'Bearer test',
+        'voice-key',
+        undefined,
+        { version: 'lifestyle-v1' },
+        true,
+      );
+      const form = post.mock.calls[0][1] as FormData;
+      expect(form.get('request_voice_response')).toBe('true');
+      expect(JSON.parse(String(form.get('context')))).toEqual({
+        version: 'lifestyle-v1',
+      });
+      post.mockResolvedValueOnce({
+        data: {
+          message_id: 'm',
+          conversation_id: 'c',
+          companion_id: 'p',
+          response: 'Hello',
+        },
+      });
+      await expect(
+        new AiApi().sendMessage(
+          'c',
+          'p',
+          'Hello',
+          'Bearer test',
+          'other-key',
+          undefined,
+          { version: 'lifestyle-v1' },
+        ),
+      ).rejects.toThrow('acknowledge');
+    } finally {
+      post.mockRestore();
+    }
+  });
 });

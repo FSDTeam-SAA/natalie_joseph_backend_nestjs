@@ -1,19 +1,19 @@
-# Meet Elysia — সম্পূর্ণ API ও request field reference
+# Meet Elysia - Complete API and request-field reference
 
-Controller ও DTO থেকে সরাসরি তৈরি; live API test নয়। নতুন lifestyle API নির্দেশনা: [Backend handover](../README-lifestyle-handoff-bn.md)। মূল নির্দেশনা: [বাংলা integration guide](./frontend-integration-bn.md)।
+Generated directly from controller and DTO source; this is not a live API test. See the [integration guide](./frontend-integration-bn.md) and [lifestyle guide](../README-lifestyle-handoff-bn.md).
 
-মোট **119টি route**, **61টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।
+**126 routes**, **62 DTO classes**. No credentials or customer data are included.
 
-## সব endpoint এক নজরে
+## Endpoint index
 
-| Method | সম্পূর্ণ path | Controller-এ access | Handler |
+| Method | Full path | Controller access | Handler |
 |---|---|---|---|
-| POST | `/api/v1/auth/register` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | register |
-| POST | `/api/v1/auth/login` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | login |
-| GET | `/api/v1/auth/refresh` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | refreshToken |
-| POST | `/api/v1/auth/forgot-password` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | forgotPassword |
-| POST | `/api/v1/auth/verify-otp` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | verifyOtp |
-| POST | `/api/v1/auth/reset-password` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | resetPassword |
+| POST | `/api/v1/auth/register` | Service, signature or webhook validation applies | register |
+| POST | `/api/v1/auth/login` | Service, signature or webhook validation applies | login |
+| GET | `/api/v1/auth/refresh` | Service, signature or webhook validation applies | refreshToken |
+| POST | `/api/v1/auth/forgot-password` | Service, signature or webhook validation applies | forgotPassword |
+| POST | `/api/v1/auth/verify-otp` | Service, signature or webhook validation applies | verifyOtp |
+| POST | `/api/v1/auth/reset-password` | Service, signature or webhook validation applies | resetPassword |
 | POST | `/api/v1/auth/change-password` | UseGuards(AuthGuard('admin', 'user')) | changePassword |
 | POST | `/api/v1/auth/logout` | UseGuards(AuthGuard('admin', 'user')) | logout |
 | GET | `/api/v1/chat/conversations` | UseGuards(AuthGuard('user')) | getConversations |
@@ -21,8 +21,8 @@ Controller ও DTO থেকে সরাসরি তৈরি; live API test �
 | GET | `/api/v1/chat/usage` | UseGuards(AuthGuard('user')) | getUsage |
 | POST | `/api/v1/chat/:companionId/messages` | UseGuards(AuthGuard('user')) | sendMessage |
 | POST | `/api/v1/companions` | UseGuards(AuthGuard('admin')) | createCompanion |
-| GET | `/api/v1/companions` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getAllCompanions |
-| GET | `/api/v1/companions/:id` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getCompanionById |
+| GET | `/api/v1/companions` | Service, signature or webhook validation applies | getAllCompanions |
+| GET | `/api/v1/companions/:id` | Service, signature or webhook validation applies | getCompanionById |
 | PUT | `/api/v1/companions/:id` | UseGuards(AuthGuard('admin')) | updateCompanion |
 | PUT | `/api/v1/companions/:id/profile-image` | UseGuards(AuthGuard('admin')) | updateProfileImage |
 | PUT | `/api/v1/companions/:id/cover-image` | UseGuards(AuthGuard('admin')) | updateCoverImage |
@@ -32,7 +32,7 @@ Controller ও DTO থেকে সরাসরি তৈরি; live API test �
 | DELETE | `/api/v1/companions/:id` | UseGuards(AuthGuard('admin')) | deleteCompanion |
 | PUT | `/api/v1/companions/:id/voice` | UseGuards(AuthGuard('admin')) | updateVoice |
 | POST | `/api/v1/credits/packages` | UseGuards(AuthGuard('admin')) | createPackage |
-| GET | `/api/v1/credits/packages` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getPackages |
+| GET | `/api/v1/credits/packages` | Service, signature or webhook validation applies | getPackages |
 | PATCH | `/api/v1/credits/packages/:id` | UseGuards(AuthGuard('admin')) | updatePackage |
 | DELETE | `/api/v1/credits/packages/:id` | UseGuards(AuthGuard('admin')) | deactivatePackage |
 | GET | `/api/v1/credits/wallet` | UseGuards(AuthGuard('user')) | getWallet |
@@ -57,7 +57,9 @@ Controller ও DTO থেকে সরাসরি তৈরি; live API test �
 | GET | `/api/v1/admin/users/:id/ledger` | UseGuards(AuthGuard('admin')) | ledger |
 | POST | `/api/v1/admin/notifications` | UseGuards(AuthGuard('admin')) | notification |
 | POST | `/api/v1/gifts` | UseGuards(AuthGuard('admin')) | createGift |
-| GET | `/api/v1/gifts` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getGifts |
+| GET | `/api/v1/gifts` | Service, signature or webhook validation applies | getGifts |
+| GET | `/api/v1/gifts/admin` | UseGuards(AuthGuard('admin')) | adminGifts |
+| GET | `/api/v1/gifts/history` | UseGuards(AuthGuard('user')) | history |
 | PATCH | `/api/v1/gifts/:id` | UseGuards(AuthGuard('admin')) | updateGift |
 | DELETE | `/api/v1/gifts/:id` | UseGuards(AuthGuard('admin')) | deactivateGift |
 | POST | `/api/v1/gifts/:giftId/send` | UseGuards(AuthGuard('user')) | sendGift |
@@ -65,8 +67,11 @@ Controller ও DTO থেকে সরাসরি তৈরি; live API test �
 | PUT | `/api/v1/admin/companions/:companionId/lifestyle/routine` | UseGuards(AuthGuard('admin')) | saveRoutine |
 | GET | `/api/v1/admin/companions/:companionId/lifestyle/context` | UseGuards(AuthGuard('admin')) | context |
 | GET | `/api/v1/admin/companions/:companionId/lifestyle/photos` | UseGuards(AuthGuard('admin')) | photos |
+| POST | `/api/v1/admin/companions/:companionId/lifestyle/photos/import-gallery` | UseGuards(AuthGuard('admin')) | importGallery |
 | POST | `/api/v1/admin/companions/:companionId/lifestyle/photos` | UseGuards(AuthGuard('admin')) | upload |
 | PATCH | `/api/v1/admin/companions/:companionId/lifestyle/photos/:photoId` | UseGuards(AuthGuard('admin')) | approve |
+| PUT | `/api/v1/admin/companions/:companionId/lifestyle/photos/:photoId` | UseGuards(AuthGuard('admin')) | editPhoto |
+| DELETE | `/api/v1/admin/companions/:companionId/lifestyle/photos/:photoId` | UseGuards(AuthGuard('admin')) | removePhoto |
 | GET | `/api/v1/admin/companions/:companionId/lifestyle/daily-content` | UseGuards(AuthGuard('admin')) | daily |
 | PUT | `/api/v1/admin/companions/:companionId/lifestyle/daily-content` | UseGuards(AuthGuard('admin')) | save |
 | POST | `/api/v1/admin/companions/:companionId/lifestyle/daily-content/:contentId/unpublish` | UseGuards(AuthGuard('admin')) | unpublish |
@@ -76,10 +81,11 @@ Controller ও DTO থেকে সরাসরি তৈরি; live API test �
 | GET | `/api/v1/lifestyle/allowances` | UseGuards(AuthGuard('user')) | allowances |
 | POST | `/api/v1/lifestyle/companions/:companionId/photo` | UseGuards(AuthGuard('user')) | photo |
 | GET | `/api/v1/lifestyle/inbox` | UseGuards(AuthGuard('user')) | inbox |
-| POST | `/api/v1/newsletter` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | sendMail |
+| POST | `/api/v1/newsletter` | Service, signature or webhook validation applies | sendMail |
 | POST | `/api/v1/newsletter/broadcast` | UseGuards(AuthGuard('admin')) | broadcastNewsletter |
-| GET | `/api/v1/newsletter` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getAllNewsletter |
-| GET | `/api/v1/newsletter/:id` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getNewsletterById |
+| GET | `/api/v1/newsletter` | Service, signature or webhook validation applies | getAllNewsletter |
+| GET | `/api/v1/newsletter/:id` | Service, signature or webhook validation applies | getNewsletterById |
+| GET | `/api/v1/payment/config` | Service, signature or webhook validation applies | config |
 | GET | `/api/v1/payment/subscription/status` | UseGuards(AuthGuard('user', 'admin')) | status |
 | POST | `/api/v1/payment/subscription/sync` | UseGuards(AuthGuard('user', 'admin')) | sync |
 | POST | `/api/v1/payment/billing-portal` | UseGuards(AuthGuard('user', 'admin')) | portal |
@@ -95,50 +101,51 @@ Controller ও DTO থেকে সরাসরি তৈরি; live API test �
 | DELETE | `/api/v1/admin/companions/:companionId/media-stories/:storyId` | UseGuards(AuthGuard('admin')) | remove |
 | GET | `/api/v1/media-stories/summary` | UseGuards(AuthGuard('user', 'admin')) | summary |
 | GET | `/api/v1/media-stories/companions/:companionId` | UseGuards(AuthGuard('user', 'admin')) | feed |
-| GET | `/api/v1/media-stories/:storyId/media` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | media |
-| GET | `/api/v1/telegram/stories` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | page |
-| POST | `/api/v1/telegram/stories/:companionId/feed` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | feed |
-| GET | `/api/v1/publishing/admin` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | page |
+| GET | `/api/v1/media-stories/:storyId/media` | Service, signature or webhook validation applies | media |
+| GET | `/api/v1/telegram/stories` | Service, signature or webhook validation applies | page |
+| POST | `/api/v1/telegram/stories/:companionId/feed` | Service, signature or webhook validation applies | feed |
+| GET | `/api/v1/publishing/admin` | Service, signature or webhook validation applies | page |
 | POST | `/api/v1/subscription` | UseGuards(AuthGuard('admin')) | createSubscription |
-| GET | `/api/v1/subscription` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getAllSubscription |
-| GET | `/api/v1/subscription/:id` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getSubscriptionById |
+| GET | `/api/v1/subscription` | Service, signature or webhook validation applies | getAllSubscription |
+| GET | `/api/v1/subscription/:id` | Service, signature or webhook validation applies | getSubscriptionById |
 | PUT | `/api/v1/subscription/:id` | UseGuards(AuthGuard('admin')) | updateSubscription |
 | DELETE | `/api/v1/subscription/:id` | UseGuards(AuthGuard('admin')) | deleteSubscription |
 | GET | `/api/v1/telegram/status/:companionId` | UseGuards(AuthGuard('user')) | status |
 | POST | `/api/v1/telegram/connect/:companionId` | UseGuards(AuthGuard('user')) | connect |
-| GET | `/api/v1/telegram/app` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | page |
-| GET | `/api/v1/telegram/app/settings/:companionId` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | settings |
-| POST | `/api/v1/telegram/app/login/:companionId` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | login |
-| POST | `/api/v1/telegram/app/status/:companionId` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | status |
-| POST | `/api/v1/webhooks/telegram/:companionId` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | receiveForCompanion |
-| POST | `/api/v1/webhooks/telegram` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | receive |
-| POST | `/api/v1/user` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | createUser |
+| GET | `/api/v1/telegram/app` | Service, signature or webhook validation applies | page |
+| GET | `/api/v1/telegram/app/settings/:companionId` | Service, signature or webhook validation applies | settings |
+| POST | `/api/v1/telegram/app/login/:companionId` | Service, signature or webhook validation applies | login |
+| POST | `/api/v1/telegram/app/status/:companionId` | Service, signature or webhook validation applies | status |
+| POST | `/api/v1/webhooks/telegram/:companionId` | Service, signature or webhook validation applies | receiveForCompanion |
+| POST | `/api/v1/webhooks/telegram` | Service, signature or webhook validation applies | receive |
+| POST | `/api/v1/user` | Service, signature or webhook validation applies | createUser |
 | GET | `/api/v1/user` | UseGuards(AuthGuard('admin')) | getAllUser |
 | GET | `/api/v1/user//overview` | UseGuards(AuthGuard('admin')) | getAllUserOverview |
 | GET | `/api/v1/user/my-profile` | UseGuards(AuthGuard('user', 'admin')) | myProfile |
 | PUT | `/api/v1/user/my-profile` | UseGuards(AuthGuard('user', 'admin')) | UpdateMyProfile |
+| GET | `/api/v1/user/payments` | UseGuards(AuthGuard('user', 'admin')) | myPayments |
 | GET | `/api/v1/user/:id` | UseGuards(AuthGuard('admin')) | getUserById |
 | PUT | `/api/v1/user/:id` | UseGuards(AuthGuard('admin')) | updateUser |
 | DELETE | `/api/v1/user/:id` | UseGuards(AuthGuard('admin')) | deleteUser |
-| POST | `/api/v1/webhook` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | handleWebhook |
-| GET | `/` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | getHello |
-| GET | `/api/v1/health/live` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | live |
-| GET | `/api/v1/health/ready` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | ready |
-| GET | `/privacy-policy` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | privacyPolicy |
-| GET | `/terms` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | terms |
-| GET | `/data-deletion` | JWT guard নেই; নিচের service/webhook নিয়ম দেখুন | dataDeletion |
+| POST | `/api/v1/webhook` | Service, signature or webhook validation applies | handleWebhook |
+| GET | `/` | Service, signature or webhook validation applies | getHello |
+| GET | `/api/v1/health/live` | Service, signature or webhook validation applies | live |
+| GET | `/api/v1/health/ready` | Service, signature or webhook validation applies | ready |
+| GET | `/privacy-policy` | Service, signature or webhook validation applies | privacyPolicy |
+| GET | `/terms` | Service, signature or webhook validation applies | terms |
+| GET | `/data-deletion` | Service, signature or webhook validation applies | dataDeletion |
 
-## প্রতিটি endpoint-এর input ও response mapping
+## Exact endpoint inputs and response mapping
 
-JWT guard নেই মানেই external webhook বা Mini App unrestricted নয়। Signature/initData validation service-এ হয়। @Req() query-এর প্রকৃত allowlist handler-এর pick(...) এ দেওয়া আছে। Nest default status POST=201, অন্যগুলো=200, যদি @HttpCode বা raw response override না করে।
+An absent JWT guard does not make a signed webhook or Mini App unrestricted. Services validate signatures and Telegram initData. Handler pick(...) calls define query allowlists. Nest defaults to POST=201 and other methods=200 unless overridden. Controller source shows response mapping, not a live response example.
 
 ### POST /api/v1/auth/register
 
-Source: `src/app/module/auth/auth.controller.ts:39` • Handler: `AuthController.register`
+Source: `src/app/module/auth/auth.controller.ts:39` - Handler: `AuthController.register`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() createAuthDto: CreateAuthDto
@@ -162,7 +169,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.CREATED)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -177,11 +184,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/auth/login
 
-Source: `src/app/module/auth/auth.controller.ts:62` • Handler: `AuthController.login`
+Source: `src/app/module/auth/auth.controller.ts:62` - Handler: `AuthController.login`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() loginAuthDto: LoginAuthDto
@@ -206,7 +213,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -221,11 +228,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/auth/refresh
 
-Source: `src/app/module/auth/auth.controller.ts:88` • Handler: `AuthController.refreshToken`
+Source: `src/app/module/auth/auth.controller.ts:88` - Handler: `AuthController.refreshToken`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -250,7 +257,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -265,11 +272,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/auth/forgot-password
 
-Source: `src/app/module/auth/auth.controller.ts:112` • Handler: `AuthController.forgotPassword`
+Source: `src/app/module/auth/auth.controller.ts:112` - Handler: `AuthController.forgotPassword`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() forgotPasswordAuthDto: ForgotPasswordAuthDto
@@ -293,7 +300,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -310,11 +317,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/auth/verify-otp
 
-Source: `src/app/module/auth/auth.controller.ts:137` • Handler: `AuthController.verifyOtp`
+Source: `src/app/module/auth/auth.controller.ts:137` - Handler: `AuthController.verifyOtp`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() verifyOtpAuthDto: VerifyOtpAuthDto
@@ -338,7 +345,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -356,11 +363,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/auth/reset-password
 
-Source: `src/app/module/auth/auth.controller.ts:163` • Handler: `AuthController.resetPassword`
+Source: `src/app/module/auth/auth.controller.ts:163` - Handler: `AuthController.resetPassword`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() resetPasswordAuthDto: ResetPasswordAuthDto
@@ -384,7 +391,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -403,11 +410,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/auth/change-password
 
-Source: `src/app/module/auth/auth.controller.ts:190` • Handler: `AuthController.changePassword`
+Source: `src/app/module/auth/auth.controller.ts:190` - Handler: `AuthController.changePassword`
 
 Access: `UseGuards(AuthGuard('admin', 'user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -434,7 +441,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -454,11 +461,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/auth/logout
 
-Source: `src/app/module/auth/auth.controller.ts:223` • Handler: `AuthController.logout`
+Source: `src/app/module/auth/auth.controller.ts:223` - Handler: `AuthController.logout`
 
 Access: `UseGuards(AuthGuard('admin', 'user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -482,7 +489,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -497,11 +504,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/chat/conversations
 
-Source: `src/app/module/chat/chat.controller.ts:28` • Handler: `ChatController.getConversations`
+Source: `src/app/module/chat/chat.controller.ts:28` - Handler: `ChatController.getConversations`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -515,7 +522,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('user'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -526,11 +533,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/chat/:companionId/messages
 
-Source: `src/app/module/chat/chat.controller.ts:36` • Handler: `ChatController.getMessages`
+Source: `src/app/module/chat/chat.controller.ts:36` - Handler: `ChatController.getMessages`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -546,7 +553,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('user'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -564,11 +571,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/chat/usage
 
-Source: `src/app/module/chat/chat.controller.ts:55` • Handler: `ChatController.getUsage`
+Source: `src/app/module/chat/chat.controller.ts:55` - Handler: `ChatController.getUsage`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -583,7 +590,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('user'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -595,11 +602,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/chat/:companionId/messages
 
-Source: `src/app/module/chat/chat.controller.ts:65` • Handler: `ChatController.sendMessage`
+Source: `src/app/module/chat/chat.controller.ts:65` - Handler: `ChatController.sendMessage`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -617,7 +624,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('user'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -636,11 +643,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/companions
 
-Source: `src/app/module/companions/companions.controller.ts:39` • Handler: `CompanionsController.createCompanion`
+Source: `src/app/module/companions/companions.controller.ts:39` - Handler: `CompanionsController.createCompanion`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() payload: CreateCompanionDto
@@ -657,7 +664,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('admin'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -668,11 +675,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/companions
 
-Source: `src/app/module/companions/companions.controller.ts:50` • Handler: `CompanionsController.getAllCompanions`
+Source: `src/app/module/companions/companions.controller.ts:50` - Handler: `CompanionsController.getAllCompanions`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -683,7 +690,11 @@ Upload/query/status metadata:
 ```typescript
 @Get()
 @HttpCode(HttpStatus.OK)
-@ApiOperation({ summary: 'Get all companions' })
+@ApiOperation({
+    summary: 'Get all companions',
+    description:
+      'Returns each public companion profile with its routine (timezone and weekly slots). The routine is null until an admin creates it.',
+  })
 @ApiQuery({ name: 'searchTerm', required: false, type: String })
 @ApiQuery({ name: 'occupation', required: false, type: String })
 @ApiQuery({ name: 'location', required: false, type: String })
@@ -696,7 +707,7 @@ Upload/query/status metadata:
 @ApiQuery({ name: 'sortOrder', required: false, enum: ['asc', 'desc'] })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -732,11 +743,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/companions/:id
 
-Source: `src/app/module/companions/companions.controller.ts:93` • Handler: `CompanionsController.getCompanionById`
+Source: `src/app/module/companions/companions.controller.ts:97` - Handler: `CompanionsController.getCompanionById`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -747,10 +758,14 @@ Upload/query/status metadata:
 ```typescript
 @Get(':id')
 @HttpCode(HttpStatus.OK)
-@ApiOperation({ summary: 'Get a companion by ID' })
+@ApiOperation({
+    summary: 'Get a companion by ID',
+    description:
+      'Returns the public companion profile with its routine (timezone and weekly slots). The routine is null until an admin creates it.',
+  })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -761,11 +776,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/companions/:id
 
-Source: `src/app/module/companions/companions.controller.ts:101` • Handler: `CompanionsController.updateCompanion`
+Source: `src/app/module/companions/companions.controller.ts:109` - Handler: `CompanionsController.updateCompanion`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -783,7 +798,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('admin'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -794,11 +809,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/companions/:id/profile-image
 
-Source: `src/app/module/companions/companions.controller.ts:115` • Handler: `CompanionsController.updateProfileImage`
+Source: `src/app/module/companions/companions.controller.ts:123` - Handler: `CompanionsController.updateProfileImage`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -833,7 +848,7 @@ Upload/query/status metadata:
   )
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -849,11 +864,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/companions/:id/cover-image
 
-Source: `src/app/module/companions/companions.controller.ts:151` • Handler: `CompanionsController.updateCoverImage`
+Source: `src/app/module/companions/companions.controller.ts:159` - Handler: `CompanionsController.updateCoverImage`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -883,7 +898,7 @@ Upload/query/status metadata:
   )
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -899,11 +914,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/companions/:id/gallery
 
-Source: `src/app/module/companions/companions.controller.ts:182` • Handler: `CompanionsController.addGalleryImages`
+Source: `src/app/module/companions/companions.controller.ts:190` - Handler: `CompanionsController.addGalleryImages`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -939,7 +954,7 @@ Upload/query/status metadata:
   )
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -955,11 +970,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/companions/:id/gallery
 
-Source: `src/app/module/companions/companions.controller.ts:219` • Handler: `CompanionsController.removedOneGallaryImage`
+Source: `src/app/module/companions/companions.controller.ts:227` - Handler: `CompanionsController.removedOneGallaryImage`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -982,7 +997,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -997,11 +1012,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/companions/:id/gallery
 
-Source: `src/app/module/companions/companions.controller.ts:242` • Handler: `CompanionsController.updateGalleryImages`
+Source: `src/app/module/companions/companions.controller.ts:250` - Handler: `CompanionsController.updateGalleryImages`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -1037,7 +1052,7 @@ Upload/query/status metadata:
   )
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1053,11 +1068,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/companions/:id
 
-Source: `src/app/module/companions/companions.controller.ts:279` • Handler: `CompanionsController.deleteCompanion`
+Source: `src/app/module/companions/companions.controller.ts:287` - Handler: `CompanionsController.deleteCompanion`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -1072,7 +1087,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('admin'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1083,11 +1098,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/companions/:id/voice
 
-Source: `src/app/module/companions/companions.controller.ts:287` • Handler: `CompanionsController.updateVoice`
+Source: `src/app/module/companions/companions.controller.ts:295` - Handler: `CompanionsController.updateVoice`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -1104,7 +1119,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('admin'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1119,11 +1134,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/credits/packages
 
-Source: `src/app/module/credit/credit.controller.ts:29` • Handler: `CreditController.createPackage`
+Source: `src/app/module/credit/credit.controller.ts:29` - Handler: `CreditController.createPackage`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() payload: CreateCreditPackageDto
@@ -1138,7 +1153,7 @@ Upload/query/status metadata:
 @ApiOperation({ summary: 'Create a credit package (admin)' })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1149,14 +1164,14 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/credits/packages
 
-Source: `src/app/module/credit/credit.controller.ts:38` • Handler: `CreditController.getPackages`
+Source: `src/app/module/credit/credit.controller.ts:38` - Handler: `CreditController.getPackages`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
-// কোনো parameter নেই
+// No explicit parameters
 ```
 
 Upload/query/status metadata:
@@ -1166,7 +1181,7 @@ Upload/query/status metadata:
 @ApiOperation({ summary: 'Get active credit packages' })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1177,11 +1192,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PATCH /api/v1/credits/packages/:id
 
-Source: `src/app/module/credit/credit.controller.ts:45` • Handler: `CreditController.updatePackage`
+Source: `src/app/module/credit/credit.controller.ts:45` - Handler: `CreditController.updatePackage`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -1197,7 +1212,7 @@ Upload/query/status metadata:
 @ApiOperation({ summary: 'Update a credit package (admin)' })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1208,11 +1223,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/credits/packages/:id
 
-Source: `src/app/module/credit/credit.controller.ts:57` • Handler: `CreditController.deactivatePackage`
+Source: `src/app/module/credit/credit.controller.ts:57` - Handler: `CreditController.deactivatePackage`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -1227,7 +1242,7 @@ Upload/query/status metadata:
 @ApiOperation({ summary: 'Deactivate a credit package (admin)' })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1238,11 +1253,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/credits/wallet
 
-Source: `src/app/module/credit/credit.controller.ts:66` • Handler: `CreditController.getWallet`
+Source: `src/app/module/credit/credit.controller.ts:66` - Handler: `CreditController.getWallet`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -1257,7 +1272,7 @@ Upload/query/status metadata:
 @ApiOperation({ summary: 'Get wallet balance and recent transactions' })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1269,14 +1284,14 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/dashboard/overview
 
-Source: `src/app/module/dashboard/dashboard.controller.ts:17` • Handler: `DashboardController.dashboardOverview`
+Source: `src/app/module/dashboard/dashboard.controller.ts:17` - Handler: `DashboardController.dashboardOverview`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
-// কোনো parameter নেই
+// No explicit parameters
 ```
 
 Upload/query/status metadata:
@@ -1289,7 +1304,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1304,11 +1319,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/relationships
 
-Source: `src/app/module/engagement/engagement.controller.ts:39` • Handler: `EngagementController.relationships`
+Source: `src/app/module/engagement/engagement.controller.ts:39` - Handler: `EngagementController.relationships`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -1321,7 +1336,7 @@ Upload/query/status metadata:
 @Get('relationships')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1331,11 +1346,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PATCH /api/v1/relationships/:companionId
 
-Source: `src/app/module/engagement/engagement.controller.ts:45` • Handler: `EngagementController.relationship`
+Source: `src/app/module/engagement/engagement.controller.ts:45` - Handler: `EngagementController.relationship`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -1349,7 +1364,7 @@ Upload/query/status metadata:
 @Patch('relationships/:companionId')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1361,11 +1376,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/companions/:companionId/stories
 
-Source: `src/app/module/engagement/engagement.controller.ts:54` • Handler: `EngagementController.stories`
+Source: `src/app/module/engagement/engagement.controller.ts:54` - Handler: `EngagementController.stories`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId') id: string
@@ -1378,7 +1393,7 @@ Upload/query/status metadata:
 @Get('companions/:companionId/stories')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1388,11 +1403,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/companions/:companionId/photos/view
 
-Source: `src/app/module/engagement/engagement.controller.ts:60` • Handler: `EngagementController.photo`
+Source: `src/app/module/engagement/engagement.controller.ts:60` - Handler: `EngagementController.photo`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -1406,7 +1421,7 @@ Upload/query/status metadata:
 @Post('companions/:companionId/photos/view')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1418,11 +1433,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/photos/history
 
-Source: `src/app/module/engagement/engagement.controller.ts:69` • Handler: `EngagementController.photos`
+Source: `src/app/module/engagement/engagement.controller.ts:69` - Handler: `EngagementController.photos`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -1435,7 +1450,7 @@ Upload/query/status metadata:
 @Get('photos/history')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1445,11 +1460,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/credits/ledger
 
-Source: `src/app/module/engagement/engagement.controller.ts:75` • Handler: `EngagementController.ledger`
+Source: `src/app/module/engagement/engagement.controller.ts:75` - Handler: `EngagementController.ledger`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -1462,7 +1477,7 @@ Upload/query/status metadata:
 @Get('credits/ledger')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1472,14 +1487,14 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/credits/costs
 
-Source: `src/app/module/engagement/engagement.controller.ts:81` • Handler: `EngagementController.costs`
+Source: `src/app/module/engagement/engagement.controller.ts:81` - Handler: `EngagementController.costs`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
-// কোনো parameter নেই
+// No explicit parameters
 ```
 
 Upload/query/status metadata:
@@ -1488,7 +1503,7 @@ Upload/query/status metadata:
 @Get('credits/costs')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1498,11 +1513,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/notifications
 
-Source: `src/app/module/engagement/engagement.controller.ts:84` • Handler: `EngagementController.notifications`
+Source: `src/app/module/engagement/engagement.controller.ts:84` - Handler: `EngagementController.notifications`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -1515,7 +1530,7 @@ Upload/query/status metadata:
 @Get('notifications')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1525,11 +1540,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PATCH /api/v1/notifications/:id/read
 
-Source: `src/app/module/engagement/engagement.controller.ts:90` • Handler: `EngagementController.read`
+Source: `src/app/module/engagement/engagement.controller.ts:90` - Handler: `EngagementController.read`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -1542,7 +1557,7 @@ Upload/query/status metadata:
 @Patch('notifications/:id/read')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1552,11 +1567,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/admin/credit-costs/:action
 
-Source: `src/app/module/engagement/engagement.controller.ts:107` • Handler: `EngagementAdminController.cost`
+Source: `src/app/module/engagement/engagement.controller.ts:107` - Handler: `EngagementAdminController.cost`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('action') action: string
@@ -1569,7 +1584,7 @@ Upload/query/status metadata:
 @Put('credit-costs/:action')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1579,11 +1594,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/admin/companions/:companionId/stories
 
-Source: `src/app/module/engagement/engagement.controller.ts:113` • Handler: `EngagementAdminController.story`
+Source: `src/app/module/engagement/engagement.controller.ts:113` - Handler: `EngagementAdminController.story`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId') id: string
@@ -1596,7 +1611,7 @@ Upload/query/status metadata:
 @Put('companions/:companionId/stories')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1606,11 +1621,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/companions/:companionId/stories
 
-Source: `src/app/module/engagement/engagement.controller.ts:119` • Handler: `EngagementAdminController.stories`
+Source: `src/app/module/engagement/engagement.controller.ts:119` - Handler: `EngagementAdminController.stories`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId') id: string
@@ -1623,7 +1638,7 @@ Upload/query/status metadata:
 @Get('companions/:companionId/stories')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1633,11 +1648,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/conversations
 
-Source: `src/app/module/engagement/engagement.controller.ts:125` • Handler: `EngagementAdminController.conversations`
+Source: `src/app/module/engagement/engagement.controller.ts:125` - Handler: `EngagementAdminController.conversations`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Query() query: PageDto
@@ -1649,7 +1664,7 @@ Upload/query/status metadata:
 @Get('conversations')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1659,11 +1674,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/conversations/:id
 
-Source: `src/app/module/engagement/engagement.controller.ts:128` • Handler: `EngagementAdminController.conversation`
+Source: `src/app/module/engagement/engagement.controller.ts:128` - Handler: `EngagementAdminController.conversation`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -1676,7 +1691,7 @@ Upload/query/status metadata:
 @Get('conversations/:id')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1686,11 +1701,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PATCH /api/v1/admin/conversations/:id/mode
 
-Source: `src/app/module/engagement/engagement.controller.ts:134` • Handler: `EngagementAdminController.mode`
+Source: `src/app/module/engagement/engagement.controller.ts:134` - Handler: `EngagementAdminController.mode`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -1704,7 +1719,7 @@ Upload/query/status metadata:
 @Patch('conversations/:id/mode')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1714,11 +1729,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/admin/conversations/:id/replies
 
-Source: `src/app/module/engagement/engagement.controller.ts:141` • Handler: `EngagementAdminController.reply`
+Source: `src/app/module/engagement/engagement.controller.ts:141` - Handler: `EngagementAdminController.reply`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -1732,7 +1747,7 @@ Upload/query/status metadata:
 @Post('conversations/:id/replies')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1742,11 +1757,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/users/:id/details
 
-Source: `src/app/module/engagement/engagement.controller.ts:148` • Handler: `EngagementAdminController.user`
+Source: `src/app/module/engagement/engagement.controller.ts:148` - Handler: `EngagementAdminController.user`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -1758,7 +1773,7 @@ Upload/query/status metadata:
 @Get('users/:id/details')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1768,11 +1783,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/users/:id/ledger
 
-Source: `src/app/module/engagement/engagement.controller.ts:151` • Handler: `EngagementAdminController.ledger`
+Source: `src/app/module/engagement/engagement.controller.ts:151` - Handler: `EngagementAdminController.ledger`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -1785,7 +1800,7 @@ Upload/query/status metadata:
 @Get('users/:id/ledger')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1795,11 +1810,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/admin/notifications
 
-Source: `src/app/module/engagement/engagement.controller.ts:157` • Handler: `EngagementAdminController.notification`
+Source: `src/app/module/engagement/engagement.controller.ts:157` - Handler: `EngagementAdminController.notification`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() body: NotificationDto
@@ -1811,7 +1826,7 @@ Upload/query/status metadata:
 @Post('notifications')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1825,11 +1840,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/gifts
 
-Source: `src/app/module/gift/gift.controller.ts:37` • Handler: `GiftController.createGift`
+Source: `src/app/module/gift/gift.controller.ts:41` - Handler: `GiftController.createGift`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() payload: CreateGiftDto
@@ -1847,7 +1862,7 @@ Upload/query/status metadata:
 @UseInterceptors(FileInterceptor('image', fileUpload.uploadConfig))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1858,11 +1873,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/gifts
 
-Source: `src/app/module/gift/gift.controller.ts:51` • Handler: `GiftController.getGifts`
+Source: `src/app/module/gift/gift.controller.ts:55` - Handler: `GiftController.getGifts`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -1882,7 +1897,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1897,13 +1912,75 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
-### PATCH /api/v1/gifts/:id
+### GET /api/v1/gifts/admin
 
-Source: `src/app/module/gift/gift.controller.ts:71` • Handler: `GiftController.updateGift`
+Source: `src/app/module/gift/gift.controller.ts:75` - Handler: `GiftController.adminGifts`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
+
+```typescript
+@Req() req: Request
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('admin')
+@UseGuards(AuthGuard('admin'))
+```
+
+Controller response mapping (normal JSON responses receive the global success envelope):
+
+```typescript
+{
+    const result = await this.giftService.getActiveGifts(
+      pick(req.query, ['searchTerm', 'name']),
+      pick(req.query, ['sortBy', 'sortOrder', 'limit', 'page']),
+      true,
+    );
+    return { data: result.data, meta: result.meta };
+  }
+```
+
+### GET /api/v1/gifts/history
+
+Source: `src/app/module/gift/gift.controller.ts:86` - Handler: `GiftController.history`
+
+Access: `UseGuards(AuthGuard('user'))`
+
+Request parameters, DTOs and pipes:
+
+```typescript
+@Req() req: Request
+@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('history')
+@UseGuards(AuthGuard('user'))
+```
+
+Controller response mapping (normal JSON responses receive the global success envelope):
+
+```typescript
+{
+    if (page < 1 || page > 100000)
+      throw new BadRequestException('Invalid page');
+    return { data: await this.giftService.history(req.user!.id, page) };
+  }
+```
+
+### PATCH /api/v1/gifts/:id
+
+Source: `src/app/module/gift/gift.controller.ts:97` - Handler: `GiftController.updateGift`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -1919,7 +1996,7 @@ Upload/query/status metadata:
 @ApiOperation({ summary: 'Update a gift (admin)' })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1930,11 +2007,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/gifts/:id
 
-Source: `src/app/module/gift/gift.controller.ts:80` • Handler: `GiftController.deactivateGift`
+Source: `src/app/module/gift/gift.controller.ts:106` - Handler: `GiftController.deactivateGift`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -1949,7 +2026,7 @@ Upload/query/status metadata:
 @ApiOperation({ summary: 'Deactivate a gift (admin)' })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1960,11 +2037,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/gifts/:giftId/send
 
-Source: `src/app/module/gift/gift.controller.ts:89` • Handler: `GiftController.sendGift`
+Source: `src/app/module/gift/gift.controller.ts:115` - Handler: `GiftController.sendGift`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -1981,7 +2058,7 @@ Upload/query/status metadata:
 @ApiOperation({ summary: 'Send a gift to a companion using credits' })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -1990,6 +2067,8 @@ Controller response mapping ও service call (সাধারণ JSON response-�
       request.user.id,
       payload.companionId,
       giftId,
+      payload.requestId,
+      payload.expectedCreditCost,
     );
     return { message: 'Gift sent successfully', data };
   }
@@ -1997,11 +2076,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/companions/:companionId/lifestyle/routine
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:48` • Handler: `LifestyleAdminController.routine`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:50` - Handler: `LifestyleAdminController.routine`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2013,7 +2092,7 @@ Upload/query/status metadata:
 @Get('routine')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2023,11 +2102,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/admin/companions/:companionId/lifestyle/routine
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:53` • Handler: `LifestyleAdminController.saveRoutine`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:55` - Handler: `LifestyleAdminController.saveRoutine`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2040,7 +2119,7 @@ Upload/query/status metadata:
 @Put('routine')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2050,11 +2129,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/companions/:companionId/lifestyle/context
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:59` • Handler: `LifestyleAdminController.context`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:61` - Handler: `LifestyleAdminController.context`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2066,7 +2145,7 @@ Upload/query/status metadata:
 @Get('context')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2077,11 +2156,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/companions/:companionId/lifestyle/photos
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:65` • Handler: `LifestyleAdminController.photos`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:67` - Handler: `LifestyleAdminController.photos`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2094,7 +2173,7 @@ Upload/query/status metadata:
 @Get('photos')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2102,13 +2181,39 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
-### POST /api/v1/admin/companions/:companionId/lifestyle/photos
+### POST /api/v1/admin/companions/:companionId/lifestyle/photos/import-gallery
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:71` • Handler: `LifestyleAdminController.upload`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:73` - Handler: `LifestyleAdminController.importGallery`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Post('photos/import-gallery')
+```
+
+Controller response mapping (normal JSON responses receive the global success envelope):
+
+```typescript
+{
+    return { data: await this.service.importGallery(id) };
+  }
+```
+
+### POST /api/v1/admin/companions/:companionId/lifestyle/photos
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:78` - Handler: `LifestyleAdminController.upload`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2135,7 +2240,7 @@ Upload/query/status metadata:
 @UseInterceptors(FileInterceptor('image', fileUpload.uploadConfig))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2145,11 +2250,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PATCH /api/v1/admin/companions/:companionId/lifestyle/photos/:photoId
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:92` • Handler: `LifestyleAdminController.approve`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:99` - Handler: `LifestyleAdminController.approve`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2163,7 +2268,7 @@ Upload/query/status metadata:
 @Patch('photos/:photoId')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2171,13 +2276,68 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
-### GET /api/v1/admin/companions/:companionId/lifestyle/daily-content
+### PUT /api/v1/admin/companions/:companionId/lifestyle/photos/:photoId
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:99` • Handler: `LifestyleAdminController.daily`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:106` - Handler: `LifestyleAdminController.editPhoto`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Param('photoId', ParseUUIDPipe) photoId: string
+@Body() dto: LibraryPhotoDto
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Put('photos/:photoId')
+```
+
+Controller response mapping (normal JSON responses receive the global success envelope):
+
+```typescript
+{
+    return { data: await this.service.editPhoto(id, photoId, dto) };
+  }
+```
+
+### DELETE /api/v1/admin/companions/:companionId/lifestyle/photos/:photoId
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:113` - Handler: `LifestyleAdminController.removePhoto`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters, DTOs and pipes:
+
+```typescript
+@Param('companionId', ParseUUIDPipe) id: string
+@Param('photoId', ParseUUIDPipe) photoId: string
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Delete('photos/:photoId')
+```
+
+Controller response mapping (normal JSON responses receive the global success envelope):
+
+```typescript
+{
+    return { data: await this.service.removePhoto(id, photoId) };
+  }
+```
+
+### GET /api/v1/admin/companions/:companionId/lifestyle/daily-content
+
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:119` - Handler: `LifestyleAdminController.daily`
+
+Access: `UseGuards(AuthGuard('admin'))`
+
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2190,7 +2350,7 @@ Upload/query/status metadata:
 @Get('daily-content')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2200,11 +2360,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/admin/companions/:companionId/lifestyle/daily-content
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:105` • Handler: `LifestyleAdminController.save`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:125` - Handler: `LifestyleAdminController.save`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2217,7 +2377,7 @@ Upload/query/status metadata:
 @Put('daily-content')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2227,11 +2387,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/admin/companions/:companionId/lifestyle/daily-content/:contentId/unpublish
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:111` • Handler: `LifestyleAdminController.unpublish`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:131` - Handler: `LifestyleAdminController.unpublish`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2244,7 +2404,7 @@ Upload/query/status metadata:
 @Post('daily-content/:contentId/unpublish')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2254,11 +2414,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/companions/:companionId/lifestyle/deliveries
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:117` • Handler: `LifestyleAdminController.deliveries`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:137` - Handler: `LifestyleAdminController.deliveries`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2271,7 +2431,7 @@ Upload/query/status metadata:
 @Get('deliveries')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2288,11 +2448,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/lifestyle/preference
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:140` • Handler: `LifestyleController.preference`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:161` - Handler: `LifestyleController.preference`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -2304,7 +2464,7 @@ Upload/query/status metadata:
 @Get('preference')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2314,11 +2474,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/lifestyle/preference
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:143` • Handler: `LifestyleController.save`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:164` - Handler: `LifestyleController.save`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -2331,7 +2491,7 @@ Upload/query/status metadata:
 @Put('preference')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2341,11 +2501,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/lifestyle/allowances
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:149` • Handler: `LifestyleController.allowances`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:170` - Handler: `LifestyleController.allowances`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -2357,7 +2517,7 @@ Upload/query/status metadata:
 @Get('allowances')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2367,11 +2527,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/lifestyle/companions/:companionId/photo
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:152` • Handler: `LifestyleController.photo`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:173` - Handler: `LifestyleController.photo`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -2385,21 +2545,29 @@ Upload/query/status metadata:
 @Post('companions/:companionId/photo')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
-    return { data: await this.service.requestPhoto(req.user!.id, id, dto) };
+    const result = await this.chat.sendMessage(
+      req.user!.id,
+      id,
+      `/photo${dto.tag ? ` ${dto.tag}` : ''}`,
+      req.headers.authorization!,
+      'text',
+      `library:${req.user!.id}:${id}:${dto.requestId}`,
+    );
+    return { data: result.message };
   }
 ```
 
 ### GET /api/v1/lifestyle/inbox
 
-Source: `src/app/module/lifestyle/lifestyle.controller.ts:159` • Handler: `LifestyleController.inbox`
+Source: `src/app/module/lifestyle/lifestyle.controller.ts:188` - Handler: `LifestyleController.inbox`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -2412,7 +2580,7 @@ Upload/query/status metadata:
 @Get('inbox')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2435,11 +2603,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/newsletter
 
-Source: `src/app/module/newsletter/newsletter.controller.ts:30` • Handler: `NewsletterController.sendMail`
+Source: `src/app/module/newsletter/newsletter.controller.ts:30` - Handler: `NewsletterController.sendMail`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() createNewsletterDto: CreateNewsletterDto
@@ -2453,7 +2621,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.CREATED)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2467,11 +2635,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/newsletter/broadcast
 
-Source: `src/app/module/newsletter/newsletter.controller.ts:41` • Handler: `NewsletterController.broadcastNewsletter`
+Source: `src/app/module/newsletter/newsletter.controller.ts:41` - Handler: `NewsletterController.broadcastNewsletter`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() dto: BroadcastNewsletterDto
@@ -2487,7 +2655,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2502,11 +2670,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/newsletter
 
-Source: `src/app/module/newsletter/newsletter.controller.ts:55` • Handler: `NewsletterController.getAllNewsletter`
+Source: `src/app/module/newsletter/newsletter.controller.ts:55` - Handler: `NewsletterController.getAllNewsletter`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -2556,7 +2724,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2577,11 +2745,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/newsletter/:id
 
-Source: `src/app/module/newsletter/newsletter.controller.ts:109` • Handler: `NewsletterController.getNewsletterById`
+Source: `src/app/module/newsletter/newsletter.controller.ts:109` - Handler: `NewsletterController.getNewsletterById`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -2595,7 +2763,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2608,13 +2776,43 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
+### GET /api/v1/payment/config
+
+Source: `src/app/module/payment/payment.controller.ts:30` - Handler: `PaymentController.config`
+
+Access: `Service/provider validation applies`
+
+Request parameters, DTOs and pipes:
+
+```typescript
+// No explicit parameters
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('config')
+@ApiOperation({ summary: 'Get public payment configuration' })
+```
+
+Controller response mapping (normal JSON responses receive the global success envelope):
+
+```typescript
+{
+    if (!config.stripe.publicKey) {
+      throw new ServiceUnavailableException('Stripe is not configured');
+    }
+    return { data: { publishableKey: config.stripe.publicKey } };
+  }
+```
+
 ### GET /api/v1/payment/subscription/status
 
-Source: `src/app/module/payment/payment.controller.ts:28` • Handler: `PaymentController.status`
+Source: `src/app/module/payment/payment.controller.ts:39` - Handler: `PaymentController.status`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -2628,7 +2826,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('user', 'admin'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2638,11 +2836,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/payment/subscription/sync
 
-Source: `src/app/module/payment/payment.controller.ts:35` • Handler: `PaymentController.sync`
+Source: `src/app/module/payment/payment.controller.ts:46` - Handler: `PaymentController.sync`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -2660,7 +2858,7 @@ Upload/query/status metadata:
   })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2670,11 +2868,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/payment/billing-portal
 
-Source: `src/app/module/payment/payment.controller.ts:46` • Handler: `PaymentController.portal`
+Source: `src/app/module/payment/payment.controller.ts:57` - Handler: `PaymentController.portal`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -2688,7 +2886,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('user', 'admin'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2698,11 +2896,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/payment/subscription/cancel
 
-Source: `src/app/module/payment/payment.controller.ts:53` • Handler: `PaymentController.cancel`
+Source: `src/app/module/payment/payment.controller.ts:64` - Handler: `PaymentController.cancel`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -2716,7 +2914,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('user', 'admin'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2726,11 +2924,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/payment/subscription/:subscriptionId/upgrade
 
-Source: `src/app/module/payment/payment.controller.ts:60` • Handler: `PaymentController.upgrade`
+Source: `src/app/module/payment/payment.controller.ts:71` - Handler: `PaymentController.upgrade`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -2745,7 +2943,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('user', 'admin'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2755,11 +2953,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/payment/subscription/:subscriptionId
 
-Source: `src/app/module/payment/payment.controller.ts:67` • Handler: `PaymentController.paySubscriber`
+Source: `src/app/module/payment/payment.controller.ts:78` - Handler: `PaymentController.paySubscriber`
 
 Access: `UseGuards(AuthGuard('admin', 'user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -2776,7 +2974,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('admin', 'user'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2798,11 +2996,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/payment/credits
 
-Source: `src/app/module/payment/payment.controller.ts:91` • Handler: `PaymentController.buyCredits`
+Source: `src/app/module/payment/payment.controller.ts:102` - Handler: `PaymentController.buyCredits`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -2819,7 +3017,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('user'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2834,11 +3032,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/companions/:companionId/telegram-profile
 
-Source: `src/app/module/publishing/publishing.controller.ts:50` • Handler: `PublishingAdminController.status`
+Source: `src/app/module/publishing/publishing.controller.ts:50` - Handler: `PublishingAdminController.status`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2855,7 +3053,7 @@ Upload/query/status metadata:
   })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2866,11 +3064,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/admin/companions/:companionId/telegram-profile
 
-Source: `src/app/module/publishing/publishing.controller.ts:60` • Handler: `PublishingAdminController.profile`
+Source: `src/app/module/publishing/publishing.controller.ts:60` - Handler: `PublishingAdminController.profile`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2888,7 +3086,7 @@ Upload/query/status metadata:
   })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2899,11 +3097,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/admin/companions/:companionId/telegram-profile/retry
 
-Source: `src/app/module/publishing/publishing.controller.ts:73` • Handler: `PublishingAdminController.retry`
+Source: `src/app/module/publishing/publishing.controller.ts:73` - Handler: `PublishingAdminController.retry`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2920,7 +3118,7 @@ Upload/query/status metadata:
   })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -2930,14 +3128,15 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/admin/companions/:companionId/media-stories
 
-Source: `src/app/module/publishing/publishing.controller.ts:82` • Handler: `PublishingAdminController.list`
+Source: `src/app/module/publishing/publishing.controller.ts:82` - Handler: `PublishingAdminController.list`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
+@Req() req: Request
 ```
 
 Upload/query/status metadata:
@@ -2946,21 +3145,21 @@ Upload/query/status metadata:
 @Get('media-stories')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
-    return { data: await this.stories.adminList(id) };
+    return { data: await this.stories.adminList(id, req.user!.id) };
   }
 ```
 
 ### POST /api/v1/admin/companions/:companionId/media-stories
 
-Source: `src/app/module/publishing/publishing.controller.ts:86` • Handler: `PublishingAdminController.publish`
+Source: `src/app/module/publishing/publishing.controller.ts:89` - Handler: `PublishingAdminController.publish`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -2991,7 +3190,7 @@ Upload/query/status metadata:
   )
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3001,11 +3200,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/admin/companions/:companionId/media-stories/:storyId
 
-Source: `src/app/module/publishing/publishing.controller.ts:111` • Handler: `PublishingAdminController.remove`
+Source: `src/app/module/publishing/publishing.controller.ts:114` - Handler: `PublishingAdminController.remove`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3018,7 +3217,7 @@ Upload/query/status metadata:
 @Delete('media-stories/:storyId')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3028,11 +3227,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/media-stories/summary
 
-Source: `src/app/module/publishing/publishing.controller.ts:126` • Handler: `MediaStoryController.summary`
+Source: `src/app/module/publishing/publishing.controller.ts:129` - Handler: `MediaStoryController.summary`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -3045,7 +3244,7 @@ Upload/query/status metadata:
 @Header('Cache-Control', 'no-store')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3055,11 +3254,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/media-stories/companions/:companionId
 
-Source: `src/app/module/publishing/publishing.controller.ts:131` • Handler: `MediaStoryController.feed`
+Source: `src/app/module/publishing/publishing.controller.ts:134` - Handler: `MediaStoryController.feed`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3073,7 +3272,7 @@ Upload/query/status metadata:
 @Header('Cache-Control', 'no-store')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3083,11 +3282,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/media-stories/:storyId/media
 
-Source: `src/app/module/publishing/publishing.controller.ts:145` • Handler: `StoryMediaController.media`
+Source: `src/app/module/publishing/publishing.controller.ts:148` - Handler: `StoryMediaController.media`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('storyId', ParseUUIDPipe) id: string
@@ -3103,7 +3302,7 @@ Upload/query/status metadata:
 @SetMetadata('rawResponse', true)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3153,11 +3352,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/telegram/stories
 
-Source: `src/app/module/publishing/publishing.controller.ts:202` • Handler: `TelegramStoryController.page`
+Source: `src/app/module/publishing/publishing.controller.ts:205` - Handler: `TelegramStoryController.page`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Res() res: Response
@@ -3170,7 +3369,7 @@ Upload/query/status metadata:
 @SetMetadata('rawResponse', true)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3189,11 +3388,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/telegram/stories/:companionId/feed
 
-Source: `src/app/module/publishing/publishing.controller.ts:216` • Handler: `TelegramStoryController.feed`
+Source: `src/app/module/publishing/publishing.controller.ts:219` - Handler: `TelegramStoryController.feed`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3207,7 +3406,7 @@ Upload/query/status metadata:
 @Header('Cache-Control', 'no-store')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3222,11 +3421,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/publishing/admin
 
-Source: `src/app/module/publishing/publishing.controller.ts:235` • Handler: `PublishingConsoleController.page`
+Source: `src/app/module/publishing/publishing.controller.ts:238` - Handler: `PublishingConsoleController.page`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Res() res: Response
@@ -3239,7 +3438,7 @@ Upload/query/status metadata:
 @SetMetadata('rawResponse', true)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3260,11 +3459,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/subscription
 
-Source: `src/app/module/subscription/subscription.controller.ts:26` • Handler: `SubscriptionController.createSubscription`
+Source: `src/app/module/subscription/subscription.controller.ts:26` - Handler: `SubscriptionController.createSubscription`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() createSubscriptionDto: CreateSubscriptionDto
@@ -3279,7 +3478,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('admin'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3295,11 +3494,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/subscription
 
-Source: `src/app/module/subscription/subscription.controller.ts:42` • Handler: `SubscriptionController.getAllSubscription`
+Source: `src/app/module/subscription/subscription.controller.ts:42` - Handler: `SubscriptionController.getAllSubscription`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -3358,7 +3557,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3384,11 +3583,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/subscription/:id
 
-Source: `src/app/module/subscription/subscription.controller.ts:110` • Handler: `SubscriptionController.getSubscriptionById`
+Source: `src/app/module/subscription/subscription.controller.ts:110` - Handler: `SubscriptionController.getSubscriptionById`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -3402,7 +3601,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3416,11 +3615,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/subscription/:id
 
-Source: `src/app/module/subscription/subscription.controller.ts:121` • Handler: `SubscriptionController.updateSubscription`
+Source: `src/app/module/subscription/subscription.controller.ts:121` - Handler: `SubscriptionController.updateSubscription`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -3436,7 +3635,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('admin'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3453,11 +3652,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/subscription/:id
 
-Source: `src/app/module/subscription/subscription.controller.ts:139` • Handler: `SubscriptionController.deleteSubscription`
+Source: `src/app/module/subscription/subscription.controller.ts:139` - Handler: `SubscriptionController.deleteSubscription`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -3472,7 +3671,7 @@ Upload/query/status metadata:
 @UseGuards(AuthGuard('admin'))
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3486,11 +3685,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/telegram/status/:companionId
 
-Source: `src/app/module/telegram/telegram-connect.controller.ts:28` • Handler: `TelegramConnectController.status`
+Source: `src/app/module/telegram/telegram-connect.controller.ts:28` - Handler: `TelegramConnectController.status`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -3509,7 +3708,7 @@ Upload/query/status metadata:
 @ApiParam({ name: 'companionId', format: 'uuid' })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3519,11 +3718,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/telegram/connect/:companionId
 
-Source: `src/app/module/telegram/telegram-connect.controller.ts:42` • Handler: `TelegramConnectController.connect`
+Source: `src/app/module/telegram/telegram-connect.controller.ts:42` - Handler: `TelegramConnectController.connect`
 
 Access: `UseGuards(AuthGuard('user'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() request: Request
@@ -3547,7 +3746,7 @@ Upload/query/status metadata:
   })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3557,11 +3756,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/telegram/app
 
-Source: `src/app/module/telegram/telegram-mini-app.controller.ts:43` • Handler: `TelegramMiniAppController.page`
+Source: `src/app/module/telegram/telegram-mini-app.controller.ts:43` - Handler: `TelegramMiniAppController.page`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Res() response: Response
@@ -3574,7 +3773,7 @@ Upload/query/status metadata:
 @SetMetadata('rawResponse', true)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3593,11 +3792,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/telegram/app/settings/:companionId
 
-Source: `src/app/module/telegram/telegram-mini-app.controller.ts:58` • Handler: `TelegramMiniAppController.settings`
+Source: `src/app/module/telegram/telegram-mini-app.controller.ts:58` - Handler: `TelegramMiniAppController.settings`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) companionId: string
@@ -3610,7 +3809,7 @@ Upload/query/status metadata:
 @Header('Cache-Control', 'no-store')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3620,11 +3819,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/telegram/app/login/:companionId
 
-Source: `src/app/module/telegram/telegram-mini-app.controller.ts:64` • Handler: `TelegramMiniAppController.login`
+Source: `src/app/module/telegram/telegram-mini-app.controller.ts:64` - Handler: `TelegramMiniAppController.login`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3639,7 +3838,7 @@ Upload/query/status metadata:
 @Header('Cache-Control', 'no-store')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3657,11 +3856,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/telegram/app/status/:companionId
 
-Source: `src/app/module/telegram/telegram-mini-app.controller.ts:82` • Handler: `TelegramMiniAppController.status`
+Source: `src/app/module/telegram/telegram-mini-app.controller.ts:82` - Handler: `TelegramMiniAppController.status`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) id: string
@@ -3676,7 +3875,7 @@ Upload/query/status metadata:
 @Header('Cache-Control', 'no-store')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3686,11 +3885,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/webhooks/telegram/:companionId
 
-Source: `src/app/module/telegram/telegram-webhook.controller.ts:24` • Handler: `TelegramWebhookController.receiveForCompanion`
+Source: `src/app/module/telegram/telegram-webhook.controller.ts:24` - Handler: `TelegramWebhookController.receiveForCompanion`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('companionId', ParseUUIDPipe) companionId: string
@@ -3705,7 +3904,7 @@ Upload/query/status metadata:
 @HttpCode(200)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3718,11 +3917,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/webhooks/telegram
 
-Source: `src/app/module/telegram/telegram-webhook.controller.ts:37` • Handler: `TelegramWebhookController.receive`
+Source: `src/app/module/telegram/telegram-webhook.controller.ts:37` - Handler: `TelegramWebhookController.receive`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() body: unknown
@@ -3736,7 +3935,7 @@ Upload/query/status metadata:
 @HttpCode(200)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3748,11 +3947,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/user
 
-Source: `src/app/module/user/user.controller.ts:38` • Handler: `UserController.createUser`
+Source: `src/app/module/user/user.controller.ts:43` - Handler: `UserController.createUser`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Body() createUserDto: CreateUserDto
@@ -3768,7 +3967,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.CREATED)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3783,11 +3982,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/user
 
-Source: `src/app/module/user/user.controller.ts:52` • Handler: `UserController.getAllUser`
+Source: `src/app/module/user/user.controller.ts:57` - Handler: `UserController.getAllUser`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -3865,7 +4064,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3890,14 +4089,14 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/user//overview
 
-Source: `src/app/module/user/user.controller.ts:138` • Handler: `UserController.getAllUserOverview`
+Source: `src/app/module/user/user.controller.ts:143` - Handler: `UserController.getAllUserOverview`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
-// কোনো parameter নেই
+// No explicit parameters
 ```
 
 Upload/query/status metadata:
@@ -3910,7 +4109,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3924,11 +4123,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/user/my-profile
 
-Source: `src/app/module/user/user.controller.ts:151` • Handler: `UserController.myProfile`
+Source: `src/app/module/user/user.controller.ts:156` - Handler: `UserController.myProfile`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
@@ -3946,7 +4145,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -3962,15 +4161,15 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/user/my-profile
 
-Source: `src/app/module/user/user.controller.ts:168` • Handler: `UserController.UpdateMyProfile`
+Source: `src/app/module/user/user.controller.ts:173` - Handler: `UserController.UpdateMyProfile`
 
 Access: `UseGuards(AuthGuard('user', 'admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: Request
-@Body() updateUserDto: UpdateUserDto
+@Body() updateUserDto: UpdateProfileDto
 @UploadedFile() file?: Express.Multer.File
 ```
 
@@ -3982,14 +4181,14 @@ Upload/query/status metadata:
     summary: 'update my profile',
   })
 @ApiConsumes('multipart/form-data')
-@ApiBody({ type: UpdateUserDto })
+@ApiBody({ type: UpdateProfileDto })
 @ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('user', 'admin'))
 @UseInterceptors(FileInterceptor('profileImage', fileUpload.uploadConfig))
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -4007,13 +4206,44 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
+### GET /api/v1/user/payments
+
+Source: `src/app/module/user/user.controller.ts:201` - Handler: `UserController.myPayments`
+
+Access: `UseGuards(AuthGuard('user', 'admin'))`
+
+Request parameters, DTOs and pipes:
+
+```typescript
+@Req() req: Request
+@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number
+```
+
+Upload/query/status metadata:
+
+```typescript
+@Get('payments')
+@ApiOperation({ summary: 'Read your own paginated payment history' })
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('user', 'admin'))
+```
+
+Controller response mapping (normal JSON responses receive the global success envelope):
+
+```typescript
+{
+    if (page < 1 || page > 100000) throw new BadRequestException('Invalid page');
+    return { data: await this.userService.myPayments(req.user!.id, page) };
+  }
+```
+
 ### GET /api/v1/user/:id
 
-Source: `src/app/module/user/user.controller.ts:196` • Handler: `UserController.getUserById`
+Source: `src/app/module/user/user.controller.ts:210` - Handler: `UserController.getUserById`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -4031,7 +4261,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -4046,11 +4276,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### PUT /api/v1/user/:id
 
-Source: `src/app/module/user/user.controller.ts:212` • Handler: `UserController.updateUser`
+Source: `src/app/module/user/user.controller.ts:226` - Handler: `UserController.updateUser`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -4071,7 +4301,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -4086,11 +4316,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### DELETE /api/v1/user/:id
 
-Source: `src/app/module/user/user.controller.ts:233` • Handler: `UserController.deleteUser`
+Source: `src/app/module/user/user.controller.ts:247` - Handler: `UserController.deleteUser`
 
 Access: `UseGuards(AuthGuard('admin'))`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Param('id') id: string
@@ -4108,7 +4338,7 @@ Upload/query/status metadata:
 @HttpCode(HttpStatus.OK)
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -4123,11 +4353,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### POST /api/v1/webhook
 
-Source: `src/app/module/webhook/webhook.controller.ts:14` • Handler: `WebhookController.handleWebhook`
+Source: `src/app/module/webhook/webhook.controller.ts:14` - Handler: `WebhookController.handleWebhook`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Req() req: RawBodyRequest<Request>
@@ -4142,7 +4372,7 @@ Upload/query/status metadata:
 @ApiOperation({ summary: 'Stripe webhook handler' })
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -4152,11 +4382,11 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /
 
-Source: `src/app.controller.ts:11` • Handler: `AppController.getHello`
+Source: `src/app.controller.ts:11` - Handler: `AppController.getHello`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
 @Res() res: Response
@@ -4168,7 +4398,7 @@ Upload/query/status metadata:
 @Get()
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -4178,14 +4408,14 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/health/live
 
-Source: `src/health.controller.ts:14` • Handler: `HealthController.live`
+Source: `src/health.controller.ts:14` - Handler: `HealthController.live`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
-// কোনো parameter নেই
+// No explicit parameters
 ```
 
 Upload/query/status metadata:
@@ -4194,7 +4424,7 @@ Upload/query/status metadata:
 @Get('live')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -4204,14 +4434,14 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /api/v1/health/ready
 
-Source: `src/health.controller.ts:17` • Handler: `HealthController.ready`
+Source: `src/health.controller.ts:17` - Handler: `HealthController.ready`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
-// কোনো parameter নেই
+// No explicit parameters
 ```
 
 Upload/query/status metadata:
@@ -4220,7 +4450,7 @@ Upload/query/status metadata:
 @Get('ready')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -4238,14 +4468,14 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /privacy-policy
 
-Source: `src/legal-pages.controller.ts:40` • Handler: `LegalPagesController.privacyPolicy`
+Source: `src/legal-pages.controller.ts:40` - Handler: `LegalPagesController.privacyPolicy`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
-// কোনো parameter নেই
+// No explicit parameters
 ```
 
 Upload/query/status metadata:
@@ -4255,7 +4485,7 @@ Upload/query/status metadata:
 @Header('Content-Type', 'text/html; charset=utf-8')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -4288,14 +4518,14 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /terms
 
-Source: `src/legal-pages.controller.ts:69` • Handler: `LegalPagesController.terms`
+Source: `src/legal-pages.controller.ts:69` - Handler: `LegalPagesController.terms`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
-// কোনো parameter নেই
+// No explicit parameters
 ```
 
 Upload/query/status metadata:
@@ -4305,7 +4535,7 @@ Upload/query/status metadata:
 @Header('Content-Type', 'text/html; charset=utf-8')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -4332,14 +4562,14 @@ Controller response mapping ও service call (সাধারণ JSON response-�
 
 ### GET /data-deletion
 
-Source: `src/legal-pages.controller.ts:92` • Handler: `LegalPagesController.dataDeletion`
+Source: `src/legal-pages.controller.ts:92` - Handler: `LegalPagesController.dataDeletion`
 
-Access: `Controller JWT guard নেই`
+Access: `Service/provider validation applies`
 
-Request parameters (নাম, DTO ও pipe অপরিবর্তিত):
+Request parameters, DTOs and pipes:
 
 ```typescript
-// কোনো parameter নেই
+// No explicit parameters
 ```
 
 Upload/query/status metadata:
@@ -4349,7 +4579,7 @@ Upload/query/status metadata:
 @Header('Content-Type', 'text/html; charset=utf-8')
 ```
 
-Controller response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):
+Controller response mapping (normal JSON responses receive the global success envelope):
 
 ```typescript
 {
@@ -4375,9 +4605,9 @@ Controller response mapping ও service call (সাধারণ JSON response-�
   }
 ```
 
-## Request DTO: সব field ও validation
+## Request DTO fields and validation
 
-IsOptional থাকলে optional; PartialType(BaseDto) base-এর field optional করে; nested class-ও নিচে আছে। TypeScript ? একাই runtime validation নয়—decorator-ও অনুসরণ করুন। Update DTO-তে inheritance/OmitType থাকলে বাদ দেওয়া field পাঠাবেন না। ApiProperty example production default নয়।
+IsOptional makes a field optional; PartialType makes inherited fields optional. Follow runtime decorators, nested Type/ValidateNested declarations and OmitType exclusions. ApiProperty examples are not production defaults.
 
 ### CreateAuthDto
 
@@ -4568,7 +4798,11 @@ Source: `src/app/module/chat/dto/send-message.dto.ts`
 
 ```typescript
 export class SendMessageDto {
-  @ApiProperty({required:false,description:'UUID; reuse on retries to avoid duplicate replies and charges'})
+  @ApiProperty({
+    required: false,
+    description:
+      'UUID; reuse on retries to avoid duplicate replies and charges',
+  })
   @IsOptional()
   @IsUUID()
   requestId?: string;
@@ -4584,7 +4818,7 @@ export class SendMessageDto {
   @ApiProperty({ example: 'Hello, how are you?' })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(5000)
+  @MaxLength(4000)
   message!: string;
 }
 ```
@@ -5275,6 +5509,15 @@ Source: `src/app/module/gift/dto/gift.dto.ts`
 
 ```typescript
 export class SendGiftDto {
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  expectedCreditCost?: number;
+
+  @IsOptional()
+  @IsUUID()
+  requestId?: string;
+
   @ApiProperty({ example: 'companion-id' })
   @IsString()
   @IsNotEmpty()
@@ -5720,6 +5963,26 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   profileImage?: string;
+}
+```
+
+### UpdateProfileDto
+
+Source: `src/app/module/user/dto/update-profile.dto.ts`
+
+```typescript
+export class UpdateProfileDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @Matches(/\S/)
+  @MaxLength(100)
+  name?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(30)
+  phoneNumber?: string;
 }
 ```
 

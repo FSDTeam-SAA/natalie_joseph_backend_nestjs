@@ -11,6 +11,9 @@ import {
   LibraryPhoto,
 } from '../../../../prisma/generated/prisma/client';
 import { fileUpload } from '../../helper/fileUploder';
+import { createHash } from 'node:crypto';
+import { photoTags } from './photo-intent';
+import type { AiReply } from '../../helper/ai/aiapi';
 import { storyMime } from '../publishing/media-story.service';
 import { CreditService } from '../credit/credit.service';
 import {
@@ -129,14 +132,7 @@ export class LifestyleService {
       throw new BadRequestException(
         'Only JPEG, PNG or WebP images are allowed',
       );
-    const tags = [
-      ...new Set(
-        dto.tags
-          .split(',')
-          .map((t) => t.trim().toLowerCase())
-          .filter(Boolean),
-      ),
-    ];
+    const tags = photoTags(dto.tags);
     if (tags.length > 20 || tags.some((t) => t.length > 80))
       throw new BadRequestException(
         'Use up to 20 tags, at most 80 characters each',
@@ -167,6 +163,45 @@ export class LifestyleService {
       skip: (page - 1) * 50,
     });
   }
+  async importGallery(id: string) {
+    await this.companion(id);
+    return this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM companions WHERE id=${id} FOR UPDATE`;
+      const companion = await tx.companions.findUniqueOrThrow({
+        where: { id },
+        select: { galleryImages: true },
+      });
+      const existing = await tx.libraryPhoto.findMany({
+        where: { companionId: id, url: { in: companion.galleryImages } },
+        select: { url: true },
+      });
+      const known = new Set(existing.map((photo) => photo.url));
+      const urls = [...new Set(companion.galleryImages)].filter((url) => {
+        try {
+          return new URL(url).protocol === 'https:' && !known.has(url);
+        } catch {
+          return false;
+        }
+      });
+      if (!urls.length) return { imported: 0 };
+      const result = await tx.libraryPhoto.createMany({
+        data: urls.map((url) => ({
+          companionId: id,
+          url,
+          tags: [],
+          approved: false,
+          caption: 'Companion gallery photo',
+          publicId: `gallery:${createHash('sha256').update(url).digest('hex')}`,
+          mimeType: /\.png(?:$|\?)/i.test(url)
+            ? 'image/png'
+            : /\.webp(?:$|\?)/i.test(url)
+              ? 'image/webp'
+              : 'image/jpeg',
+        })),
+      });
+      return { imported: result.count };
+    });
+  }
   async approve(id: string, photoId: string, approved: boolean) {
     const result = await this.prisma.libraryPhoto.updateMany({
       where: { id: photoId, companionId: id },
@@ -174,6 +209,129 @@ export class LifestyleService {
     });
     if (!result.count) throw new NotFoundException('Photo not found');
     return { approved };
+  }
+
+  async matchPhoto(
+    tx: Prisma.TransactionClient,
+    userId: string,
+    companionId: string,
+    tags: string[],
+  ): Promise<LibraryPhoto | null> {
+    const [photo] = await tx.$queryRaw<LibraryPhoto[]>`
+      SELECT p.* FROM library_photos p
+      WHERE p."companionId"=${companionId} AND p.approved=true
+        AND p.tags @> ${tags}::text[]
+        AND NOT EXISTS (SELECT 1 FROM photo_views v WHERE v."userId"=${userId}
+          AND v."companionId"=${companionId} AND v."photoUrl"=p.url)
+      ORDER BY p."createdAt" ASC, p.id ASC LIMIT 1`;
+    return photo ?? null;
+  }
+
+  async recordPhotoView(
+    tx: Prisma.TransactionClient,
+    userId: string,
+    companionId: string,
+    photoUrl: string,
+    creditCost: number,
+  ) {
+    await tx.photoView.upsert({
+      where: { userId_companionId_photoUrl: { userId, companionId, photoUrl } },
+      create: { userId, companionId, photoUrl, creditCost },
+      update: { viewCount: { increment: 1 }, lastViewedAt: new Date() },
+    });
+  }
+
+  async recentSharedPhotos(
+    tx: Prisma.TransactionClient,
+    userId: string,
+    companionId: string,
+  ) {
+    const rows = await tx.chatMessage.findMany({
+      where: {
+        userId,
+        companionId,
+        aiPayload: { path: ['source'], equals: 'library' },
+      },
+      select: { response: true, aiPayload: true, createdAt: true },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      take: 3,
+    });
+    return rows.map((row) => ({
+      caption: row.response,
+      sentAt: row.createdAt.toISOString(),
+      tags: (row.aiPayload as unknown as AiReply)?.photo_tags || [],
+    }));
+  }
+
+  async retainGeneratedPhoto(
+    tx: Prisma.TransactionClient,
+    companionId: string,
+    reply: AiReply,
+    tags: string[],
+  ) {
+    const media = reply.media;
+    // Private AI archive URLs require the requesting user's token and cannot be shared.
+    if (reply.message_type !== 'image' || media?.kind !== 'image') return;
+    if (!/^[a-f\d]{8}-(?:[a-f\d]{4}-){3}[a-f\d]{12}$/i.test(media.id)) return;
+    const url = new URL(media.url);
+    if (
+      url.protocol !== 'https:' ||
+      url.username ||
+      url.password ||
+      /\/media\//i.test(url.pathname) ||
+      url.search ||
+      url.hash
+    )
+      return;
+    await tx.libraryPhoto.upsert({
+      where: { id: media.id },
+      create: {
+        id: media.id,
+        companionId,
+        url: media.url,
+        publicId: `generated:${media.id}`,
+        mimeType: media.mime_type,
+        caption: 'AI-generated companion photo',
+        tags,
+        approved: false,
+      },
+      update: {},
+    });
+  }
+
+  async editPhoto(id: string, photoId: string, dto: LibraryPhotoDto) {
+    const tags = photoTags(dto.tags);
+    if (tags.length > 20 || tags.some((tag) => tag.length > 80))
+      throw new BadRequestException(
+        'Use up to 20 tags, at most 80 characters each',
+      );
+    const result = await this.prisma.libraryPhoto.updateMany({
+      where: { id: photoId, companionId: id },
+      data: { tags, caption: dto.caption },
+    });
+    if (!result.count) throw new NotFoundException('Photo not found');
+    return { updated: true };
+  }
+
+  async removePhoto(id: string, photoId: string) {
+    // Keep storage objects used by delivered chat history; remove only the library entry.
+    // Daily content has a foreign key; the database arbitrates concurrent scheduling.
+    try {
+      const result = await this.prisma.libraryPhoto.deleteMany({
+        where: { id: photoId, companionId: id },
+      });
+      if (!result.count) throw new NotFoundException('Photo not found');
+      return { deleted: true };
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2003'
+      )
+        throw new BadRequestException(
+          'This photo is used by daily content. Mark it pending to stop new deliveries.',
+        );
+      throw error;
+    }
   }
   async saveDaily(id: string, dto: DailyContentDto) {
     await this.companion(id);

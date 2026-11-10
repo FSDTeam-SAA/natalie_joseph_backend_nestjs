@@ -28,22 +28,19 @@ for(const file of files){
 }
 const target=path.join(root,'docs/frontend-handoff');fs.mkdirSync(target,{recursive:true});
 fs.writeFileSync(path.join(target,'api-contract.json'),JSON.stringify({generatedAt:new Date().toISOString(),note:'Source inventory, not OpenAPI. Controller guards are shown; service validation still applies.',routes,dtos},null,2));
-let md='# Meet Elysia — সম্পূর্ণ API ও request field reference\n\nController ও DTO থেকে সরাসরি তৈরি; live API test নয়। নতুন lifestyle API নির্দেশনা: [Backend handover](../README-lifestyle-handoff-bn.md)। মূল নির্দেশনা: [বাংলা integration guide](./frontend-integration-bn.md)।\n\n';
-md+=`মোট **${routes.length}টি route**, **${dtos.length}টি DTO class**। কোনো real token/password/env value অন্তর্ভুক্ত নেই।\n\n`;
-md+='## সব endpoint এক নজরে\n\n| Method | সম্পূর্ণ path | Controller-এ access | Handler |\n|---|---|---|---|\n';
+let md='# Meet Elysia - Complete API and request-field reference\n\nGenerated directly from controller and DTO source; this is not a live API test. See the [integration guide](./frontend-integration-bn.md) and [lifestyle guide](../README-lifestyle-handoff-bn.md).\n\n';
+md+=`**${routes.length} routes**, **${dtos.length} DTO classes**. No credentials or customer data are included.\n\n`;
+md+='## Endpoint index\n\n| Method | Full path | Controller access | Handler |\n|---|---|---|---|\n';
 const cell=s=>s.replaceAll('|','\\|').replace(/\s+/g,' ');
-for(const r of routes)md+=`| ${r.method} | \`${r.path}\` | ${cell(r.guards.join('; ')||'JWT guard নেই; নিচের service/webhook নিয়ম দেখুন')} | ${r.handler} |\n`;
-md+='\n## প্রতিটি endpoint-এর input ও response mapping\n\nJWT guard নেই মানেই external webhook বা Mini App unrestricted নয়। Signature/initData validation service-এ হয়। @Req() query-এর প্রকৃত allowlist handler-এর pick(...) এ দেওয়া আছে। Nest default status POST=201, অন্যগুলো=200, যদি @HttpCode বা raw response override না করে।\n\n';
-for(const r of routes){md+=`### ${r.method} ${r.path}\n\nSource: \`${r.file}:${r.line}\` • Handler: \`${r.controller}.${r.handler}\`\n\nAccess: \`${r.guards.join('; ')||'Controller JWT guard নেই'}\`\n\nRequest parameters (নাম, DTO ও pipe অপরিবর্তিত):\n\n\`\`\`typescript\n${r.parameters.join('\n')||'// কোনো parameter নেই'}\n\`\`\`\n\nUpload/query/status metadata:\n\n\`\`\`typescript\n${r.decorators.join('\n')}\n\`\`\`\n\nController response mapping ও service call (সাধারণ JSON response-এর বাইরে success envelope যোগ হয়):\n\n\`\`\`typescript\n${r.handlerSource}\n\`\`\`\n\n`;}
-md+='## Request DTO: সব field ও validation\n\nIsOptional থাকলে optional; PartialType(BaseDto) base-এর field optional করে; nested class-ও নিচে আছে। TypeScript ? একাই runtime validation নয়—decorator-ও অনুসরণ করুন। Update DTO-তে inheritance/OmitType থাকলে বাদ দেওয়া field পাঠাবেন না। ApiProperty example production default নয়।\n\n';
+for(const r of routes)md+=`| ${r.method} | \`${r.path}\` | ${cell(r.guards.join('; ')||'Service, signature or webhook validation applies')} | ${r.handler} |\n`;
+md+='\n## Exact endpoint inputs and response mapping\n\nAn absent JWT guard does not make a signed webhook or Mini App unrestricted. Services validate signatures and Telegram initData. Handler pick(...) calls define query allowlists. Nest defaults to POST=201 and other methods=200 unless overridden. Controller source shows response mapping, not a live response example.\n\n';
+for(const r of routes){md+=`### ${r.method} ${r.path}\n\nSource: \`${r.file}:${r.line}\` - Handler: \`${r.controller}.${r.handler}\`\n\nAccess: \`${r.guards.join('; ')||'Service/provider validation applies'}\`\n\nRequest parameters, DTOs and pipes:\n\n\`\`\`typescript\n${r.parameters.join('\n')||'// No explicit parameters'}\n\`\`\`\n\nUpload/query/status metadata:\n\n\`\`\`typescript\n${r.decorators.join('\n')}\n\`\`\`\n\nController response mapping (normal JSON responses receive the global success envelope):\n\n\`\`\`typescript\n${r.handlerSource}\n\`\`\`\n\n`;}
+md+='## Request DTO fields and validation\n\nIsOptional makes a field optional; PartialType makes inherited fields optional. Follow runtime decorators, nested Type/ValidateNested declarations and OmitType exclusions. ApiProperty examples are not production defaults.\n\n';
 for(const d of dtos)md+=`### ${d.name}\n\nSource: \`${d.file}\`\n\n\`\`\`typescript\n${d.source}\n\`\`\`\n\n`;
 fs.writeFileSync(path.join(target,'api-reference-bn.md'),md);
-console.log(JSON.stringify({routes:routes.length,dtos:dtos.length,controllers:[...new Set(routes.map(r=>r.controller))]}));
-
-// Frontend-only index mirrors Swagger exclusions; full reference retains internal routes for backend operations.
 const visible=routes.filter(r=>r.swaggerVisible);
-let frontend='# Website ও Dashboard — Frontend API তালিকা\n\nSwagger-এ এই API-গুলো দেখা যাবে। Internal webhook, Telegram Mini App implementation, health ও server HTML routes চালু আছে, কিন্তু frontend engineer-কে implement করতে হয় না বলে hidden। Telegram connect এবং signed media endpoint frontend-এর দরকার, তাই রাখা হয়েছে।\n\n';
-frontend+='মোট '+visible.length+'টি frontend-visible route। Full request/response: [পূর্ণ README](README-FRONTEND-FULL-BN.md)।\n\n| Method | API | Access | Handler |\n|---|---|---|---|\n';
-for(const r of visible)frontend+='| '+r.method+' | '+r.path+' | '+cell(r.guards.join('; ')||'Public অথবা service-level validation')+' | '+r.handler+' |\n';
+let frontend='# Website and Dashboard - Frontend API index\n\nThese routes are visible in Swagger. Internal webhooks, implementation pages and health routes remain in the full source inventory. Connect and signed-media endpoints are retained where frontend integration requires them.\n\n';
+frontend+=`**${visible.length} frontend-visible routes**. See the [complete handbook](README-FRONTEND-FULL-BN.md) for request and response mapping.\n\n| Method | API | Access | Handler |\n|---|---|---|---|\n`;
+for(const r of visible)frontend+='| '+r.method+' | '+r.path+' | '+cell(r.guards.join('; ')||'Public or service-level validation')+' | '+r.handler+' |\n';
 fs.writeFileSync(path.join(target,'FRONTEND-API-ONLY-BN.md'),frontend);
-console.log(JSON.stringify({swaggerVisible:visible.length,internalHidden:routes.length-visible.length}));
+console.log(JSON.stringify({routes:routes.length,dtos:dtos.length,swaggerVisible:visible.length,internalHidden:routes.length-visible.length}));

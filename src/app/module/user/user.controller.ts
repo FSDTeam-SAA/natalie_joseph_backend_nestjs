@@ -6,6 +6,10 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
+  BadRequestException,
   Post,
   Put,
   Req,
@@ -28,6 +32,7 @@ import pick from 'src/app/helper/pick';
 import { AuthGuard } from 'src/app/middlewares/auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UserService } from './user.service';
 
 @ApiTags('user')
@@ -170,14 +175,14 @@ export class UserController {
     summary: 'update my profile',
   })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: UpdateUserDto })
+  @ApiBody({ type: UpdateProfileDto })
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('user', 'admin'))
   @UseInterceptors(FileInterceptor('profileImage', fileUpload.uploadConfig))
   @HttpCode(HttpStatus.OK)
   async UpdateMyProfile(
     @Req() req: Request,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: UpdateProfileDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
     const id = req.user!.id;
@@ -191,6 +196,15 @@ export class UserController {
       message: 'update my profile successfully',
       data: result,
     };
+  }
+
+  @Get('payments')
+  @ApiOperation({ summary: 'Read your own paginated payment history' })
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('user', 'admin'))
+  async myPayments(@Req() req: Request, @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number) {
+    if (page < 1 || page > 100000) throw new BadRequestException('Invalid page');
+    return { data: await this.userService.myPayments(req.user!.id, page) };
   }
 
   @Get(':id')

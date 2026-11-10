@@ -14,6 +14,7 @@ import { CreditService } from '../credit/credit.service';
 import { LifestyleService } from '../lifestyle/lifestyle.service';
 import { policy } from '../lifestyle/lifestyle-policy';
 import { responseCost } from './response-cost';
+import { photoIntent } from '../lifestyle/photo-intent';
 
 @Injectable()
 export class ChatService {
@@ -128,6 +129,8 @@ export class ChatService {
     message = message.trim();
     if (!message && !audio)
       throw new BadRequestException('Message must not be blank');
+    if (message.length > 4000)
+      throw new BadRequestException('Message must be at most 4000 characters');
     const started = Date.now();
     let lockedAt: number | undefined;
     let aiStartedAt: number | undefined;
@@ -148,6 +151,14 @@ export class ChatService {
               saved.userId === userId &&
               saved.companionId === companionId
             ) {
+              const legacyPhoto =
+                saved.message === '[Library photo request]' &&
+                whatsappMessageKey.startsWith('library:') &&
+                photoIntent(message);
+              if (!audio && saved.message !== message && !legacyPhoto)
+                throw new BadRequestException(
+                  'This request ID was already used for another message',
+                );
               return {
                 message_type:
                   (saved.aiPayload as unknown as AiReply | null)
@@ -201,7 +212,7 @@ export class ChatService {
           await this.creditService.expirePurchasedCredits(tx, userId);
           const wallet = await tx.user.findUniqueOrThrow({
             where: { id: userId },
-            select: { creditBalance: true },
+            select: { creditBalance: true, adultEligible: true },
           });
           const available =
             wallet.creditBalance +
@@ -213,12 +224,43 @@ export class ChatService {
           let conversation = await tx.chatConversation.findUnique({
             where: { userId_companionId: { userId, companionId } },
           });
-          const minimumCost = enhanced
-            ? Math.min(costs.message, costs.photo, costs.voice) +
-              (audio ? costs.transcription : 0)
-            : type === 'voice'
-              ? costs.voice
-              : costs.message;
+          const photoRequest =
+            !audio && type === 'text' && conversation?.mode !== 'human'
+              ? photoIntent(message)
+              : null;
+          const upstreamMessage = photoRequest?.shareable
+            ? `Send me a photo of yourself${photoRequest.tags.length ? `: ${photoRequest.tags.join(', ')}` : '.'}`
+            : photoRequest?.prompt || message;
+          if (upstreamMessage.length > 4000)
+            throw new BadRequestException(
+              'Please shorten your photo description to 3900 characters',
+            );
+          if (photoRequest && wallet.adultEligible !== true)
+            throw new HttpException(
+              'An approved adult user account is required for photos',
+              403,
+            );
+          const libraryPhoto = photoRequest?.libraryEligible
+            ? await this.lifestyle.matchPhoto(
+                tx,
+                userId,
+                companionId,
+                photoRequest.tags,
+              )
+            : null;
+          if (isTrial && photoRequest && !libraryPhoto)
+            throw new HttpException(
+              'No matching approved photo is available. Custom AI images require a paid plan.',
+              403,
+            );
+          const minimumCost = photoRequest
+            ? costs.photo
+            : enhanced
+              ? Math.min(costs.message, costs.photo, costs.voice) +
+                (audio ? costs.transcription : 0)
+              : type === 'voice'
+                ? costs.voice
+                : costs.message;
           if (
             conversation?.mode !== 'human' &&
             !isTrial &&
@@ -233,20 +275,26 @@ export class ChatService {
             await this.lifestyle.allowance(
               tx,
               activeSubscription,
-              'trial_reply',
+              libraryPhoto ? 'included_photo' : 'trial_reply',
             );
 
           const aiCompanionId = companion.id;
           if (!conversation) {
-            const remote = await this.aiApi.createConversation(
-              aiCompanionId,
-              authorization,
-            );
+            const remote = libraryPhoto
+              ? null
+              : await this.aiApi.createConversation(
+                  aiCompanionId,
+                  authorization,
+                );
             conversation = await tx.chatConversation.create({
-              data: { userId, companionId, aiConversationId: remote.id },
+              data: { userId, companionId, aiConversationId: remote?.id },
             });
           }
-          if (conversation.mode === 'ai' && !conversation.aiConversationId) {
+          if (
+            conversation.mode === 'ai' &&
+            !conversation.aiConversationId &&
+            !libraryPhoto
+          ) {
             const remote = await this.aiApi.createConversation(
               aiCompanionId,
               authorization,
@@ -258,12 +306,17 @@ export class ChatService {
           }
           const inputAudio =
             audio && conversation.mode !== 'human' ? await audio() : undefined;
-          // Only approved companion content is shared when explicitly enabled.
-          // Never include private relationship notes or other users' histories.
+          // Share this user's own library-delivery context for continuity without
+          // making a model call to persist a photo. Public lifestyle data is optional.
           const context =
-            conversation.mode !== 'human' && (contextual || enhanced || isTrial)
+            !libraryPhoto && conversation.mode !== 'human'
               ? {
                   version: 'lifestyle-v1',
+                  recentSharedPhotos: await this.lifestyle.recentSharedPhotos(
+                    tx,
+                    userId,
+                    companionId,
+                  ),
                   ...(contextual
                     ? await this.lifestyle.context(companionId, tx)
                     : {}),
@@ -275,28 +328,50 @@ export class ChatService {
                     available_credits: isTrial ? 0 : available,
                     prices: costs,
                     billing_mode: enhanced ? 'response' : 'legacy',
+                    library_reuse: !!photoRequest?.shareable,
                   },
                 }
               : undefined;
           aiStartedAt = Date.now();
-          const reply =
-            conversation.mode === 'human'
+          const reply: AiReply | null = libraryPhoto
+            ? {
+                message_id: messageId,
+                conversation_id:
+                  conversation.aiConversationId || conversation.id,
+                companion_id: companionId,
+                created_at: new Date().toISOString(),
+                message_type: 'image',
+                source: 'library',
+                photo_tags: libraryPhoto.tags,
+                response: libraryPhoto.caption,
+                usage: { input_tokens: 0, output_tokens: 0 },
+                media: {
+                  id: libraryPhoto.id,
+                  kind: 'image',
+                  url: libraryPhoto.url,
+                  mime_type: libraryPhoto.mimeType,
+                  byte_size: 0,
+                },
+              }
+            : conversation.mode === 'human'
               ? null
               : await this.aiApi.sendMessage(
                   conversation.aiConversationId!,
                   aiCompanionId,
-                  message,
+                  upstreamMessage,
                   authorization,
                   whatsappMessageKey || messageId,
                   inputAudio,
                   context,
+                  type === 'voice',
                 );
           aiFinishedAt = Date.now();
           if (
             isTrial &&
             reply &&
             reply.message_type &&
-            reply.message_type !== 'text'
+            reply.message_type !== 'text' &&
+            !libraryPhoto
           )
             throw new BadGatewayException(
               'AI returned content not permitted in trial',
@@ -304,9 +379,11 @@ export class ChatService {
           if (reply && !isTrial)
             creditCost = enhanced
               ? responseCost(reply, !!inputAudio, costs)
-              : type === 'voice'
-                ? costs.voice
-                : costs.message;
+              : reply.message_type === 'image'
+                ? costs.photo
+                : reply.message_type === 'audio' || type === 'voice'
+                  ? costs.voice
+                  : costs.message;
           const charge =
             reply && !isTrial
               ? await this.creditService.consumeCredits(
@@ -332,6 +409,24 @@ export class ChatService {
               'Not enough credits for this response. Please add credits.',
               402,
             );
+          if (reply?.message_type === 'image' && reply.media) {
+            await this.lifestyle.recordPhotoView(
+              tx,
+              userId,
+              companionId,
+              reply.media.url,
+              creditCost,
+            );
+            // Only generic, known-category prompts are eligible for shared-library review.
+            // Custom/personal requests stay private to this user's conversation.
+            if (!libraryPhoto && photoRequest?.shareable)
+              await this.lifestyle.retainGeneratedPhoto(
+                tx,
+                companionId,
+                reply,
+                photoRequest.tags,
+              );
+          }
           const usedCredit = (charge?.fromPurchased ?? 0) > 0;
           await tx.chatConversation.update({
             where: { id: conversation.id },

@@ -66,7 +66,13 @@ export function websiteUrl(
     throw new ServiceUnavailableException(
       `${setting} must be an absolute HTTP(S) URL`,
     );
-  url.searchParams.set('companionId', companionId);
+    // Legacy pricing links cannot top up credits. Keep custom destinations intact.
+    if (kind === 'credits' && url.pathname === '/' && url.hash === '#pricing') {
+      url.pathname = '/account';
+      url.hash = '';
+      url.searchParams.set('tab', 'subscription');
+    }
+    url.searchParams.set('companionId', companionId);
   url.searchParams.set('source', 'telegram');
   return url.toString();
 }

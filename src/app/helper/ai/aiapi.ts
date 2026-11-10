@@ -28,6 +28,8 @@ export interface AiAudio {
 }
 
 export interface AiReply {
+  source?: 'library';
+  photo_tags?: string[];
   context_version?: string;
   billing?: { voice_characters?: number; transcription_seconds?: number };
   message_type?: 'text' | 'image' | 'audio';
@@ -178,6 +180,7 @@ export class AiApi {
     idempotencyKey: string,
     audio?: AiAudio,
     context?: Record<string, unknown>,
+    requestVoiceResponse = false,
   ) {
     const form = new FormData();
     form.set('conversation_id', conversationId);
@@ -185,6 +188,7 @@ export class AiApi {
     form.set('message', message);
     form.set('idempotency_key', aiIdempotencyKey(idempotencyKey));
     if (context) form.set('context', JSON.stringify(context));
+    if (requestVoiceResponse) form.set('request_voice_response', 'true');
     if (audio)
       form.set(
         'audio',

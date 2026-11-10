@@ -19,6 +19,7 @@ type Job = {
 export class TelegramQueueService {
   private readonly logger = new Logger(TelegramQueueService.name);
   private active = 0;
+  private wakeScheduled = false;
   constructor(
     private readonly prisma: PrismaService,
     private readonly telegram: TelegramService,
@@ -69,6 +70,16 @@ export class TelegramQueueService {
       .$executeRaw`INSERT INTO telegram_jobs (id, bot, "chatId", payload)
       VALUES (${id}, ${key}, ${String(message.chat!.id)}, ${payload}::jsonb) ON CONFLICT (id) DO NOTHING`;
     // Acknowledge only after durable storage; never acknowledge a database failure.
+    this.wakeWorker();
+  }
+
+  private wakeWorker() {
+    if (this.wakeScheduled) return;
+    this.wakeScheduled = true;
+    setImmediate(() => {
+      this.wakeScheduled = false;
+      void this.drain();
+    });
   }
 
   @Interval(1000)
@@ -87,10 +98,12 @@ export class TelegramQueueService {
     )
       return;
     this.active++;
+    let claimed = false;
     try {
       const jobs = await this.prisma.$transaction(async (tx) => {
         // Short global claim lock prevents two replicas claiming different jobs for one chat.
-        await tx.$queryRaw`SELECT pg_advisory_xact_lock(193811, 1)`;
+        // PostgreSQL returns void for this lock; Prisma cannot deserialize void.
+        await tx.$queryRaw`SELECT pg_advisory_xact_lock(193811, 1)::text AS locked`;
         await tx.$executeRaw`UPDATE telegram_jobs SET status = CASE WHEN attempts >= 5 THEN 'failed' ELSE 'pending' END,
           "leaseUntil" = NULL, "leaseToken" = NULL, "updatedAt" = NOW()
           WHERE status = 'processing' AND "leaseUntil" < NOW()`;
@@ -109,6 +122,9 @@ export class TelegramQueueService {
           "leaseUntil"=NOW()+INTERVAL '15 minutes', "leaseToken"=${leaseToken}, "updatedAt"=NOW()
           WHERE id=${rows[0].id} RETURNING id,bot,payload,attempts,"leaseToken"`;
       });
+      claimed = jobs.length > 0;
+      // Fill another free slot without waiting for the polling fallback.
+      if (claimed) this.wakeWorker();
       for (const job of jobs) {
         try {
           if (!botKeys.includes(job.bot)) throw new Error('Unknown bot');
@@ -132,12 +148,14 @@ export class TelegramQueueService {
           );
         }
       }
-    } catch {
+    } catch (error) {
+      const code = (error as { code?: unknown })?.code;
       this.logger.error(
-        'Telegram queue unavailable; check database and migration status',
+        `Telegram queue unavailable; check database and migration status${typeof code === 'string' && /^[A-Z0-9]{1,12}$/.test(code) ? ` (code=${code})` : ''}`,
       );
     } finally {
       this.active--;
+      if (claimed) this.wakeWorker();
     }
   }
 

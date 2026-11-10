@@ -1,17 +1,17 @@
-# Website ও Dashboard — Frontend API তালিকা
+# Website and Dashboard - Frontend API index
 
-Swagger-এ এই API-গুলো দেখা যাবে। Internal webhook, Telegram Mini App implementation, health ও server HTML routes চালু আছে, কিন্তু frontend engineer-কে implement করতে হয় না বলে hidden। Telegram connect এবং signed media endpoint frontend-এর দরকার, তাই রাখা হয়েছে।
+These routes are visible in Swagger. Internal webhooks, implementation pages and health routes remain in the full source inventory. Connect and signed-media endpoints are retained where frontend integration requires them.
 
-মোট 103টি frontend-visible route। Full request/response: [পূর্ণ README](README-FRONTEND-FULL-BN.md)।
+**110 frontend-visible routes**. See the [complete handbook](README-FRONTEND-FULL-BN.md) for request and response mapping.
 
 | Method | API | Access | Handler |
 |---|---|---|---|
-| POST | /api/v1/auth/register | Public অথবা service-level validation | register |
-| POST | /api/v1/auth/login | Public অথবা service-level validation | login |
-| GET | /api/v1/auth/refresh | Public অথবা service-level validation | refreshToken |
-| POST | /api/v1/auth/forgot-password | Public অথবা service-level validation | forgotPassword |
-| POST | /api/v1/auth/verify-otp | Public অথবা service-level validation | verifyOtp |
-| POST | /api/v1/auth/reset-password | Public অথবা service-level validation | resetPassword |
+| POST | /api/v1/auth/register | Public or service-level validation | register |
+| POST | /api/v1/auth/login | Public or service-level validation | login |
+| GET | /api/v1/auth/refresh | Public or service-level validation | refreshToken |
+| POST | /api/v1/auth/forgot-password | Public or service-level validation | forgotPassword |
+| POST | /api/v1/auth/verify-otp | Public or service-level validation | verifyOtp |
+| POST | /api/v1/auth/reset-password | Public or service-level validation | resetPassword |
 | POST | /api/v1/auth/change-password | UseGuards(AuthGuard('admin', 'user')) | changePassword |
 | POST | /api/v1/auth/logout | UseGuards(AuthGuard('admin', 'user')) | logout |
 | GET | /api/v1/chat/conversations | UseGuards(AuthGuard('user')) | getConversations |
@@ -19,8 +19,8 @@ Swagger-এ এই API-গুলো দেখা যাবে। Internal webhoo
 | GET | /api/v1/chat/usage | UseGuards(AuthGuard('user')) | getUsage |
 | POST | /api/v1/chat/:companionId/messages | UseGuards(AuthGuard('user')) | sendMessage |
 | POST | /api/v1/companions | UseGuards(AuthGuard('admin')) | createCompanion |
-| GET | /api/v1/companions | Public অথবা service-level validation | getAllCompanions |
-| GET | /api/v1/companions/:id | Public অথবা service-level validation | getCompanionById |
+| GET | /api/v1/companions | Public or service-level validation | getAllCompanions |
+| GET | /api/v1/companions/:id | Public or service-level validation | getCompanionById |
 | PUT | /api/v1/companions/:id | UseGuards(AuthGuard('admin')) | updateCompanion |
 | PUT | /api/v1/companions/:id/profile-image | UseGuards(AuthGuard('admin')) | updateProfileImage |
 | PUT | /api/v1/companions/:id/cover-image | UseGuards(AuthGuard('admin')) | updateCoverImage |
@@ -30,7 +30,7 @@ Swagger-এ এই API-গুলো দেখা যাবে। Internal webhoo
 | DELETE | /api/v1/companions/:id | UseGuards(AuthGuard('admin')) | deleteCompanion |
 | PUT | /api/v1/companions/:id/voice | UseGuards(AuthGuard('admin')) | updateVoice |
 | POST | /api/v1/credits/packages | UseGuards(AuthGuard('admin')) | createPackage |
-| GET | /api/v1/credits/packages | Public অথবা service-level validation | getPackages |
+| GET | /api/v1/credits/packages | Public or service-level validation | getPackages |
 | PATCH | /api/v1/credits/packages/:id | UseGuards(AuthGuard('admin')) | updatePackage |
 | DELETE | /api/v1/credits/packages/:id | UseGuards(AuthGuard('admin')) | deactivatePackage |
 | GET | /api/v1/credits/wallet | UseGuards(AuthGuard('user')) | getWallet |
@@ -55,7 +55,9 @@ Swagger-এ এই API-গুলো দেখা যাবে। Internal webhoo
 | GET | /api/v1/admin/users/:id/ledger | UseGuards(AuthGuard('admin')) | ledger |
 | POST | /api/v1/admin/notifications | UseGuards(AuthGuard('admin')) | notification |
 | POST | /api/v1/gifts | UseGuards(AuthGuard('admin')) | createGift |
-| GET | /api/v1/gifts | Public অথবা service-level validation | getGifts |
+| GET | /api/v1/gifts | Public or service-level validation | getGifts |
+| GET | /api/v1/gifts/admin | UseGuards(AuthGuard('admin')) | adminGifts |
+| GET | /api/v1/gifts/history | UseGuards(AuthGuard('user')) | history |
 | PATCH | /api/v1/gifts/:id | UseGuards(AuthGuard('admin')) | updateGift |
 | DELETE | /api/v1/gifts/:id | UseGuards(AuthGuard('admin')) | deactivateGift |
 | POST | /api/v1/gifts/:giftId/send | UseGuards(AuthGuard('user')) | sendGift |
@@ -63,8 +65,11 @@ Swagger-এ এই API-গুলো দেখা যাবে। Internal webhoo
 | PUT | /api/v1/admin/companions/:companionId/lifestyle/routine | UseGuards(AuthGuard('admin')) | saveRoutine |
 | GET | /api/v1/admin/companions/:companionId/lifestyle/context | UseGuards(AuthGuard('admin')) | context |
 | GET | /api/v1/admin/companions/:companionId/lifestyle/photos | UseGuards(AuthGuard('admin')) | photos |
+| POST | /api/v1/admin/companions/:companionId/lifestyle/photos/import-gallery | UseGuards(AuthGuard('admin')) | importGallery |
 | POST | /api/v1/admin/companions/:companionId/lifestyle/photos | UseGuards(AuthGuard('admin')) | upload |
 | PATCH | /api/v1/admin/companions/:companionId/lifestyle/photos/:photoId | UseGuards(AuthGuard('admin')) | approve |
+| PUT | /api/v1/admin/companions/:companionId/lifestyle/photos/:photoId | UseGuards(AuthGuard('admin')) | editPhoto |
+| DELETE | /api/v1/admin/companions/:companionId/lifestyle/photos/:photoId | UseGuards(AuthGuard('admin')) | removePhoto |
 | GET | /api/v1/admin/companions/:companionId/lifestyle/daily-content | UseGuards(AuthGuard('admin')) | daily |
 | PUT | /api/v1/admin/companions/:companionId/lifestyle/daily-content | UseGuards(AuthGuard('admin')) | save |
 | POST | /api/v1/admin/companions/:companionId/lifestyle/daily-content/:contentId/unpublish | UseGuards(AuthGuard('admin')) | unpublish |
@@ -74,10 +79,11 @@ Swagger-এ এই API-গুলো দেখা যাবে। Internal webhoo
 | GET | /api/v1/lifestyle/allowances | UseGuards(AuthGuard('user')) | allowances |
 | POST | /api/v1/lifestyle/companions/:companionId/photo | UseGuards(AuthGuard('user')) | photo |
 | GET | /api/v1/lifestyle/inbox | UseGuards(AuthGuard('user')) | inbox |
-| POST | /api/v1/newsletter | Public অথবা service-level validation | sendMail |
+| POST | /api/v1/newsletter | Public or service-level validation | sendMail |
 | POST | /api/v1/newsletter/broadcast | UseGuards(AuthGuard('admin')) | broadcastNewsletter |
-| GET | /api/v1/newsletter | Public অথবা service-level validation | getAllNewsletter |
-| GET | /api/v1/newsletter/:id | Public অথবা service-level validation | getNewsletterById |
+| GET | /api/v1/newsletter | Public or service-level validation | getAllNewsletter |
+| GET | /api/v1/newsletter/:id | Public or service-level validation | getNewsletterById |
+| GET | /api/v1/payment/config | Public or service-level validation | config |
 | GET | /api/v1/payment/subscription/status | UseGuards(AuthGuard('user', 'admin')) | status |
 | POST | /api/v1/payment/subscription/sync | UseGuards(AuthGuard('user', 'admin')) | sync |
 | POST | /api/v1/payment/billing-portal | UseGuards(AuthGuard('user', 'admin')) | portal |
@@ -93,19 +99,20 @@ Swagger-এ এই API-গুলো দেখা যাবে। Internal webhoo
 | DELETE | /api/v1/admin/companions/:companionId/media-stories/:storyId | UseGuards(AuthGuard('admin')) | remove |
 | GET | /api/v1/media-stories/summary | UseGuards(AuthGuard('user', 'admin')) | summary |
 | GET | /api/v1/media-stories/companions/:companionId | UseGuards(AuthGuard('user', 'admin')) | feed |
-| GET | /api/v1/media-stories/:storyId/media | Public অথবা service-level validation | media |
+| GET | /api/v1/media-stories/:storyId/media | Public or service-level validation | media |
 | POST | /api/v1/subscription | UseGuards(AuthGuard('admin')) | createSubscription |
-| GET | /api/v1/subscription | Public অথবা service-level validation | getAllSubscription |
-| GET | /api/v1/subscription/:id | Public অথবা service-level validation | getSubscriptionById |
+| GET | /api/v1/subscription | Public or service-level validation | getAllSubscription |
+| GET | /api/v1/subscription/:id | Public or service-level validation | getSubscriptionById |
 | PUT | /api/v1/subscription/:id | UseGuards(AuthGuard('admin')) | updateSubscription |
 | DELETE | /api/v1/subscription/:id | UseGuards(AuthGuard('admin')) | deleteSubscription |
 | GET | /api/v1/telegram/status/:companionId | UseGuards(AuthGuard('user')) | status |
 | POST | /api/v1/telegram/connect/:companionId | UseGuards(AuthGuard('user')) | connect |
-| POST | /api/v1/user | Public অথবা service-level validation | createUser |
+| POST | /api/v1/user | Public or service-level validation | createUser |
 | GET | /api/v1/user | UseGuards(AuthGuard('admin')) | getAllUser |
 | GET | /api/v1/user//overview | UseGuards(AuthGuard('admin')) | getAllUserOverview |
 | GET | /api/v1/user/my-profile | UseGuards(AuthGuard('user', 'admin')) | myProfile |
 | PUT | /api/v1/user/my-profile | UseGuards(AuthGuard('user', 'admin')) | UpdateMyProfile |
+| GET | /api/v1/user/payments | UseGuards(AuthGuard('user', 'admin')) | myPayments |
 | GET | /api/v1/user/:id | UseGuards(AuthGuard('admin')) | getUserById |
 | PUT | /api/v1/user/:id | UseGuards(AuthGuard('admin')) | updateUser |
 | DELETE | /api/v1/user/:id | UseGuards(AuthGuard('admin')) | deleteUser |

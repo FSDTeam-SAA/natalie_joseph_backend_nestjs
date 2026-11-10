@@ -28,9 +28,16 @@ export class GiftService {
     return this.prisma.gift.create({ data: payload });
   }
 
-  async getActiveGifts(params: IFilterParams, options: IOptions) {
+  async getActiveGifts(
+    params: IFilterParams,
+    options: IOptions,
+    includeInactive = false,
+  ) {
     const { limit, page, skip, sortBy, sortOrder } = paginationHelper(options);
-    const where = buildWhereConditions(params, ['name']);
+    const where = {
+      ...buildWhereConditions(params, ['name']),
+      ...(!includeInactive ? { isActive: true } : {}),
+    };
     const [total, result] = await Promise.all([
       this.prisma.gift.count({ where }),
       this.prisma.gift.findMany({
@@ -56,8 +63,55 @@ export class GiftService {
     });
   }
 
-  async sendGift(userId: string, companionId: string, giftId: string) {
+  async history(userId: string, page: number) {
+    const where = { userId };
+    const [data, total] = await Promise.all([
+      this.prisma.giftTransaction.findMany({
+        where,
+        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+        skip: (page - 1) * 20,
+        take: 20,
+        select: {
+          id: true,
+          creditCost: true,
+          status: true,
+          createdAt: true,
+          gift: { select: { name: true, image: true } },
+          companion: { select: { name: true } },
+        },
+      }),
+      this.prisma.giftTransaction.count({ where }),
+    ]);
+    return { data, total, page, limit: 20 };
+  }
+
+  async sendGift(
+    userId: string,
+    companionId: string,
+    giftId: string,
+    requestId?: string,
+    expectedCreditCost?: number,
+  ) {
     return this.prisma.$transaction(async (transaction) => {
+      // Serialize retries for this wallet before checking or charging the gift.
+      await transaction.$queryRaw`SELECT id FROM users WHERE id = ${userId} FOR UPDATE`;
+      if (requestId) {
+        const previous = await transaction.giftTransaction.findUnique({
+          where: { id: requestId },
+        });
+        if (previous) {
+          if (
+            previous.userId !== userId ||
+            previous.companionId !== companionId ||
+            previous.giftId !== giftId
+          )
+            throw new HttpException(
+              'Gift request does not match the original purchase',
+              HttpStatus.CONFLICT,
+            );
+          return { giftTransaction: previous, alreadySent: true };
+        }
+      }
       const now = new Date();
       const [gift, companion, subscription] = await Promise.all([
         transaction.gift.findFirst({ where: { id: giftId, isActive: true } }),
@@ -77,6 +131,14 @@ export class GiftService {
       ]);
 
       if (!gift) throw new NotFoundException('Gift not found');
+      if (
+        expectedCreditCost !== undefined &&
+        gift.creditCost !== expectedCreditCost
+      )
+        throw new HttpException(
+          'The gift price changed. Refresh gifts before confirming again.',
+          HttpStatus.CONFLICT,
+        );
       if (!companion) throw new NotFoundException('Companion not found');
       if (!subscription) {
         throw new HttpException(
@@ -85,7 +147,7 @@ export class GiftService {
         );
       }
 
-      const giftTransactionId = randomUUID();
+      const giftTransactionId = requestId || randomUUID();
       const charge = await this.creditService.consumeCredits(
         transaction,
         userId,
